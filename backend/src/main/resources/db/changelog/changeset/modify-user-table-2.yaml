@@ -1,0 +1,33 @@
+databaseChangeLog:
+  - changeSet:
+      id: modify-user-2
+      author: Nikita Lepikhin
+      changes:
+        - modifyDataType:
+            tableName: users
+            columnName: date_created
+            newDataType: timestamp
+        - modifyDataType:
+            tableName: users
+            columnName: date_modified
+            newDataType: timestamp
+        - renameColumn:
+            tableName: users
+            oldColumnName: date_created
+            newColumnName: created
+        - renameColumn:
+            tableName: users
+            oldColumnName: date_modified
+            newColumnName: modified
+        - addDefaultValue:
+            tableName: users
+            columnName: status
+            defaultValue: ACTIVE
+        - addDefaultValue:
+            tableName: users
+            columnName: created
+            defaultValueComputed: CURRENT_TIMESTAMP()
+        - addDefaultValue:
+            tableName: users
+            columnName: modified
+            defaultValueComputed: CURRENT_TIMESTAMP()
