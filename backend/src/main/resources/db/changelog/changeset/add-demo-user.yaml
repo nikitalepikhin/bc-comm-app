@@ -1,0 +1,50 @@
+databaseChangeLog:
+  - changeSet:
+      id: add-demo-user
+      author: Nikita Lepikhin
+      changes:
+        - insert:
+            tableName: users
+            columns:
+              - column:
+                  name: username
+                  value: student
+              - column:
+                  name: password
+                  value: '1234'
+              - column:
+                  name: email
+                  value: student@email.com
+              - column:
+                  name: role
+                  value: STUDENT
+        - insert:
+            tableName: users
+            columns:
+              - column:
+                  name: username
+                  value: teacher
+              - column:
+                  name: password
+                  value: '1234'
+              - column:
+                  name: email
+                  value: teacher@email.com
+              - column:
+                  name: role
+                  value: TEACHER
+        - insert:
+            tableName: users
+            columns:
+              - column:
+                  name: username
+                  value: admin
+              - column:
+                  name: password
+                  value: '1234'
+              - column:
+                  name: email
+                  value: admin@email.com
+              - column:
+                  name: role
+                  value: ADMIN

@@ -7,3 +7,7 @@ databaseChangeLog:
       file: "db/changelog/changeset/modify-user-table-2.yaml"
   - include:
       file: "db/changelog/changeset/modify-user-table-3.yaml"
+  - include:
+      file: "db/changelog/changeset/add-demo-user.yaml"
+  - include:
+      file: "db/changelog/changeset/add-pwd-bcrypt.yaml"

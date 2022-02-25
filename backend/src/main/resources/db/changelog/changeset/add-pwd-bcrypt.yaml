@@ -1,0 +1,19 @@
+databaseChangeLog:
+  - changeSet:
+      id: add-pwd-bcrypt
+      author: Nikita Lepikhin
+      changes:
+        - update:
+            tableName: users
+            columns:
+              - column:
+                  name: password
+                  value: $2a$12$4yRWKJ8P6GI9OEwo7WAyQOgk4cucFRxMOHNChd5NJEsLI/McnraQi
+            where: password='1234'
+        - update:
+            tableName: users
+            columns:
+              - column:
+                  name: password
+                  value: $2a$12$U7ArRxxw/qBIIw56Iruu7Ozc7gCisyvOQQlzvQICVMfpUxS5gkqqq
+            where: password='foo'

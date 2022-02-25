@@ -1,10 +1,18 @@
 package com.nikitalepikhin.bccommapp.model;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.time.Instant;
 
 @Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+@Entity
 @Table(name = "users")
 public class User {
     @Id
@@ -24,4 +32,14 @@ public class User {
     @Enumerated(value = EnumType.STRING)
     @Column(name = "role", nullable = false, length = 16)
     private Role role;
+
+    @Enumerated(value = EnumType.STRING)
+    @Column(name = "status", nullable = false, length = 16)
+    private Status status;
+
+    @Column(name = "created", nullable = false)
+    private Instant created;
+
+    @Column(name = "modified", nullable = false)
+    private Instant modified;
 }
