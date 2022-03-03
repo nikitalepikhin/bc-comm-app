@@ -1,4 +1,4 @@
-package com.nikitalepikhin.bccommapp.security.exception;
+package com.nikitalepikhin.bccommapp.exception;
 
 import org.springframework.security.core.AuthenticationException;
 

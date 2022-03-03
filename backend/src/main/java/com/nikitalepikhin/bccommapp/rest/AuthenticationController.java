@@ -1,30 +1,25 @@
 package com.nikitalepikhin.bccommapp.rest;
 
 import com.nikitalepikhin.bccommapp.dto.AuthenticateUserDto;
-import com.nikitalepikhin.bccommapp.model.User;
-import com.nikitalepikhin.bccommapp.security.JwtProvider;
-import com.nikitalepikhin.bccommapp.security.exception.GenericAuthenticationException;
-import com.nikitalepikhin.bccommapp.service.UserService;
+import com.nikitalepikhin.bccommapp.dto.RefreshTokenResponseDto;
+import com.nikitalepikhin.bccommapp.dto.RefreshTokenRequestDto;
+import com.nikitalepikhin.bccommapp.dto.RegisterUserDto;
+import com.nikitalepikhin.bccommapp.service.JwtService;
+import com.nikitalepikhin.bccommapp.service.LoginService;
+import com.nikitalepikhin.bccommapp.service.RegistrationService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.util.Map;
 
 @Slf4j
@@ -32,62 +27,62 @@ import java.util.Map;
 @RequestMapping(("/api/auth"))
 public class AuthenticationController {
 
-    private final AuthenticationManager authenticationManager;
+    private final LoginService loginService;
 
-    private final UserDetailsService userDetailsService;
+    private final RegistrationService registrationService;
 
-    private final UserService userService;
-
-    private final JwtProvider jwtProvider;
-
-    private final PasswordEncoder passwordEncoder;
+    private final JwtService jwtService;
 
     @Autowired
     public AuthenticationController(
-            AuthenticationManager authenticationManager,
-            @Qualifier("UserDetailsServiceImpl") UserDetailsService userDetailsService,
-            UserService userService,
-            JwtProvider jwtProvider,
-            PasswordEncoder passwordEncoder) {
-        this.authenticationManager = authenticationManager;
-        this.userDetailsService = userDetailsService;
-        this.userService = userService;
-        this.jwtProvider = jwtProvider;
-        this.passwordEncoder = passwordEncoder;
+            LoginService loginService,
+            RegistrationService registrationService,
+            JwtService jwtService) {
+        this.loginService = loginService;
+        this.registrationService = registrationService;
+        this.jwtService = jwtService;
     }
 
     @PostMapping("/login")
     public ResponseEntity<?> authenticateUser(@RequestBody AuthenticateUserDto authenticateUserDto) {
-        log.info("Got a login request");
+        log.info("Login request from " + authenticateUserDto.getEmail());
         try {
-            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
-                    authenticateUserDto.getEmail(),
-                    authenticateUserDto.getPassword())
-            );
-            UserDetails userDetails = userDetailsService.loadUserByUsername(authenticateUserDto.getEmail());
-            User user = userService.findByEmail(authenticateUserDto.getEmail())
-                    .orElseThrow(() -> new GenericAuthenticationException("Provided email does not match any user."));
-            String accessToken = jwtProvider.createToken(userDetails.getUsername(), user.getRole(), true);
-            String refreshToken = jwtProvider.createToken(userDetails.getUsername(), user.getRole(), false);
-            Map<String, String> responseBody = Map.of(
-                    "email", user.getEmail(),
-                    "username", user.getUsername(),
-                    "access_token", accessToken,
-                    "refresh_token", refreshToken);
-            log.info("Login " + authenticateUserDto.getEmail() + " ok");
+            Map<String, String> responseBody = loginService.loginUser(authenticateUserDto);
+            log.info("Login from " + authenticateUserDto.getEmail() + " ok");
             return ResponseEntity.ok(responseBody);
-        } catch (AuthenticationException exception) {
-            log.info("Login " + authenticateUserDto.getEmail() + " forbidden");
-            return new ResponseEntity<>(exception.getMessage(), HttpStatus.FORBIDDEN);
+        } catch (AuthenticationException e) {
+            log.info("Login from " + authenticateUserDto.getEmail() + " forbidden");
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.FORBIDDEN);
         }
     }
 
-    // todo - refresh token route
+    @PostMapping("/signup")
+    public ResponseEntity<?> registerUser(@RequestBody RegisterUserDto registerUserDto) {
+        log.info("Signup request from " + registerUserDto.getEmail());
+        registrationService.registerUser(registerUserDto);
+        return ResponseEntity.ok("Successful registration.");
+    }
+
+    @PostMapping("/refresh")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<?> refreshToken(@RequestBody RefreshTokenRequestDto refreshTokenRequestDto) {
+        try {
+            RefreshTokenResponseDto responseBody = jwtService.refreshToken(refreshTokenRequestDto.getRefreshToken());
+            return ResponseEntity.ok(responseBody);
+        } catch (AuthenticationException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.FORBIDDEN);
+        }
+    }
 
     @PostMapping("/logout")
     @PreAuthorize("isAuthenticated()")
-    public void logOutUser(HttpServletRequest request, HttpServletResponse response) {
-        SecurityContextLogoutHandler handler = new SecurityContextLogoutHandler();
-        handler.logout(request, response, null);
+    public ResponseEntity<?> logOutUser(HttpServletRequest request) {
+        try {
+            request.logout();
+            // todo - invalidate refresh token family here
+            return ResponseEntity.ok().build();
+        } catch (ServletException e) {
+            return ResponseEntity.internalServerError().build();
+        }
     }
 }

@@ -1,6 +1,6 @@
 package com.nikitalepikhin.bccommapp.security;
 
-import com.nikitalepikhin.bccommapp.security.exception.JwtAuthenticationException;
+import com.nikitalepikhin.bccommapp.exception.JwtAuthenticationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;

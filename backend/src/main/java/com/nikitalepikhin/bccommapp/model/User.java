@@ -33,13 +33,16 @@ public class User {
     @Column(name = "role", nullable = false, length = 16)
     private Role role;
 
+    @Builder.Default
     @Enumerated(value = EnumType.STRING)
-    @Column(name = "status", nullable = false, length = 16)
-    private Status status;
+    @Column(name = "status", length = 16)
+    private Status status = Status.ACTIVE;
 
+    @Builder.Default
     @Column(name = "created", nullable = false)
-    private Instant created;
+    private Instant created = Instant.now();
 
+    @Builder.Default
     @Column(name = "modified", nullable = false)
-    private Instant modified;
+    private Instant modified = Instant.now();
 }

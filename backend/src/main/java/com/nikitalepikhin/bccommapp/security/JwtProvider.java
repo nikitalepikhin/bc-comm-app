@@ -1,7 +1,7 @@
 package com.nikitalepikhin.bccommapp.security;
 
+import com.nikitalepikhin.bccommapp.exception.JwtAuthenticationException;
 import com.nikitalepikhin.bccommapp.model.Role;
-import com.nikitalepikhin.bccommapp.security.exception.JwtAuthenticationException;
 import io.jsonwebtoken.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -57,9 +57,8 @@ public class JwtProvider {
 
     public boolean validateToken(String token) throws JwtAuthenticationException {
         try {
-            // todo - fix probable issue with expiration time
             Jws<Claims> claimsJws = getClaimsJws(token);
-            return claimsJws.getBody().getExpiration().after(new Date());
+            return (claimsJws.getBody().getExpiration().after(new Date()));
         } catch (JwtException exception) {
             throw new JwtAuthenticationException("Provided JWT token is either expired or invalid.");
         }
@@ -81,5 +80,10 @@ public class JwtProvider {
 
     private Jws<Claims> getClaimsJws(String token) {
         return Jwts.parser().setSigningKey(jwtSecretKey).parseClaimsJws(token);
+    }
+
+    public Role getRole(String token) {
+        Jws<Claims> claimsJws = getClaimsJws(token);
+        return Role.valueOf((String) claimsJws.getBody().get("role"));
     }
 }

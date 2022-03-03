@@ -4,13 +4,12 @@ import com.nikitalepikhin.bccommapp.dto.RegisterUserDto;
 import com.nikitalepikhin.bccommapp.model.User;
 import com.nikitalepikhin.bccommapp.repository.UserRepository;
 import com.nikitalepikhin.bccommapp.service.UserService;
-import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.time.Instant;
 import java.util.Optional;
+import java.util.Random;
 import java.util.Set;
 
 @Service
@@ -31,14 +30,13 @@ public class UserServiceImpl implements UserService {
                 .username(generateUsername())
                 .email(userDto.getEmail())
                 .password(passwordEncoder.encode(userDto.getPassword()))
-                .created(Instant.now())
-                .modified(Instant.now())
+                .role(userDto.getRole())
                 .build();
         return userRepository.save(user);
     }
 
     private String generateUsername() {
-        return RandomStringUtils.randomAlphabetic(8); // todo - create a service for generating random unique usernames
+        return Long.toString(Long.parseLong(Long.toString(new Random().nextLong()), 10), 36).substring(1, 9);
     }
 
     @Override
