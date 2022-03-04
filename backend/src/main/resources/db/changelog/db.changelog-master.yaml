@@ -11,3 +11,5 @@ databaseChangeLog:
       file: "db/changelog/changeset/add-demo-user.yaml"
   - include:
       file: "db/changelog/changeset/add-pwd-bcrypt.yaml"
+  - include:
+      file: "db/changelog/changeset/create-refresh-token-table.yaml"

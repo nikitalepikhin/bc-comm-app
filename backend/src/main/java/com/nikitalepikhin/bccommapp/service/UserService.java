@@ -1,6 +1,6 @@
 package com.nikitalepikhin.bccommapp.service;
 
-import com.nikitalepikhin.bccommapp.dto.RegisterUserDto;
+import com.nikitalepikhin.bccommapp.dto.RegisterUserRequestDto;
 import com.nikitalepikhin.bccommapp.model.User;
 
 import java.util.Optional;
@@ -8,7 +8,7 @@ import java.util.Set;
 
 public interface UserService {
 
-    User register(RegisterUserDto userDto);
+    User register(RegisterUserRequestDto userDto);
 
     Set<User> getAll();
 

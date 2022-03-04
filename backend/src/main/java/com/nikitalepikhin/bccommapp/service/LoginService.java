@@ -1,10 +1,9 @@
 package com.nikitalepikhin.bccommapp.service;
 
-import com.nikitalepikhin.bccommapp.dto.AuthenticateUserDto;
-
-import java.util.Map;
+import com.nikitalepikhin.bccommapp.dto.LogInUserRequestDto;
+import com.nikitalepikhin.bccommapp.dto.LogInUserResponseDto;
 
 public interface LoginService {
 
-    Map<String, String> loginUser(AuthenticateUserDto authenticateUserDto);
+    LogInUserResponseDto loginUser(LogInUserRequestDto logInUserRequestDto);
 }

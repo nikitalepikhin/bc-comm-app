@@ -1,9 +1,10 @@
 package com.nikitalepikhin.bccommapp.service.impl;
 
-import com.nikitalepikhin.bccommapp.dto.AuthenticateUserDto;
-import com.nikitalepikhin.bccommapp.model.User;
-import com.nikitalepikhin.bccommapp.security.JwtProvider;
+import com.nikitalepikhin.bccommapp.dto.LogInUserRequestDto;
+import com.nikitalepikhin.bccommapp.dto.LogInUserResponseDto;
 import com.nikitalepikhin.bccommapp.exception.GenericAuthenticationException;
+import com.nikitalepikhin.bccommapp.model.User;
+import com.nikitalepikhin.bccommapp.service.JwtService;
 import com.nikitalepikhin.bccommapp.service.LoginService;
 import com.nikitalepikhin.bccommapp.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,8 +15,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 
-import java.util.Map;
-
 @Service
 public class LoginServiceImpl implements LoginService {
 
@@ -25,35 +24,31 @@ public class LoginServiceImpl implements LoginService {
 
     private final UserService userService;
 
-    private final JwtProvider jwtProvider;
+    private final JwtService jwtService;
 
     @Autowired
     public LoginServiceImpl(
             AuthenticationManager authenticationManager,
             @Qualifier("UserDetailsServiceImpl") UserDetailsService userDetailsService,
             UserService userService,
-            JwtProvider jwtProvider) {
+            JwtProvider jwtProvider, JwtService jwtService) {
         this.authenticationManager = authenticationManager;
         this.userDetailsService = userDetailsService;
         this.userService = userService;
-        this.jwtProvider = jwtProvider;
+        this.jwtService = jwtService;
     }
 
     @Override
-    public Map<String, String> loginUser(AuthenticateUserDto authenticateUserDto) {
+    public LogInUserResponseDto loginUser(LogInUserRequestDto logInUserRequestDto) {
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
-                authenticateUserDto.getEmail(),
-                authenticateUserDto.getPassword())
+                logInUserRequestDto.getEmail(),
+                logInUserRequestDto.getPassword())
         );
-        UserDetails userDetails = userDetailsService.loadUserByUsername(authenticateUserDto.getEmail());
-        User user = userService.findByEmail(authenticateUserDto.getEmail())
+        UserDetails userDetails = userDetailsService.loadUserByUsername(logInUserRequestDto.getEmail());
+        User user = userService.findByEmail(logInUserRequestDto.getEmail())
                 .orElseThrow(() -> new GenericAuthenticationException("Provided email does not match any user."));
-        String accessToken = jwtProvider.createToken(userDetails.getUsername(), user.getRole(), true);
-        String refreshToken = jwtProvider.createToken(userDetails.getUsername(), user.getRole(), false);
-        return Map.of(
-                "email", user.getEmail(),
-                "username", user.getUsername(),
-                "access_token", accessToken,
-                "refresh_token", refreshToken);
+        String accessToken = jwtService.createAccessToken(userDetails.getUsername(), user.getRole());
+        String refreshToken = jwtService.createRefreshTokenForNewFamily(userDetails.getUsername(), user.getRole());
+        return new LogInUserResponseDto(user.getEmail(), user.getUsername(), accessToken, refreshToken);
     }
 }

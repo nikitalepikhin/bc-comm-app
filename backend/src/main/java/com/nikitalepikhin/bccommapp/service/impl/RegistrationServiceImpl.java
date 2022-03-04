@@ -1,6 +1,6 @@
 package com.nikitalepikhin.bccommapp.service.impl;
 
-import com.nikitalepikhin.bccommapp.dto.RegisterUserDto;
+import com.nikitalepikhin.bccommapp.dto.RegisterUserRequestDto;
 import com.nikitalepikhin.bccommapp.service.RegistrationService;
 import com.nikitalepikhin.bccommapp.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +17,7 @@ public class RegistrationServiceImpl implements RegistrationService {
     }
 
     @Override
-    public void registerUser(RegisterUserDto registerUserDto) {
-        userService.register(registerUserDto);
+    public void registerUser(RegisterUserRequestDto registerUserRequestDto) {
+        userService.register(registerUserRequestDto);
     }
 }

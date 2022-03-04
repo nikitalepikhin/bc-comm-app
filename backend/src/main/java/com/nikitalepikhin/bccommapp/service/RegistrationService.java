@@ -1,8 +1,8 @@
 package com.nikitalepikhin.bccommapp.service;
 
-import com.nikitalepikhin.bccommapp.dto.RegisterUserDto;
+import com.nikitalepikhin.bccommapp.dto.RegisterUserRequestDto;
 
 public interface RegistrationService {
 
-    void registerUser(RegisterUserDto registerUserDto);
+    void registerUser(RegisterUserRequestDto registerUserRequestDto);
 }

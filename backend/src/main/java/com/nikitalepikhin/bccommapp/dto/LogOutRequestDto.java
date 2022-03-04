@@ -3,14 +3,13 @@ package com.nikitalepikhin.bccommapp.dto;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
 @AllArgsConstructor
-public class AuthenticateUserDto {
+@NoArgsConstructor
+public class LogOutRequestDto {
 
-    @JsonProperty("email")
-    private String email;
-
-    @JsonProperty("password")
-    private String password;
+    @JsonProperty("refresh_token")
+    private String refreshToken;
 }

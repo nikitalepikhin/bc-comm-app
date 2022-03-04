@@ -1,9 +1,7 @@
 package com.nikitalepikhin.bccommapp.rest;
 
-import com.nikitalepikhin.bccommapp.dto.AuthenticateUserDto;
-import com.nikitalepikhin.bccommapp.dto.RefreshTokenResponseDto;
-import com.nikitalepikhin.bccommapp.dto.RefreshTokenRequestDto;
-import com.nikitalepikhin.bccommapp.dto.RegisterUserDto;
+import com.nikitalepikhin.bccommapp.dto.*;
+import com.nikitalepikhin.bccommapp.exception.RefreshTokenException;
 import com.nikitalepikhin.bccommapp.service.JwtService;
 import com.nikitalepikhin.bccommapp.service.LoginService;
 import com.nikitalepikhin.bccommapp.service.RegistrationService;
@@ -17,10 +15,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import java.util.Map;
 
 @Slf4j
 @RestController
@@ -44,45 +38,40 @@ public class AuthenticationController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> authenticateUser(@RequestBody AuthenticateUserDto authenticateUserDto) {
-        log.info("Login request from " + authenticateUserDto.getEmail());
+    public ResponseEntity<?> logInUser(@RequestBody LogInUserRequestDto request) {
+        log.info("Login request from " + request.getEmail());
         try {
-            Map<String, String> responseBody = loginService.loginUser(authenticateUserDto);
-            log.info("Login from " + authenticateUserDto.getEmail() + " ok");
-            return ResponseEntity.ok(responseBody);
+            LogInUserResponseDto responseDto = loginService.loginUser(request);
+            log.info("Login from " + request.getEmail() + " ok");
+            return ResponseEntity.ok(responseDto);
         } catch (AuthenticationException e) {
-            log.info("Login from " + authenticateUserDto.getEmail() + " forbidden");
+            log.info("Login from " + request.getEmail() + " forbidden");
             return new ResponseEntity<>(e.getMessage(), HttpStatus.FORBIDDEN);
         }
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<?> registerUser(@RequestBody RegisterUserDto registerUserDto) {
-        log.info("Signup request from " + registerUserDto.getEmail());
-        registrationService.registerUser(registerUserDto);
+    public ResponseEntity<?> registerUser(@RequestBody RegisterUserRequestDto request) {
+        log.info("Signup request from " + request.getEmail());
+        registrationService.registerUser(request);
         return ResponseEntity.ok("Successful registration.");
     }
 
     @PostMapping("/refresh")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<?> refreshToken(@RequestBody RefreshTokenRequestDto refreshTokenRequestDto) {
+    public ResponseEntity<?> refreshToken(@RequestBody RefreshTokenRequestDto request) {
         try {
-            RefreshTokenResponseDto responseBody = jwtService.refreshToken(refreshTokenRequestDto.getRefreshToken());
-            return ResponseEntity.ok(responseBody);
-        } catch (AuthenticationException e) {
+            RefreshTokenResponseDto response = jwtService.refreshAccessToken(request.getRefreshToken());
+            return ResponseEntity.ok(response);
+        } catch (RefreshTokenException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.FORBIDDEN);
         }
     }
 
     @PostMapping("/logout")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<?> logOutUser(HttpServletRequest request) {
-        try {
-            request.logout();
-            // todo - invalidate refresh token family here
-            return ResponseEntity.ok().build();
-        } catch (ServletException e) {
-            return ResponseEntity.internalServerError().build();
-        }
+    public ResponseEntity<?> logOutUser(@RequestBody LogOutRequestDto request) {
+        jwtService.logOut(request.getRefreshToken());
+        return ResponseEntity.ok().build();
     }
 }

@@ -8,8 +8,11 @@ import lombok.NoArgsConstructor;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class RefreshTokenRequestDto {
+public class LogInUserRequestDto {
 
-    @JsonProperty("refresh_token")
-    private String refreshToken;
+    @JsonProperty("email")
+    private String email;
+
+    @JsonProperty("password")
+    private String password;
 }

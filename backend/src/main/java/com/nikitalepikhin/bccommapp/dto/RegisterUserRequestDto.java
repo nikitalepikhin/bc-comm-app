@@ -4,10 +4,12 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.nikitalepikhin.bccommapp.model.Role;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
 @AllArgsConstructor
-public class RegisterUserDto {
+@NoArgsConstructor
+public class RegisterUserRequestDto {
 
     @JsonProperty("email")
     private String email;

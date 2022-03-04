@@ -1,6 +1,6 @@
 package com.nikitalepikhin.bccommapp.service.impl;
 
-import com.nikitalepikhin.bccommapp.dto.RegisterUserDto;
+import com.nikitalepikhin.bccommapp.dto.RegisterUserRequestDto;
 import com.nikitalepikhin.bccommapp.model.User;
 import com.nikitalepikhin.bccommapp.repository.UserRepository;
 import com.nikitalepikhin.bccommapp.service.UserService;
@@ -25,7 +25,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User register(RegisterUserDto userDto) {
+    public User register(RegisterUserRequestDto userDto) {
         User user = User.builder()
                 .username(generateUsername())
                 .email(userDto.getEmail())

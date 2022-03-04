@@ -1,8 +1,6 @@
 package com.nikitalepikhin.bccommapp.exception;
 
-import org.springframework.security.core.AuthenticationException;
-
-public class RefreshTokenException extends AuthenticationException {
+public class RefreshTokenException extends Throwable {
 
     public RefreshTokenException(String msg) {
         super(msg);
