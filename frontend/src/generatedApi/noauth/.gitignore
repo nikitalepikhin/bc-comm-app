@@ -1,0 +1,13 @@
+wwwroot/*.js
+node_modules
+typings
+dist
+
+.npmignore
+api.ts
+base.ts
+index.ts
+configuration.ts
+api/**
+model/**
+.openapi-generator

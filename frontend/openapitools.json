@@ -1,0 +1,43 @@
+{
+  "$schema": "node_modules/@openapitools/openapi-generator-cli/config.schema.json",
+  "spaces": 2,
+  "generator-cli": {
+    "version": "5.4.0",
+    "generators": {
+      "noauth-api-generator": {
+        "generatorName": "typescript-axios",
+        "artifactVersion": "0.1-SNAPSHOT",
+        "output": "src/generatedApi/noauth",
+        "glob": "resources/noauth-api.json",
+        "inputSpec": "resources/noauth-api.json",
+        "skipValidateSpec": true,
+        "modelNameSuffix": "NoAuthApiObj",
+        "apiPackage": "api",
+        "modelPackage": "model",
+        "additionalProperties": {
+          "withSeparateModelsAndApi": true,
+          "useSingleRequestParameter": true,
+          "supportsES6": true,
+          "snapshot": true
+        }
+      },
+      "bearer-api-generator": {
+        "generatorName": "typescript-axios",
+        "artifactVersion": "0.1-SNAPSHOT",
+        "output": "src/generatedApi/bearer",
+        "glob": "resources/bearer-api.json",
+        "inputSpec": "resources/bearer-api.json",
+        "skipValidateSpec": true,
+        "modelNameSuffix": "NoAuthApiObj",
+        "apiPackage": "api",
+        "modelPackage": "model",
+        "additionalProperties": {
+          "withSeparateModelsAndApi": true,
+          "useSingleRequestParameter": true,
+          "supportsES6": true,
+          "snapshot": true
+        }
+      }
+    }
+  }
+}
