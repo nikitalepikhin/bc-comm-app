@@ -28,7 +28,7 @@
         "glob": "resources/bearer-api.json",
         "inputSpec": "resources/bearer-api.json",
         "skipValidateSpec": true,
-        "modelNameSuffix": "NoAuthApiObj",
+        "modelNameSuffix": "BearerApiObj",
         "apiPackage": "api",
         "modelPackage": "model",
         "additionalProperties": {
