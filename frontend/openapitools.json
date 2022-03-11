@@ -4,31 +4,14 @@
   "generator-cli": {
     "version": "5.4.0",
     "generators": {
-      "noauth-api-generator": {
+      "api-generator": {
         "generatorName": "typescript-axios",
         "artifactVersion": "0.1-SNAPSHOT",
-        "output": "src/generatedApi/noauth",
-        "glob": "resources/noauth-api.json",
-        "inputSpec": "resources/noauth-api.json",
+        "output": "src/generatedApi/",
+        "glob": "resources/backend-generated-api-docs.json",
+        "inputSpec": "resources/backend-generated-api-docs.json",
         "skipValidateSpec": true,
-        "modelNameSuffix": "NoAuthApiObj",
-        "apiPackage": "api",
-        "modelPackage": "model",
-        "additionalProperties": {
-          "withSeparateModelsAndApi": true,
-          "useSingleRequestParameter": true,
-          "supportsES6": true,
-          "snapshot": true
-        }
-      },
-      "bearer-api-generator": {
-        "generatorName": "typescript-axios",
-        "artifactVersion": "0.1-SNAPSHOT",
-        "output": "src/generatedApi/bearer",
-        "glob": "resources/bearer-api.json",
-        "inputSpec": "resources/bearer-api.json",
-        "skipValidateSpec": true,
-        "modelNameSuffix": "BearerApiObj",
+        "modelNameSuffix": "ApiObj",
         "apiPackage": "api",
         "modelPackage": "model",
         "additionalProperties": {

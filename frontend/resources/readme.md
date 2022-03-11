@@ -1,7 +1,6 @@
-# Place the generated API configuration files here
+# Generating the API
 
-Access the API specification at:
-- `http://localhost:8080/v2/api-docs?group=noauth-api` 
-  - FILE `./noauth-api.json`: Unprotected API Specification
-- `http://localhost:8080/v2/api-docs?group=bearer-api`
-  - FILE `./bearer-api.json`: JWT Token Protected API Specification
+1. Access the API specification at:
+   - `http://localhost:8080/v3/api-docs` 
+2. Paste the generated docs into `backend-generated-api-docs.json`
+3. Run the `generate-api` script
