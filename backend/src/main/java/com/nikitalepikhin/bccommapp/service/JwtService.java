@@ -1,6 +1,6 @@
 package com.nikitalepikhin.bccommapp.service;
 
-import com.nikitalepikhin.bccommapp.dto.RefreshTokenResponseDto;
+import com.nikitalepikhin.bccommapp.dto.RefreshTokenDto;
 import com.nikitalepikhin.bccommapp.exception.RefreshTokenException;
 import com.nikitalepikhin.bccommapp.model.Role;
 import org.springframework.security.core.Authentication;
@@ -10,7 +10,7 @@ import java.util.Optional;
 
 public interface JwtService {
 
-    RefreshTokenResponseDto refreshAccessToken(String refreshToken) throws RefreshTokenException;
+    RefreshTokenDto refreshAccessToken(String refreshToken) throws RefreshTokenException;
 
     void logOut(String refreshToken);
 
@@ -31,4 +31,6 @@ public interface JwtService {
     Optional<Role> getRole(String token);
 
     Optional<String> getFamilyId(String token);
+
+    Long getExpiration(String token);
 }

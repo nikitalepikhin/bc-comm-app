@@ -1,22 +1,27 @@
 package com.nikitalepikhin.bccommapp.rest;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/hello")
+@Api(value = "Dummy Controller")
 public class DummyController {
 
-    @GetMapping("/dummy")
+    @GetMapping("/")
     @PreAuthorize("hasAuthority('dummy_read')")
-    public ResponseEntity<?> getDummyResource() {
-        return ResponseEntity.ok("Hello from a dummy GET resource!");
+    @ApiOperation(value = "Log in the user")
+    public ResponseEntity<?> getHelloWorld() {
+        return ResponseEntity.ok("Hello, world!");
     }
 
-    @PostMapping("/dummy")
+    @PostMapping("/echo")
     @PreAuthorize("hasAuthority('dummy_write')")
-    public ResponseEntity<?> getDummyResource(@RequestBody String message) {
-        return ResponseEntity.ok("Your message says:\n" + message + "\nHello from a dummy POST resource!");
+    @ApiOperation(value = "Echo the received message")
+    public ResponseEntity<?> echoMessage(@RequestBody String message) {
+        return ResponseEntity.ok("Your message says:\n" + message);
     }
 }

@@ -1,7 +1,7 @@
 package com.nikitalepikhin.bccommapp.service.impl;
 
 import com.nikitalepikhin.bccommapp.dto.LogInUserRequestDto;
-import com.nikitalepikhin.bccommapp.dto.LogInUserResponseDto;
+import com.nikitalepikhin.bccommapp.dto.LogInUserDto;
 import com.nikitalepikhin.bccommapp.exception.GenericAuthenticationException;
 import com.nikitalepikhin.bccommapp.model.User;
 import com.nikitalepikhin.bccommapp.service.JwtService;
@@ -31,7 +31,7 @@ public class LoginServiceImpl implements LoginService {
             AuthenticationManager authenticationManager,
             @Qualifier("UserDetailsServiceImpl") UserDetailsService userDetailsService,
             UserService userService,
-            JwtProvider jwtProvider, JwtService jwtService) {
+            JwtService jwtService) {
         this.authenticationManager = authenticationManager;
         this.userDetailsService = userDetailsService;
         this.userService = userService;
@@ -39,7 +39,7 @@ public class LoginServiceImpl implements LoginService {
     }
 
     @Override
-    public LogInUserResponseDto loginUser(LogInUserRequestDto logInUserRequestDto) {
+    public LogInUserDto loginUser(LogInUserRequestDto logInUserRequestDto) {
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
                 logInUserRequestDto.getEmail(),
                 logInUserRequestDto.getPassword())
@@ -49,6 +49,6 @@ public class LoginServiceImpl implements LoginService {
                 .orElseThrow(() -> new GenericAuthenticationException("Provided email does not match any user."));
         String accessToken = jwtService.createAccessToken(userDetails.getUsername(), user.getRole());
         String refreshToken = jwtService.createRefreshTokenForNewFamily(userDetails.getUsername(), user.getRole());
-        return new LogInUserResponseDto(user.getEmail(), user.getUsername(), accessToken, refreshToken);
+        return new LogInUserDto(user.getEmail(), user.getUsername(), accessToken, refreshToken);
     }
 }

@@ -1,17 +1,13 @@
 package com.nikitalepikhin.bccommapp.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-@ApiModel(value = LogInUserResponseDto.ENTITY_NAME)
-public class LogInUserResponseDto {
-
-    public static final String ENTITY_NAME = "LogInUserResponse";
+public class LogInUserDto {
 
     @ApiModelProperty(required = true, value = "email")
     @JsonProperty("email")
@@ -24,4 +20,12 @@ public class LogInUserResponseDto {
     @ApiModelProperty(required = true, value = "access token")
     @JsonProperty("access_token")
     private String accessToken;
+
+    @ApiModelProperty(required = true, value = "refresh token")
+    @JsonProperty("refresh_token")
+    private String refreshToken;
+
+    public LogInUserResponseDto getLogInUserResponseDto() {
+        return new LogInUserResponseDto(email, username, accessToken);
+    }
 }

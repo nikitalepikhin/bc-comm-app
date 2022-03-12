@@ -150,4 +150,9 @@ class JwtProvider {
             return Optional.empty();
         }
     }
+
+    public Long getExpiration(String token) {
+        Jws<Claims> claimsJws = getClaimsJws(token);
+        return claimsJws.getBody().getExpiration().getTime();
+    }
 }

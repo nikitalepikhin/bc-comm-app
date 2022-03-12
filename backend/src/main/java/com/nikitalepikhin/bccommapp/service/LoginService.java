@@ -1,9 +1,9 @@
 package com.nikitalepikhin.bccommapp.service;
 
 import com.nikitalepikhin.bccommapp.dto.LogInUserRequestDto;
-import com.nikitalepikhin.bccommapp.dto.LogInUserResponseDto;
+import com.nikitalepikhin.bccommapp.dto.LogInUserDto;
 
 public interface LoginService {
 
-    LogInUserResponseDto loginUser(LogInUserRequestDto logInUserRequestDto);
+    LogInUserDto loginUser(LogInUserRequestDto logInUserRequestDto);
 }

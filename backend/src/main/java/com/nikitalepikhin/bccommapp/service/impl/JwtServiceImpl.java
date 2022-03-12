@@ -1,5 +1,6 @@
 package com.nikitalepikhin.bccommapp.service.impl;
 
+import com.nikitalepikhin.bccommapp.dto.RefreshTokenDto;
 import com.nikitalepikhin.bccommapp.dto.RefreshTokenResponseDto;
 import com.nikitalepikhin.bccommapp.exception.RefreshTokenException;
 import com.nikitalepikhin.bccommapp.model.RefreshToken;
@@ -28,7 +29,7 @@ public class JwtServiceImpl implements JwtService {
     }
 
     @Override
-    public RefreshTokenResponseDto refreshAccessToken(String oldRefreshToken) throws RefreshTokenException {
+    public RefreshTokenDto refreshAccessToken(String oldRefreshToken) throws RefreshTokenException {
         if (validateToken(oldRefreshToken) && refreshTokenExists(oldRefreshToken)) {
             Optional<String> email = getEmail(oldRefreshToken);
             Optional<Role> role = getRole(oldRefreshToken);
@@ -36,7 +37,7 @@ public class JwtServiceImpl implements JwtService {
                 if (!refreshTokenHasBeenUsed(oldRefreshToken)) {
                     String newAccessToken = createAccessToken(email.get(), role.get());
                     String newRefreshToken = createRefreshTokenForExistingFamily(oldRefreshToken);
-                    return new RefreshTokenResponseDto(newAccessToken, newRefreshToken);
+                    return new RefreshTokenDto(newAccessToken, newRefreshToken);
                 } else {
                     invalidateTokenFamily(oldRefreshToken);
                     throw new RefreshTokenException("Refresh token reuse detected.");
@@ -149,5 +150,10 @@ public class JwtServiceImpl implements JwtService {
     @Override
     public Optional<String> getFamilyId(String token) {
         return jwtProvider.getFamilyId(token);
+    }
+
+    @Override
+    public Long getExpiration(String token) {
+        return jwtProvider.getExpiration(token);
     }
 }
