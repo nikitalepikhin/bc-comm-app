@@ -13,7 +13,7 @@ public class DummyController {
 
     @GetMapping("/")
     @PreAuthorize("hasAuthority('dummy_read')")
-    @ApiOperation(value = "Log in the user")
+    @ApiOperation(value = "Print out hello world")
     public ResponseEntity<?> getHelloWorld() {
         return ResponseEntity.ok("Hello, world!");
     }

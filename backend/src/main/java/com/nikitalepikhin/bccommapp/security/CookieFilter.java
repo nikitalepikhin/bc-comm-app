@@ -19,16 +19,20 @@ import java.util.Set;
 @Component
 public class CookieFilter extends OncePerRequestFilter {
 
-    private final Set<String> unprotectedUrisSet = Set.of(
+    private final Set<String> unprotectedUriRegexSet = Set.of(
             "/api/auth/login",
-            "/api/auth/register"
+            "/api/auth/register",
+            "/v3/api-docs.*",
+            "/swagger-ui.*"
     );
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         try {
-            System.out.println(Arrays.toString(request.getCookies()));
-            if (!this.unprotectedUrisSet.contains(request.getRequestURI())) {
+
+            boolean matches = requestUriMatchesUnprotectedUriMasks(request.getRequestURI());
+            if (!matches)System.out.println(request.getRequestURI() + " matches: " + matches);
+            if (!matches) {
                 Optional<Cookie> refreshTokenCookie = Arrays.stream(request.getCookies()).filter(cookie -> cookie.getName().equals("refresh_token")).findFirst();
                 if (refreshTokenCookie.isEmpty()) {
                     throw new CookieFilterException("The request is missing some required cookies.");
@@ -44,5 +48,11 @@ public class CookieFilter extends OncePerRequestFilter {
             throw new GenericAuthenticationException(e.getMessage());
         }
         filterChain.doFilter(request, response);
+    }
+
+    private boolean requestUriMatchesUnprotectedUriMasks(String requestURI) {
+        return unprotectedUriRegexSet.stream()
+                .map(regex -> requestURI.matches(regex))
+                .reduce(false, (subres, item) -> subres ? subres : item);
     }
 }
