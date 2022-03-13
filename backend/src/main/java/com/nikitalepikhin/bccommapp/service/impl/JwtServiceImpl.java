@@ -1,31 +1,45 @@
 package com.nikitalepikhin.bccommapp.service.impl;
 
 import com.nikitalepikhin.bccommapp.dto.RefreshTokenDto;
-import com.nikitalepikhin.bccommapp.dto.RefreshTokenResponseDto;
+import com.nikitalepikhin.bccommapp.exception.JwtAuthenticationException;
 import com.nikitalepikhin.bccommapp.exception.RefreshTokenException;
 import com.nikitalepikhin.bccommapp.model.RefreshToken;
 import com.nikitalepikhin.bccommapp.model.Role;
 import com.nikitalepikhin.bccommapp.repository.RefreshTokenRepository;
 import com.nikitalepikhin.bccommapp.service.JwtService;
+import io.jsonwebtoken.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Date;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class JwtServiceImpl implements JwtService {
 
     private final RefreshTokenRepository refreshTokenRepository;
-    private final JwtProvider jwtProvider;
+    private final UserDetailsService userDetailsService;
+    @Value("${jwt.access.validity.in.ms}")
+    private Long accessTokenValidityInMs;
+    @Value("${jwt.refresh.validity.in.ms}")
+    private Long refreshTokenValidityInMs;
+    @Value("${jwt.secret.key}")
+    private String jwtSecretKey;
+    @Value("${jwt.authorization.header}")
+    private String authorizationHeader;
 
     @Autowired
-    public JwtServiceImpl(
-            JwtProvider jwtProvider,
-            RefreshTokenRepository refreshTokenRepository) {
+    public JwtServiceImpl(RefreshTokenRepository refreshTokenRepository, UserDetailsService userDetailsService) {
         this.refreshTokenRepository = refreshTokenRepository;
-        this.jwtProvider = jwtProvider;
+        this.userDetailsService = userDetailsService;
     }
 
     @Override
@@ -102,58 +116,121 @@ public class JwtServiceImpl implements JwtService {
 
     @Override
     public String createAccessToken(String email, Role role) {
-        return jwtProvider.createAccessToken(email, role);
+        Claims claims = Jwts.claims().setSubject(email);
+        claims.put("role", role.name());
+        claims.put("type", "access");
+        Date currentDate = new Date();
+        Date expirationDate = new Date(currentDate.getTime() + accessTokenValidityInMs);
+        return Jwts.builder()
+                .setClaims(claims)
+                .setIssuedAt(currentDate)
+                .setExpiration(expirationDate)
+                .signWith(SignatureAlgorithm.HS256, jwtSecretKey)
+                .compact();
     }
 
     @Override
     public String createRefreshTokenForExistingFamily(String oldRefreshToken) {
-        String newRefreshToken = jwtProvider.createRefreshTokenForExistingFamily(oldRefreshToken);
-        Optional<String> familyId = jwtProvider.getFamilyId(newRefreshToken);
-        setRefreshTokenToUsed(oldRefreshToken, familyId.get());
-        createNewEntry(newRefreshToken, familyId.get());
-        return newRefreshToken;
+        Jws<Claims> claimsJws = getClaimsJws(oldRefreshToken);
+        Claims claims = Jwts.claims().setSubject(claimsJws.getBody().getSubject());
+        claims.put("role", claimsJws.getBody().get("role"));
+        claims.put("type", "refresh");
+        String familyId = (String) claimsJws.getBody().get("family");
+        claims.put("family", familyId);
+        Date currentDate = new Date();
+        Date expirationDate = new Date(currentDate.getTime() + refreshTokenValidityInMs);
+        return Jwts.builder()
+                .setClaims(claims)
+                .setIssuedAt(currentDate)
+                .setExpiration(expirationDate)
+                .signWith(SignatureAlgorithm.HS256, jwtSecretKey)
+                .compact();
     }
 
     @Override
     public String createRefreshTokenForNewFamily(String email, Role role) {
-        String newRefreshToken = jwtProvider.createRefreshTokenForNewFamily(email, role);
-        Optional<String> familyId = jwtProvider.getFamilyId(newRefreshToken);
-        createNewEntry(newRefreshToken, familyId.get());
-        return newRefreshToken;
+        Claims claims = Jwts.claims().setSubject(email);
+        claims.put("role", role.name());
+        claims.put("type", "refresh");
+        String familyId = UUID.randomUUID().toString();
+        claims.put("family", familyId);
+        Date currentDate = new Date();
+        Date expirationDate = new Date(currentDate.getTime() + refreshTokenValidityInMs);
+        return Jwts.builder()
+                .setClaims(claims)
+                .setIssuedAt(currentDate)
+                .setExpiration(expirationDate)
+                .signWith(SignatureAlgorithm.HS256, jwtSecretKey)
+                .compact();
     }
 
     @Override
-    public boolean validateToken(String token) {
-        return jwtProvider.validateToken(token);
+    public boolean validateToken(String token) throws JwtAuthenticationException {
+        try {
+            Jws<Claims> claimsJws = getClaimsJws(token);
+            return (claimsJws.getBody().getExpiration().after(new Date()));
+        } catch (JwtException exception) {
+            throw new JwtAuthenticationException("Provided JWT token is either expired or invalid.");
+        }
     }
 
     @Override
     public Optional<String> getEmail(String token) {
-        return jwtProvider.getEmail(token);
+        try {
+            Jws<Claims> claimsJws = getClaimsJws(token);
+            return Optional.of(claimsJws.getBody().getSubject());
+        } catch (JwtException e) {
+            return Optional.empty();
+        }
     }
 
     @Override
     public Optional<Authentication> getAuthentication(String token) {
-        return jwtProvider.getAuthentication(token);
+        try {
+            Optional<String> email = getEmail(token);
+            if (email.isPresent()) {
+                UserDetails userDetails = userDetailsService.loadUserByUsername(email.get());
+                return Optional.of(new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities()));
+            } else {
+                return Optional.empty();
+            }
+        } catch (UsernameNotFoundException e) {
+            return Optional.empty();
+        }
     }
 
     @Override
-    public String extractTokenFromHttpRequest(HttpServletRequest request) {
-        return jwtProvider.extractTokenFromHttpRequest(request);
+    public String extractTokenFromHttpRequestHeader(HttpServletRequest request) {
+        return request.getHeader(authorizationHeader);
     }
 
     @Override
     public Optional<Role> getRole(String token) {
-        return jwtProvider.getRole(token);
+        try {
+            Jws<Claims> claimsJws = getClaimsJws(token);
+            return Optional.of(Role.valueOf((String) claimsJws.getBody().get("role")));
+        } catch (JwtException e) {
+            return Optional.empty();
+        }
     }
 
     @Override
     public Optional<String> getFamilyId(String token) {
-        return jwtProvider.getFamilyId(token);
+        try {
+            Jws<Claims> claimsJws = getClaimsJws(token);
+            return Optional.of((String) claimsJws.getBody().get("family"));
+        } catch (JwtException e) {
+            return Optional.empty();
+        }
     }
 
     @Override
     public Long getExpiration(String token) {
-        return jwtProvider.getExpiration(token);
+        Jws<Claims> claimsJws = getClaimsJws(token);
+        return claimsJws.getBody().getExpiration().getTime();
+    }
+
+    private Jws<Claims> getClaimsJws(String token) throws JwtException {
+        return Jwts.parser().setSigningKey(jwtSecretKey).parseClaimsJws(token);
     }
 }

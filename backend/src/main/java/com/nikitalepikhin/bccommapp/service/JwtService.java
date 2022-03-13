@@ -26,7 +26,7 @@ public interface JwtService {
 
     Optional<Authentication> getAuthentication(String token);
 
-    String extractTokenFromHttpRequest(HttpServletRequest request);
+    String extractTokenFromHttpRequestHeader(HttpServletRequest request);
 
     Optional<Role> getRole(String token);
 

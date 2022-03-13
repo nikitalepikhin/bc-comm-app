@@ -21,7 +21,6 @@ public class JwtFilter extends OncePerRequestFilter {
 
     private final JwtService jwtService;
 
-
     @Autowired
     public JwtFilter(JwtService jwtService) {
         this.jwtService = jwtService;
@@ -30,7 +29,7 @@ public class JwtFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         try {
-            String token = jwtService.extractTokenFromHttpRequest(request);
+            String token = jwtService.extractTokenFromHttpRequestHeader(request);
             if (token != null) {
                 if (!token.startsWith("Bearer ")) {
                     throw new JwtAuthenticationException("Authorization header should start with Bearer.");
