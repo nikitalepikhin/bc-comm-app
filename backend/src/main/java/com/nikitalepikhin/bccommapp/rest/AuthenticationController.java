@@ -68,7 +68,6 @@ public class AuthenticationController {
     }
 
     @PostMapping("/refresh")
-    @PreAuthorize("isAuthenticated()")
     @ApiOperation(value = "Refresh the access token using a refresh token")
     public ResponseEntity<?> refreshToken(@CookieValue(value = "refresh_token") String refresh_token, HttpServletResponse httpServletResponse) {
         try {
