@@ -5,7 +5,9 @@
   "dependencies": {
     "@emotion/react": "^11.8.1",
     "@emotion/styled": "^11.8.1",
+    "@mui/icons-material": "^5.5.1",
     "@mui/material": "^5.5.0",
+    "@reduxjs/toolkit": "^1.8.0",
     "@testing-library/jest-dom": "^5.14.1",
     "@testing-library/react": "^12.0.0",
     "@testing-library/user-event": "^13.2.1",
@@ -13,6 +15,7 @@
     "@types/node": "^16.7.13",
     "@types/react": "^17.0.20",
     "@types/react-dom": "^17.0.9",
+    "@types/react-redux": "^7.1.23",
     "axios": "^0.26.0",
     "formik": "^2.2.9",
     "react": "^17.0.2",
@@ -32,10 +35,10 @@
     "remove-generated-api": "rm -rf src/generatedApi/{api/model}/*.ts"
   },
   "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
+    "extends": "react-app"
+  },
+  "prettier": {
+    "printWidth": 120
   },
   "browserslist": {
     "production": [
@@ -51,6 +54,8 @@
   },
   "devDependencies": {
     "@openapitools/openapi-generator-cli": "^2.4.26",
+    "@redux-devtools/extension": "^3.2.2",
+    "loglevel": "^1.8.0",
     "prettier": "^2.5.1"
   }
 }

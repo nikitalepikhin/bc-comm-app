@@ -4,14 +4,14 @@
   "generator-cli": {
     "version": "5.4.0",
     "generators": {
-      "api-generator": {
+      "typescript-axios": {
         "generatorName": "typescript-axios",
         "artifactVersion": "0.1-SNAPSHOT",
         "output": "src/generatedApi/",
-        "glob": "resources/backend-generated-api-docs.json",
-        "inputSpec": "resources/backend-generated-api-docs.json",
+        "glob": "resources/api-docs.json",
+        "inputSpec": "resources/api-docs.json",
         "skipValidateSpec": true,
-        "modelNameSuffix": "ApiObj",
+        "modelNamePrefix": "ApiObj",
         "apiPackage": "api",
         "modelPackage": "model",
         "additionalProperties": {

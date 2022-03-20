@@ -5,25 +5,30 @@ import { TextField } from "@mui/material";
 interface CustomTextFieldProps {
   name: string;
   type?: "text" | "password";
+  placeholder?: string;
+  disableErrorMessage?: boolean;
 }
 
-function CustomTextField({ name, type }: CustomTextFieldProps) {
+export const CustomTextField = ({
+  name,
+  type = "text",
+  placeholder,
+  disableErrorMessage = false,
+}: CustomTextFieldProps) => {
   return (
     <Field name={name}>
       {({ field, form, meta }: FieldProps) => {
         return (
           <TextField
             type={type}
-            error={meta.touched && meta.error !== undefined}
-            placeholder={name.toUpperCase()}
+            error={meta.touched && meta.error !== undefined && !disableErrorMessage}
+            placeholder={placeholder ? placeholder : name.toLowerCase()}
             variant={"outlined"}
             {...field}
-            helperText={meta.error}
+            helperText={meta.touched && meta.error !== undefined && !disableErrorMessage ? meta.error : null}
           />
         );
       }}
     </Field>
   );
-}
-
-export default CustomTextField;
+};
