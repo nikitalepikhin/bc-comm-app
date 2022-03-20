@@ -6,8 +6,11 @@ import com.nikitalepikhin.bccommapp.service.CookieService;
 import com.nikitalepikhin.bccommapp.service.JwtService;
 import com.nikitalepikhin.bccommapp.service.LoginService;
 import com.nikitalepikhin.bccommapp.service.RegistrationService;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -21,7 +24,7 @@ import javax.servlet.http.HttpServletResponse;
 @Slf4j
 @RestController
 @RequestMapping(("/api/auth"))
-@Api(value = "Authentication Controller")
+@Tag(name = "Authentication Controller")
 public class AuthenticationController {
 
     private final JwtService jwtService;
@@ -45,45 +48,45 @@ public class AuthenticationController {
     }
 
     @PostMapping("/login")
-    @ApiOperation(value = "Log in user")
+    @Operation(summary = "Log in user")
     public ResponseEntity<LogInUserResponseDto> logInUser(@RequestBody LogInUserRequestDto request, HttpServletResponse httpServletResponse) {
-        log.info("Login request from " + request.getEmail());
         try {
             LogInUserDto logInUserDto = loginService.loginUser(request);
-            log.info("Login from " + request.getEmail() + " ok");
             httpServletResponse.addCookie(cookieService.buildRefreshTokenHttpOnlyCookie(logInUserDto.getRefreshToken()));
             return ResponseEntity.ok(logInUserDto.getLogInUserResponseDto());
         } catch (AuthenticationException e) {
-            log.info("Login from " + request.getEmail() + " forbidden");
+            System.out.println(e.getMessage());
+            log.error(e.getMessage());
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
     }
 
     @PostMapping("/signup")
-    @ApiOperation(value = "Register user")
+    @Operation(summary = "Register user")
     public ResponseEntity<?> registerUser(@RequestBody RegisterUserRequestDto request) {
-        log.info("Signup request from " + request.getEmail());
         registrationService.registerUser(request);
-        return ResponseEntity.ok("Successful registration.");
+        return ResponseEntity.ok().build();
     }
 
     @PostMapping("/refresh")
-    @ApiOperation(value = "Refresh the access token using a refresh token")
-    public ResponseEntity<?> refreshToken(@CookieValue(value = "refresh_token") String refresh_token, HttpServletResponse httpServletResponse) {
+    @Operation(summary = "Refresh access token")
+    public ResponseEntity<RefreshTokenResponseDto> refreshToken(@Parameter(hidden = true) @CookieValue(value = "refresh_token") String refreshToken, HttpServletResponse httpServletResponse) {
         try {
-            RefreshTokenDto refreshTokenDto = jwtService.refreshAccessToken(refresh_token);
+            RefreshTokenDto refreshTokenDto = jwtService.refreshAccessToken(refreshToken);
             httpServletResponse.addCookie(cookieService.buildRefreshTokenHttpOnlyCookie(refreshTokenDto.getRefreshToken()));
-            return ResponseEntity.ok(refreshTokenDto.getRefreshTokenResponseDto());
+            return ResponseEntity.ok().body(refreshTokenDto.getRefreshTokenResponseDto());
         } catch (RefreshTokenException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.FORBIDDEN);
+            log.warn(e.getMessage());
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
     }
 
     @PostMapping("/logout")
     @PreAuthorize("isAuthenticated()")
-    @ApiOperation(value = "Log out user")
-    public ResponseEntity<?> logOutUser(@CookieValue(value = "refresh_token") String refresh_token, HttpServletResponse httpServletResponse) {
-        jwtService.logOut(refresh_token);
+    @Operation(summary = "Log out user",
+            parameters = {@Parameter(name = "Authorization", in = ParameterIn.HEADER, schema = @Schema(implementation = String.class), required = true)})
+    public ResponseEntity<?> logOutUser(@Parameter(hidden = true) @CookieValue(value = "refresh_token") String refreshToken, HttpServletResponse httpServletResponse) {
+        jwtService.logOut(refreshToken);
         httpServletResponse.addCookie(cookieService.buildExpiredRefreshTokenCookie());
         return ResponseEntity.ok().build();
     }

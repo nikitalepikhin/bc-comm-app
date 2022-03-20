@@ -2,6 +2,7 @@ package com.nikitalepikhin.bccommapp.security;
 
 import com.nikitalepikhin.bccommapp.exception.JwtAuthenticationException;
 import com.nikitalepikhin.bccommapp.service.JwtService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
@@ -16,6 +17,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Optional;
 
+@Slf4j
 @Component
 public class JwtFilter extends OncePerRequestFilter {
 
@@ -47,6 +49,7 @@ public class JwtFilter extends OncePerRequestFilter {
         } catch (JwtAuthenticationException e) {
             SecurityContextHolder.clearContext();
             response.sendError(HttpStatus.UNAUTHORIZED.value());
+            logger.error(e.getMessage());
             throw new JwtAuthenticationException(e.getMessage());
         }
         filterChain.doFilter(request, response);

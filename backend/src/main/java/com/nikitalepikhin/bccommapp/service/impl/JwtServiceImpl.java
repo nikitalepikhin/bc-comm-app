@@ -131,6 +131,14 @@ public class JwtServiceImpl implements JwtService {
 
     @Override
     public String createRefreshTokenForExistingFamily(String oldRefreshToken) {
+        String newRefreshToken = buildRefreshTokenForExistingFamily(oldRefreshToken);
+        Optional<String> familyId = getFamilyId(newRefreshToken);
+        setRefreshTokenToUsed(oldRefreshToken, familyId.get());
+        createNewEntry(newRefreshToken, familyId.get());
+        return newRefreshToken;
+    }
+
+    private String buildRefreshTokenForExistingFamily(String oldRefreshToken) {
         Jws<Claims> claimsJws = getClaimsJws(oldRefreshToken);
         Claims claims = Jwts.claims().setSubject(claimsJws.getBody().getSubject());
         claims.put("role", claimsJws.getBody().get("role"));
@@ -149,6 +157,13 @@ public class JwtServiceImpl implements JwtService {
 
     @Override
     public String createRefreshTokenForNewFamily(String email, Role role) {
+        String newRefreshToken = buildRefreshTokenForNewFamily(email, role);
+        Optional<String> familyId = getFamilyId(newRefreshToken);
+        createNewEntry(newRefreshToken, familyId.get());
+        return newRefreshToken;
+    }
+
+    private String buildRefreshTokenForNewFamily(String email, Role role) {
         Claims claims = Jwts.claims().setSubject(email);
         claims.put("role", role.name());
         claims.put("type", "refresh");

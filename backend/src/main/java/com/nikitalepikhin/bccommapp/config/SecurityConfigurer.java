@@ -15,6 +15,10 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+
+import java.util.List;
 
 @Configuration
 @EnableWebSecurity
@@ -22,6 +26,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 public class SecurityConfigurer extends WebSecurityConfigurerAdapter {
 
     private final JwtFilterConfigurer jwtFilterConfigurer;
+
+    private final CookieFilterConfigurer cookieFilterConfigurer;
 
     private final UserDetailsService userDetailsService;
 
@@ -31,24 +37,43 @@ public class SecurityConfigurer extends WebSecurityConfigurerAdapter {
     @Autowired
     public SecurityConfigurer(
             JwtFilterConfigurer jwtFilterConfigurer,
+            CookieFilterConfigurer cookieFilterConfigurer,
             @Qualifier("UserDetailsServiceImpl") UserDetailsService userDetailsService) {
         this.jwtFilterConfigurer = jwtFilterConfigurer;
+        this.cookieFilterConfigurer = cookieFilterConfigurer;
         this.userDetailsService = userDetailsService;
     }
 
     @Override
     protected void configure(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
-                .antMatcher("/")
-                .cors().and().csrf().disable()
+                .cors(c -> {
+                    CorsConfigurationSource cs = request -> {
+                        CorsConfiguration cc = new CorsConfiguration();
+                        cc.setAllowedOrigins(List.of("https://commapp.com"));
+                        cc.setAllowedMethods(List.of("HEAD", "GET", "POST", "PUT", "DELETE", "PATCH"));
+                        cc.setAllowCredentials(true);
+                        cc.setAllowedHeaders(List.of("Authorization", "Cache-Control", "Content-Type", "Cookie"));
+                        return cc;
+                    };
+                    c.configurationSource(cs);
+                });
+        httpSecurity
+                .csrf().disable()
                 .sessionManagement()
-                    .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                    .and()
-                .authorizeRequests()
-                    .antMatchers("/api/auth/login").permitAll()
-                    .anyRequest().authenticated()
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
-                .apply(jwtFilterConfigurer);
+                .authorizeRequests()
+                .regexMatchers("/v3/api-docs.*").permitAll()
+                .regexMatchers("/swagger-ui.*").permitAll()
+                .regexMatchers("/api/auth/login").permitAll()
+                .regexMatchers("/api/auth/refresh").permitAll()
+                .regexMatchers("/api/auth/signup").permitAll()
+                .anyRequest().authenticated()
+                .and()
+                .apply(jwtFilterConfigurer)
+                .and()
+                .apply(cookieFilterConfigurer);
     }
 
     @Override
@@ -66,4 +91,6 @@ public class SecurityConfigurer extends WebSecurityConfigurerAdapter {
     public AuthenticationManager authenticationManagerBean() throws Exception {
         return super.authenticationManagerBean();
     }
+
+
 }

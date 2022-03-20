@@ -19,6 +19,7 @@ public class CookieServiceImpl implements CookieService {
     public Cookie buildRefreshTokenHttpOnlyCookie(String refreshToken) {
         Cookie cookie = new Cookie("refresh_token", refreshToken);
         cookie.setHttpOnly(true);
+        cookie.setPath("/");
         cookie.setSecure(httpsEnabled);
         cookie.setDomain(cookieDomain);
         return cookie;
@@ -28,6 +29,7 @@ public class CookieServiceImpl implements CookieService {
     public Cookie buildExpiredRefreshTokenCookie() {
         Cookie cookie = new Cookie("refresh_token", null);
         cookie.setHttpOnly(true);
+        cookie.setPath("/");
         cookie.setSecure(httpsEnabled);
         cookie.setDomain(cookieDomain);
         cookie.setMaxAge(0);
