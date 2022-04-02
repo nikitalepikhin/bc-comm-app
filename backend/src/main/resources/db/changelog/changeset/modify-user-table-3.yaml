@@ -1,8 +1,0 @@
-databaseChangeLog:
-  - changeSet:
-      id: modify-user-3
-      author: Nikita Lepikhin
-      changes:
-        - addUniqueConstraint:
-            tableName: users
-            columnNames: username, email

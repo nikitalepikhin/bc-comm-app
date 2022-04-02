@@ -1,0 +1,41 @@
+{
+  "databaseChangeLog": [
+    {
+      "changeSet": {
+        "id": "create-comment-user-upvote-table",
+        "author": "Nikita Lepikhin",
+        "changes": [
+          {
+            "createTable": {
+              "tableName": "comment_user_upvote",
+              "columns": [
+                {
+                  "column": {
+                    "name": "user_id",
+                    "type": "bigint",
+                    "constraints": {
+                      "foreignKeyName": "fk_user_id",
+                      "references": "users(id)",
+                      "nullable": false
+                    }
+                  }
+                },
+                {
+                  "column": {
+                    "name": "comment_id",
+                    "type": "bigint",
+                    "constraints": {
+                      "foreignKeyName": "fk_comment_id",
+                      "references": "comments(id)",
+                      "nullable": false
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

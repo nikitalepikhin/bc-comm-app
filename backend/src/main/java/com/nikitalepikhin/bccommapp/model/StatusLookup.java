@@ -13,24 +13,19 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "refresh_tokens")
-public class RefreshToken {
+@Table(name = "status_lookup")
+public class StatusLookup {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
-    private Long id;
+    private Integer id;
 
     @Column(name = "uuid", nullable = false)
     private UUID uuid;
 
-    @Column(name = "refresh_token", nullable = false)
-    private UUID refreshToken;
-
-    @Column(name = "family_uuid", nullable = false)
-    private UUID familyUuid;
-
-    @Column(name = "used", nullable = false)
-    private Boolean used = false;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status_value", nullable = false, length = 16)
+    private StatusValueType statusValue;
 
 }
