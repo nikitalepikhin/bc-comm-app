@@ -1,6 +1,6 @@
 package com.nikitalepikhin.bccommapp.security;
 
-import com.nikitalepikhin.bccommapp.model.User;
+import com.nikitalepikhin.bccommapp.model_OLD.User_OLD;
 import com.nikitalepikhin.bccommapp.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -22,7 +22,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        Optional<User> user = userRepository.findByEmail(email);
+        Optional<User_OLD> user = userRepository.findByEmail(email);
         if (user.isPresent()) {
             return UserDetailsImpl.getUserDetailsFromUserEntity(user.get());
         } else {

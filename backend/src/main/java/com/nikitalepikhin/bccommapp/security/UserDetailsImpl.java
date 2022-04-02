@@ -1,7 +1,7 @@
 package com.nikitalepikhin.bccommapp.security;
 
-import com.nikitalepikhin.bccommapp.model.Status;
-import com.nikitalepikhin.bccommapp.model.User;
+import com.nikitalepikhin.bccommapp.model_OLD.Status_OLD;
+import com.nikitalepikhin.bccommapp.model_OLD.User_OLD;
 import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -25,15 +25,15 @@ public class UserDetailsImpl implements UserDetails {
         this.grantedAuthorityList = grantedAuthorityList;
     }
 
-    public static UserDetails getUserDetailsFromUserEntity(User user) {
+    public static UserDetails getUserDetailsFromUserEntity(User_OLD userOLD) {
         return new org.springframework.security.core.userdetails.User(
-                user.getEmail(),
-                user.getPassword(),
-                user.getStatus().equals(Status.ACTIVE),
-                user.getStatus().equals(Status.ACTIVE),
-                user.getStatus().equals(Status.ACTIVE),
-                user.getStatus().equals(Status.ACTIVE),
-                user.getRole().getSimpleGrantedAuthoritySet()
+                userOLD.getEmail(),
+                userOLD.getPassword(),
+                userOLD.getStatusOLD().equals(Status_OLD.ACTIVE),
+                userOLD.getStatusOLD().equals(Status_OLD.ACTIVE),
+                userOLD.getStatusOLD().equals(Status_OLD.ACTIVE),
+                userOLD.getStatusOLD().equals(Status_OLD.ACTIVE),
+                userOLD.getRoleOLD().getSimpleGrantedAuthoritySet()
         );
     }
 

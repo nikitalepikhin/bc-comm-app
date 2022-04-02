@@ -16,8 +16,8 @@ const initialState: TokenStateType = {
 
 export const refreshToken = createAsyncThunk("user/refreshToken", async (_, { rejectWithValue }) => {
   try {
-    const { access_token: accessToken } = await AuthenticationService.refreshToken();
-    return { accessToken };
+    const { access_token: accessToken, email, username } = await AuthenticationService.refreshToken();
+    return { accessToken, email, username };
   } catch (e) {
     return rejectWithValue(e.message);
   }

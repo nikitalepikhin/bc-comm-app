@@ -1,7 +1,7 @@
 package com.nikitalepikhin.bccommapp.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.nikitalepikhin.bccommapp.model.Role;
+import com.nikitalepikhin.bccommapp.model_OLD.Role_OLD;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -22,6 +22,6 @@ public class RegisterUserRequestDto {
     private String password;
 
     @JsonProperty("role")
-    private Role role;
+    private Role_OLD roleOLD;
 
 }

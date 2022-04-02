@@ -12,4 +12,10 @@ public class RefreshTokenResponseDto {
 
     @JsonProperty("access_token")
     private String accessToken;
+
+    @JsonProperty("email")
+    private String email;
+
+    @JsonProperty("username")
+    private String username;
 }

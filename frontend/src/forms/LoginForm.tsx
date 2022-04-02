@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { Form, Formik } from "formik";
 import { CustomTextField } from "./components/CustomTextField";
 import { Box, Button, Typography } from "@mui/material";
@@ -9,8 +9,8 @@ import { Link, useNavigate } from "react-router-dom";
 import { CustomPasswordField } from "./components/CustomPasswordField";
 
 const initialValues = {
-  email: "",
-  password: "",
+  email: "testteacher@email.com",
+  password: "Te_C\"86`'=7Tm+wm",
 };
 
 const validationSchema = object({

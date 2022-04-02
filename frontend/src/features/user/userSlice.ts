@@ -71,6 +71,10 @@ export const userSlice = createSlice({
         state.status = "loading";
         state.error = undefined;
       })
+      .addCase(refreshToken.fulfilled, (state, action) => {
+        state.email = action.payload.email;
+        state.username = action.payload.username;
+      })
       .addCase(refreshToken.rejected, () => {
         return initialState;
       });

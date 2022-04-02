@@ -1,7 +1,7 @@
 package com.nikitalepikhin.bccommapp.service.impl;
 
 import com.nikitalepikhin.bccommapp.dto.RegisterUserRequestDto;
-import com.nikitalepikhin.bccommapp.model.User;
+import com.nikitalepikhin.bccommapp.model_OLD.User_OLD;
 import com.nikitalepikhin.bccommapp.repository.UserRepository;
 import com.nikitalepikhin.bccommapp.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import java.util.Optional;
 import java.util.Random;
 import java.util.Set;
+import java.util.UUID;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -25,14 +26,15 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User register(RegisterUserRequestDto userDto) {
-        User user = User.builder()
+    public User_OLD register(RegisterUserRequestDto userDto) {
+        User_OLD userOLD = User_OLD.builder()
                 .username(generateUsername())
                 .email(userDto.getEmail())
                 .password(passwordEncoder.encode(userDto.getPassword()))
-                .role(userDto.getRole())
+                .roleOLD(userDto.getRoleOLD())
+                .uuid(UUID.randomUUID())
                 .build();
-        return userRepository.save(user);
+        return userRepository.save(userOLD);
     }
 
     private String generateUsername() {
@@ -40,22 +42,22 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Set<User> getAll() {
+    public Set<User_OLD> getAll() {
         return userRepository.findAll();
     }
 
     @Override
-    public Optional<User> findByUsername(String username) {
+    public Optional<User_OLD> findByUsername(String username) {
         return userRepository.findByUsername(username);
     }
 
     @Override
-    public Optional<User> findByEmail(String email) {
+    public Optional<User_OLD> findByEmail(String email) {
         return userRepository.findByEmail(email);
     }
 
     @Override
-    public Optional<User> findById(Long id) {
+    public Optional<User_OLD> findById(Long id) {
         return userRepository.findById(id);
     }
 

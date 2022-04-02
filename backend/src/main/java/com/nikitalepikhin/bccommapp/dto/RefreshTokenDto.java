@@ -16,7 +16,6 @@ public class RefreshTokenDto {
     @JsonProperty("refresh_token")
     private String refreshToken;
 
-    public RefreshTokenResponseDto getRefreshTokenResponseDto() {
-        return new RefreshTokenResponseDto(accessToken);
-    }
+    @JsonProperty("email")
+    private String email;
 }
