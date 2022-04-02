@@ -30,15 +30,15 @@ public class BaseEntityTeacher {
     private Department department;
 
     @Column(name = "name_modified", nullable = false)
-    private Instant nameModified;
+    private Instant nameModified = Instant.now();
 
     @Column(name = "bio_modified", nullable = false)
-    private Instant bioModified;
+    private Instant bioModified = Instant.now();
 
     @Column(name = "school_modified", nullable = false)
-    private Instant schoolModified;
+    private Instant schoolModified = Instant.now();
 
     @Column(name = "department_modified", nullable = false)
-    private Instant departmentModified;
+    private Instant departmentModified = Instant.now();
 
 }

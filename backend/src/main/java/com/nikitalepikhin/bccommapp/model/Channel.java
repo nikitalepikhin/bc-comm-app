@@ -38,16 +38,16 @@ public class Channel {
     private String description;
 
     @Column(name = "created", nullable = false)
-    private Instant created;
+    private Instant created = Instant.now();
 
     @Column(name = "modified", nullable = false)
-    private Instant modified;
+    private Instant modified = Instant.now();
 
     @Column(name = "name_modified", nullable = false)
-    private Instant nameModified;
+    private Instant nameModified = Instant.now();
 
     @Column(name = "description_modified", nullable = false)
-    private Instant descriptionModified;
+    private Instant descriptionModified = Instant.now();
 
     @ManyToMany(mappedBy = "administeredChannels")
     private Set<User> adminUsers = new LinkedHashSet<>();

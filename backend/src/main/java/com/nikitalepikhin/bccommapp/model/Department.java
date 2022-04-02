@@ -50,16 +50,16 @@ public class Department {
     private String postalIndex;
 
     @Column(name = "created", nullable = false)
-    private Instant created;
+    private Instant created = Instant.now();
 
     @Column(name = "modified", nullable = false)
-    private Instant modified;
+    private Instant modified = Instant.now();
 
     @Column(name = "name_modified", nullable = false)
-    private Instant nameModified;
+    private Instant nameModified = Instant.now();
 
     @Column(name = "address_modified", nullable = false)
-    private Instant addressModified;
+    private Instant addressModified = Instant.now();
 
     @OneToMany(mappedBy = "baseEntityTeacher.department")
     private Set<Teacher> employedTeachers = new LinkedHashSet<>();

@@ -37,17 +37,17 @@ public class BaseEntityUser {
     private String password;
 
     @Column(name = "created", nullable = false)
-    private Instant created;
+    private Instant created = Instant.now();
 
     @Column(name = "email_modified", nullable = false)
-    private Instant emailModified;
+    private Instant emailModified = Instant.now();
 
     @Column(name = "username_modified", nullable = false)
-    private Instant usernameModified;
+    private Instant usernameModified = Instant.now();
 
     @Column(name = "password_modified", nullable = false)
-    private Instant passwordModified;
+    private Instant passwordModified = Instant.now();
 
     @Column(name = "modified", nullable = false)
-    private Instant modified;
+    private Instant modified = Instant.now();
 }

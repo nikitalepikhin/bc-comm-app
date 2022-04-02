@@ -43,10 +43,10 @@ public class Comment {
     private String body;
 
     @Column(name = "created", nullable = false)
-    private Instant created;
+    private Instant created = Instant.now();
 
     @Column(name = "modified", nullable = false)
-    private Instant modified;
+    private Instant modified = Instant.now();
 
     @Column(name = "upvote_count", nullable = false)
     private Integer upvoteCount;
