@@ -74,7 +74,8 @@ public class AuthenticationController {
         try {
             RefreshTokenDto refreshTokenDto = jwtService.refreshAccessToken(refreshToken);
             httpServletResponse.addCookie(cookieService.buildRefreshTokenHttpOnlyCookie(refreshTokenDto.getRefreshToken()));
-            return ResponseEntity.ok().body(refreshTokenDto.getRefreshTokenResponseDto());
+            String username = loginService.getUserUsername(refreshTokenDto.getEmail());
+            return ResponseEntity.ok().body(new RefreshTokenResponseDto(refreshTokenDto.getAccessToken(), refreshTokenDto.getEmail(), username));
         } catch (RefreshTokenException e) {
             log.warn(e.getMessage());
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
