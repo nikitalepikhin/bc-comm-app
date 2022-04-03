@@ -11,23 +11,13 @@
               "columns": [
                 {
                   "column": {
-                    "name": "id",
-                    "type": "bigint",
-                    "autoIncrement": true,
-                    "constraints": {
-                      "primaryKey": true,
-                      "nullable": false
-                    }
-                  }
-                },
-                {
-                  "column": {
                     "name": "user_id",
                     "type": "bigint",
                     "constraints": {
                       "foreignKeyName": "fk_user_id",
                       "references": "users(id)",
-                      "nullable": false
+                      "nullable": false,
+                      "primaryKey": true
                     }
                   }
                 },

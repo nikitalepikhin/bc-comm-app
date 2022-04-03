@@ -2,31 +2,31 @@
   "databaseChangeLog": [
     {
       "changeSet": {
-        "id": "create-comment-user-downvote-table",
+        "id": "create-role-authority-table",
         "author": "Nikita Lepikhin",
         "changes": [
           {
             "createTable": {
-              "tableName": "comment_user_downvote",
+              "tableName": "role_authority",
               "columns": [
                 {
                   "column": {
-                    "name": "user_id",
-                    "type": "bigint",
+                    "name": "role_id",
+                    "type": "int",
                     "constraints": {
-                      "foreignKeyName": "fk_user_id",
-                      "references": "users(id)",
+                      "foreignKeyName": "fk_role_id",
+                      "references": "role_lookup(id)",
                       "nullable": false
                     }
                   }
                 },
                 {
                   "column": {
-                    "name": "comment_id",
-                    "type": "bigint",
+                    "name": "authority_id",
+                    "type": "int",
                     "constraints": {
-                      "foreignKeyName": "fk_comment_id",
-                      "references": "comments(id)",
+                      "foreignKeyName": "fk_authority_id",
+                      "references": "authority_lookup(id)",
                       "nullable": false
                     }
                   }
@@ -36,9 +36,9 @@
           },
           {
             "addPrimaryKey": {
-              "columnNames": "user_id, comment_id",
-              "constraintName": "pk_comment_user_downvote",
-              "tableName": "comment_user_downvote"
+              "columnNames": "role_id, authority_id",
+              "constraintName": "pk_role_authority",
+              "tableName": "role_authority"
             }
           }
         ]

@@ -12,6 +12,16 @@
     },
     {
       "include": {
+        "file": "db/changelog/changeset/create-authority-lookup-table.json"
+      }
+    },
+    {
+      "include": {
+        "file": "db/changelog/changeset/create-role-authority-table.json"
+      }
+    },
+    {
+      "include": {
         "file": "db/changelog/changeset/create-users-table.json"
       }
     },

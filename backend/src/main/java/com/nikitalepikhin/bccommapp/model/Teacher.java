@@ -16,8 +16,6 @@ import javax.persistence.*;
 public class Teacher implements UserLikeEntity, TeacherLikeEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
     private Long id;
 
     @Embedded
@@ -26,4 +24,9 @@ public class Teacher implements UserLikeEntity, TeacherLikeEntity {
     @Embedded
     private BaseEntityTeacher baseEntityTeacher;
 
+//    @PrimaryKeyJoinColumn
+    @MapsId
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
 }

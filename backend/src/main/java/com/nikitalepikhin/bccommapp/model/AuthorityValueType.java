@@ -5,10 +5,9 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public enum RoleValueType {
-    ADMIN("admin"),
-    STUDENT("student"),
-    TEACHER("teacher");
+public enum AuthorityValueType {
+    DUMMY_READ("dummy_read"),
+    DUMMY_WRITE("dummy_write");
 
-    private final String role;
+    private final String authority;
 }

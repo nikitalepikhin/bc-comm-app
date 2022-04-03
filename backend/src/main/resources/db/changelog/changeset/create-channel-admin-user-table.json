@@ -33,6 +33,13 @@
                 }
               ]
             }
+          },
+          {
+            "addPrimaryKey": {
+              "columnNames": "user_id, channel_id",
+              "constraintName": "pk_channel_admin_user",
+              "tableName": "channel_admin_user"
+            }
           }
         ]
       }

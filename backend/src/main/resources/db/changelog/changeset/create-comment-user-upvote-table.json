@@ -33,6 +33,13 @@
                 }
               ]
             }
+          },
+          {
+            "addPrimaryKey": {
+              "columnNames": "user_id, comment_id",
+              "constraintName": "pk_comment_user_upvote",
+              "tableName": "comment_user_upvote"
+            }
           }
         ]
       }
