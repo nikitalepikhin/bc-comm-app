@@ -61,7 +61,7 @@ public class Department {
     @Column(name = "address_modified", nullable = false)
     private Instant addressModified = Instant.now();
 
-    @OneToMany(mappedBy = "baseEntityTeacher.department")
+    @OneToMany(mappedBy = "baseEntityEmployee.department")
     private Set<Teacher> employedTeachers = new LinkedHashSet<>();
 
 }

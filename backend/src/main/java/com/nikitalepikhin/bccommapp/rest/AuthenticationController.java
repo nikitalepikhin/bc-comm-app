@@ -2,10 +2,8 @@ package com.nikitalepikhin.bccommapp.rest;
 
 import com.nikitalepikhin.bccommapp.dto.*;
 import com.nikitalepikhin.bccommapp.exception.RefreshTokenException;
-import com.nikitalepikhin.bccommapp.service.CookieService;
-import com.nikitalepikhin.bccommapp.service.JwtService;
-import com.nikitalepikhin.bccommapp.service.LoginService;
-import com.nikitalepikhin.bccommapp.service.RegistrationService;
+import com.nikitalepikhin.bccommapp.model.RoleValueType;
+import com.nikitalepikhin.bccommapp.service.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
@@ -20,6 +18,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
 
 @Slf4j
 @RestController
@@ -28,23 +27,16 @@ import javax.servlet.http.HttpServletResponse;
 public class AuthenticationController {
 
     private final JwtService jwtService;
-
     private final CookieService cookieService;
-
-    private final RegistrationService registrationService;
-
     private final LoginService loginService;
+    private final UserService userService;
 
     @Autowired
-    public AuthenticationController(
-            JwtService jwtService,
-            CookieService cookieService,
-            RegistrationService registrationService,
-            LoginService loginService) {
+    public AuthenticationController(JwtService jwtService, CookieService cookieService, LoginService loginService, UserService userService) {
         this.jwtService = jwtService;
         this.cookieService = cookieService;
-        this.registrationService = registrationService;
         this.loginService = loginService;
+        this.userService = userService;
     }
 
     @PostMapping("/login")
@@ -61,10 +53,31 @@ public class AuthenticationController {
         }
     }
 
-    @PostMapping("/signup")
-    @Operation(summary = "Register user")
-    public ResponseEntity<?> registerUser(@RequestBody RegisterUserRequestDto request) {
-        registrationService.registerUser(request);
+    @PostMapping("/signup/admin")
+    @Operation(summary = "Register admin user")
+    public ResponseEntity<?> registerAdminUser(@Valid @RequestBody RegisterSimpleUserRequestDto request) {
+        userService.registerSimpleUser(request, RoleValueType.ADMIN);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/signup/representative")
+    @Operation(summary = "Register representative user")
+    public ResponseEntity<?> registerRepresentativeUser(@Valid @RequestBody RegisterRepresentativeUserRequestDto request) {
+        userService.registerRepresentativeUser(request);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/signup/teacher")
+    @Operation(summary = "Register teacher user")
+    public ResponseEntity<?> registerTeacherUser(@Valid @RequestBody RegisterTeacherUserRequestDto request) {
+        userService.registerTeacherUser(request);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/signup/student")
+    @Operation(summary = "Register student user")
+    public ResponseEntity<?> registerStudentUser(@Valid @RequestBody RegisterSimpleUserRequestDto request) {
+        userService.registerSimpleUser(request, RoleValueType.STUDENT);
         return ResponseEntity.ok().build();
     }
 

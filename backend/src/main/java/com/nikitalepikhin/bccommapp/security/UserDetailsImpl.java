@@ -1,7 +1,7 @@
 package com.nikitalepikhin.bccommapp.security;
 
-import com.nikitalepikhin.bccommapp.model_OLD.Status_OLD;
-import com.nikitalepikhin.bccommapp.model_OLD.User_OLD;
+import com.nikitalepikhin.bccommapp.model.StatusValueType;
+import com.nikitalepikhin.bccommapp.model.User;
 import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -25,15 +25,15 @@ public class UserDetailsImpl implements UserDetails {
         this.grantedAuthorityList = grantedAuthorityList;
     }
 
-    public static UserDetails getUserDetailsFromUserEntity(User_OLD userOLD) {
+    public static UserDetails getUserDetailsFromUserEntity(User user) {
         return new org.springframework.security.core.userdetails.User(
-                userOLD.getEmail(),
-                userOLD.getPassword(),
-                userOLD.getStatusOLD().equals(Status_OLD.ACTIVE),
-                userOLD.getStatusOLD().equals(Status_OLD.ACTIVE),
-                userOLD.getStatusOLD().equals(Status_OLD.ACTIVE),
-                userOLD.getStatusOLD().equals(Status_OLD.ACTIVE),
-                userOLD.getRoleOLD().getSimpleGrantedAuthoritySet()
+                user.getBaseEntityUser().getEmail(),
+                user.getBaseEntityUser().getPassword(),
+                user.getBaseEntityUser().getStatus().getStatusValue().equals(StatusValueType.ACTIVE),
+                user.getBaseEntityUser().getStatus().getStatusValue().equals(StatusValueType.ACTIVE),
+                user.getBaseEntityUser().getStatus().getStatusValue().equals(StatusValueType.ACTIVE),
+                user.getBaseEntityUser().getStatus().getStatusValue().equals(StatusValueType.ACTIVE),
+                user.getBaseEntityUser().getRole().getSimpleGrantedAuthoritySet()
         );
     }
 

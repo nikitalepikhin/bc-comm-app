@@ -1,14 +1,14 @@
 package com.nikitalepikhin.bccommapp.repository;
 
-import com.nikitalepikhin.bccommapp.model_OLD.RefreshToken_OLD;
+import com.nikitalepikhin.bccommapp.model.RefreshToken;
 import org.springframework.data.repository.CrudRepository;
 
 import javax.transaction.Transactional;
 
-public interface RefreshTokenRepository extends CrudRepository<RefreshToken_OLD, Long> {
+public interface RefreshTokenRepository extends CrudRepository<RefreshToken, Long> {
 
-    RefreshToken_OLD findByRefreshTokenAndFamilyId(String refreshToken, String familyId);
+    RefreshToken findByRefreshTokenAndFamilyUuid(String refreshToken, String familyUuid);
 
     @Transactional
-    void deleteAllByFamilyId (String familyId);
+    void deleteAllByFamilyUuid(String familyId);
 }

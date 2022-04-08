@@ -23,7 +23,7 @@ public class CookieFilter extends OncePerRequestFilter {
 
     private final Set<String> unprotectedUriRegexSet = Set.of(
             "/api/auth/login",
-            "/api/auth/signup",
+            "/api/auth/signup/.*",
             "/api/auth/refresh",
             "/v3/api-docs.*",
             "/swagger-ui.*",
@@ -56,6 +56,6 @@ public class CookieFilter extends OncePerRequestFilter {
     private boolean requestUriMatchesUnprotectedUriMasks(String requestURI) {
         return unprotectedUriRegexSet.stream()
                 .map(regex -> requestURI.matches(regex))
-                .reduce(false, (subres, item) -> subres ? subres : item);
+                .reduce(false, (accumulator, item) -> accumulator || item);
     }
 }

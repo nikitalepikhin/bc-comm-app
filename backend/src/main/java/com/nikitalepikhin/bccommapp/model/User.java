@@ -1,5 +1,6 @@
 package com.nikitalepikhin.bccommapp.model;
 
+import com.nikitalepikhin.bccommapp.model.entity.UserEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -15,7 +16,7 @@ import java.util.Set;
 @AllArgsConstructor
 @Entity
 @Table(name = "users")
-public class User implements UserLikeEntity {
+public class User implements UserEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

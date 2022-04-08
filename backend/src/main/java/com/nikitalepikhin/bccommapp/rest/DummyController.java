@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 public class DummyController {
 
     @GetMapping("/")
-    @PreAuthorize("hasAuthority('dummy_read')")
+    @PreAuthorize("hasAuthority('test_read')")
     @Operation(summary = "Print out hello world",
             parameters = {@Parameter(name = "Authorization", in = ParameterIn.HEADER, schema = @Schema(implementation = String.class), required = true)})
     public ResponseEntity<String> getHelloWorld() {
@@ -24,7 +24,7 @@ public class DummyController {
     }
 
     @PostMapping("/echo")
-    @PreAuthorize("hasAuthority('dummy_write')")
+    @PreAuthorize("hasAuthority('test_write')")
     @Operation(summary = "Echo the received message",
             parameters = {@Parameter(name = "Authorization", in = ParameterIn.HEADER, schema = @Schema(implementation = String.class), required = true)})
     public ResponseEntity<String> echoMessage(@RequestBody String message) {

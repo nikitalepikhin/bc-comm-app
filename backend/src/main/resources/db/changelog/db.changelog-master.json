@@ -42,6 +42,11 @@
     },
     {
       "include": {
+        "file": "db/changelog/changeset/create-representatives-table.json"
+      }
+    },
+    {
+      "include": {
         "file": "db/changelog/changeset/create-refresh-tokens-table.json"
       }
     },

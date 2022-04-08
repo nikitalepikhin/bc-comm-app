@@ -3,8 +3,8 @@ package com.nikitalepikhin.bccommapp.service.impl;
 import com.nikitalepikhin.bccommapp.dto.RefreshTokenDto;
 import com.nikitalepikhin.bccommapp.exception.JwtAuthenticationException;
 import com.nikitalepikhin.bccommapp.exception.RefreshTokenException;
-import com.nikitalepikhin.bccommapp.model_OLD.RefreshToken_OLD;
-import com.nikitalepikhin.bccommapp.model_OLD.Role_OLD;
+import com.nikitalepikhin.bccommapp.model.RefreshToken;
+import com.nikitalepikhin.bccommapp.model.RoleValueType;
 import com.nikitalepikhin.bccommapp.repository.RefreshTokenRepository;
 import com.nikitalepikhin.bccommapp.service.JwtService;
 import io.jsonwebtoken.*;
@@ -46,7 +46,7 @@ public class JwtServiceImpl implements JwtService {
     public RefreshTokenDto refreshAccessToken(String oldRefreshToken) throws RefreshTokenException {
         if (validateToken(oldRefreshToken) && refreshTokenExists(oldRefreshToken)) {
             Optional<String> email = getEmail(oldRefreshToken);
-            Optional<Role_OLD> role = getRole(oldRefreshToken);
+            Optional<RoleValueType> role = getRole(oldRefreshToken);
             if (email.isPresent() && role.isPresent()) {
                 if (!refreshTokenHasBeenUsed(oldRefreshToken)) {
                     String newAccessToken = createAccessToken(email.get(), role.get());
@@ -67,7 +67,7 @@ public class JwtServiceImpl implements JwtService {
     private boolean refreshTokenExists(String oldRefreshToken) {
         Optional<String> familyId = getFamilyId(oldRefreshToken);
         if (familyId.isPresent()) {
-            return refreshTokenRepository.findByRefreshTokenAndFamilyId(oldRefreshToken, familyId.get()) != null;
+            return refreshTokenRepository.findByRefreshTokenAndFamilyUuid(oldRefreshToken, familyId.get()) != null;
         } else {
             return false;
         }
@@ -75,26 +75,26 @@ public class JwtServiceImpl implements JwtService {
 
     private void invalidateTokenFamily(String oldRefreshToken) {
         Optional<String> familyId = getFamilyId(oldRefreshToken);
-        familyId.ifPresent(refreshTokenRepository::deleteAllByFamilyId);
+        familyId.ifPresent(refreshTokenRepository::deleteAllByFamilyUuid);
     }
 
     private boolean refreshTokenHasBeenUsed(String refreshToken) {
         Optional<String> familyId = getFamilyId(refreshToken);
         if (familyId.isPresent()) {
-            RefreshToken_OLD refreshTokenOLDEntry = refreshTokenRepository.findByRefreshTokenAndFamilyId(refreshToken, familyId.get());
-            return refreshTokenOLDEntry != null ? refreshTokenOLDEntry.getUsed() : true;
+            RefreshToken refreshTokenEntry = refreshTokenRepository.findByRefreshTokenAndFamilyUuid(refreshToken, familyId.get());
+            return refreshTokenEntry != null ? refreshTokenEntry.getUsed() : true;
         } else {
             return true;
         }
     }
 
     private void setRefreshTokenToUsed(String refreshToken, String familyId) {
-        RefreshToken_OLD refreshTokenOLDEntry = refreshTokenRepository.findByRefreshTokenAndFamilyId(refreshToken, familyId);
-        refreshTokenRepository.deleteById(refreshTokenOLDEntry.getId());
+        RefreshToken refreshTokenEntry = refreshTokenRepository.findByRefreshTokenAndFamilyUuid(refreshToken, familyId);
+        refreshTokenRepository.deleteById(refreshTokenEntry.getId());
         refreshTokenRepository.save(
-                RefreshToken_OLD.builder()
-                        .refreshToken(refreshToken)
-                        .familyId(familyId)
+                refreshTokenEntry.builder()
+                        .refreshToken(UUID.fromString(refreshToken))
+                        .familyUuid(UUID.fromString(familyId))
                         .used(true)
                         .build()
         );
@@ -102,9 +102,9 @@ public class JwtServiceImpl implements JwtService {
 
     private void createNewEntry(String newRefreshToken, String familyId) {
         refreshTokenRepository.save(
-                RefreshToken_OLD.builder()
-                        .refreshToken(newRefreshToken)
-                        .familyId(familyId)
+                RefreshToken.builder()
+                        .refreshToken(UUID.fromString(newRefreshToken))
+                        .familyUuid(UUID.fromString(familyId))
                         .build()
         );
     }
@@ -115,9 +115,9 @@ public class JwtServiceImpl implements JwtService {
     }
 
     @Override
-    public String createAccessToken(String email, Role_OLD roleOLD) {
+    public String createAccessToken(String email, RoleValueType role) {
         Claims claims = Jwts.claims().setSubject(email);
-        claims.put("role", roleOLD.name());
+        claims.put("role", role.getRole());
         claims.put("type", "access");
         Date currentDate = new Date();
         Date expirationDate = new Date(currentDate.getTime() + accessTokenValidityInMs);
@@ -156,16 +156,16 @@ public class JwtServiceImpl implements JwtService {
     }
 
     @Override
-    public String createRefreshTokenForNewFamily(String email, Role_OLD roleOLD) {
-        String newRefreshToken = buildRefreshTokenForNewFamily(email, roleOLD);
+    public String createRefreshTokenForNewFamily(String email, RoleValueType role) {
+        String newRefreshToken = buildRefreshTokenForNewFamily(email, role);
         Optional<String> familyId = getFamilyId(newRefreshToken);
         createNewEntry(newRefreshToken, familyId.get());
         return newRefreshToken;
     }
 
-    private String buildRefreshTokenForNewFamily(String email, Role_OLD roleOLD) {
+    private String buildRefreshTokenForNewFamily(String email, RoleValueType role) {
         Claims claims = Jwts.claims().setSubject(email);
-        claims.put("role", roleOLD.name());
+        claims.put("role", role.getRole());
         claims.put("type", "refresh");
         String familyId = UUID.randomUUID().toString();
         claims.put("family", familyId);
@@ -230,10 +230,11 @@ public class JwtServiceImpl implements JwtService {
     }
 
     @Override
-    public Optional<Role_OLD> getRole(String token) {
+    public Optional<RoleValueType> getRole(String token) {
         try {
             Jws<Claims> claimsJws = getClaimsJws(token);
-            return Optional.of(Role_OLD.valueOf((String) claimsJws.getBody().get("role")));
+            RoleValueType roleValueType = RoleValueType.valueOf((String) claimsJws.getBody().get("role"));
+            return Optional.of(roleValueType);
         } catch (JwtException e) {
             return Optional.empty();
         }

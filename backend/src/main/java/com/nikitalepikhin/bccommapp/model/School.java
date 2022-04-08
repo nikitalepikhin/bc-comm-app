@@ -60,7 +60,7 @@ public class School {
     @OneToMany(mappedBy = "school")
     private Set<Department> departments = new LinkedHashSet<>();
 
-    @OneToMany(mappedBy = "baseEntityTeacher.school")
+    @OneToMany(mappedBy = "baseEntityEmployee.department")
     private Set<Teacher> employedTeachers = new LinkedHashSet<>();
 
 }

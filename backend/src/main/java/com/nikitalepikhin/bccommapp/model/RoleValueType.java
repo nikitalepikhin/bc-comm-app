@@ -7,6 +7,7 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum RoleValueType {
     ADMIN("admin"),
+    REPRESENTATIVE("representative"),
     STUDENT("student"),
     TEACHER("teacher");
 
