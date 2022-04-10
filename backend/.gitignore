@@ -35,3 +35,7 @@ build/
 .vscode/
 
 **/application.properties
+*.crt
+*.key
+*.p12
+mvnw.cmd
