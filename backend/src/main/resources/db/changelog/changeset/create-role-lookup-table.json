@@ -1,0 +1,50 @@
+{
+  "databaseChangeLog": [
+    {
+      "changeSet": {
+        "id": "create-role-lookup-table",
+        "author": "Nikita Lepikhin",
+        "changes": [
+          {
+            "createTable": {
+              "tableName": "role_lookup",
+              "columns": [
+                {
+                  "column": {
+                    "name": "id",
+                    "type": "int",
+                    "autoIncrement": true,
+                    "constraints": {
+                      "primaryKey": true,
+                      "nullable": false
+                    }
+                  }
+                },
+                {
+                  "column": {
+                    "name": "uuid",
+                    "type": "uuid",
+                    "constraints": {
+                      "nullable": false,
+                      "unique": true
+                    }
+                  }
+                },
+                {
+                  "column": {
+                    "name": "role_value",
+                    "type": "varchar(16)",
+                    "constraints": {
+                      "nullable": false,
+                      "unique": true
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

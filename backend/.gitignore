@@ -19,6 +19,8 @@ target/
 *.iml
 *.ipr
 
+**/META-INF/
+
 ### NetBeans ###
 /nbproject/private/
 /nbbuild/
@@ -31,3 +33,9 @@ build/
 
 ### VS Code ###
 .vscode/
+
+**/application.properties
+*.crt
+*.key
+*.p12
+mvnw.cmd

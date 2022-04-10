@@ -1,0 +1,48 @@
+{
+  "databaseChangeLog": [
+    {
+      "changeSet": {
+        "id": "create-role-authority-table",
+        "author": "Nikita Lepikhin",
+        "changes": [
+          {
+            "createTable": {
+              "tableName": "role_authority",
+              "columns": [
+                {
+                  "column": {
+                    "name": "role_id",
+                    "type": "int",
+                    "constraints": {
+                      "foreignKeyName": "fk_role_id",
+                      "references": "role_lookup(id)",
+                      "nullable": false
+                    }
+                  }
+                },
+                {
+                  "column": {
+                    "name": "authority_id",
+                    "type": "int",
+                    "constraints": {
+                      "foreignKeyName": "fk_authority_id",
+                      "references": "authority_lookup(id)",
+                      "nullable": false
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "addPrimaryKey": {
+              "columnNames": "role_id, authority_id",
+              "constraintName": "pk_role_authority",
+              "tableName": "role_authority"
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,48 @@
+{
+  "databaseChangeLog": [
+    {
+      "changeSet": {
+        "id": "create-channel-admin-user-table",
+        "author": "Nikita Lepikhin",
+        "changes": [
+          {
+            "createTable": {
+              "tableName": "channel_admin_user",
+              "columns": [
+                {
+                  "column": {
+                    "name": "user_id",
+                    "type": "bigint",
+                    "constraints": {
+                      "foreignKeyName": "fk_user_id",
+                      "references": "users(id)",
+                      "nullable": false
+                    }
+                  }
+                },
+                {
+                  "column": {
+                    "name": "channel_id",
+                    "type": "bigint",
+                    "constraints": {
+                      "foreignKeyName": "fk_channel_id",
+                      "references": "channels(id)",
+                      "nullable": false
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "addPrimaryKey": {
+              "columnNames": "user_id, channel_id",
+              "constraintName": "pk_channel_admin_user",
+              "tableName": "channel_admin_user"
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

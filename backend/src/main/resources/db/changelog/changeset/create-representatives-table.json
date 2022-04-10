@@ -1,0 +1,73 @@
+{
+  "databaseChangeLog": [
+    {
+      "changeSet": {
+        "id": "create-representatives-table",
+        "author": "Nikita Lepikhin",
+        "changes": [
+          {
+            "createTable": {
+              "tableName": "representatives",
+              "columns": [
+                {
+                  "column": {
+                    "name": "user_id",
+                    "type": "bigint",
+                    "constraints": {
+                      "foreignKeyName": "fk_user_id",
+                      "references": "users(id)",
+                      "nullable": false,
+                      "primaryKey": true
+                    }
+                  }
+                },
+                {
+                  "column": {
+                    "name": "school_id",
+                    "type": "bigint",
+                    "constraints": {
+                      "foreignKeyName": "fk_school_id",
+                      "references": "schools(id)",
+                      "nullable": false
+                    }
+                  }
+                },
+                {
+                  "column": {
+                    "name": "department_id",
+                    "type": "bigint",
+                    "constraints": {
+                      "foreignKeyName": "fk_department_id",
+                      "references": "departments(id)",
+                      "nullable": true
+                    }
+                  }
+                },
+                {
+                  "column": {
+                    "name": "school_modified",
+                    "type": "timestamp",
+                    "defaultValueComputed": "CURRENT_TIMESTAMP()",
+                    "constraints": {
+                      "nullable": false
+                    }
+                  }
+                },
+                {
+                  "column": {
+                    "name": "department_modified",
+                    "type": "timestamp",
+                    "defaultValueComputed": "CURRENT_TIMESTAMP()",
+                    "constraints": {
+                      "nullable": false
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

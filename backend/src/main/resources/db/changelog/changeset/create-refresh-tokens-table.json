@@ -1,0 +1,68 @@
+{
+  "databaseChangeLog": [
+    {
+      "changeSet": {
+        "id": "create-refresh-tokens-table",
+        "author": "Nikita Lepikhin",
+        "changes": [
+          {
+            "createTable": {
+              "tableName": "refresh_tokens",
+              "columns": [
+                {
+                  "column": {
+                    "name": "id",
+                    "type": "bigint",
+                    "autoIncrement": true,
+                    "constraints": {
+                      "primaryKey": true,
+                      "nullable": false
+                    }
+                  }
+                },
+                {
+                  "column": {
+                    "name": "uuid",
+                    "type": "uuid",
+                    "constraints": {
+                      "nullable": false,
+                      "unique": true
+                    }
+                  }
+                },
+                {
+                  "column": {
+                    "name": "refresh_token",
+                    "type": "varchar(1024)",
+                    "constraints": {
+                      "nullable": false
+                    }
+                  }
+                },
+                {
+                  "column": {
+                    "name": "family_uuid",
+                    "type": "uuid",
+                    "constraints": {
+                      "nullable": false
+                    }
+                  }
+                },
+                {
+                  "column": {
+                    "name": "used",
+                    "type": "boolean",
+                    "constraints": {
+                      "nullable": false
+                    },
+                    "defaultValueBoolean": false
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  ]
+}
