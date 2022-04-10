@@ -1,12 +1,13 @@
 package com.nikitalepikhin.bccommapp.service;
 
-import com.nikitalepikhin.bccommapp.dto.RefreshTokenDto;
+import com.nikitalepikhin.bccommapp.dto.auth.RefreshTokenDto;
 import com.nikitalepikhin.bccommapp.exception.RefreshTokenException;
 import com.nikitalepikhin.bccommapp.model.RoleValueType;
 import org.springframework.security.core.Authentication;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Optional;
+import java.util.UUID;
 
 public interface JwtService {
 
@@ -32,7 +33,7 @@ public interface JwtService {
 
     Optional<RoleValueType> getRole(String token);
 
-    Optional<String> getFamilyId(String token);
+    Optional<UUID> getFamilyId(String token);
 
     Long getExpiration(String token);
 }

@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.DynamicInsert;
 
 import javax.persistence.*;
 import java.time.Instant;
@@ -14,6 +15,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Embeddable
+@DynamicInsert
 public class BaseEntityUser {
 
     @Column(name = "uuid", nullable = false)
@@ -36,18 +38,23 @@ public class BaseEntityUser {
     @Column(name = "password", nullable = false, length = 1024)
     private String password;
 
+    @Builder.Default
     @Column(name = "created", nullable = false)
     private Instant created = Instant.now();
 
+    @Builder.Default
     @Column(name = "email_modified", nullable = false)
     private Instant emailModified = Instant.now();
 
+    @Builder.Default
     @Column(name = "username_modified", nullable = false)
     private Instant usernameModified = Instant.now();
 
+    @Builder.Default
     @Column(name = "password_modified", nullable = false)
     private Instant passwordModified = Instant.now();
 
+    @Builder.Default
     @Column(name = "modified", nullable = false)
     private Instant modified = Instant.now();
 }

@@ -10,16 +10,15 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/hello")
-@Tag(name = "Dummy Controller")
-public class DummyController {
+@RequestMapping("/api/test")
+@Tag(name = "Test Controller")
+public class TestController {
 
     @GetMapping("/")
     @PreAuthorize("hasAuthority('test_read')")
     @Operation(summary = "Print out hello world",
             parameters = {@Parameter(name = "Authorization", in = ParameterIn.HEADER, schema = @Schema(implementation = String.class), required = true)})
     public ResponseEntity<String> getHelloWorld() {
-        System.out.println("got the dummy request");
         return ResponseEntity.ok("Hello, world!");
     }
 

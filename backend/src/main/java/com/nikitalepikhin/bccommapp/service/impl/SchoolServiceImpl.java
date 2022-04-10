@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -20,7 +21,7 @@ public class SchoolServiceImpl implements SchoolService {
     }
 
     @Override
-    public School findByUuid(UUID schoolUuid) throws EntityNotFoundException {
-        return schoolRepository.findByUuid(schoolUuid).orElseThrow(() -> new EntityNotFoundException("School entity with the provided UUID " + schoolUuid.toString() + " could not be found."));
+    public Optional<School> findByUuid(UUID schoolUuid) throws EntityNotFoundException {
+        return schoolRepository.findByUuid(schoolUuid);
     }
 }

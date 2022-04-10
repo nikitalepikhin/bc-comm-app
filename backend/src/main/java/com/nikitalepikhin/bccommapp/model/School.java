@@ -24,7 +24,7 @@ public class School {
     @Column(name = "id", nullable = false)
     private Long id;
 
-    @Column(name = "uuid", nullable = false)
+    @Column(name = "uuid")
     private UUID uuid;
 
     @Column(name = "name", nullable = false, length = 256)
@@ -45,15 +45,19 @@ public class School {
     @Column(name = "postal_index", nullable = false, length = 16)
     private String postalIndex;
 
+    @Builder.Default
     @Column(name = "created", nullable = false)
     private Instant created = Instant.now();
 
+    @Builder.Default
     @Column(name = "modified", nullable = false)
     private Instant modified = Instant.now();
 
+    @Builder.Default
     @Column(name = "name_modified", nullable = false)
     private Instant nameModified = Instant.now();
 
+    @Builder.Default
     @Column(name = "address_modified", nullable = false)
     private Instant addressModified = Instant.now();
 

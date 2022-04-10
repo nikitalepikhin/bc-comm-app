@@ -22,9 +22,11 @@ public class BaseEntityNamedUser {
     @Column(name = "bio", length = 1024)
     private String bio;
 
+    @Builder.Default
     @Column(name = "name_modified", nullable = false)
     private Instant nameModified = Instant.now();
 
+    @Builder.Default
     @Column(name = "bio_modified", nullable = false)
     private Instant bioModified = Instant.now();
 

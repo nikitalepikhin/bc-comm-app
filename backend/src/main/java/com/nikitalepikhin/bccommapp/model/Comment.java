@@ -24,7 +24,7 @@ public class Comment {
     @Column(name = "id", nullable = false)
     private Long id;
 
-    @Column(name = "uuid", nullable = false)
+    @Column(name = "uuid")
     private UUID uuid;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
@@ -42,9 +42,11 @@ public class Comment {
     @Column(name = "body", nullable = false, length = 10000)
     private String body;
 
+    @Builder.Default
     @Column(name = "created", nullable = false)
     private Instant created = Instant.now();
 
+    @Builder.Default
     @Column(name = "modified", nullable = false)
     private Instant modified = Instant.now();
 

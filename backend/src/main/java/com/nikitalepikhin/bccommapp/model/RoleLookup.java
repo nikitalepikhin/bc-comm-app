@@ -25,7 +25,7 @@ public class RoleLookup {
     @Column(name = "id", nullable = false)
     private Integer id;
 
-    @Column(name = "uuid", nullable = false)
+    @Column(name = "uuid")
     private UUID uuid;
 
     @Enumerated(EnumType.STRING)
@@ -41,7 +41,7 @@ public class RoleLookup {
     public Set<SimpleGrantedAuthority> getSimpleGrantedAuthoritySet() {
         return assignedAuthorities
                 .stream()
-                .map(authority -> new SimpleGrantedAuthority(authority.getAuthorityValue().getAuthority()))
+                .map(authority -> new SimpleGrantedAuthority(authority.getAuthorityValue().name()))
                 .collect(Collectors.toSet());
     }
 }

@@ -1,9 +1,12 @@
 package com.nikitalepikhin.bccommapp.rest;
 
-import com.nikitalepikhin.bccommapp.dto.*;
+import com.nikitalepikhin.bccommapp.dto.auth.*;
+import com.nikitalepikhin.bccommapp.exception.NonExistentEntityException;
 import com.nikitalepikhin.bccommapp.exception.RefreshTokenException;
 import com.nikitalepikhin.bccommapp.model.RoleValueType;
-import com.nikitalepikhin.bccommapp.service.*;
+import com.nikitalepikhin.bccommapp.service.CookieService;
+import com.nikitalepikhin.bccommapp.service.JwtService;
+import com.nikitalepikhin.bccommapp.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
@@ -28,14 +31,12 @@ public class AuthenticationController {
 
     private final JwtService jwtService;
     private final CookieService cookieService;
-    private final LoginService loginService;
     private final UserService userService;
 
     @Autowired
-    public AuthenticationController(JwtService jwtService, CookieService cookieService, LoginService loginService, UserService userService) {
+    public AuthenticationController(JwtService jwtService, CookieService cookieService, UserService userService) {
         this.jwtService = jwtService;
         this.cookieService = cookieService;
-        this.loginService = loginService;
         this.userService = userService;
     }
 
@@ -43,7 +44,7 @@ public class AuthenticationController {
     @Operation(summary = "Log in user")
     public ResponseEntity<LogInUserResponseDto> logInUser(@RequestBody LogInUserRequestDto request, HttpServletResponse httpServletResponse) {
         try {
-            LogInUserDto logInUserDto = loginService.loginUser(request);
+            LogInUserDto logInUserDto = userService.loginUser(request);
             httpServletResponse.addCookie(cookieService.buildRefreshTokenHttpOnlyCookie(logInUserDto.getRefreshToken()));
             return ResponseEntity.ok(logInUserDto.getLogInUserResponseDto());
         } catch (AuthenticationException e) {
@@ -56,29 +57,45 @@ public class AuthenticationController {
     @PostMapping("/signup/admin")
     @Operation(summary = "Register admin user")
     public ResponseEntity<?> registerAdminUser(@Valid @RequestBody RegisterSimpleUserRequestDto request) {
-        userService.registerSimpleUser(request, RoleValueType.ADMIN);
-        return ResponseEntity.ok().build();
+        try {
+            userService.registerSimpleUser(request, RoleValueType.ADMIN);
+            return ResponseEntity.ok().build();
+        } catch (NonExistentEntityException e) {
+            return ResponseEntity.internalServerError().body("Invalid value provided.");
+        }
     }
 
     @PostMapping("/signup/representative")
     @Operation(summary = "Register representative user")
     public ResponseEntity<?> registerRepresentativeUser(@Valid @RequestBody RegisterRepresentativeUserRequestDto request) {
-        userService.registerRepresentativeUser(request);
-        return ResponseEntity.ok().build();
+        try {
+            userService.registerRepresentativeUser(request);
+            return ResponseEntity.ok().build();
+        } catch (NonExistentEntityException e) {
+            return ResponseEntity.internalServerError().body("Invalid value provided.");
+        }
     }
 
     @PostMapping("/signup/teacher")
     @Operation(summary = "Register teacher user")
     public ResponseEntity<?> registerTeacherUser(@Valid @RequestBody RegisterTeacherUserRequestDto request) {
-        userService.registerTeacherUser(request);
-        return ResponseEntity.ok().build();
+        try {
+            userService.registerTeacherUser(request);
+            return ResponseEntity.ok().build();
+        } catch (NonExistentEntityException e) {
+            return ResponseEntity.internalServerError().body("Invalid value provided.");
+        }
     }
 
     @PostMapping("/signup/student")
     @Operation(summary = "Register student user")
     public ResponseEntity<?> registerStudentUser(@Valid @RequestBody RegisterSimpleUserRequestDto request) {
-        userService.registerSimpleUser(request, RoleValueType.STUDENT);
-        return ResponseEntity.ok().build();
+        try {
+            userService.registerSimpleUser(request, RoleValueType.STUDENT);
+            return ResponseEntity.ok().build();
+        } catch (NonExistentEntityException e) {
+            return ResponseEntity.internalServerError().body("Invalid value provided.");
+        }
     }
 
     @PostMapping("/refresh")
@@ -87,7 +104,7 @@ public class AuthenticationController {
         try {
             RefreshTokenDto refreshTokenDto = jwtService.refreshAccessToken(refreshToken);
             httpServletResponse.addCookie(cookieService.buildRefreshTokenHttpOnlyCookie(refreshTokenDto.getRefreshToken()));
-            String username = loginService.getUserUsername(refreshTokenDto.getEmail());
+            String username = userService.getUserUsername(refreshTokenDto.getEmail());
             return ResponseEntity.ok().body(new RefreshTokenResponseDto(refreshTokenDto.getAccessToken(), refreshTokenDto.getEmail(), username));
         } catch (RefreshTokenException e) {
             log.warn(e.getMessage());

@@ -35,6 +35,7 @@ public class Teacher implements UserEntity, NamedUserEntity, EmployeeEntity {
     @JoinColumn(name = "user_id")
     private User user;
 
+    @Builder.Default
     @Column(name = "verified", nullable = false)
     private Boolean verified = false;
 }

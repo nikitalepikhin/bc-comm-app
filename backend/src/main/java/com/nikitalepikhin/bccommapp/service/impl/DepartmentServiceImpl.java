@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -20,7 +21,7 @@ public class DepartmentServiceImpl implements DepartmentService {
     }
 
     @Override
-    public Department findByUuid(UUID departmentUuid) throws EntityNotFoundException {
-        return departmentRepository.findByUuid(departmentUuid).orElseThrow(() -> new EntityNotFoundException("Department entity with the provided UUID " + departmentUuid.toString() + " could not be found."));
+    public Optional<Department> findByUuid(UUID departmentUuid) throws EntityNotFoundException {
+        return departmentRepository.findByUuid(departmentUuid);
     }
 }

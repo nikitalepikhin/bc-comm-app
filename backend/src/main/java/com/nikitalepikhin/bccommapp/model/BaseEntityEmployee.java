@@ -23,9 +23,11 @@ public class BaseEntityEmployee {
     @JoinColumn(name = "department_id")
     private Department department;
 
+    @Builder.Default
     @Column(name = "school_modified", nullable = false)
     private Instant schoolModified = Instant.now();
 
+    @Builder.Default
     @Column(name = "department_modified", nullable = false)
     private Instant departmentModified = Instant.now();
 

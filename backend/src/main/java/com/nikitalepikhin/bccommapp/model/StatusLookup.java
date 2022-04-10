@@ -21,7 +21,7 @@ public class StatusLookup {
     @Column(name = "id", nullable = false)
     private Integer id;
 
-    @Column(name = "uuid", nullable = false)
+    @Column(name = "uuid")
     private UUID uuid;
 
     @Enumerated(EnumType.STRING)

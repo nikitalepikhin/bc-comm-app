@@ -1,8 +1,7 @@
 package com.nikitalepikhin.bccommapp.service;
 
-import com.nikitalepikhin.bccommapp.dto.RegisterRepresentativeUserRequestDto;
-import com.nikitalepikhin.bccommapp.dto.RegisterSimpleUserRequestDto;
-import com.nikitalepikhin.bccommapp.dto.RegisterTeacherUserRequestDto;
+import com.nikitalepikhin.bccommapp.dto.auth.*;
+import com.nikitalepikhin.bccommapp.exception.NonExistentEntityException;
 import com.nikitalepikhin.bccommapp.model.RoleValueType;
 import com.nikitalepikhin.bccommapp.model.User;
 
@@ -19,11 +18,15 @@ public interface UserService {
 
     Optional<User> findById(Long id);
 
-    void deleteById(Long id);
+    void deleteById(Long id) throws NonExistentEntityException;
 
-    User registerSimpleUser(RegisterSimpleUserRequestDto request, RoleValueType role);
+    User registerSimpleUser(RegisterSimpleUserRequestDto request, RoleValueType role) throws NonExistentEntityException;
 
-    User registerTeacherUser(RegisterTeacherUserRequestDto request);
+    User registerTeacherUser(RegisterTeacherUserRequestDto request) throws NonExistentEntityException;
 
-    User registerRepresentativeUser(RegisterRepresentativeUserRequestDto request);
+    User registerRepresentativeUser(RegisterRepresentativeUserRequestDto request) throws NonExistentEntityException;
+
+    LogInUserDto loginUser(LogInUserRequestDto logInUserRequestDto);
+
+    String getUserUsername(String email);
 }

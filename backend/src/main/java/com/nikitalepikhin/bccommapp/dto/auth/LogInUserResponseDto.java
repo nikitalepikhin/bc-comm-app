@@ -1,4 +1,4 @@
-package com.nikitalepikhin.bccommapp.dto;
+package com.nikitalepikhin.bccommapp.dto.auth;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -8,7 +8,7 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 @Schema
-public class LogInUserDto {
+public class LogInUserResponseDto {
 
     @JsonProperty("email")
     private String email;
@@ -18,11 +18,4 @@ public class LogInUserDto {
 
     @JsonProperty("access_token")
     private String accessToken;
-
-    @JsonProperty("refresh_token")
-    private String refreshToken;
-
-    public LogInUserResponseDto getLogInUserResponseDto() {
-        return new LogInUserResponseDto(email, username, accessToken);
-    }
 }

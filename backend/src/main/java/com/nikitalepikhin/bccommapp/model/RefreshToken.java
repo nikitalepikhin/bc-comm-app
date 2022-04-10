@@ -21,15 +21,16 @@ public class RefreshToken {
     @Column(name = "id", nullable = false)
     private Long id;
 
-    @Column(name = "uuid", nullable = false)
+    @Column(name = "uuid")
     private UUID uuid;
 
-    @Column(name = "refresh_token", nullable = false)
-    private UUID refreshToken;
+    @Column(name = "refresh_token", length = 1024, nullable = false)
+    private String refreshToken;
 
     @Column(name = "family_uuid", nullable = false)
     private UUID familyUuid;
 
+    @Builder.Default
     @Column(name = "used", nullable = false)
     private Boolean used = false;
 

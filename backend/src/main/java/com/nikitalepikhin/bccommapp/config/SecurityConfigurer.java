@@ -68,7 +68,7 @@ public class SecurityConfigurer extends WebSecurityConfigurerAdapter {
                 .regexMatchers("/swagger-ui.*").permitAll()
                 .regexMatchers("/api/auth/login").permitAll()
                 .regexMatchers("/api/auth/refresh").permitAll()
-                .regexMatchers("/api/auth/signup").permitAll()
+                .regexMatchers("/api/auth/signup/.*").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .apply(jwtFilterConfigurer)

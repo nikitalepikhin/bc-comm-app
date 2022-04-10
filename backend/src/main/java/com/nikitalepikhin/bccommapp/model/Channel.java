@@ -24,7 +24,7 @@ public class Channel {
     @Column(name = "id", nullable = false)
     private Long id;
 
-    @Column(name = "uuid", nullable = false)
+    @Column(name = "uuid")
     private UUID uuid;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
@@ -37,15 +37,19 @@ public class Channel {
     @Column(name = "description", length = 512)
     private String description;
 
+    @Builder.Default
     @Column(name = "created", nullable = false)
     private Instant created = Instant.now();
 
+    @Builder.Default
     @Column(name = "modified", nullable = false)
     private Instant modified = Instant.now();
 
+    @Builder.Default
     @Column(name = "name_modified", nullable = false)
     private Instant nameModified = Instant.now();
 
+    @Builder.Default
     @Column(name = "description_modified", nullable = false)
     private Instant descriptionModified = Instant.now();
 
