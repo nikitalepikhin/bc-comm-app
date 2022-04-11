@@ -37,5 +37,7 @@ build/
 **/application.properties
 *.crt
 *.key
+*.keystore
 *.p12
 mvnw.cmd
+
