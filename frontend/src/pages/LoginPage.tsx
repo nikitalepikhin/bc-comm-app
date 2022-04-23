@@ -30,9 +30,11 @@ const LoginPage: React.FC = () => {
           logInUser({ logInUserRequestDto: { email, password } });
         }}
         validationSchema={validationSchema}
+        validateOnChange={false}
+        validateOnBlur={true}
       >
-        {({ values, errors, touched }) => (
-          <div className="mt-6 w-full md:max-w-sm lg:max-w-md">
+        {({ errors, touched }) => (
+          <div className="mt-6 w-full md:max-w-md ">
             <div className="bg-white py-8 px-6 shadow rounded-lg">
               <Form>
                 <div className="relative">
@@ -43,18 +45,24 @@ const LoginPage: React.FC = () => {
                     placeholder={'Email'}
                     className={classNames(
                       'peer h-12 w-full rounded-md border-gray-400 bg-white px-3 focus:border-blue-600 focus:ring-blue-600 placeholder-transparent hover:border-gray-600',
-                      { 'border-red-500 hover:border-red-500': errors.email !== undefined && touched.email }
+                      {
+                        'border-red-500 hover:border-red-500 focus:border-red-500 focus:ring-red-500 ':
+                          errors.email !== undefined && touched.email,
+                      }
                     )}
                   />
                   <label
                     htmlFor="email"
-                    className="absolute bg-white px-1 left-3 -top-2.5 text-sm font-light text-gray-400 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-3 peer-placeholder-shown:px-1 transition-all peer-focus:left-3 peer-focus:-top-2.5 peer-focus:text-sm peer-focus:text-blue-600 peer-focus:font-light peer-focus:px-1 peer-hover:text-gray-600"
+                    className={classNames(
+                      'absolute bg-white px-0.5 left-3 -top-2.5 text-sm font-light text-gray-400 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-3 peer-placeholder-shown:px-0.5 transition-all peer-focus:left-3 peer-focus:-top-2.5 peer-focus:text-sm peer-focus:text-blue-600 peer-focus:font-light peer-focus:px-0.5 peer-hover:text-gray-600 hover:cursor-text',
+                      {
+                        'text-red-500 peer-focus:text-red-500 peer-placeholder-shown:text-red-500 peer-hover:text-red-500':
+                          errors.email !== undefined && touched.email,
+                      }
+                    )}
                   >
-                    Email
+                    {errors.email !== undefined && touched.email ? errors.email : 'Email'}
                   </label>
-                  {errors.email !== undefined && touched.email && (
-                    <p className="text-sm text-red-500 ml-3">{errors.email}</p>
-                  )}
                 </div>
                 <div className="relative mt-4">
                   <Field
@@ -64,18 +72,24 @@ const LoginPage: React.FC = () => {
                     placeholder={'Password'}
                     className={classNames(
                       'peer h-12 w-full rounded-md border-gray-400 bg-white px-3 focus:border-blue-600 focus:ring-blue-600 placeholder-transparent hover:border-gray-600',
-                      { 'border-red-500 hover:border-red-500': errors.password !== undefined && touched.password }
+                      {
+                        'border-red-500 hover:border-red-500 focus:border-red-500 focus:ring-red-500 ':
+                          errors.password !== undefined && touched.password,
+                      }
                     )}
                   />
                   <label
                     htmlFor="password"
-                    className="absolute bg-white px-1 left-3 -top-2.5 text-sm font-light text-gray-400 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-3 peer-placeholder-shown:px-1 transition-all peer-focus:left-3 peer-focus:-top-2.5 peer-focus:text-sm peer-focus:text-blue-600 peer-focus:font-light peer-focus:px-1 peer-hover:text-gray-600"
+                    className={classNames(
+                      'absolute bg-white px-0.5 left-3 -top-2.5 text-sm font-light text-gray-400 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-3 peer-placeholder-shown:px-0.5 transition-all peer-focus:left-3 peer-focus:-top-2.5 peer-focus:text-sm peer-focus:text-blue-600 peer-focus:font-light peer-focus:px-0.5 peer-hover:text-gray-600 hover:cursor-text',
+                      {
+                        'text-red-500 peer-focus:text-red-500 peer-placeholder-shown:text-red-500 peer-hover:text-red-500':
+                          errors.password !== undefined && touched.password,
+                      }
+                    )}
                   >
-                    Password
+                    {errors.password !== undefined && touched.password ? errors.password : 'Password'}
                   </label>
-                  {errors.password !== undefined && touched.password && (
-                    <p className="text-sm text-red-500 ml-3">{errors.password}</p>
-                  )}
                   <p className="flex justify-end">
                     <a href="#" className="text-blue-600 hover:underline hover:text-blue-900 text-sm mr-2 mt-0.5">
                       Forgot your password?
