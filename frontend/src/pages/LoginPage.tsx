@@ -12,7 +12,7 @@ const initialValues = {
 const validationSchema = yup.object({
   email: yup
     .string()
-    .matches(/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/, 'Invalid email')
+    .matches(/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/, 'Invalid format')
     .required('Required'),
   password: yup.string().required('Required'),
 });
@@ -32,8 +32,9 @@ const LoginPage: React.FC = () => {
         validationSchema={validationSchema}
         validateOnChange={false}
         validateOnBlur={true}
+        validateOnMount={true}
       >
-        {({ errors, touched }) => (
+        {({ isValid, dirty }) => (
           <div className="mt-6 w-full md:max-w-md ">
             <div className="bg-white py-8 px-6 shadow rounded-lg">
               <Form>
@@ -44,24 +45,16 @@ const LoginPage: React.FC = () => {
                     type={'text'}
                     placeholder={'Email'}
                     className={classNames(
-                      'peer h-12 w-full rounded-md border-gray-400 bg-white px-3 focus:border-blue-600 focus:ring-blue-600 placeholder-transparent hover:border-gray-600',
-                      {
-                        'border-red-500 hover:border-red-500 focus:border-red-500 focus:ring-red-500 ':
-                          errors.email !== undefined && touched.email,
-                      }
+                      'peer h-12 w-full rounded-md border-gray-400 bg-white px-3 focus:border-blue-600 focus:ring-blue-600 placeholder-transparent hover:border-gray-600'
                     )}
                   />
                   <label
                     htmlFor="email"
                     className={classNames(
-                      'absolute bg-white px-0.5 left-3 -top-2.5 text-sm font-light text-gray-400 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-3 peer-placeholder-shown:px-0.5 transition-all peer-focus:left-3 peer-focus:-top-2.5 peer-focus:text-sm peer-focus:text-blue-600 peer-focus:font-light peer-focus:px-0.5 peer-hover:text-gray-600 hover:cursor-text',
-                      {
-                        'text-red-500 peer-focus:text-red-500 peer-placeholder-shown:text-red-500 peer-hover:text-red-500':
-                          errors.email !== undefined && touched.email,
-                      }
+                      'absolute bg-white px-0.5 left-3 -top-2.5 text-sm font-light text-gray-400 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-3 peer-placeholder-shown:px-0.5 transition-all peer-focus:left-3 peer-focus:-top-2.5 peer-focus:text-sm peer-focus:text-blue-600 peer-focus:font-light peer-focus:px-0.5 peer-hover:text-gray-600 hover:cursor-text'
                     )}
                   >
-                    {errors.email !== undefined && touched.email ? errors.email : 'Email'}
+                    Email
                   </label>
                 </div>
                 <div className="relative mt-4">
@@ -71,24 +64,16 @@ const LoginPage: React.FC = () => {
                     type={'password'}
                     placeholder={'Password'}
                     className={classNames(
-                      'peer h-12 w-full rounded-md border-gray-400 bg-white px-3 focus:border-blue-600 focus:ring-blue-600 placeholder-transparent hover:border-gray-600',
-                      {
-                        'border-red-500 hover:border-red-500 focus:border-red-500 focus:ring-red-500 ':
-                          errors.password !== undefined && touched.password,
-                      }
+                      'peer h-12 w-full rounded-md border-gray-400 bg-white px-3 focus:border-blue-600 focus:ring-blue-600 placeholder-transparent hover:border-gray-600'
                     )}
                   />
                   <label
                     htmlFor="password"
                     className={classNames(
-                      'absolute bg-white px-0.5 left-3 -top-2.5 text-sm font-light text-gray-400 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-3 peer-placeholder-shown:px-0.5 transition-all peer-focus:left-3 peer-focus:-top-2.5 peer-focus:text-sm peer-focus:text-blue-600 peer-focus:font-light peer-focus:px-0.5 peer-hover:text-gray-600 hover:cursor-text',
-                      {
-                        'text-red-500 peer-focus:text-red-500 peer-placeholder-shown:text-red-500 peer-hover:text-red-500':
-                          errors.password !== undefined && touched.password,
-                      }
+                      'absolute bg-white px-0.5 left-3 -top-2.5 text-sm font-light text-gray-400 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-3 peer-placeholder-shown:px-0.5 transition-all peer-focus:left-3 peer-focus:-top-2.5 peer-focus:text-sm peer-focus:text-blue-600 peer-focus:font-light peer-focus:px-0.5 peer-hover:text-gray-600 hover:cursor-text'
                     )}
                   >
-                    {errors.password !== undefined && touched.password ? errors.password : 'Password'}
+                    Password
                   </label>
                   <p className="flex justify-end">
                     <a href="#" className="text-blue-600 hover:underline hover:text-blue-900 text-sm mr-2 mt-0.5">
@@ -99,7 +84,9 @@ const LoginPage: React.FC = () => {
                 <div className="flex justify-center mt-3">
                   <button
                     type="submit"
-                    className="h-10 w-full py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium bg-blue-600 text-white hover:bg-blue-900 transition-all drop-shadow-md"
+                    onClick={() => console.log(isValid && dirty)}
+                    className="h-10 w-full py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium bg-blue-600 text-white hover:bg-blue-900 transition-all drop-shadow-md disabled:text-gray-900 disabled:bg-gray-400 hover-disabled:text-gray-900 hover-disabled:bg-gray-400"
+                    disabled={!isValid || !dirty}
                   >
                     Log In
                   </button>
