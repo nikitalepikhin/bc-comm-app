@@ -30,8 +30,7 @@ const LoginPage: React.FC = () => {
           logInUser({ logInUserRequestDto: { email, password } });
         }}
         validationSchema={validationSchema}
-        validateOnChange={false}
-        validateOnBlur={true}
+        validateOnChange={true}
         validateOnMount={true}
       >
         {({ isValid, dirty }) => (
@@ -51,7 +50,7 @@ const LoginPage: React.FC = () => {
                   <label
                     htmlFor="email"
                     className={classNames(
-                      'absolute bg-white px-0.5 left-3 -top-2.5 text-sm font-light text-gray-400 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-3 peer-placeholder-shown:px-0.5 transition-all peer-focus:left-3 peer-focus:-top-2.5 peer-focus:text-sm peer-focus:text-blue-600 peer-focus:font-light peer-focus:px-0.5 peer-hover:text-gray-600 hover:cursor-text'
+                      'absolute bg-white rounded px-0.5 left-3 -top-2.5 text-sm font-light text-gray-400 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-3 peer-placeholder-shown:px-0.5 transition-all peer-focus:left-3 peer-focus:-top-2.5 peer-focus:text-sm peer-focus:text-blue-600 peer-focus:font-light peer-focus:px-0.5 peer-hover:text-gray-600 hover:cursor-text'
                     )}
                   >
                     Email
@@ -70,7 +69,7 @@ const LoginPage: React.FC = () => {
                   <label
                     htmlFor="password"
                     className={classNames(
-                      'absolute bg-white px-0.5 left-3 -top-2.5 text-sm font-light text-gray-400 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-3 peer-placeholder-shown:px-0.5 transition-all peer-focus:left-3 peer-focus:-top-2.5 peer-focus:text-sm peer-focus:text-blue-600 peer-focus:font-light peer-focus:px-0.5 peer-hover:text-gray-600 hover:cursor-text'
+                      'absolute bg-white rounded px-0.5 left-3 -top-2.5 text-sm font-light text-gray-400 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-3 peer-placeholder-shown:px-0.5 transition-all peer-focus:left-3 peer-focus:-top-2.5 peer-focus:text-sm peer-focus:text-blue-600 peer-focus:font-light peer-focus:px-0.5 peer-hover:text-gray-600 hover:cursor-text'
                     )}
                   >
                     Password
@@ -84,8 +83,7 @@ const LoginPage: React.FC = () => {
                 <div className="flex justify-center mt-3">
                   <button
                     type="submit"
-                    onClick={() => console.log(isValid && dirty)}
-                    className="h-10 w-full py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium bg-blue-600 text-white hover:bg-blue-900 transition-all drop-shadow-md disabled:text-gray-900 disabled:bg-gray-400 hover-disabled:text-gray-900 hover-disabled:bg-gray-400"
+                    className="h-10 w-full py-2 px-4 border border-transparent rounded text-base font-medium bg-blue-600 text-white hover:bg-blue-900 transition-all shadow disabled:text-gray-700 disabled:bg-gray-300"
                     disabled={!isValid || !dirty}
                   >
                     Log In
@@ -99,7 +97,7 @@ const LoginPage: React.FC = () => {
       <div className="mt-6">
         <p>
           Don't have an account?
-          <a href="#" className="text-blue-600 hover:underline hover:text-blue-900 pl-2">
+          <a href="/signup" className="text-blue-600 hover:underline hover:text-blue-900 pl-2">
             Sign up
           </a>
         </p>
