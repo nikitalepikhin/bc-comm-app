@@ -46,20 +46,35 @@ const SignupPage: React.FC = () => {
           <Formik
             initialValues={initialValues}
             validationSchema={validationSchema}
+            validateOnMount={true}
+            validateOnChange={true}
             onSubmit={(values) => {
               console.log('submitting', values);
             }}
           >
             {({ isValid, dirty, errors, touched }) => (
               <Form>
-                <Tab.Group>
-                  <Field name="type">
-                    {({ form: { setFieldValue } }: FieldProps) => (
+                <Field name="type">
+                  {({ form: { setFieldValue } }: FieldProps) => (
+                    <Tab.Group
+                      onChange={(index) => {
+                        switch (index) {
+                          case 0:
+                            setFieldValue('type', 'student');
+                            break;
+                          case 1:
+                            setFieldValue('type', 'teacher');
+                            break;
+                          case 2:
+                            setFieldValue('type', 'representative');
+                            break;
+                        }
+                      }}
+                    >
                       <Tab.List className="grid grid-cols-3 items-center bg-gray-100 rounded shadow transition-all">
                         <Tab as={React.Fragment}>
                           {({ selected }) => (
                             <button
-                              onClick={() => setFieldValue('type', 'student')}
                               className={classNames(
                                 'rounded px-1 py-2 mr-1',
                                 {
@@ -76,7 +91,6 @@ const SignupPage: React.FC = () => {
                         <Tab as={React.Fragment}>
                           {({ selected }) => (
                             <button
-                              onClick={() => setFieldValue('type', 'teacher')}
                               className={classNames(
                                 'rounded px-1 py-2 mx-1',
                                 {
@@ -93,7 +107,6 @@ const SignupPage: React.FC = () => {
                         <Tab as={React.Fragment}>
                           {({ selected }) => (
                             <button
-                              onClick={() => setFieldValue('type', 'representative')}
                               className={classNames(
                                 'rounded px-1 py-2 ml-1',
                                 {
@@ -108,20 +121,20 @@ const SignupPage: React.FC = () => {
                           )}
                         </Tab>
                       </Tab.List>
-                    )}
-                  </Field>
-                  <Tab.Panels className={classNames('mt-6')}>
-                    <Tab.Panel>
-                      <StudentSignupForm errors={errors} touched={touched} />
-                    </Tab.Panel>
-                    <Tab.Panel>
-                      <TeacherSignupForm />
-                    </Tab.Panel>
-                    <Tab.Panel>
-                      <RepresentativeSignupForm />
-                    </Tab.Panel>
-                  </Tab.Panels>
-                </Tab.Group>
+                      <Tab.Panels className={classNames('mt-6')}>
+                        <Tab.Panel>
+                          <StudentSignupForm errors={errors} touched={touched} />
+                        </Tab.Panel>
+                        <Tab.Panel>
+                          <TeacherSignupForm />
+                        </Tab.Panel>
+                        <Tab.Panel>
+                          <RepresentativeSignupForm />
+                        </Tab.Panel>
+                      </Tab.Panels>
+                    </Tab.Group>
+                  )}
+                </Field>
 
                 <div className="flex justify-center mt-3">
                   <button
