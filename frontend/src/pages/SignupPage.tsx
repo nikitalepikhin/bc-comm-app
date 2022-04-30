@@ -35,128 +35,118 @@ const validationSchema = yup.object({
   }),
 });
 
+const mapTypes = (index: number) => ['student', 'teacher', 'representative'][index];
+
 const SignupPage: React.FC = () => {
   return (
     <div className="min-h-screen flex flex-col justify-center items-center py-8 px-6 sm:px-8">
-      <div>
-        <h2 className="text-2xl font-bold text-center">Create an account</h2>
-      </div>
-      <div className="mt-6 w-full md:max-w-md ">
-        <div className="bg-white py-8 px-6 shadow rounded-lg">
-          <Formik
-            initialValues={initialValues}
-            validationSchema={validationSchema}
-            validateOnMount={true}
-            validateOnChange={true}
-            onSubmit={(values) => {
-              console.log('submitting', values);
-            }}
-          >
-            {({ isValid, dirty, errors, touched }) => (
-              <Form>
-                <Field name="type">
-                  {({ form: { setFieldValue } }: FieldProps) => (
-                    <Tab.Group
-                      onChange={(index) => {
-                        switch (index) {
-                          case 0:
-                            setFieldValue('type', 'student');
-                            break;
-                          case 1:
-                            setFieldValue('type', 'teacher');
-                            break;
-                          case 2:
-                            setFieldValue('type', 'representative');
-                            break;
-                        }
-                      }}
-                    >
-                      <Tab.List className="grid grid-cols-3 items-center bg-gray-100 rounded shadow transition-all">
-                        <Tab as={React.Fragment}>
-                          {({ selected }) => (
-                            <button
-                              className={classNames(
-                                'rounded px-1 py-2 mr-1',
-                                {
-                                  'ring-2 ring-blue-600 ring-offset-2 bg-blue-600 text-white hover:bg-blue-600':
-                                    selected,
-                                },
-                                { 'hover:bg-gray-300': !selected }
-                              )}
-                            >
-                              Student
-                            </button>
-                          )}
-                        </Tab>
-                        <Tab as={React.Fragment}>
-                          {({ selected }) => (
-                            <button
-                              className={classNames(
-                                'rounded px-1 py-2 mx-1',
-                                {
-                                  'ring-2 ring-blue-600 ring-offset-2 bg-blue-600 text-white hover:bg-blue-600':
-                                    selected,
-                                },
-                                { 'hover:bg-gray-300': !selected }
-                              )}
-                            >
-                              Teacher
-                            </button>
-                          )}
-                        </Tab>
-                        <Tab as={React.Fragment}>
-                          {({ selected }) => (
-                            <button
-                              className={classNames(
-                                'rounded px-1 py-2 ml-1',
-                                {
-                                  'ring-2 ring-blue-600 ring-offset-2 bg-blue-600 text-white hover:bg-blue-600':
-                                    selected,
-                                },
-                                { 'hover:bg-gray-300': !selected }
-                              )}
-                            >
-                              Representative
-                            </button>
-                          )}
-                        </Tab>
-                      </Tab.List>
-                      <Tab.Panels className={classNames('mt-6')}>
-                        <Tab.Panel>
-                          <StudentSignupForm errors={errors} touched={touched} />
-                        </Tab.Panel>
-                        <Tab.Panel>
-                          <TeacherSignupForm />
-                        </Tab.Panel>
-                        <Tab.Panel>
-                          <RepresentativeSignupForm />
-                        </Tab.Panel>
-                      </Tab.Panels>
-                    </Tab.Group>
-                  )}
-                </Field>
-
-                <div className="flex justify-center mt-3">
-                  <button
-                    type="submit"
-                    className="h-10 w-full py-2 px-4 border border-transparent rounded text-base font-medium bg-blue-600 text-white hover:bg-blue-900 transition-all shadow disabled:text-gray-700 disabled:bg-gray-300"
-                    disabled={!isValid || !dirty}
-                  >
-                    Sign Up
-                  </button>
-                </div>
-              </Form>
-            )}
-          </Formik>
+      <div className="flex flex-col justify-start items-center min-h-[60vh] w-full">
+        <div>
+          <h2 className="text-2xl font-bold text-center">Create an account</h2>
         </div>
-      </div>
-      <div className="mt-6">
-        <p>
-          Already registered?
-          <a href="/login" className="text-blue-600 hover:underline hover:text-blue-900 pl-2">
-            Log in
-          </a>
-        </p>
+        <div className="mt-6 w-full md:max-w-lg">
+          <div className="bg-white py-8 px-6 shadow rounded-lg">
+            <Formik
+              initialValues={initialValues}
+              validationSchema={validationSchema}
+              validateOnMount={true}
+              validateOnChange={true}
+              onSubmit={(values) => {
+                console.log('submitting', values);
+              }}
+            >
+              {({ isValid, dirty, errors, touched }) => (
+                <Form>
+                  <Field name="type">
+                    {({ form: { setFieldValue } }: FieldProps) => (
+                      <Tab.Group onChange={(index) => setFieldValue('type', mapTypes(index))}>
+                        <Tab.List className="grid grid-cols-2 xs:grid-cols-3 items-center bg-gray-100 rounded shadow transition-all">
+                          <Tab as={React.Fragment}>
+                            {({ selected }) => (
+                              <button
+                                className={classNames(
+                                  'rounded py-2 px-1 xs:py-2 mx-1 xs:mr-1 my-1',
+                                  {
+                                    'ring-2 ring-blue-600 ring-offset-2 bg-blue-600 text-white hover:bg-blue-600':
+                                      selected,
+                                  },
+                                  { 'hover:bg-gray-300': !selected }
+                                )}
+                              >
+                                <p className="truncate">Student</p>
+                              </button>
+                            )}
+                          </Tab>
+                          <Tab as={React.Fragment}>
+                            {({ selected }) => (
+                              <button
+                                className={classNames(
+                                  'rounded py-2 px-1 xs:py-2 mx-1 my-1',
+                                  {
+                                    'ring-2 ring-blue-600 ring-offset-2 bg-blue-600 text-white hover:bg-blue-600':
+                                      selected,
+                                  },
+                                  { 'hover:bg-gray-300': !selected }
+                                )}
+                              >
+                                <p className="truncate">Teacher</p>
+                              </button>
+                            )}
+                          </Tab>
+                          <Tab as={React.Fragment}>
+                            {({ selected }) => (
+                              <button
+                                className={classNames(
+                                  'rounded py-2 px-1 xs:py-2 mx-1 xs:ml-1 my-1 col-span-2 xs:col-span-1',
+                                  {
+                                    'ring-2 ring-blue-600 ring-offset-2 bg-blue-600 text-white hover:bg-blue-600':
+                                      selected,
+                                  },
+                                  { 'hover:bg-gray-300': !selected }
+                                )}
+                              >
+                                <p className="truncate">Representative</p>
+                              </button>
+                            )}
+                          </Tab>
+                        </Tab.List>
+                        <Tab.Panels className={classNames('mt-6')}>
+                          <Tab.Panel>
+                            <StudentSignupForm errors={errors} touched={touched} />
+                          </Tab.Panel>
+                          <Tab.Panel>
+                            <TeacherSignupForm />
+                          </Tab.Panel>
+                          <Tab.Panel>
+                            <RepresentativeSignupForm />
+                          </Tab.Panel>
+                        </Tab.Panels>
+                      </Tab.Group>
+                    )}
+                  </Field>
+
+                  <div className="flex justify-center mt-3">
+                    <button
+                      type="submit"
+                      className="h-10 w-full py-2 px-4 border border-transparent rounded text-base font-medium bg-blue-600 text-white hover:bg-blue-900 transition-all shadow disabled:text-gray-700 disabled:bg-gray-300"
+                      disabled={!isValid || !dirty}
+                    >
+                      Sign Up
+                    </button>
+                  </div>
+                </Form>
+              )}
+            </Formik>
+          </div>
+        </div>
+        <div className="mt-6">
+          <p>
+            Already registered?
+            <a href="/login" className="text-blue-600 hover:underline hover:text-blue-900 pl-2">
+              Log in
+            </a>
+          </p>
+        </div>
       </div>
     </div>
   );
