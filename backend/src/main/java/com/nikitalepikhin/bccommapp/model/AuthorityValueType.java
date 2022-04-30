@@ -7,5 +7,6 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum AuthorityValueType {
     TEST_READ,
-    TEST_WRITE
+    TEST_WRITE,
+    SCHOOL_READ
 }
