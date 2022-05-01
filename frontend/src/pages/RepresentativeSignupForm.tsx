@@ -77,6 +77,7 @@ const RepresentativeSignupForm: React.FC<RepresentativeSignupFormPropsType> = ({
         <Field name="school.name">
           {({ field, form }: FieldProps) => {
             console.log(form.values);
+            console.log(form.errors);
             return (
               <CustomCombobox
                 setFieldValue={setFieldValue}

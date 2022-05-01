@@ -43,6 +43,19 @@ const validationSchema = yup.object({
     then: (schema) => schema.required("Required"),
     otherwise: (schema) => schema.nullable(),
   }),
+  school: yup.object().when("type", {
+    is: (type: string) => type === "teacher" || type === "representative",
+    then: (schema) =>
+      schema.shape({
+        name: yup.string().required("Required"),
+        uuid: yup.string().required("Invalid option selected"),
+      }),
+    otherwise: (schema) =>
+      schema.shape({
+        name: yup.string().nullable(),
+        uuid: yup.string().nullable(),
+      }),
+  }),
 });
 
 const mapTypes = (index: number) => ["student", "teacher", "representative"][index];
@@ -139,7 +152,6 @@ const SignupPage: React.FC = () => {
                       </Tab.Group>
                     )}
                   </Field>
-
                   <div className="flex justify-center mt-3">
                     <button
                       type="submit"

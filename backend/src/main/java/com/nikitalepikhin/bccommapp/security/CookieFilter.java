@@ -24,7 +24,7 @@ public class CookieFilter extends OncePerRequestFilter {
     private final Set<String> unprotectedUriRegexSet = Set.of(
             "/api/auth/login",
             "/api/auth/signup/.*",
-            "/api/schools/",
+            "/api/schools/.*",
             "/api/auth/refresh",
             "/v3/api-docs.*",
             "/swagger-ui.*",

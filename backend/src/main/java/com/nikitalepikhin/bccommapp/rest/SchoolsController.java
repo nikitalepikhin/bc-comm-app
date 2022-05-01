@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import javax.websocket.server.PathParam;
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -41,10 +42,10 @@ public class SchoolsController {
         return ResponseEntity.ok(response);
     }
 
-    @PostMapping("/")
+    @GetMapping("/{substring}")
     @Operation(summary = "Get all schools matching the substring")
-    public ResponseEntity<GetSchoolsDto> getAllMatchingSchools(@RequestBody GetMatchingSchoolsRequestDto request) {
-        Iterator<School> schoolIterator = schoolService.getAllMatchingSchools(request.getSubstring()).iterator();
+    public ResponseEntity<GetSchoolsDto> getAllMatchingSchools(@PathVariable("substring") String substring) {
+        Iterator<School> schoolIterator = schoolService.getAllMatchingSchools(substring).iterator();
         GetSchoolsDto response = new GetSchoolsDto(new ArrayList<>());
         schoolIterator.forEachRemaining(school -> response.getSchools().add(new SchoolDto(
                 school.getUuid(), school.getName(), school.getCountryAlpha3Code(), school.getAddressLine1(), school.getAddressLine2(),
