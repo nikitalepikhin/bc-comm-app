@@ -5,6 +5,7 @@ import React, { useEffect, useState } from "react";
 import { useGetAllMatchingSchoolsQuery } from "../app/api";
 import { SchoolInputType } from "./SignupPage";
 import { SelectorIcon } from "@heroicons/react/solid";
+import LoadingSpinner from "./LoadingSpinner";
 
 interface CustomComboboxPropsType {
   setFieldValue: (value: SchoolInputType) => void;
@@ -16,7 +17,7 @@ interface CustomComboboxPropsType {
 const CustomCombobox: React.FC<CustomComboboxPropsType> = ({ setFieldValue, errors, touched, field }) => {
   const [selectedOption, setSelectedOption] = useState<SchoolInputType | undefined>(undefined);
   const [matchingOptions, setMatchingOptions] = useState<SchoolInputType[]>([]);
-  const { data, isLoading, refetch } = useGetAllMatchingSchoolsQuery({
+  const { data, isLoading } = useGetAllMatchingSchoolsQuery({
     substring: /%20/.test(field.value) ? "" : field.value,
   });
 
@@ -52,58 +53,68 @@ const CustomCombobox: React.FC<CustomComboboxPropsType> = ({ setFieldValue, erro
         }
       }}
     >
-      {isLoading && <p>loading...</p>}
-      <div
-        className={classNames(
-          "relative group flex flex-row h-12 rounded-md bg-white border focus-within:border-blue-600 focus-within:ring-blue-600 focus-within:ring-1 focus-within:hover:border-blue-600",
-          { "border-red-500 hover:border-red-500": errors !== undefined && touched },
-          {
-            "border-gray-400 hover:border-gray-600": !(errors !== undefined && touched),
-          }
-        )}
-      >
-        <Combobox.Input
-          id="school"
-          placeholder="School"
-          className={classNames("peer h-full w-full placeholder-transparent border-0 rounded-md focus:ring-0")}
-          {...field}
-          onChange={(event) => {
-            field.onChange(event);
-            console.log("Changing the combobox value to:", event.target.value);
-          }}
-          displayValue={() => field.value}
-        />
-        <Combobox.Label
-          className={classNames(
-            "absolute bg-white rounded px-0.5 left-3 -top-2.5 text-sm font-light peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-3 peer-placeholder-shown:px-0.5 transition-all peer-focus:left-3 peer-focus:-top-2.5 peer-focus:text-sm peer-focus:text-blue-600 peer-focus:font-light peer-focus:px-0.5 hover:cursor-text",
-            { "text-red-500 hover:text-red-500": errors !== undefined && touched },
-            {
-              "text-gray-400 peer-hover:text-gray-600 group-hover:peer-placeholder-shown:text-gray-600 group-hover:peer-focus:text-blue-600":
-                !(errors !== undefined && touched),
-            }
+      {({ open }) => (
+        <>
+          <div
+            className={classNames(
+              "relative group flex flex-row h-12 rounded-md bg-white border focus-within:border-blue-600 focus-within:ring-blue-600 focus-within:ring-1 focus-within:hover:border-blue-600",
+              { "border-red-500 hover:border-red-500": errors !== undefined && touched },
+              {
+                "border-gray-400 hover:border-gray-600": !(errors !== undefined && touched),
+              }
+            )}
+          >
+            <Combobox.Input
+              id="school"
+              placeholder="School"
+              className={classNames("peer h-full w-full placeholder-transparent border-0 rounded-md focus:ring-0")}
+              {...field}
+              onChange={(event) => {
+                field.onChange(event);
+                console.log("Changing the combobox value to:", event.target.value);
+              }}
+              displayValue={() => field.value}
+            />
+            <Combobox.Label
+              className={classNames(
+                "absolute bg-white rounded px-0.5 left-3 -top-2.5 text-sm font-light peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-3 peer-placeholder-shown:px-0.5 transition-all peer-focus:left-3 peer-focus:-top-2.5 peer-focus:text-sm peer-focus:text-blue-600 peer-focus:font-light peer-focus:px-0.5 hover:cursor-text",
+                { "text-red-500 hover:text-red-500": errors !== undefined && touched },
+                {
+                  "text-gray-400 peer-hover:text-gray-600 group-hover:peer-placeholder-shown:text-gray-600 group-hover:peer-focus:text-blue-600":
+                    !(errors !== undefined && touched),
+                }
+              )}
+              htmlFor="school"
+            >
+              School
+            </Combobox.Label>
+            {!isLoading && (
+              <Combobox.Button>
+                <SelectorIcon className="h-6 w-6 text-gray-400 mr-2" aria-hidden="true" />
+              </Combobox.Button>
+            )}
+            {isLoading && (
+              <Combobox.Button disabled>
+                <LoadingSpinner color="blue-600" height={6} extra={"mr-2"} />
+              </Combobox.Button>
+            )}
+          </div>
+          {!open && errors !== undefined && touched !== undefined && (
+            <p className="text-sm text-red-500 ml-3">
+              {errors.name !== undefined && <>{errors.name}</>}
+              {errors.name === undefined && errors.uuid !== undefined && <>{errors.uuid}</>}
+            </p>
           )}
-          htmlFor="school"
-        >
-          School
-        </Combobox.Label>
-        <Combobox.Button>
-          <SelectorIcon className="h-6 w-6 text-gray-400 mr-2" aria-hidden="true" />
-        </Combobox.Button>
-      </div>
-      {errors !== undefined && touched !== undefined && (
-        <p className="text-sm text-red-500 ml-3">
-          {errors.name !== undefined && <>{errors.name}</>}
-          {errors.name === undefined && errors.uuid !== undefined && <>{errors.uuid}</>}
-        </p>
+          <Combobox.Options>
+            {matchingOptions.length === 0 && <div>Nothing found</div>}
+            {matchingOptions.map((option) => (
+              <Combobox.Option key={option.uuid} value={option}>
+                {option.name}
+              </Combobox.Option>
+            ))}
+          </Combobox.Options>
+        </>
       )}
-      <Combobox.Options>
-        {matchingOptions.length === 0 && <div>Nothing found</div>}
-        {matchingOptions.map((option) => (
-          <Combobox.Option key={option.uuid} value={option}>
-            {option.name}
-          </Combobox.Option>
-        ))}
-      </Combobox.Options>
     </Combobox>
   );
 };
