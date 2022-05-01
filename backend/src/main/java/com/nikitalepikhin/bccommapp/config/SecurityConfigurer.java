@@ -69,6 +69,7 @@ public class SecurityConfigurer extends WebSecurityConfigurerAdapter {
                 .regexMatchers("/api/auth/login").permitAll()
                 .regexMatchers("/api/auth/refresh").permitAll()
                 .regexMatchers("/api/auth/signup/.*").permitAll()
+                .regexMatchers("/api/schools/").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .apply(jwtFilterConfigurer)

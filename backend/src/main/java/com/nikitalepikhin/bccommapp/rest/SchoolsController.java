@@ -31,7 +31,6 @@ public class SchoolsController {
 
     @GetMapping("/")
     @Operation(summary = "Get all schools")
-    @PreAuthorize("hasAuthority('SCHOOL_READ')")
     public ResponseEntity<GetSchoolsDto> getAllSchools() {
         Iterator<School> schoolIterator = schoolService.getAllSchools().iterator();
         GetSchoolsDto response = new GetSchoolsDto(new ArrayList<>());
@@ -44,7 +43,6 @@ public class SchoolsController {
 
     @PostMapping("/")
     @Operation(summary = "Get all schools matching the substring")
-    @PreAuthorize("hasAuthority('SCHOOL_READ')")
     public ResponseEntity<GetSchoolsDto> getAllMatchingSchools(@RequestBody GetMatchingSchoolsRequestDto request) {
         Iterator<School> schoolIterator = schoolService.getAllMatchingSchools(request.getSubstring()).iterator();
         GetSchoolsDto response = new GetSchoolsDto(new ArrayList<>());

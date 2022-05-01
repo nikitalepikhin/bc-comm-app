@@ -1,24 +1,33 @@
-import React from 'react';
-import { Form, Formik, Field } from 'formik';
-import { useLogInUserMutation } from '../app/api';
-import * as yup from 'yup';
-import classNames from 'classnames';
+import React, { useEffect } from "react";
+import { Form, Formik, Field } from "formik";
+import { useLogInUserMutation } from "../app/api";
+import * as yup from "yup";
+import classNames from "classnames";
+import { useNavigate } from "react-router-dom";
 
 const initialValues = {
-  email: '',
-  password: '',
+  email: "",
+  password: "",
 };
 
 const validationSchema = yup.object({
   email: yup
     .string()
-    .matches(/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/, 'Invalid format')
-    .required('Required'),
-  password: yup.string().required('Required'),
+    .matches(/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/, "Invalid format")
+    .required("Required"),
+  password: yup.string().required("Required"),
 });
 
 const LoginPage: React.FC = () => {
-  const [logInUser, { data, error, isLoading }] = useLogInUserMutation();
+  const [logInUser, { data, error, isLoading, isSuccess }] = useLogInUserMutation();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (isSuccess) {
+      navigate("/");
+    }
+  }, [isSuccess, navigate]);
+
   return (
     <div className="min-h-screen flex flex-col justify-center items-center py-8 px-6 sm:px-8">
       <div>
@@ -39,18 +48,18 @@ const LoginPage: React.FC = () => {
               <Form>
                 <div className="relative">
                   <Field
-                    id={'email'}
-                    name={'email'}
-                    type={'text'}
-                    placeholder={'Email'}
+                    id={"email"}
+                    name={"email"}
+                    type={"text"}
+                    placeholder={"Email"}
                     className={classNames(
-                      'peer h-12 w-full rounded-md border-gray-400 bg-white px-3 focus:border-blue-600 focus:ring-blue-600 placeholder-transparent hover:border-gray-600'
+                      "peer h-12 w-full rounded-md border-gray-400 bg-white px-3 focus:border-blue-600 focus:ring-blue-600 placeholder-transparent hover:border-gray-600"
                     )}
                   />
                   <label
                     htmlFor="email"
                     className={classNames(
-                      'absolute bg-white rounded px-0.5 left-3 -top-2.5 text-sm font-light text-gray-400 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-3 peer-placeholder-shown:px-0.5 transition-all peer-focus:left-3 peer-focus:-top-2.5 peer-focus:text-sm peer-focus:text-blue-600 peer-focus:font-light peer-focus:px-0.5 peer-hover:text-gray-600 hover:cursor-text'
+                      "absolute bg-white rounded px-0.5 left-3 -top-2.5 text-sm font-light text-gray-400 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-3 peer-placeholder-shown:px-0.5 transition-all peer-focus:left-3 peer-focus:-top-2.5 peer-focus:text-sm peer-focus:text-blue-600 peer-focus:font-light peer-focus:px-0.5 peer-hover:text-gray-600 hover:cursor-text"
                     )}
                   >
                     Email
@@ -58,18 +67,18 @@ const LoginPage: React.FC = () => {
                 </div>
                 <div className="relative mt-4">
                   <Field
-                    id={'password'}
-                    name={'password'}
-                    type={'password'}
-                    placeholder={'Password'}
+                    id={"password"}
+                    name={"password"}
+                    type={"password"}
+                    placeholder={"Password"}
                     className={classNames(
-                      'peer h-12 w-full rounded-md border-gray-400 bg-white px-3 focus:border-blue-600 focus:ring-blue-600 placeholder-transparent hover:border-gray-600'
+                      "peer h-12 w-full rounded-md border-gray-400 bg-white px-3 focus:border-blue-600 focus:ring-blue-600 placeholder-transparent hover:border-gray-600"
                     )}
                   />
                   <label
                     htmlFor="password"
                     className={classNames(
-                      'absolute bg-white rounded px-0.5 left-3 -top-2.5 text-sm font-light text-gray-400 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-3 peer-placeholder-shown:px-0.5 transition-all peer-focus:left-3 peer-focus:-top-2.5 peer-focus:text-sm peer-focus:text-blue-600 peer-focus:font-light peer-focus:px-0.5 peer-hover:text-gray-600 hover:cursor-text'
+                      "absolute bg-white rounded px-0.5 left-3 -top-2.5 text-sm font-light text-gray-400 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-3 peer-placeholder-shown:px-0.5 transition-all peer-focus:left-3 peer-focus:-top-2.5 peer-focus:text-sm peer-focus:text-blue-600 peer-focus:font-light peer-focus:px-0.5 peer-hover:text-gray-600 hover:cursor-text"
                     )}
                   >
                     Password

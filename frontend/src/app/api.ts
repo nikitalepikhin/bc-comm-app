@@ -9,6 +9,19 @@ const injectedRtkApi = api.injectEndpoints({
         headers: { Authorization: queryArg.authorization },
       }),
     }),
+    getAllSchools: build.query<GetAllSchoolsApiResponse, GetAllSchoolsApiArg>({
+      query: () => ({ url: `/api/schools/` }),
+    }),
+    getAllMatchingSchools: build.mutation<
+      GetAllMatchingSchoolsApiResponse,
+      GetAllMatchingSchoolsApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/schools/`,
+        method: "POST",
+        body: queryArg.getMatchingSchoolsRequestDto,
+      }),
+    }),
     registerTeacherUser: build.mutation<
       RegisterTeacherUserApiResponse,
       RegisterTeacherUserApiArg
@@ -81,6 +94,13 @@ export type EchoMessageApiArg = {
   authorization: string;
   body: string;
 };
+export type GetAllSchoolsApiResponse = /** status 200 OK */ GetSchoolsDto;
+export type GetAllSchoolsApiArg = void;
+export type GetAllMatchingSchoolsApiResponse =
+  /** status 200 OK */ GetSchoolsDto;
+export type GetAllMatchingSchoolsApiArg = {
+  getMatchingSchoolsRequestDto: GetMatchingSchoolsRequestDto;
+};
 export type RegisterTeacherUserApiResponse = /** status 200 OK */ object;
 export type RegisterTeacherUserApiArg = {
   registerTeacherUserRequestDto: RegisterTeacherUserRequestDto;
@@ -111,6 +131,21 @@ export type LogInUserApiArg = {
 export type GetHelloWorldApiResponse = /** status 200 OK */ string;
 export type GetHelloWorldApiArg = {
   authorization: string;
+};
+export type SchoolDto = {
+  uuid?: string;
+  name?: string;
+  country_code?: string;
+  address_line_1?: string;
+  address_line_2?: string;
+  post_index?: string;
+  city?: string;
+};
+export type GetSchoolsDto = {
+  schools?: SchoolDto[];
+};
+export type GetMatchingSchoolsRequestDto = {
+  substring?: string;
 };
 export type RegisterTeacherUserRequestDto = {
   email: string;
@@ -144,6 +179,8 @@ export type LogInUserRequestDto = {
 };
 export const {
   useEchoMessageMutation,
+  useGetAllSchoolsQuery,
+  useGetAllMatchingSchoolsMutation,
   useRegisterTeacherUserMutation,
   useRegisterStudentUserMutation,
   useRegisterRepresentativeUserMutation,

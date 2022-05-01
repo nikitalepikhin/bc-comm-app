@@ -1,41 +1,51 @@
-import { Tab } from '@headlessui/react';
-import classNames from 'classnames';
-import React from 'react';
-import RepresentativeSignupForm from './RepresentativeSignupForm';
-import StudentSignupForm from './StudentSignupForm';
-import TeacherSignupForm from './TeacherSignupForm';
-import * as yup from 'yup';
-import { Field, FieldProps, Form, Formik } from 'formik';
+import { Tab } from "@headlessui/react";
+import classNames from "classnames";
+import React from "react";
+import RepresentativeSignupForm from "./RepresentativeSignupForm";
+import StudentSignupForm from "./StudentSignupForm";
+import TeacherSignupForm from "./TeacherSignupForm";
+import * as yup from "yup";
+import { Field, FieldProps, Form, Formik } from "formik";
+
+export type SchoolInputType = {
+  name: string;
+  uuid: string;
+};
 
 export interface FormValuesType {
-  type: 'student' | 'teacher' | 'representative';
+  type: "student" | "teacher" | "representative";
   email: string;
   password: string;
   name: string;
+  school: SchoolInputType;
 }
 
 const initialValues: FormValuesType = {
-  type: 'student',
-  name: '',
-  email: '',
-  password: '',
+  type: "student",
+  name: "",
+  email: "",
+  password: "",
+  school: {
+    name: "",
+    uuid: "",
+  },
 };
 
 const validationSchema = yup.object({
   type: yup.string().required(),
   email: yup
     .string()
-    .matches(/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/, 'Invalid format')
-    .required('Required'),
-  password: yup.string().required('Required'),
-  name: yup.string().when('type', {
-    is: 'teacher',
-    then: (schema) => schema.required('Required'),
+    .matches(/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/, "Invalid format")
+    .required("Required"),
+  password: yup.string().required("Required"),
+  name: yup.string().when("type", {
+    is: "teacher",
+    then: (schema) => schema.required("Required"),
     otherwise: (schema) => schema.nullable(),
   }),
 });
 
-const mapTypes = (index: number) => ['student', 'teacher', 'representative'][index];
+const mapTypes = (index: number) => ["student", "teacher", "representative"][index];
 
 const SignupPage: React.FC = () => {
   return (
@@ -53,25 +63,25 @@ const SignupPage: React.FC = () => {
               validateOnChange={true}
               validateOnBlur={true}
               onSubmit={(values) => {
-                console.log('submitting', values);
+                console.log("submitting", values);
               }}
             >
-              {({ isValid, dirty, errors, touched }) => (
+              {({ isValid, dirty, errors, touched, values }) => (
                 <Form>
                   <Field name="type">
                     {({ form: { setFieldValue } }: FieldProps) => (
-                      <Tab.Group onChange={(index) => setFieldValue('type', mapTypes(index))}>
+                      <Tab.Group onChange={(index) => setFieldValue("type", mapTypes(index))}>
                         <Tab.List className="grid grid-cols-2 xs:grid-cols-3 items-center bg-gray-100 rounded shadow transition-all">
                           <Tab as={React.Fragment}>
                             {({ selected }) => (
                               <button
                                 className={classNames(
-                                  'rounded py-2 px-1 xs:py-2 mx-1 my-1',
+                                  "rounded py-2 px-1 xs:py-2 mx-1 my-1",
                                   {
-                                    'ring-2 ring-blue-600 ring-offset-2 bg-blue-600 text-white hover:bg-blue-600':
+                                    "ring-2 ring-blue-600 ring-offset-2 bg-blue-600 text-white hover:bg-blue-600":
                                       selected,
                                   },
-                                  { 'hover:bg-gray-300': !selected }
+                                  { "hover:bg-gray-300": !selected }
                                 )}
                               >
                                 <p className="truncate">Student</p>
@@ -82,12 +92,12 @@ const SignupPage: React.FC = () => {
                             {({ selected }) => (
                               <button
                                 className={classNames(
-                                  'rounded py-2 px-1 xs:py-2 mx-1 my-1',
+                                  "rounded py-2 px-1 xs:py-2 mx-1 my-1",
                                   {
-                                    'ring-2 ring-blue-600 ring-offset-2 bg-blue-600 text-white hover:bg-blue-600':
+                                    "ring-2 ring-blue-600 ring-offset-2 bg-blue-600 text-white hover:bg-blue-600":
                                       selected,
                                   },
-                                  { 'hover:bg-gray-300': !selected }
+                                  { "hover:bg-gray-300": !selected }
                                 )}
                               >
                                 <p className="truncate">Teacher</p>
@@ -98,12 +108,12 @@ const SignupPage: React.FC = () => {
                             {({ selected }) => (
                               <button
                                 className={classNames(
-                                  'rounded py-2 px-1 xs:py-2 mx-1 my-1 col-span-2 xs:col-span-1',
+                                  "rounded py-2 px-1 xs:py-2 mx-1 my-1 col-span-2 xs:col-span-1",
                                   {
-                                    'ring-2 ring-blue-600 ring-offset-2 bg-blue-600 text-white hover:bg-blue-600':
+                                    "ring-2 ring-blue-600 ring-offset-2 bg-blue-600 text-white hover:bg-blue-600":
                                       selected,
                                   },
-                                  { 'hover:bg-gray-300': !selected }
+                                  { "hover:bg-gray-300": !selected }
                                 )}
                               >
                                 <p className="truncate">Representative</p>
@@ -111,7 +121,7 @@ const SignupPage: React.FC = () => {
                             )}
                           </Tab>
                         </Tab.List>
-                        <Tab.Panels className={classNames('mt-6')}>
+                        <Tab.Panels className={classNames("mt-6")}>
                           <Tab.Panel>
                             <StudentSignupForm errors={errors} touched={touched} />
                           </Tab.Panel>
@@ -119,7 +129,11 @@ const SignupPage: React.FC = () => {
                             <TeacherSignupForm />
                           </Tab.Panel>
                           <Tab.Panel>
-                            <RepresentativeSignupForm />
+                            <RepresentativeSignupForm
+                              errors={errors}
+                              touched={touched}
+                              setFieldValue={(value: SchoolInputType) => setFieldValue("school", value)}
+                            />
                           </Tab.Panel>
                         </Tab.Panels>
                       </Tab.Group>
