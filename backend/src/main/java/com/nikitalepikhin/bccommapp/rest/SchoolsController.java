@@ -45,6 +45,9 @@ public class SchoolsController {
     @GetMapping("/{substring}")
     @Operation(summary = "Get all schools matching the substring")
     public ResponseEntity<GetSchoolsDto> getAllMatchingSchools(@PathVariable("substring") String substring) {
+        if (substring.trim().equals("")) {
+            return ResponseEntity.ok(new GetSchoolsDto(new ArrayList<>()));
+        }
         Iterator<School> schoolIterator = schoolService.getAllMatchingSchools(substring).iterator();
         GetSchoolsDto response = new GetSchoolsDto(new ArrayList<>());
         schoolIterator.forEachRemaining(school -> response.getSchools().add(new SchoolDto(

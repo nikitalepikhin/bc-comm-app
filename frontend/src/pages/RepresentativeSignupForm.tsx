@@ -75,18 +75,14 @@ const RepresentativeSignupForm: React.FC<RepresentativeSignupFormPropsType> = ({
       </div>
       <div className="relative mt-4">
         <Field name="school.name">
-          {({ field, form }: FieldProps) => {
-            console.log(form.values);
-            console.log(form.errors);
-            return (
-              <CustomCombobox
-                setFieldValue={setFieldValue}
-                errors={errors.school}
-                touched={touched.school}
-                field={field}
-              />
-            );
-          }}
+          {({ field }: FieldProps) => (
+            <CustomCombobox
+              setFieldValue={setFieldValue}
+              errors={errors.school}
+              touched={touched.school}
+              field={field}
+            />
+          )}
         </Field>
       </div>
     </>

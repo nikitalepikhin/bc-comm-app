@@ -4,7 +4,7 @@ import { FieldInputProps, FormikErrors, FormikTouched } from "formik";
 import React, { useEffect, useState } from "react";
 import { useGetAllMatchingSchoolsQuery } from "../app/api";
 import { SchoolInputType } from "./SignupPage";
-import { SelectorIcon } from "@heroicons/react/solid";
+import { ChevronDownIcon, ChevronUpIcon, XIcon } from "@heroicons/react/outline";
 import LoadingSpinner from "./LoadingSpinner";
 
 interface CustomComboboxPropsType {
@@ -18,18 +18,11 @@ const CustomCombobox: React.FC<CustomComboboxPropsType> = ({ setFieldValue, erro
   const [selectedOption, setSelectedOption] = useState<SchoolInputType | undefined>(undefined);
   const [matchingOptions, setMatchingOptions] = useState<SchoolInputType[]>([]);
   const { data, isLoading } = useGetAllMatchingSchoolsQuery({
-    substring: /%20/.test(field.value) ? "" : field.value,
+    substring: field.value,
   });
 
   useEffect(() => {
     if (data && data.schools) {
-      console.log(
-        "got new matches",
-        data.schools.map((school) => ({
-          name: school.name!,
-          uuid: school.uuid!,
-        }))
-      );
       setMatchingOptions(
         data.schools.map((school) => ({
           name: school.name!,
@@ -44,7 +37,6 @@ const CustomCombobox: React.FC<CustomComboboxPropsType> = ({ setFieldValue, erro
       value={selectedOption}
       nullable
       onChange={(option) => {
-        console.log("setting the selected option to", option);
         setSelectedOption(option);
         if (option === undefined || option === null) {
           setFieldValue({ name: "", uuid: "" });
@@ -64,33 +56,48 @@ const CustomCombobox: React.FC<CustomComboboxPropsType> = ({ setFieldValue, erro
               }
             )}
           >
-            <Combobox.Input
-              id="school"
-              placeholder="School"
-              className={classNames("peer h-full w-full placeholder-transparent border-0 rounded-md focus:ring-0")}
-              {...field}
-              onChange={(event) => {
-                field.onChange(event);
-                console.log("Changing the combobox value to:", event.target.value);
-              }}
-              displayValue={() => field.value}
-            />
-            <Combobox.Label
-              className={classNames(
-                "absolute bg-white rounded px-0.5 left-3 -top-2.5 text-sm font-light peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-3 peer-placeholder-shown:px-0.5 transition-all peer-focus:left-3 peer-focus:-top-2.5 peer-focus:text-sm peer-focus:text-blue-600 peer-focus:font-light peer-focus:px-0.5 hover:cursor-text",
-                { "text-red-500 hover:text-red-500": errors !== undefined && touched },
-                {
-                  "text-gray-400 peer-hover:text-gray-600 group-hover:peer-placeholder-shown:text-gray-600 group-hover:peer-focus:text-blue-600":
-                    !(errors !== undefined && touched),
-                }
-              )}
-              htmlFor="school"
-            >
-              School
+            <Combobox.Input onChange={() => {}} displayValue={() => field.value} as={React.Fragment}>
+              <input
+                id="school"
+                placeholder="School"
+                className={classNames("peer h-full w-full placeholder-transparent border-0 rounded-md focus:ring-0")}
+                {...field}
+                onChange={(event) => field.onChange(event)}
+              />
+            </Combobox.Input>
+            <Combobox.Label as={React.Fragment}>
+              <label
+                className={classNames(
+                  "absolute bg-white rounded px-0.5 left-3 -top-2.5 text-sm font-light peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-3 peer-placeholder-shown:px-0.5 transition-all peer-focus:left-3 peer-focus:-top-2.5 peer-focus:text-sm peer-focus:text-blue-600 peer-focus:font-light peer-focus:px-0.5 hover:cursor-text",
+                  { "text-red-500 hover:text-red-500": errors !== undefined && touched },
+                  {
+                    "text-gray-400 peer-hover:text-gray-600 group-hover:peer-placeholder-shown:text-gray-600 group-hover:peer-focus:text-blue-600":
+                      !(errors !== undefined && touched),
+                  }
+                )}
+                htmlFor="school"
+              >
+                School
+              </label>
             </Combobox.Label>
-            {!isLoading && (
+            {field.value.length > 0 && (
+              <button
+                onClick={() => {
+                  setFieldValue({ name: "", uuid: "" });
+                  setSelectedOption(undefined);
+                }}
+              >
+                <XIcon className="h-6 w-6 text-gray-400 mr-4" aria-hidden="true" />
+              </button>
+            )}
+            {!isLoading && !open && (
               <Combobox.Button>
-                <SelectorIcon className="h-6 w-6 text-gray-400 mr-2" aria-hidden="true" />
+                <ChevronDownIcon className="h-6 w-6 text-gray-400 mr-2" aria-hidden="true" />
+              </Combobox.Button>
+            )}
+            {!isLoading && open && (
+              <Combobox.Button>
+                <ChevronUpIcon className="h-6 w-6 text-gray-400 mr-2" aria-hidden="true" />
               </Combobox.Button>
             )}
             {isLoading && (
@@ -105,11 +112,27 @@ const CustomCombobox: React.FC<CustomComboboxPropsType> = ({ setFieldValue, erro
               {errors.name === undefined && errors.uuid !== undefined && <>{errors.uuid}</>}
             </p>
           )}
-          <Combobox.Options>
-            {matchingOptions.length === 0 && <div>Nothing found</div>}
+          <Combobox.Options className="mt-2 mb-4 px-1 py-1 max-h-60 w-full overflow-auto ring-gray-500 bg-gray-100 rounded-md shadow">
+            {matchingOptions.length === 0 && (
+              <Combobox.Option as={React.Fragment} value={{ name: "", uuid: "" }}>
+                {({ active }) => (
+                  <li className={classNames("px-3 py-1 min-h-8", { "bg-blue-600 text-white rounded-md": active })}>
+                    Nothing found
+                  </li>
+                )}
+              </Combobox.Option>
+            )}
             {matchingOptions.map((option) => (
-              <Combobox.Option key={option.uuid} value={option}>
-                {option.name}
+              <Combobox.Option key={option.uuid} value={option} as={React.Fragment}>
+                {({ active }) => (
+                  <li
+                    className={classNames("px-3 py-1 min-h-8", {
+                      "bg-blue-600 ring-2 ring-blue-600 text-white rounded": active,
+                    })}
+                  >
+                    {option.name}
+                  </li>
+                )}
               </Combobox.Option>
             ))}
           </Combobox.Options>

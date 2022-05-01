@@ -84,7 +84,7 @@ const SignupPage: React.FC = () => {
                   <Field name="type">
                     {({ form: { setFieldValue } }: FieldProps) => (
                       <Tab.Group onChange={(index) => setFieldValue("type", mapTypes(index))}>
-                        <Tab.List className="grid grid-cols-2 xs:grid-cols-3 items-center bg-gray-100 rounded shadow transition-all">
+                        <Tab.List className="grid grid-cols-2 xs:grid-cols-3 items-center bg-gray-100 rounded-md shadow transition-all">
                           <Tab as={React.Fragment}>
                             {({ selected }) => (
                               <button
