@@ -10,17 +10,15 @@ import SignupPage from './pages/SignupPage';
 
 ReactDOM.render(
   <React.StrictMode>
-    <div className="bg-gray-100 text-gray-900">
-      <Provider store={store}>
-        <BrowserRouter>
-          <Routes>
-            <Route index element={<App />} />
-            <Route path={'/login'} element={<LoginPage />} />
-            <Route path={'/signup'} element={<SignupPage />} />
-          </Routes>
-        </BrowserRouter>
-      </Provider>
-    </div>
+    <Provider store={store}>
+      <BrowserRouter>
+        <Routes>
+          <Route index element={<App />} />
+          <Route path={'/login'} element={<LoginPage />} />
+          <Route path={'/signup'} element={<SignupPage />} />
+        </Routes>
+      </BrowserRouter>
+    </Provider>
   </React.StrictMode>,
   document.getElementById('root')
 );

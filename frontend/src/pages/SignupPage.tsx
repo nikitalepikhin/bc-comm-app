@@ -25,7 +25,7 @@ const validationSchema = yup.object({
   type: yup.string().required(),
   email: yup
     .string()
-    .matches(/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/, 'Invalid format')
+    .matches(/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/, 'Invalid format')
     .required('Required'),
   password: yup.string().required('Required'),
   name: yup.string().when('type', {
@@ -51,6 +51,7 @@ const SignupPage: React.FC = () => {
               validationSchema={validationSchema}
               validateOnMount={true}
               validateOnChange={true}
+              validateOnBlur={true}
               onSubmit={(values) => {
                 console.log('submitting', values);
               }}
@@ -65,7 +66,7 @@ const SignupPage: React.FC = () => {
                             {({ selected }) => (
                               <button
                                 className={classNames(
-                                  'rounded py-2 px-1 xs:py-2 mx-1 xs:mr-1 my-1',
+                                  'rounded py-2 px-1 xs:py-2 mx-1 my-1',
                                   {
                                     'ring-2 ring-blue-600 ring-offset-2 bg-blue-600 text-white hover:bg-blue-600':
                                       selected,
@@ -97,7 +98,7 @@ const SignupPage: React.FC = () => {
                             {({ selected }) => (
                               <button
                                 className={classNames(
-                                  'rounded py-2 px-1 xs:py-2 mx-1 xs:ml-1 my-1 col-span-2 xs:col-span-1',
+                                  'rounded py-2 px-1 xs:py-2 mx-1 my-1 col-span-2 xs:col-span-1',
                                   {
                                     'ring-2 ring-blue-600 ring-offset-2 bg-blue-600 text-white hover:bg-blue-600':
                                       selected,
