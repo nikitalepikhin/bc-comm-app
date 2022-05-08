@@ -1,15 +1,15 @@
 import React from "react";
-import { Field } from "formik";
+import { Field, FieldInputProps } from "formik";
 import classNames from "classnames";
 
 export interface TextFieldPropsType {
   id: string;
-  name: string;
   type: "text" | "password";
   placeholder: string;
   label: string;
   errors?: string;
   touched?: boolean;
+  field: FieldInputProps<any>;
   wrapperClasses?: string;
   fieldClasses?: string;
   labelClasses?: string;
@@ -18,12 +18,12 @@ export interface TextFieldPropsType {
 
 const TextField: React.FC<TextFieldPropsType> = ({
   id,
-  name,
   type,
   placeholder,
   label,
   errors,
   touched,
+  field,
   wrapperClasses,
   fieldClasses,
   labelClasses,
@@ -32,9 +32,8 @@ const TextField: React.FC<TextFieldPropsType> = ({
 }) => {
   return (
     <div className={classNames("relative", { [wrapperClasses ?? ""]: wrapperClasses !== undefined })}>
-      <Field
+      <input
         id={id}
-        name={name}
         type={type}
         placeholder={placeholder}
         className={classNames(
@@ -45,6 +44,7 @@ const TextField: React.FC<TextFieldPropsType> = ({
           },
           { [fieldClasses ?? ""]: fieldClasses !== undefined }
         )}
+        {...field}
       />
       <label
         htmlFor={id}

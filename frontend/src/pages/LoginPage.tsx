@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { Form, Formik, Field } from "formik";
+import { Form, Formik, Field, FieldProps } from "formik";
 import { useLogInUserMutation } from "../app/api";
 import * as yup from "yup";
 import classNames from "classnames";
@@ -47,21 +47,29 @@ const LoginPage: React.FC = () => {
           <div className="mt-6 w-full md:max-w-md ">
             <div className="bg-white py-8 px-6 shadow rounded-lg">
               <Form>
-                <TextField id={"email"} name={"email"} type={"text"} placeholder={"Email"} label={"Email"} />
-                <TextField
-                  id={"password"}
-                  name={"password"}
-                  type={"password"}
-                  placeholder={"Password"}
-                  label={"Password"}
-                  wrapperClasses={"mt-4"}
-                >
-                  <p className="flex justify-end">
-                    <a href="#" className="text-blue-600 hover:underline hover:text-blue-900 text-sm mr-2 mt-0.5">
-                      Forgot your password?
-                    </a>
-                  </p>
-                </TextField>
+                <Field name={"email"}>
+                  {({ field }: FieldProps) => (
+                    <TextField id={"email"} type={"text"} placeholder={"Email"} label={"Email"} field={field} />
+                  )}
+                </Field>
+                <Field name={"password"}>
+                  {({ field }: FieldProps) => (
+                    <TextField
+                      id={"password"}
+                      type={"password"}
+                      placeholder={"Password"}
+                      label={"Password"}
+                      wrapperClasses={"mt-4"}
+                      field={field}
+                    >
+                      <p className="flex justify-end">
+                        <a href="#" className="text-blue-600 hover:underline hover:text-blue-900 text-sm mr-2 mt-0.5">
+                          Forgot your password?
+                        </a>
+                      </p>
+                    </TextField>
+                  )}
+                </Field>
                 <div className="flex justify-center mt-3">
                   <button
                     type="submit"

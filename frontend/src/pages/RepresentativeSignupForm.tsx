@@ -13,25 +13,33 @@ interface RepresentativeSignupFormPropsType {
 const RepresentativeSignupForm: React.FC<RepresentativeSignupFormPropsType> = ({ errors, touched }) => {
   return (
     <>
-      <TextField
-        id={"email"}
-        name={"email"}
-        type={"text"}
-        placeholder={"Email"}
-        label={"Email"}
-        errors={errors.email}
-        touched={touched.email}
-      />
-      <TextField
-        id={"password"}
-        name={"password"}
-        type={"password"}
-        placeholder={"Password"}
-        label={"Password"}
-        errors={errors.password}
-        touched={touched.password}
-        wrapperClasses={"mt-4"}
-      />
+      <Field name={"email"}>
+        {({ field }: FieldProps) => (
+          <TextField
+            id={"email"}
+            type={"text"}
+            placeholder={"Email"}
+            label={"Email"}
+            errors={errors.email}
+            touched={touched.email}
+            field={field}
+          />
+        )}
+      </Field>
+      <Field name={"password"}>
+        {({ field }: FieldProps) => (
+          <TextField
+            id={"password"}
+            type={"password"}
+            placeholder={"Password"}
+            label={"Password"}
+            errors={errors.password}
+            touched={touched.password}
+            wrapperClasses={"mt-4"}
+            field={field}
+          />
+        )}
+      </Field>
       <div className="relative mt-4">
         <Field name="school.value">
           {({ field, form: { setFieldValue } }: FieldProps) => (
@@ -44,6 +52,9 @@ const RepresentativeSignupForm: React.FC<RepresentativeSignupFormPropsType> = ({
               mapDataToMatchingOptions={(school: SchoolDto) => ({ value: school.value, uuid: school.uuid })}
               setFieldValue={(value) => setFieldValue("school", value)}
               useGetDataQuery={useGetAllMatchingSchoolsQuery}
+              id={"school"}
+              placeholder={"School"}
+              label={"School"}
             />
           )}
         </Field>

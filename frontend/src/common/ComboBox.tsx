@@ -7,6 +7,9 @@ import LoadingSpinner from "../pages/LoadingSpinner";
 import { ComboBoxInputType } from "../pages/SignupPage";
 
 interface ComboBoxPropsType<T, V> {
+  id: string;
+  placeholder: string;
+  label: string;
   setFieldValue: (value: T) => void;
   errors: FormikErrors<ComboBoxInputType> | undefined;
   touched: FormikTouched<ComboBoxInputType> | undefined;
@@ -18,6 +21,9 @@ interface ComboBoxPropsType<T, V> {
 }
 
 const ComboBox = <T extends ComboBoxInputType, V extends Object>({
+  id,
+  placeholder,
+  label,
   setFieldValue,
   errors,
   touched,
@@ -63,8 +69,8 @@ const ComboBox = <T extends ComboBoxInputType, V extends Object>({
           >
             <Combobox.Input onChange={() => {}} displayValue={() => field.value} as={React.Fragment}>
               <input
-                id="school"
-                placeholder="School"
+                id={id}
+                placeholder={placeholder}
                 className={classNames("peer h-full w-full placeholder-transparent border-0 rounded-md focus:ring-0")}
                 {...field}
                 onChange={(event) => field.onChange(event)}
@@ -80,9 +86,9 @@ const ComboBox = <T extends ComboBoxInputType, V extends Object>({
                       !(errors !== undefined && touched),
                   }
                 )}
-                htmlFor="school"
+                htmlFor={id}
               >
-                School
+                {label}
               </label>
             </Combobox.Label>
             {field.value.length > 0 && (
