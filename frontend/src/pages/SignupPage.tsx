@@ -7,17 +7,17 @@ import TeacherSignupForm from "./TeacherSignupForm";
 import * as yup from "yup";
 import { Field, FieldProps, Form, Formik } from "formik";
 
-export type SchoolInputType = {
-  name: string;
+export interface ComboBoxInputType {
+  value: string;
   uuid: string;
-};
+}
 
 export interface FormValuesType {
   type: "student" | "teacher" | "representative";
   email: string;
   password: string;
   name: string;
-  school: SchoolInputType;
+  school: ComboBoxInputType;
 }
 
 const initialValues: FormValuesType = {
@@ -26,7 +26,7 @@ const initialValues: FormValuesType = {
   email: "",
   password: "",
   school: {
-    name: "",
+    value: "",
     uuid: "",
   },
 };
@@ -47,12 +47,12 @@ const validationSchema = yup.object({
     is: (type: string) => type === "teacher" || type === "representative",
     then: (schema) =>
       schema.shape({
-        name: yup.string().required("Required"),
+        value: yup.string().required("Required"),
         uuid: yup.string().required("Invalid option selected"),
       }),
     otherwise: (schema) =>
       schema.shape({
-        name: yup.string().nullable(),
+        value: yup.string().nullable(),
         uuid: yup.string().nullable(),
       }),
   }),
@@ -142,11 +142,7 @@ const SignupPage: React.FC = () => {
                             <TeacherSignupForm />
                           </Tab.Panel>
                           <Tab.Panel>
-                            <RepresentativeSignupForm
-                              errors={errors}
-                              touched={touched}
-                              setFieldValue={(value: SchoolInputType) => setFieldValue("school", value)}
-                            />
+                            <RepresentativeSignupForm errors={errors} touched={touched} />
                           </Tab.Panel>
                         </Tab.Panels>
                       </Tab.Group>

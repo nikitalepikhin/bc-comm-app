@@ -4,6 +4,7 @@ import { useLogInUserMutation } from "../app/api";
 import * as yup from "yup";
 import classNames from "classnames";
 import { useNavigate } from "react-router-dom";
+import TextField from "../common/TextField";
 
 const initialValues = {
   email: "",
@@ -46,49 +47,21 @@ const LoginPage: React.FC = () => {
           <div className="mt-6 w-full md:max-w-md ">
             <div className="bg-white py-8 px-6 shadow rounded-lg">
               <Form>
-                <div className="relative">
-                  <Field
-                    id={"email"}
-                    name={"email"}
-                    type={"text"}
-                    placeholder={"Email"}
-                    className={classNames(
-                      "peer h-12 w-full rounded-md border-gray-400 bg-white px-3 focus:border-blue-600 focus:ring-blue-600 placeholder-transparent hover:border-gray-600"
-                    )}
-                  />
-                  <label
-                    htmlFor="email"
-                    className={classNames(
-                      "absolute bg-white rounded px-0.5 left-3 -top-2.5 text-sm font-light text-gray-400 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-3 peer-placeholder-shown:px-0.5 transition-all peer-focus:left-3 peer-focus:-top-2.5 peer-focus:text-sm peer-focus:text-blue-600 peer-focus:font-light peer-focus:px-0.5 peer-hover:text-gray-600 hover:cursor-text"
-                    )}
-                  >
-                    Email
-                  </label>
-                </div>
-                <div className="relative mt-4">
-                  <Field
-                    id={"password"}
-                    name={"password"}
-                    type={"password"}
-                    placeholder={"Password"}
-                    className={classNames(
-                      "peer h-12 w-full rounded-md border-gray-400 bg-white px-3 focus:border-blue-600 focus:ring-blue-600 placeholder-transparent hover:border-gray-600"
-                    )}
-                  />
-                  <label
-                    htmlFor="password"
-                    className={classNames(
-                      "absolute bg-white rounded px-0.5 left-3 -top-2.5 text-sm font-light text-gray-400 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-3 peer-placeholder-shown:px-0.5 transition-all peer-focus:left-3 peer-focus:-top-2.5 peer-focus:text-sm peer-focus:text-blue-600 peer-focus:font-light peer-focus:px-0.5 peer-hover:text-gray-600 hover:cursor-text"
-                    )}
-                  >
-                    Password
-                  </label>
+                <TextField id={"email"} name={"email"} type={"text"} placeholder={"Email"} label={"Email"} />
+                <TextField
+                  id={"password"}
+                  name={"password"}
+                  type={"password"}
+                  placeholder={"Password"}
+                  label={"Password"}
+                  wrapperClasses={"mt-4"}
+                >
                   <p className="flex justify-end">
                     <a href="#" className="text-blue-600 hover:underline hover:text-blue-900 text-sm mr-2 mt-0.5">
                       Forgot your password?
                     </a>
                   </p>
-                </div>
+                </TextField>
                 <div className="flex justify-center mt-3">
                   <button
                     type="submit"

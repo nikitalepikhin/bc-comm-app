@@ -17,7 +17,7 @@ public class SchoolDto {
     @JsonProperty("uuid")
     private UUID uuid;
 
-    @JsonProperty("name")
+    @JsonProperty("value")
     private String name;
 
     @JsonProperty("country_code")

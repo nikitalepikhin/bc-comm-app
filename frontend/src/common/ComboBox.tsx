@@ -1,34 +1,39 @@
 import { Combobox } from "@headlessui/react";
 import classNames from "classnames";
 import { FieldInputProps, FormikErrors, FormikTouched } from "formik";
-import React, { useEffect, useState } from "react";
-import { useGetAllMatchingSchoolsQuery } from "../app/api";
-import { SchoolInputType } from "./SignupPage";
+import React, { ReactElement, useEffect, useState } from "react";
 import { ChevronDownIcon, ChevronUpIcon, XIcon } from "@heroicons/react/outline";
-import LoadingSpinner from "./LoadingSpinner";
+import LoadingSpinner from "../pages/LoadingSpinner";
+import { ComboBoxInputType } from "../pages/SignupPage";
 
-interface CustomComboboxPropsType {
-  setFieldValue: (value: SchoolInputType) => void;
-  errors: FormikErrors<SchoolInputType> | undefined;
-  touched: FormikTouched<SchoolInputType> | undefined;
+interface ComboBoxPropsType<T, V> {
+  setFieldValue: (value: T) => void;
+  errors: FormikErrors<ComboBoxInputType> | undefined;
+  touched: FormikTouched<ComboBoxInputType> | undefined;
   field: FieldInputProps<any>;
+  getDefaultValue: () => any;
+  dataOptionName: string;
+  useGetDataQuery: any;
+  mapDataToMatchingOptions: (value: V) => any;
 }
 
-const CustomCombobox: React.FC<CustomComboboxPropsType> = ({ setFieldValue, errors, touched, field }) => {
-  const [selectedOption, setSelectedOption] = useState<SchoolInputType | undefined>(undefined);
-  const [matchingOptions, setMatchingOptions] = useState<SchoolInputType[]>([]);
-  const { data, isLoading } = useGetAllMatchingSchoolsQuery({
-    substring: field.value,
-  });
+const ComboBox = <T extends ComboBoxInputType, V extends Object>({
+  setFieldValue,
+  errors,
+  touched,
+  field,
+  getDefaultValue,
+  dataOptionName,
+  useGetDataQuery,
+  mapDataToMatchingOptions,
+}: ComboBoxPropsType<T, V>): ReactElement => {
+  const [selectedOption, setSelectedOption] = useState<T | undefined>(undefined);
+  const [matchingOptions, setMatchingOptions] = useState<T[]>([]);
+  const { data, isLoading } = useGetDataQuery({ substring: field.value });
 
   useEffect(() => {
-    if (data && data.schools) {
-      setMatchingOptions(
-        data.schools.map((school) => ({
-          name: school.name!,
-          uuid: school.uuid!,
-        }))
-      );
+    if (data && data[dataOptionName]) {
+      setMatchingOptions(data[dataOptionName].map(mapDataToMatchingOptions));
     }
   }, [data]);
 
@@ -39,7 +44,7 @@ const CustomCombobox: React.FC<CustomComboboxPropsType> = ({ setFieldValue, erro
       onChange={(option) => {
         setSelectedOption(option);
         if (option === undefined || option === null) {
-          setFieldValue({ name: "", uuid: "" });
+          setFieldValue(getDefaultValue());
         } else {
           setFieldValue(option);
         }
@@ -83,7 +88,7 @@ const CustomCombobox: React.FC<CustomComboboxPropsType> = ({ setFieldValue, erro
             {field.value.length > 0 && (
               <button
                 onClick={() => {
-                  setFieldValue({ name: "", uuid: "" });
+                  setFieldValue(getDefaultValue());
                   setSelectedOption(undefined);
                 }}
               >
@@ -108,8 +113,8 @@ const CustomCombobox: React.FC<CustomComboboxPropsType> = ({ setFieldValue, erro
           </div>
           {!open && errors !== undefined && touched !== undefined && (
             <p className="text-sm text-red-500 ml-3">
-              {errors.name !== undefined && <>{errors.name}</>}
-              {errors.name === undefined && errors.uuid !== undefined && <>{errors.uuid}</>}
+              {errors.value !== undefined && <>{errors.value}</>}
+              {errors.value === undefined && errors.uuid !== undefined && <>{errors.uuid}</>}
             </p>
           )}
           <Combobox.Options className="mt-2 mb-4 px-1 py-1 max-h-60 w-full overflow-auto ring-gray-500 bg-gray-100 rounded-md shadow">
@@ -122,15 +127,15 @@ const CustomCombobox: React.FC<CustomComboboxPropsType> = ({ setFieldValue, erro
                 )}
               </Combobox.Option>
             )}
-            {matchingOptions.map((option) => (
-              <Combobox.Option key={option.uuid} value={option} as={React.Fragment}>
+            {matchingOptions.map((option, index) => (
+              <Combobox.Option key={`option-${index}`} value={option} as={React.Fragment}>
                 {({ active }) => (
                   <li
                     className={classNames("px-3 py-1 min-h-8", {
                       "bg-blue-600 ring-2 ring-blue-600 text-white rounded": active,
                     })}
                   >
-                    {option.name}
+                    {option.value}
                   </li>
                 )}
               </Combobox.Option>
@@ -142,4 +147,4 @@ const CustomCombobox: React.FC<CustomComboboxPropsType> = ({ setFieldValue, erro
   );
 };
 
-export default CustomCombobox;
+export default ComboBox;

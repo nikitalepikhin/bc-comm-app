@@ -138,7 +138,7 @@ export type LogInUserRequestDto = {
 };
 export type SchoolDto = {
   uuid?: string;
-  name?: string;
+  value?: string;
   country_code?: string;
   address_line_1?: string;
   address_line_2?: string;
