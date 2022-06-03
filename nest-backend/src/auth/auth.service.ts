@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, UnauthorizedException } from "@nestjs/common";
 import { UsersService } from "../users/users.service";
 import CreateBaseUserDto from "../users/dto/create-base-user.dto";
 import * as bcrypt from "bcrypt";
@@ -7,6 +7,8 @@ import ValidateUserDto from "../users/dto/validate-user.dto";
 import { JwtService } from "@nestjs/jwt";
 import { v4 as uuidv4 } from "uuid";
 import { RefreshTokensService } from "../refresh-tokens/refresh-tokens.service";
+import { JwtRefreshStrategyUserDto } from "./dto/jwt-refresh-strategy-user.dto";
+import { RefreshToken } from "@prisma/client";
 
 @Injectable()
 export class AuthService {
@@ -29,17 +31,21 @@ export class AuthService {
     await this.usersService.createBaseUser(createBaseUserDto);
   }
 
-  async logInUser(validateUserDto: ValidateUserDto) {
+  async logInUser(userDto: ValidateUserDto) {
+    return {
+      accessToken: this.getSignedAccessToken(userDto),
+      refreshToken: await this.createRefreshTokenForNewFamily(userDto),
+    };
+  }
+
+  private getSignedAccessToken(user: ValidateUserDto) {
     const payload = {
-      id: validateUserDto.uuid,
-      email: validateUserDto.email,
-      role: validateUserDto.role,
+      id: user.uuid,
+      email: user.email,
+      role: user.role,
       exp: Math.floor(Date.now() / 1000) + ms("5 min") / 1000,
     };
-    return {
-      accessToken: this.jwtService.sign(payload),
-      refreshToken: await this.createRefreshTokenForNewFamily(validateUserDto),
-    };
+    return this.jwtService.sign(payload);
   }
 
   private async createRefreshTokenForNewFamily(validateUserDto: ValidateUserDto): Promise<string> {
@@ -55,5 +61,38 @@ export class AuthService {
     return refreshToken;
   }
 
-  async refreshToken(user) {}
+  async refreshToken(user: JwtRefreshStrategyUserDto, authCookie: string) {
+    const existingRefreshToken: RefreshToken = await this.refreshTokensService.getRefreshToken(authCookie);
+    if (existingRefreshToken.used) {
+      await this.refreshTokensService.invalidateRefreshTokenFamily(existingRefreshToken);
+      throw new UnauthorizedException();
+    } else {
+      await this.refreshTokensService.setRefreshTokenToUsed(existingRefreshToken);
+      return {
+        accessToken: this.getSignedAccessToken({
+          email: user.email,
+          role: user.role,
+          uuid: user.uuid,
+          username: await this.usersService.getUserUsername(user.uuid),
+        }),
+        refreshToken: await this.createRefreshTokenForExistingFamily(user, existingRefreshToken.tokenFamily),
+      };
+    }
+  }
+
+  private async createRefreshTokenForExistingFamily(
+    userDto: JwtRefreshStrategyUserDto,
+    family: string,
+  ): Promise<string> {
+    const payload = {
+      uuid: userDto.uuid,
+      email: userDto.email,
+      role: userDto.role,
+      family,
+      exp: Math.floor(Date.now() / 1000) + ms("1 week") / 1000,
+    };
+    const refreshToken = this.jwtService.sign(payload);
+    await this.refreshTokensService.createRefreshTokenForNewFamily(refreshToken, payload.family);
+    return refreshToken;
+  }
 }

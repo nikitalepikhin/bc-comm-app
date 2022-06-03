@@ -5,6 +5,7 @@ import { ApiOperation, ApiTags } from "@nestjs/swagger";
 import { LocalAuthGuard } from "./local-auth.guard";
 import { Response } from "express";
 import { CookieService } from "../cookie/cookie.service";
+import { JwtRefreshAuthGuard } from "./jwt-refresh-auth.guard";
 
 @ApiTags("auth")
 @Controller("auth")
@@ -26,12 +27,18 @@ export class AuthController {
     return this.authService.signUpBaseUser(createBaseUserDto);
   }
 
-  // @ApiOperation({ summary: "Refresh the issued token pair." })
-  // @UseGuards(JwtAuthGuard)
-  // @Post("refresh")
-  // async refreshToken(@Req() request, @Res({ passthrough: true }) response: Response) {
-  //   const { accessToken, refreshToken } = await this.authService.refreshToken(request.user);
-  //   response.cookie("auth", refreshToken, this.cookieService.generateAuthCookieOptions());
-  //   return { accessToken, email: request.user.email, username: request.user.username };
-  // }
+  @ApiOperation({ summary: "Refresh the issued token pair." })
+  @UseGuards(JwtRefreshAuthGuard)
+  @Post("refresh")
+  async refreshToken(@Req() request, @Res({ passthrough: true }) response: Response) {
+    const { accessToken, refreshToken } = await this.authService.refreshToken(request.user, request.cookies.auth);
+    response.cookie("auth", refreshToken, this.cookieService.generateAuthCookieOptions());
+    return { accessToken, email: request.user.email, username: request.user.username };
+  }
+
+  // todo - logout()
+
+  // todo - register teacher
+
+  // todo - register representative
 }

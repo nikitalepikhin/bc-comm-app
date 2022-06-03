@@ -7,8 +7,8 @@ import { LocalStrategy } from "./local.strategy";
 import { RefreshTokensModule } from "../refresh-tokens/refresh-tokens.module";
 import { JwtModule } from "@nestjs/jwt";
 import { CookieModule } from "../cookie/cookie.module";
-import { JwtAuthGuard } from "./jwt-auth.guard";
 import { JwtStrategy } from "./jwt.strategy";
+import { JwtRefreshStrategy } from "./jwt-refresh.strategy";
 
 @Module({
   imports: [
@@ -18,7 +18,7 @@ import { JwtStrategy } from "./jwt.strategy";
     JwtModule.register({ secret: process.env.JWT_SECRET }),
     CookieModule,
   ],
-  providers: [AuthService, LocalStrategy, JwtStrategy],
+  providers: [AuthService, LocalStrategy, JwtStrategy, JwtRefreshStrategy],
   controllers: [AuthController],
 })
 export class AuthModule {}

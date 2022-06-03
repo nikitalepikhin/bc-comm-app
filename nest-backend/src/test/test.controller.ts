@@ -9,6 +9,6 @@ export class TestController {
   @UseGuards(JwtAuthGuard)
   @Get("/hello")
   async hello(@Req() request) {
-    return { message: "Hello, world!", ...request.user };
+    return { message: "Hello, world!", ...request.user, ...request.cookies };
   }
 }

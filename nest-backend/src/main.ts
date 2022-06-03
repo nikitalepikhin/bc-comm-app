@@ -3,6 +3,7 @@ import { AppModule } from "./app.module";
 import { DocumentBuilder, SwaggerDocumentOptions, SwaggerModule } from "@nestjs/swagger";
 import * as fs from "fs";
 import { INestApplication } from "@nestjs/common";
+import * as cookieParser from "cookie-parser";
 
 function initSwagger(app: INestApplication) {
   const config = new DocumentBuilder().setTitle("Communication App Backend API").setVersion("1.0").build();
@@ -21,6 +22,9 @@ async function bootstrap() {
       cert: fs.readFileSync(".cert/server.crt", "utf-8"),
     },
   });
+
+  app.use(cookieParser());
+
   app.enableCors({
     origin: true,
     methods: "GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS",
