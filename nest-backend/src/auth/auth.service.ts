@@ -1,14 +1,12 @@
-import { Injectable, UnauthorizedException } from "@nestjs/common";
+import { Injectable } from "@nestjs/common";
 import { UsersService } from "../users/users.service";
 import CreateBaseUserDto from "../users/dto/create-base-user.dto";
 import * as bcrypt from "bcrypt";
-import * as ms from "ms";
 import ValidateUserDto from "../users/dto/validate-user.dto";
 import { JwtService } from "@nestjs/jwt";
 import { v4 as uuidv4 } from "uuid";
 import { RefreshTokensService } from "../refresh-tokens/refresh-tokens.service";
 import { JwtRefreshStrategyUserDto } from "./dto/jwt-refresh-strategy-user.dto";
-import { RefreshToken } from "@prisma/client";
 
 @Injectable()
 export class AuthService {
@@ -33,17 +31,35 @@ export class AuthService {
 
   async logInUser(userDto: ValidateUserDto) {
     return {
-      accessToken: this.getSignedAccessToken(userDto),
+      accessToken: this.createSignedAccessToken(userDto),
       refreshToken: await this.createRefreshTokenForNewFamily(userDto),
     };
   }
 
-  private getSignedAccessToken(user: ValidateUserDto) {
+  async refreshToken(user: JwtRefreshStrategyUserDto, authCookie: string) {
+    const refreshToken = await this.refreshTokensService.setRefreshTokenToUsedByValue(authCookie);
+    return {
+      accessToken: this.createSignedAccessToken({
+        email: user.email,
+        role: user.role,
+        uuid: user.uuid,
+        username: await this.usersService.getUserUsername(user.uuid),
+      }),
+      refreshToken: await this.createRefreshTokenForExistingFamily(user, refreshToken.tokenFamily),
+    };
+    // }
+  }
+
+  async logOutUser(tokenFamily: string) {
+    await this.refreshTokensService.invalidateRefreshTokenFamilyByFamily(tokenFamily);
+  }
+
+  private createSignedAccessToken(user: ValidateUserDto) {
     const payload = {
       id: user.uuid,
       email: user.email,
       role: user.role,
-      exp: Math.floor(Date.now() / 1000) + ms("5 min") / 1000,
+      exp: Math.floor(Date.now() / 1000) + parseInt(process.env.AT_MAX_AGE_SEC),
     };
     return this.jwtService.sign(payload);
   }
@@ -54,30 +70,11 @@ export class AuthService {
       email: validateUserDto.email,
       role: validateUserDto.role,
       family: uuidv4(),
-      exp: Math.floor(Date.now() / 1000) + ms("1 week") / 1000,
+      exp: Math.floor(Date.now() / 1000) + parseInt(process.env.RT_MAX_AGE_SEC),
     };
     const refreshToken = this.jwtService.sign(payload);
     await this.refreshTokensService.createRefreshTokenForNewFamily(refreshToken, payload.family);
     return refreshToken;
-  }
-
-  async refreshToken(user: JwtRefreshStrategyUserDto, authCookie: string) {
-    const existingRefreshToken: RefreshToken = await this.refreshTokensService.getRefreshToken(authCookie);
-    if (existingRefreshToken.used) {
-      await this.refreshTokensService.invalidateRefreshTokenFamily(existingRefreshToken);
-      throw new UnauthorizedException();
-    } else {
-      await this.refreshTokensService.setRefreshTokenToUsed(existingRefreshToken);
-      return {
-        accessToken: this.getSignedAccessToken({
-          email: user.email,
-          role: user.role,
-          uuid: user.uuid,
-          username: await this.usersService.getUserUsername(user.uuid),
-        }),
-        refreshToken: await this.createRefreshTokenForExistingFamily(user, existingRefreshToken.tokenFamily),
-      };
-    }
   }
 
   private async createRefreshTokenForExistingFamily(
@@ -89,7 +86,7 @@ export class AuthService {
       email: userDto.email,
       role: userDto.role,
       family,
-      exp: Math.floor(Date.now() / 1000) + ms("1 week") / 1000,
+      exp: Math.floor(Date.now() / 1000) + parseInt(process.env.RT_MAX_AGE_SEC),
     };
     const refreshToken = this.jwtService.sign(payload);
     await this.refreshTokensService.createRefreshTokenForNewFamily(refreshToken, payload.family);

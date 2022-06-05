@@ -6,13 +6,14 @@ import { LocalAuthGuard } from "./local-auth.guard";
 import { Response } from "express";
 import { CookieService } from "../cookie/cookie.service";
 import { JwtRefreshAuthGuard } from "./jwt-refresh-auth.guard";
+import { JwtAuthGuard } from "./jwt-auth.guard";
 
 @ApiTags("auth")
 @Controller("auth")
 export class AuthController {
   constructor(private authService: AuthService, private cookieService: CookieService) {}
 
-  @ApiOperation({ summary: "Log in any user." })
+  @ApiOperation({ summary: "Log the user in." })
   @UseGuards(LocalAuthGuard)
   @Post("login")
   async logIn(@Req() request, @Res({ passthrough: true }) response: Response) {
@@ -31,12 +32,20 @@ export class AuthController {
   @UseGuards(JwtRefreshAuthGuard)
   @Post("refresh")
   async refreshToken(@Req() request, @Res({ passthrough: true }) response: Response) {
-    const { accessToken, refreshToken } = await this.authService.refreshToken(request.user, request.cookies.auth);
+    const authCookie = request.cookies.auth; // guaranteed to be valid and not used by the JwtRefreshAuthGuard
+    const { accessToken, refreshToken } = await this.authService.refreshToken(request.user, authCookie);
     response.cookie("auth", refreshToken, this.cookieService.generateAuthCookieOptions());
     return { accessToken, email: request.user.email, username: request.user.username };
   }
 
-  // todo - logout()
+  @ApiOperation({ summary: "Log the user out." })
+  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtRefreshAuthGuard)
+  @Post("logout")
+  async logOut(@Req() request, @Res({ passthrough: true }) response: Response) {
+    await this.authService.logOutUser(request.user.family);
+    response.cookie("auth", null, this.cookieService.generateInvalidAuthCookieOptions());
+  }
 
   // todo - register teacher
 
