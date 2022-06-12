@@ -70,14 +70,14 @@ CREATE TABLE "Representative" (
 CREATE TABLE "School" (
     "uuid" UUID NOT NULL,
     "name" VARCHAR(256) NOT NULL,
-    "nameModified" TIMESTAMP(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "countryCode" VARCHAR(3) NOT NULL,
     "city" VARCHAR(128) NOT NULL,
     "addressLineOne" VARCHAR(256) NOT NULL,
     "addressLineTwo" VARCHAR(256) NOT NULL,
-    "addressModified" TIMESTAMP(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "created" TIMESTAMP(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "modified" TIMESTAMP(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "createdByUuid" UUID NOT NULL,
+    "modifiedByUuid" UUID NOT NULL,
 
     CONSTRAINT "School_pkey" PRIMARY KEY ("uuid")
 );
@@ -87,14 +87,14 @@ CREATE TABLE "Faculty" (
     "uuid" UUID NOT NULL,
     "schoolUuid" UUID NOT NULL,
     "name" VARCHAR(256) NOT NULL,
-    "nameModified" TIMESTAMP(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "countryCode" VARCHAR(3) NOT NULL,
     "city" VARCHAR(128) NOT NULL,
     "addressLineOne" VARCHAR(256) NOT NULL,
     "addressLineTwo" VARCHAR(256) NOT NULL,
-    "addressModified" TIMESTAMP(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "created" TIMESTAMP(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "modified" TIMESTAMP(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "createdByUuid" UUID NOT NULL,
+    "modifiedByUuid" UUID NOT NULL,
 
     CONSTRAINT "Faculty_pkey" PRIMARY KEY ("uuid")
 );
@@ -102,13 +102,12 @@ CREATE TABLE "Faculty" (
 -- CreateTable
 CREATE TABLE "Channel" (
     "uuid" UUID NOT NULL,
-    "creatorUuid" UUID NOT NULL,
     "name" VARCHAR(255) NOT NULL,
-    "nameModified" TIMESTAMP(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "description" VARCHAR(512),
-    "descriptionModified" TIMESTAMP(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "created" TIMESTAMP(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "modified" TIMESTAMP(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "createdByUuid" UUID NOT NULL,
+    "modifiedByUuid" UUID NOT NULL,
 
     CONSTRAINT "Channel_pkey" PRIMARY KEY ("uuid")
 );
@@ -221,10 +220,25 @@ ALTER TABLE "Representative" ADD CONSTRAINT "Representative_userUuid_fkey" FOREI
 ALTER TABLE "Representative" ADD CONSTRAINT "Representative_schoolUuid_fkey" FOREIGN KEY ("schoolUuid") REFERENCES "School"("uuid") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
+ALTER TABLE "School" ADD CONSTRAINT "School_createdByUuid_fkey" FOREIGN KEY ("createdByUuid") REFERENCES "User"("uuid") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "School" ADD CONSTRAINT "School_modifiedByUuid_fkey" FOREIGN KEY ("modifiedByUuid") REFERENCES "User"("uuid") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Faculty" ADD CONSTRAINT "Faculty_createdByUuid_fkey" FOREIGN KEY ("createdByUuid") REFERENCES "User"("uuid") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Faculty" ADD CONSTRAINT "Faculty_modifiedByUuid_fkey" FOREIGN KEY ("modifiedByUuid") REFERENCES "User"("uuid") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
 ALTER TABLE "Faculty" ADD CONSTRAINT "Faculty_schoolUuid_fkey" FOREIGN KEY ("schoolUuid") REFERENCES "School"("uuid") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Channel" ADD CONSTRAINT "Channel_creatorUuid_fkey" FOREIGN KEY ("creatorUuid") REFERENCES "User"("uuid") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "Channel" ADD CONSTRAINT "Channel_createdByUuid_fkey" FOREIGN KEY ("createdByUuid") REFERENCES "User"("uuid") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Channel" ADD CONSTRAINT "Channel_modifiedByUuid_fkey" FOREIGN KEY ("modifiedByUuid") REFERENCES "User"("uuid") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "ChannelSubscribedUsers" ADD CONSTRAINT "ChannelSubscribedUsers_userUuid_fkey" FOREIGN KEY ("userUuid") REFERENCES "User"("uuid") ON DELETE CASCADE ON UPDATE CASCADE;

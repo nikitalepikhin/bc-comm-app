@@ -33,7 +33,7 @@ async function bootstrap() {
 
   initSwagger(app);
   await app.listen(8443, "commapp.com", () => {
-    console.log("RUNNING ON PORT 8443");
+    console.log("Server is running on port 8443");
   });
 }
 bootstrap();

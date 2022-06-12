@@ -43,11 +43,10 @@ export class AuthService {
         email: user.email,
         role: user.role,
         uuid: user.uuid,
-        username: await this.usersService.getUserUsername(user.uuid),
+        username: (await this.usersService.findByUuid(user.uuid)).username,
       }),
       refreshToken: await this.createRefreshTokenForExistingFamily(user, refreshToken.tokenFamily),
     };
-    // }
   }
 
   async logOutUser(tokenFamily: string) {

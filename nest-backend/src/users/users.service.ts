@@ -23,17 +23,16 @@ export class UsersService {
     const salt = await bcrypt.genSalt();
     const hashedPassword = await bcrypt.hash(password, salt);
     const username = randomstring.generate(usernameParams).toLowerCase();
-    return this.prisma.user.create({
+    return await this.prisma.user.create({
       data: { email, password: hashedPassword as string, status: Status.ACTIVE, role, username },
     });
   }
 
   async findByEmail(email: string) {
-    return this.prisma.user.findUnique({ where: { email } });
+    return await this.prisma.user.findUnique({ where: { email } });
   }
 
-  async getUserUsername(uuid: string) {
-    const user = await this.prisma.user.findUnique({ where: { uuid } });
-    return user.username;
+  async findByUuid(uuid: string) {
+    return await this.prisma.user.findUnique({ where: { uuid } });
   }
 }
