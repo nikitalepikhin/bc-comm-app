@@ -25,6 +25,7 @@ public class CookieFilter extends OncePerRequestFilter {
             "/api/auth/login",
             "/api/auth/signup/.*",
             "/api/schools/.*",
+            "/api/deps/.*",
             "/api/auth/refresh",
             "/v3/api-docs.*",
             "/swagger-ui.*",
