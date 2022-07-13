@@ -109,6 +109,16 @@
       "include": {
         "file": "db/changelog/changeset/insert-status-values.json"
       }
+    },
+    {
+      "include": {
+        "file": "db/changelog/changeset/insert-authority-values-02.sql"
+      }
+    },
+    {
+      "include": {
+        "file": "db/changelog/changeset/insert-schools-01.sql"
+      }
     }
   ]
 }

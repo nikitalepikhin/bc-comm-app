@@ -1,0 +1,8 @@
+{
+  "schemaFile": "./api-docs.json",
+  "apiFile": "../src/app/emptyApi.ts",
+  "apiImport": "emptyApi",
+  "outputFile": "../src/app/api.ts",
+  "exportName": "api",
+  "hooks": true
+}

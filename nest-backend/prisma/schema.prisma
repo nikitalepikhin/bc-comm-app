@@ -1,0 +1,226 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model RefreshToken {
+  uuid         String   @id @default(uuid()) @db.Uuid
+  refreshToken String   @unique
+  tokenFamily  String   @db.Uuid
+  used         Boolean  @default(false)
+  created      DateTime @default(now()) @db.Timestamp(6)
+  modified     DateTime @default(now()) @db.Timestamp(6)
+}
+
+enum Role {
+  ADMIN
+  REPRESENTATIVE
+  TEACHER
+  STUDENT
+}
+
+model Authority {
+  uuid  String @id @default(uuid()) @db.Uuid
+  name  String @unique @db.VarChar(255)
+  roles Role[]
+}
+
+enum Status {
+  ACTIVE
+  DELETED
+}
+
+model User {
+  uuid                  String                   @id @default(uuid()) @db.Uuid
+  status                Status
+  role                  Role
+  username              String                   @unique @db.VarChar(32)
+  email                 String                   @unique @db.VarChar(255)
+  password              String                   @db.VarChar(1024)
+  created               DateTime                 @default(now()) @db.Timestamp(6)
+  modified              DateTime                 @default(now()) @db.Timestamp(6)
+  usernameModified      DateTime                 @default(now()) @db.Timestamp(6)
+  passwordModified      DateTime                 @default(now()) @db.Timestamp(6)
+  teacher               Teacher?
+  representative        Representative?
+  subscriptions         ChannelSubscribedUsers[]
+  administratedChannels ChannelAdminUsers[]
+  createdPosts          Post[]
+  upvotedPosts          UserUpvotedPost[]
+  downvotedPosts        UserDownvotedPost[]
+  createdComments       Comment[]
+  upvotedComments       UserUpvotedComment[]
+  downvotedComments     UserDownvotedComment[]
+  createdChannels       Channel[]                @relation("channelCreatedBy")
+  modifiedChannels      Channel[]                @relation("channelModifiedBy")
+  createdSchools        School[]                 @relation("schoolCreatedBy")
+  modifiedSchools       School[]                 @relation("schoolModifiedBy")
+  createdFaculties      Faculty[]                @relation("facultyCreatedBy")
+  modifiedFaculties     Faculty[]                @relation("facultyModifiedBy")
+}
+
+model Teacher {
+  userUuid        String   @id @unique @db.Uuid
+  user            User     @relation(fields: [userUuid], references: [uuid], onDelete: Cascade)
+  name            String   @db.VarChar(128)
+  nameModified    DateTime @default(now()) @db.Timestamp(6)
+  bio             String?  @db.VarChar(1024)
+  bioModified     DateTime @default(now()) @db.Timestamp(6)
+  verified        Boolean  @default(false)
+  schoolUuid      String   @db.Uuid
+  school          School   @relation(fields: [schoolUuid], references: [uuid])
+  schoolModified  DateTime @default(now()) @db.Timestamp(6)
+  facultyUuid     String   @db.Uuid
+  faculty         Faculty  @relation(fields: [facultyUuid], references: [uuid])
+  facultyModified DateTime @default(now()) @db.Timestamp(6)
+}
+
+model Representative {
+  userUuid       String   @id @unique @db.Uuid
+  user           User     @relation(fields: [userUuid], references: [uuid], onDelete: Cascade)
+  schoolUuid     String   @db.Uuid
+  school         School   @relation(fields: [schoolUuid], references: [uuid])
+  schoolModified DateTime @default(now()) @db.Timestamp(6)
+}
+
+model School {
+  uuid            String           @id @default(uuid()) @db.Uuid
+  teachers        Teacher[]
+  representatives Representative[]
+  name            String           @db.VarChar(256)
+  countryCode     String           @db.VarChar(3)
+  city            String           @db.VarChar(128)
+  postalCode      String           @db.VarChar(10)
+  addressLineOne  String           @db.VarChar(256)
+  addressLineTwo  String           @db.VarChar(256)
+  created         DateTime         @default(now()) @db.Timestamp(6)
+  modified        DateTime         @default(now()) @db.Timestamp(6)
+  createdBy       User             @relation(name: "schoolCreatedBy", fields: [createdByUuid], references: [uuid])
+  createdByUuid   String           @db.Uuid
+  modifiedBy      User             @relation(name: "schoolModifiedBy", fields: [modifiedByUuid], references: [uuid])
+  modifiedByUuid  String           @db.Uuid
+  faculties       Faculty[]
+}
+
+model Faculty {
+  uuid           String    @id @default(uuid()) @db.Uuid
+  schoolUuid     String    @db.Uuid
+  school         School    @relation(fields: [schoolUuid], references: [uuid], onDelete: Cascade)
+  teachers       Teacher[]
+  name           String    @db.VarChar(256)
+  countryCode    String    @db.VarChar(3)
+  city           String    @db.VarChar(128)
+  postalCode     String    @db.VarChar(10)
+  addressLineOne String    @db.VarChar(256)
+  addressLineTwo String    @db.VarChar(256)
+  created        DateTime  @default(now()) @db.Timestamp(6)
+  modified       DateTime  @default(now()) @db.Timestamp(6)
+  createdBy      User      @relation(name: "facultyCreatedBy", fields: [createdByUuid], references: [uuid])
+  createdByUuid  String    @db.Uuid
+  modifiedBy     User      @relation(name: "facultyModifiedBy", fields: [modifiedByUuid], references: [uuid])
+  modifiedByUuid String    @db.Uuid
+}
+
+model Channel {
+  uuid           String                   @id @default(uuid()) @db.Uuid
+  name           String                   @db.VarChar(255)
+  description    String?                  @db.VarChar(512)
+  created        DateTime                 @default(now()) @db.Timestamp(6)
+  modified       DateTime                 @default(now()) @db.Timestamp(6)
+  createdBy      User                     @relation(name: "channelCreatedBy", fields: [createdByUuid], references: [uuid], onDelete: Cascade)
+  createdByUuid  String                   @db.Uuid
+  modifiedBy     User                     @relation(name: "channelModifiedBy", fields: [modifiedByUuid], references: [uuid], onDelete: Cascade)
+  modifiedByUuid String                   @db.Uuid
+  subscribers    ChannelSubscribedUsers[]
+  admins         ChannelAdminUsers[]
+  posts          Post[]
+}
+
+model ChannelSubscribedUsers {
+  userUuid     String   @db.Uuid
+  user         User     @relation(fields: [userUuid], references: [uuid], onDelete: Cascade)
+  channelUuid  String   @db.Uuid
+  channel      Channel  @relation(fields: [channelUuid], references: [uuid], onDelete: Cascade)
+  subscribedAt DateTime @default(now()) @db.Timestamp(6)
+
+  @@id([userUuid, channelUuid])
+}
+
+model ChannelAdminUsers {
+  userUuid     String   @db.Uuid
+  user         User     @relation(fields: [userUuid], references: [uuid], onDelete: Cascade)
+  channelUuid  String   @db.Uuid
+  channel      Channel  @relation(fields: [channelUuid], references: [uuid])
+  subscribedAt DateTime @default(now()) @db.Timestamp(6)
+
+  @@id([userUuid, channelUuid])
+}
+
+model Post {
+  uuid        String              @id @default(uuid()) @db.Uuid
+  channelUuid String              @db.Uuid
+  channel     Channel             @relation(fields: [channelUuid], references: [uuid], onDelete: Cascade)
+  authorUuid  String              @db.Uuid
+  author      User                @relation(fields: [authorUuid], references: [uuid])
+  title       String              @db.VarChar(300)
+  body        String?             @db.VarChar(40000)
+  created     DateTime            @default(now()) @db.Timestamp(6)
+  modified    DateTime            @default(now()) @db.Timestamp(6)
+  upvotedBy   UserUpvotedPost[]
+  downvotedBy UserDownvotedPost[]
+  comments    Comment[]
+}
+
+model UserUpvotedPost {
+  userUuid String @db.Uuid
+  user     User   @relation(fields: [userUuid], references: [uuid], onDelete: Cascade)
+  postUuid String @db.Uuid
+  post     Post   @relation(fields: [postUuid], references: [uuid], onDelete: Cascade)
+
+  @@id([userUuid, postUuid])
+}
+
+model UserDownvotedPost {
+  userUuid String @db.Uuid
+  user     User   @relation(fields: [userUuid], references: [uuid], onDelete: Cascade)
+  postUuid String @db.Uuid
+  post     Post   @relation(fields: [postUuid], references: [uuid], onDelete: Cascade)
+
+  @@id([userUuid, postUuid])
+}
+
+model Comment {
+  uuid          String                 @id @default(uuid()) @db.Uuid
+  postUuid      String                 @db.Uuid
+  post          Post                   @relation(fields: [postUuid], references: [uuid])
+  authorUuid    String                 @db.Uuid
+  author        User                   @relation(fields: [authorUuid], references: [uuid])
+  body          String                 @db.VarChar(10000)
+  parentUuid    String?                @db.Uuid
+  parent        Comment?               @relation(name: "parentComment", fields: [parentUuid], references: [uuid])
+  childComments Comment[]              @relation(name: "parentComment")
+  upvotedBy     UserUpvotedComment[]
+  downvotedBy   UserDownvotedComment[]
+}
+
+model UserUpvotedComment {
+  userUuid    String  @db.Uuid
+  user        User    @relation(fields: [userUuid], references: [uuid], onDelete: Cascade)
+  commentUuid String  @db.Uuid
+  comment     Comment @relation(fields: [commentUuid], references: [uuid], onDelete: Cascade)
+
+  @@id([userUuid, commentUuid])
+}
+
+model UserDownvotedComment {
+  userUuid    String  @db.Uuid
+  user        User    @relation(fields: [userUuid], references: [uuid], onDelete: Cascade)
+  commentUuid String  @db.Uuid
+  comment     Comment @relation(fields: [commentUuid], references: [uuid], onDelete: Cascade)
+
+  @@id([userUuid, commentUuid])
+}

@@ -5,6 +5,8 @@
   "dependencies": {
     "@emotion/react": "^11.8.1",
     "@emotion/styled": "^11.8.1",
+    "@headlessui/react": "^1.5.0",
+    "@heroicons/react": "^1.0.6",
     "@mui/icons-material": "^5.5.1",
     "@mui/material": "^5.5.0",
     "@reduxjs/toolkit": "^1.8.0",
@@ -16,7 +18,9 @@
     "@types/react": "^17.0.20",
     "@types/react-dom": "^17.0.9",
     "@types/react-redux": "^7.1.23",
+    "async-mutex": "^0.3.2",
     "axios": "^0.26.0",
+    "classnames": "^2.3.1",
     "formik": "^2.2.9",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
@@ -24,6 +28,7 @@
     "react-router-dom": "6",
     "react-scripts": "5.0.0",
     "typescript": "^4.4.2",
+    "uuid": "^8.3.2",
     "yup": "^0.32.11"
   },
   "scripts": {
@@ -31,14 +36,10 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "generate-api": "yarn run remove-generated-api && openapi-generator-cli generate",
-    "remove-generated-api": "rm -rf src/generatedApi/{api/model}/*.ts"
+    "gen-api": "npx @rtk-query/codegen-openapi ./resources/openapi-config.json"
   },
   "eslintConfig": {
     "extends": "react-app"
-  },
-  "prettier": {
-    "printWidth": 120
   },
   "browserslist": {
     "production": [
@@ -55,7 +56,13 @@
   "devDependencies": {
     "@openapitools/openapi-generator-cli": "^2.4.26",
     "@redux-devtools/extension": "^3.2.2",
+    "@rtk-query/codegen-openapi": "^1.0.0-alpha.1",
+    "@tailwindcss/forms": "^0.5.0",
+    "@types/uuid": "^8.3.4",
+    "autoprefixer": "^10.4.4",
     "loglevel": "^1.8.0",
-    "prettier": "^2.5.1"
+    "postcss": "^8.4.12",
+    "prettier": "^2.5.1",
+    "tailwindcss": "^3.0.24"
   }
 }

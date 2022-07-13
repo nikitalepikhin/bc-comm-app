@@ -1,39 +1,28 @@
-import React from "react";
-import { useAppDispatch, useAppSelector } from "./app/hooks";
-import { Button, Typography } from "@mui/material";
-import { logOutUser } from "./features/user/userSlice";
-import { refreshToken } from "./features/token/tokenSlice";
-import { Link } from "react-router-dom";
-import { useAuthentication } from "./features/user/useAuthentication";
-import { getHelloWorld } from "./features/dummy/dummySlice";
+import React, { useEffect } from "react";
+import { useRefreshTokenMutation } from "./app/enhancedApi";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import LoginPage from "./pages/LoginPage";
+import { DebugPage } from "./pages/DebugPage";
+import { IndexPage } from "./pages/IndexPage";
 
-function App() {
-  const { username, email } = useAppSelector((state) => state.user);
-  const { message, error } = useAppSelector((state) => state.dummy);
-  const dispatch = useAppDispatch();
-  useAuthentication();
-  return email ? (
-    <div>
-      {`Welcome back, ${username}`} <Button onClick={() => dispatch(logOutUser())}>Log Out</Button>
-      <Button onClick={() => dispatch(refreshToken())}>Refresh token</Button>
-      <Button onClick={() => dispatch(getHelloWorld())}>GET DUMMY</Button>
-      {message && <Typography variant={"body1"}>{message}</Typography>}
-      {error && (
-        <Typography variant={"body1"} color={"red"}>
-          {error}
-        </Typography>
-      )}
-    </div>
-  ) : (
-    <div>
-      <Button>
-        <Link to={"/login"}>Log In</Link>
-      </Button>
-      <Button>
-        <Link to={"/signup"}>Sign Up</Link>
-      </Button>
-    </div>
+const App: React.FC = () => {
+  const [refreshToken, {}] = useRefreshTokenMutation();
+
+  useEffect(() => {
+    console.log("APP MOUNTED");
+    refreshToken();
+  }, []);
+
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route index element={<IndexPage />} />
+        <Route path={"/login"} element={<LoginPage />} />
+        <Route path={"/debug"} element={<DebugPage />} />
+        {/*<Route path={'/signup'} element={<SignupPage />} />*/}
+      </Routes>
+    </BrowserRouter>
   );
-}
+};
 
 export default App;
