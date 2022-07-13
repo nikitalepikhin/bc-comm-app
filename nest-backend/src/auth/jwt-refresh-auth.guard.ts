@@ -18,8 +18,10 @@ export class JwtRefreshAuthGuard extends AuthGuard("jwt-refresh") {
     await super.canActivate(context);
     const refreshTokenCookie = context.switchToHttp().getRequest().cookies.auth;
     const refreshToken = await this.refreshTokenService.getRefreshTokenByValue(refreshTokenCookie);
-    if (refreshToken.used) {
-      await this.refreshTokenService.invalidateRefreshTokenFamilyByFamily(refreshToken.tokenFamily);
+    if (!refreshToken || refreshToken.used) {
+      if (refreshToken) {
+        await this.refreshTokenService.invalidateRefreshTokenFamilyByFamily(refreshToken.tokenFamily);
+      }
       throw new UnauthorizedException();
     } else {
       return true;

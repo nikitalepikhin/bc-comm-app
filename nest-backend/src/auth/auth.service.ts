@@ -38,14 +38,16 @@ export class AuthService {
 
   async refreshToken(user: JwtRefreshStrategyUserDto, authCookie: string) {
     const refreshToken = await this.refreshTokensService.setRefreshTokenToUsedByValue(authCookie);
+    const username = (await this.usersService.findByUuid(user.uuid)).username;
     return {
       accessToken: this.createSignedAccessToken({
         email: user.email,
         role: user.role,
         uuid: user.uuid,
-        username: (await this.usersService.findByUuid(user.uuid)).username,
+        username,
       }),
       refreshToken: await this.createRefreshTokenForExistingFamily(user, refreshToken.tokenFamily),
+      username,
     };
   }
 
@@ -72,7 +74,7 @@ export class AuthService {
       exp: Math.floor(Date.now() / 1000) + parseInt(process.env.RT_MAX_AGE_SEC),
     };
     const refreshToken = this.jwtService.sign(payload);
-    await this.refreshTokensService.createRefreshTokenForNewFamily(refreshToken, payload.family);
+    await this.refreshTokensService.createRefreshToken(refreshToken, payload.family);
     return refreshToken;
   }
 
@@ -86,9 +88,10 @@ export class AuthService {
       role: userDto.role,
       family,
       exp: Math.floor(Date.now() / 1000) + parseInt(process.env.RT_MAX_AGE_SEC),
+      rand: uuidv4(),
     };
     const refreshToken = this.jwtService.sign(payload);
-    await this.refreshTokensService.createRefreshTokenForNewFamily(refreshToken, payload.family);
+    await this.refreshTokensService.createRefreshToken(refreshToken, family);
     return refreshToken;
   }
 }

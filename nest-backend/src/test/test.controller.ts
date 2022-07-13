@@ -9,6 +9,11 @@ export class TestController {
   @UseGuards(JwtAuthGuard)
   @Get("/hello")
   async hello(@Req() request) {
-    return { message: "Hello, world!", ...request.user, ...request.cookies };
+    return { message: `Hello, ${request.user.email} 👋! The time is ${new Date().getTime()}.` };
+  }
+
+  @Get("/guest")
+  async helloNoAuth() {
+    return { message: `Hello, alien 👽! The time is ${new Date().getTime()}.` };
   }
 }

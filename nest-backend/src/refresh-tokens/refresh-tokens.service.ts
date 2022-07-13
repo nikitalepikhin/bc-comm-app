@@ -5,8 +5,12 @@ import { PrismaService } from "../prisma/prisma.service";
 export class RefreshTokensService {
   constructor(private prisma: PrismaService) {}
 
-  async createRefreshTokenForNewFamily(refreshToken: string, family: string): Promise<void> {
-    await this.prisma.refreshToken.create({ data: { refreshToken, tokenFamily: family } });
+  async createRefreshToken(refreshToken: string, family: string): Promise<void> {
+    await this.prisma.refreshToken.upsert({
+      where: { refreshToken },
+      update: {},
+      create: { refreshToken, tokenFamily: family },
+    });
   }
 
   async getRefreshTokenByValue(refreshToken: string) {

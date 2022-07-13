@@ -18,15 +18,17 @@ function initSwagger(app: INestApplication) {
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
     httpsOptions: {
-      key: fs.readFileSync(".cert/server.key", "utf-8"),
-      cert: fs.readFileSync(".cert/server.crt", "utf-8"),
+      key: fs.readFileSync(".cert/cert.key", "utf-8"),
+      cert: fs.readFileSync(".cert/cert.pem", "utf-8"),
     },
   });
 
   app.use(cookieParser());
 
   app.enableCors({
-    origin: true,
+    origin: "https://commapp.com",
+    allowedHeaders: ["Authorization", "Cache-Control", "Content-Type", "Cookie"],
+    exposedHeaders: ["Set-Cookie"],
     methods: "GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS",
     credentials: true,
   });
