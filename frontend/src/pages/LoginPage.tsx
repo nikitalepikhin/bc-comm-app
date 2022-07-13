@@ -1,14 +1,13 @@
 import React, { useEffect } from "react";
-import { Form, Formik, Field, FieldProps } from "formik";
-import { useLogInUserMutation } from "../app/api";
+import { Field, FieldProps, Form, Formik } from "formik";
 import * as yup from "yup";
-import classNames from "classnames";
 import { useNavigate } from "react-router-dom";
 import TextField from "../common/TextField";
+import { useLogInMutation } from "../app/enhancedApi";
 
 const initialValues = {
-  email: "",
-  password: "",
+  email: "user@email.com",
+  password: "pass12",
 };
 
 const validationSchema = yup.object({
@@ -20,14 +19,14 @@ const validationSchema = yup.object({
 });
 
 const LoginPage: React.FC = () => {
-  const [logInUser, { data, error, isLoading, isSuccess }] = useLogInUserMutation();
+  const [logIn, { data, error, isLoading, isSuccess }] = useLogInMutation();
   const navigate = useNavigate();
 
   useEffect(() => {
     if (isSuccess) {
-      navigate("/");
+      navigate("/debug");
     }
-  }, [isSuccess, navigate]);
+  }, [isSuccess]);
 
   return (
     <div className="min-h-screen flex flex-col justify-center items-center py-8 px-6 sm:px-8">
@@ -36,9 +35,7 @@ const LoginPage: React.FC = () => {
       </div>
       <Formik
         initialValues={initialValues}
-        onSubmit={({ email, password }) => {
-          logInUser({ logInUserRequestDto: { email, password } });
-        }}
+        onSubmit={({ email, password }) => logIn({ logInUserRequestDto: { email, password } })}
         validationSchema={validationSchema}
         validateOnChange={true}
         validateOnMount={true}

@@ -1,163 +1,81 @@
 import { emptyApi as api } from "./emptyApi";
 const injectedRtkApi = api.injectEndpoints({
   endpoints: (build) => ({
-    echoMessage: build.mutation<EchoMessageApiResponse, EchoMessageApiArg>({
-      query: (queryArg) => ({
-        url: `/api/test/echo`,
-        method: "POST",
-        body: queryArg.body,
-        headers: { Authorization: queryArg.authorization },
-      }),
+    logIn: build.mutation<LogInApiResponse, LogInApiArg>({
+      query: (queryArg) => ({ url: `/auth/login`, method: "POST", body: queryArg.logInUserRequestDto }),
     }),
-    registerTeacherUser: build.mutation<RegisterTeacherUserApiResponse, RegisterTeacherUserApiArg>({
-      query: (queryArg) => ({
-        url: `/api/auth/signup/teacher`,
-        method: "POST",
-        body: queryArg.registerTeacherUserRequestDto,
-      }),
-    }),
-    registerStudentUser: build.mutation<RegisterStudentUserApiResponse, RegisterStudentUserApiArg>({
-      query: (queryArg) => ({
-        url: `/api/auth/signup/student`,
-        method: "POST",
-        body: queryArg.registerSimpleUserRequestDto,
-      }),
-    }),
-    registerRepresentativeUser: build.mutation<RegisterRepresentativeUserApiResponse, RegisterRepresentativeUserApiArg>(
-      {
-        query: (queryArg) => ({
-          url: `/api/auth/signup/representative`,
-          method: "POST",
-          body: queryArg.registerRepresentativeUserRequestDto,
-        }),
-      }
-    ),
-    registerAdminUser: build.mutation<RegisterAdminUserApiResponse, RegisterAdminUserApiArg>({
-      query: (queryArg) => ({
-        url: `/api/auth/signup/admin`,
-        method: "POST",
-        body: queryArg.registerSimpleUserRequestDto,
-      }),
+    signUp: build.mutation<SignUpApiResponse, SignUpApiArg>({
+      query: (queryArg) => ({ url: `/auth/signup/base`, method: "POST", body: queryArg.createBaseUserDto }),
     }),
     refreshToken: build.mutation<RefreshTokenApiResponse, RefreshTokenApiArg>({
-      query: () => ({ url: `/api/auth/refresh`, method: "POST" }),
+      query: () => ({ url: `/auth/refresh`, method: "POST" }),
     }),
-    logOutUser: build.mutation<LogOutUserApiResponse, LogOutUserApiArg>({
-      query: (queryArg) => ({
-        url: `/api/auth/logout`,
-        method: "POST",
-        headers: { Authorization: queryArg.authorization },
-      }),
+    logOut: build.mutation<LogOutApiResponse, LogOutApiArg>({
+      query: () => ({ url: `/auth/logout`, method: "POST" }),
     }),
-    logInUser: build.mutation<LogInUserApiResponse, LogInUserApiArg>({
-      query: (queryArg) => ({ url: `/api/auth/login`, method: "POST", body: queryArg.logInUserRequestDto }),
+    hello: build.query<HelloApiResponse, HelloApiArg>({
+      query: () => ({ url: `/test/hello` }),
     }),
-    getHelloWorld: build.query<GetHelloWorldApiResponse, GetHelloWorldApiArg>({
-      query: (queryArg) => ({ url: `/api/test/`, headers: { Authorization: queryArg.authorization } }),
+    helloNoAuth: build.query<HelloNoAuthApiResponse, HelloNoAuthApiArg>({
+      query: () => ({ url: `/test/guest` }),
     }),
-    getAllMatchingSchools: build.query<GetAllMatchingSchoolsApiResponse, GetAllMatchingSchoolsApiArg>({
-      query: (queryArg) => ({ url: `/api/schools/${queryArg.substring}` }),
-    }),
-    getAllSchools: build.query<GetAllSchoolsApiResponse, GetAllSchoolsApiArg>({
-      query: () => ({ url: `/api/schools/` }),
+    createSchool: build.mutation<CreateSchoolApiResponse, CreateSchoolApiArg>({
+      query: (queryArg) => ({ url: `/schools`, method: "POST", body: queryArg.createSchoolDto }),
     }),
   }),
   overrideExisting: false,
 });
 export { injectedRtkApi as api };
-export type EchoMessageApiResponse = /** status 200 OK */ string;
-export type EchoMessageApiArg = {
-  authorization: string;
-  body: string;
-};
-export type RegisterTeacherUserApiResponse = /** status 200 OK */ object;
-export type RegisterTeacherUserApiArg = {
-  registerTeacherUserRequestDto: RegisterTeacherUserRequestDto;
-};
-export type RegisterStudentUserApiResponse = /** status 200 OK */ object;
-export type RegisterStudentUserApiArg = {
-  registerSimpleUserRequestDto: RegisterSimpleUserRequestDto;
-};
-export type RegisterRepresentativeUserApiResponse = /** status 200 OK */ object;
-export type RegisterRepresentativeUserApiArg = {
-  registerRepresentativeUserRequestDto: RegisterRepresentativeUserRequestDto;
-};
-export type RegisterAdminUserApiResponse = /** status 200 OK */ object;
-export type RegisterAdminUserApiArg = {
-  registerSimpleUserRequestDto: RegisterSimpleUserRequestDto;
-};
-export type RefreshTokenApiResponse = /** status 200 OK */ RefreshTokenResponseDto;
-export type RefreshTokenApiArg = void;
-export type LogOutUserApiResponse = /** status 200 OK */ object;
-export type LogOutUserApiArg = {
-  authorization: string;
-};
-export type LogInUserApiResponse = /** status 200 OK */ LogInUserResponseDto;
-export type LogInUserApiArg = {
+export type LogInApiResponse = /** status 201 Authenticated user data */ UserDataResponseDto;
+export type LogInApiArg = {
   logInUserRequestDto: LogInUserRequestDto;
 };
-export type GetHelloWorldApiResponse = /** status 200 OK */ string;
-export type GetHelloWorldApiArg = {
-  authorization: string;
+export type SignUpApiResponse = unknown;
+export type SignUpApiArg = {
+  createBaseUserDto: CreateBaseUserDto;
 };
-export type GetAllMatchingSchoolsApiResponse = /** status 200 OK */ GetSchoolsDto;
-export type GetAllMatchingSchoolsApiArg = {
-  substring: string;
+export type RefreshTokenApiResponse = /** status 201 Authenticated user data */ UserDataResponseDto;
+export type RefreshTokenApiArg = void;
+export type LogOutApiResponse = unknown;
+export type LogOutApiArg = void;
+export type HelloApiResponse = unknown;
+export type HelloApiArg = void;
+export type HelloNoAuthApiResponse = unknown;
+export type HelloNoAuthApiArg = void;
+export type CreateSchoolApiResponse = unknown;
+export type CreateSchoolApiArg = {
+  createSchoolDto: CreateSchoolDto;
 };
-export type GetAllSchoolsApiResponse = /** status 200 OK */ GetSchoolsDto;
-export type GetAllSchoolsApiArg = void;
-export type RegisterTeacherUserRequestDto = {
+export type UserDataResponseDto = {
   email: string;
-  password: string;
-  name: string;
-  school: string;
-  department?: string;
-};
-export type RegisterSimpleUserRequestDto = {
-  email: string;
-  password: string;
-};
-export type RegisterRepresentativeUserRequestDto = {
-  email: string;
-  password: string;
-  school: string;
-};
-export type RefreshTokenResponseDto = {
-  access_token?: string;
-  email?: string;
-  username?: string;
-};
-export type LogInUserResponseDto = {
-  email?: string;
-  username?: string;
-  access_token?: string;
+  username: string;
+  role: string;
+  accessToken: string;
+  uuid: string;
 };
 export type LogInUserRequestDto = {
-  email?: string;
-  password?: string;
+  email: string;
+  password: string;
 };
-export type SchoolDto = {
-  uuid?: string;
-  value?: string;
-  country_code?: string;
-  address_line_1?: string;
-  address_line_2?: string;
-  post_index?: string;
-  city?: string;
+export type CreateBaseUserDto = {
+  email: string;
+  password: string;
+  role: string;
 };
-export type GetSchoolsDto = {
-  schools?: SchoolDto[];
+export type CreateSchoolDto = {
+  name: string;
+  countryCode: string;
+  city: string;
+  addressLineOne: string;
+  addressLineTwo: string;
+  postalCode: string;
 };
 export const {
-  useEchoMessageMutation,
-  useRegisterTeacherUserMutation,
-  useRegisterStudentUserMutation,
-  useRegisterRepresentativeUserMutation,
-  useRegisterAdminUserMutation,
+  useLogInMutation,
+  useSignUpMutation,
   useRefreshTokenMutation,
-  useLogOutUserMutation,
-  useLogInUserMutation,
-  useGetHelloWorldQuery,
-  useGetAllMatchingSchoolsQuery,
-  useGetAllSchoolsQuery,
+  useLogOutMutation,
+  useHelloQuery,
+  useHelloNoAuthQuery,
+  useCreateSchoolMutation,
 } = injectedRtkApi;
