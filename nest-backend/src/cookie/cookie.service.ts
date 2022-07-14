@@ -9,7 +9,7 @@ export class CookieService {
       secure: process.env.HTTPS_ENABLED === "true",
       domain: process.env.HTTPS_ENABLED === "true" ? process.env.COOKIE_DOMAIN : undefined,
       path: "/",
-      maxAge: parseInt(process.env.RT_MAX_AGE_SEC),
+      maxAge: parseInt(process.env.RT_MAX_AGE_SEC) * 1000,
       sameSite: "none",
     };
   }
