@@ -7,6 +7,7 @@ import { JwtService } from "@nestjs/jwt";
 import { v4 as uuidv4 } from "uuid";
 import { RefreshTokensService } from "../refresh-tokens/refresh-tokens.service";
 import { JwtRefreshStrategyUserDto } from "./dto/jwt-refresh-strategy-user.dto";
+import CreateRepresentativeUserDto from "../users/dto/create-representative-user.dto";
 
 @Injectable()
 export class AuthService {
@@ -27,6 +28,10 @@ export class AuthService {
 
   async signUpBaseUser(createBaseUserDto: CreateBaseUserDto): Promise<void> {
     await this.usersService.createBaseUser(createBaseUserDto);
+  }
+
+  async signUpRepresentativeUser(createRepresentativeUserDto: CreateRepresentativeUserDto) {
+    await this.usersService.createRepresentativeUser(createRepresentativeUserDto);
   }
 
   async logInUser(userDto: ValidateUserDto) {

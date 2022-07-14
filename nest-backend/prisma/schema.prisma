@@ -82,6 +82,8 @@ model Teacher {
 model Representative {
   userUuid       String   @id @unique @db.Uuid
   user           User     @relation(fields: [userUuid], references: [uuid], onDelete: Cascade)
+  name           String   @db.VarChar(128)
+  nameModified   DateTime @default(now()) @db.Timestamp(6)
   schoolUuid     String   @db.Uuid
   school         School   @relation(fields: [schoolUuid], references: [uuid])
   schoolModified DateTime @default(now()) @db.Timestamp(6)

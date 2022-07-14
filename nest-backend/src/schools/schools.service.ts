@@ -12,4 +12,8 @@ export class SchoolsService {
       data: { ...schoolDto, createdByUuid: userDto.uuid, modifiedByUuid: userDto.uuid },
     });
   }
+
+  async getSchoolByUuid(schoolUuid: string) {
+    return await this.prisma.school.findUnique({ where: { uuid: schoolUuid } });
+  }
 }

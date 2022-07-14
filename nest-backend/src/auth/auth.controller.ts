@@ -10,6 +10,7 @@ import { JwtAuthGuard } from "./jwt-auth.guard";
 import { ApiImplicitBody } from "@nestjs/swagger/dist/decorators/api-implicit-body.decorator";
 import LogInUserRequestDto from "../users/dto/log-in-user-request.dto";
 import UserDataResponseDto from "../users/dto/user-data-response.dto";
+import CreateRepresentativeUserDto from "../users/dto/create-representative-user.dto";
 
 @ApiTags("auth")
 @Controller("auth")
@@ -29,8 +30,14 @@ export class AuthController {
 
   @ApiOperation({ summary: "Sign up a base user." })
   @Post("signup/base")
-  async signUp(@Body() createBaseUserDto: CreateBaseUserDto) {
-    return this.authService.signUpBaseUser(createBaseUserDto);
+  async signUpBase(@Body() createBaseUserDto: CreateBaseUserDto) {
+    return await this.authService.signUpBaseUser(createBaseUserDto);
+  }
+
+  @ApiOperation({ summary: "Sign up a representative user." })
+  @Post("signup/representative")
+  async signUpRepresentative(@Body() createRepresentativeUserDto: CreateRepresentativeUserDto) {
+    return await this.authService.signUpRepresentativeUser(createRepresentativeUserDto);
   }
 
   @ApiOperation({ summary: "Refresh the issued token pair." })
