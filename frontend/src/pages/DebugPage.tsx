@@ -24,13 +24,18 @@ export const DebugPage: React.FC = () => {
   }, [resultHello, resultHelloNoAuth]);
 
   return (
-    <div className="mx-6 my-2  flex flex-col justify-start gap-1.5">
+    <div className="mx-6 my-2 flex flex-col justify-start gap-1.5">
       <h1 className="text-3xl text-primary font-bold">Authentication Stats</h1>
 
+      <div className="flex flex-row justify-start gap-2">
+        <button className={button} onClick={() => navigate("/login")}>
+          Login page
+        </button>
+        <button className={button} onClick={() => navigate("/")}>
+          Home page
+        </button>
+      </div>
       <p>Authenticated user:</p>
-      <button className={button} onClick={() => navigate("/login")}>
-        Go to login page
-      </button>
       <pre className={code}>{JSON.stringify(user.email ? user : "user data", null, 2)}</pre>
 
       <div className="overflow-x-auto">

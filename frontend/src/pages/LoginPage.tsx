@@ -1,9 +1,9 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { Field, FieldProps, Form, Formik } from "formik";
 import * as yup from "yup";
-import { useNavigate } from "react-router-dom";
+import { Navigate } from "react-router-dom";
 import TextField from "../common/TextField";
-import { useLogInMutation } from "../app/enhancedApi";
+import { useLogInMutation, useRefreshTokenMutation } from "../app/enhancedApi";
 
 const initialValues = {
   email: "user@email.com",
@@ -19,16 +19,14 @@ const validationSchema = yup.object({
 });
 
 const LoginPage: React.FC = () => {
-  const [logIn, { data, error, isLoading, isSuccess }] = useLogInMutation();
-  const navigate = useNavigate();
+  const [logIn, { data, error, isLoading, isSuccess: isLoginSuccess }] = useLogInMutation(); // todo show spinner while logging in + handle error
+  const [, { isSuccess: isRefreshTokenSuccess }] = useRefreshTokenMutation({
+    fixedCacheKey: "refresh-token-sub",
+  });
 
-  useEffect(() => {
-    if (isSuccess) {
-      navigate("/debug");
-    }
-  }, [isSuccess]);
-
-  return (
+  return isLoginSuccess || isRefreshTokenSuccess ? (
+    <Navigate to="/" replace />
+  ) : (
     <div className="min-h-screen flex flex-col justify-center items-center py-8 px-6 sm:px-8">
       <div>
         <h2 className="text-2xl font-bold text-center">Welcome back!</h2>
@@ -59,11 +57,11 @@ const LoginPage: React.FC = () => {
                       wrapperClasses={"mt-4"}
                       field={field}
                     >
-                      <p className="flex justify-end">
-                        <a href="#" className="text-blue-600 hover:underline hover:text-blue-900 text-sm mr-2 mt-0.5">
-                          Forgot your password?
-                        </a>
-                      </p>
+                      {/*<p className="flex justify-end">*/}
+                      {/*  <a href="#" className="text-blue-600 hover:underline hover:text-blue-900 text-sm mr-2 mt-0.5">*/}
+                      {/*    Forgot your password?*/}
+                      {/*  </a>*/}
+                      {/*</p>*/}
                     </TextField>
                   )}
                 </Field>

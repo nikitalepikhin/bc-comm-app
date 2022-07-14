@@ -1,10 +1,12 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { enhancedApi } from "../../app/enhancedApi";
 
+export type RoleType = "ADMIN" | "REPRESENTATIVE" | "TEACHER" | "STUDENT";
+
 export interface User {
   email: string | undefined;
   username: string | undefined;
-  role: string | undefined;
+  role: RoleType | undefined;
   uuid: string | undefined;
 }
 
@@ -41,7 +43,7 @@ const authSlice = createSlice({
       state.user = {
         email: action.payload.email,
         username: action.payload.username,
-        role: action.payload.role,
+        role: action.payload.role as RoleType,
         uuid: action.payload.uuid,
       };
       state.accessToken = action.payload.accessToken;
@@ -50,7 +52,7 @@ const authSlice = createSlice({
       state.user = {
         email: action.payload.email,
         username: action.payload.username,
-        role: action.payload.role,
+        role: action.payload.role as RoleType,
         uuid: action.payload.uuid,
       };
       state.accessToken = action.payload.accessToken;
