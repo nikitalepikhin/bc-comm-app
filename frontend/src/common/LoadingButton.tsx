@@ -15,9 +15,11 @@ const LoadingButton: React.FC<LoadingButtonPropsType> = ({
   loadingIconSize = 20,
   children,
 }) => {
-  return (
+  return loading ? (
+    <CircularProgress size={loadingIconSize} />
+  ) : (
     <button className={className} onClick={onClick}>
-      {loading ? <CircularProgress size={loadingIconSize} /> : children}
+      {children}
     </button>
   );
 };

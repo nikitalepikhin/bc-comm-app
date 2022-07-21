@@ -1,12 +1,21 @@
 import { api } from "./api";
+import { TagTypes } from "./emptyApi";
 
 export const enhancedApi = api.enhanceEndpoints({
   endpoints: {
     getRepresentativeVerificationRequests: {
-      providesTags: ["REP_REQS"],
+      providesTags: (result) =>
+        result
+          ? [
+              ...result.requests.map((request) => ({ type: TagTypes.REPR_REQ, id: request.user.uuid })),
+              { type: TagTypes.REPR_REQ, id: TagTypes.ALL },
+            ]
+          : [{ type: TagTypes.REPR_REQ, id: TagTypes.ALL }],
     },
     verifyRepresentativeUser: {
-      invalidatesTags: ["REP_REQS"],
+      invalidatesTags: (result, error, arg) => [
+        { type: TagTypes.REPR_REQ, id: arg.verifyRepresentativeUserRequestDto.verifiedUserUuid },
+      ],
     },
   },
 });

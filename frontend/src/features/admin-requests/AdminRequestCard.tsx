@@ -15,7 +15,7 @@ interface AdminRequestCardPropsType {
 const AdminRequestCard: React.FC<AdminRequestCardPropsType> = ({ request }) => {
   const userCreatedDate = new Date(Date.parse(request.user.created));
   const [showingReason, setShowingReason] = useState(false);
-  const [verifyRepresentative, { isLoading }] = useVerifyRepresentativeUserMutation();
+  const [verifyRepresentative, { isLoading, isSuccess }] = useVerifyRepresentativeUserMutation();
   return (
     <div className="flex flex-col justify-center items-start gap-2 bg-white rounded-md px-6 py-2 sm:max-w-md max-w-2xl overflow-auto border border-gray-400">
       {isLoading && <CircularProgress size={20} />}
@@ -73,6 +73,7 @@ const AdminRequestCard: React.FC<AdminRequestCardPropsType> = ({ request }) => {
                       id="rep-request-msg"
                       placeholder="Provide a reason for the decline here"
                       maxLength={300}
+                      disabled={isLoading || isSuccess}
                       {...field}
                     />
                   )}
@@ -82,14 +83,14 @@ const AdminRequestCard: React.FC<AdminRequestCardPropsType> = ({ request }) => {
             <div className="flex flex-row gap-2 justify-start items-center flex-wrap">
               <button
                 className="px-4 py-1.5 text-white bg-green-600 hover:bg-green-800 rounded-md disabled:bg-gray-300 disabled:hover:bg-gray-300"
-                disabled={values.reason.length > 0 || showingReason}
+                disabled={values.reason.length > 0 || showingReason || isLoading || isSuccess}
                 type="submit"
               >
                 Approve
               </button>
               <button
                 className="px-4 py-1.5 text-white bg-red-600 hover:bg-red-800 rounded-md disabled:bg-gray-300 disabled:hover:bg-gray-300"
-                disabled={values.reason.length === 0 && showingReason}
+                disabled={(values.reason.length === 0 && showingReason) || isLoading || isSuccess}
                 type="submit"
                 onClick={(e) => {
                   e.preventDefault();
@@ -104,7 +105,7 @@ const AdminRequestCard: React.FC<AdminRequestCardPropsType> = ({ request }) => {
               </button>
               <button
                 className="px-4 py-1.5 text-white bg-gray-500 hover:bg-gray-700 rounded-md disabled:bg-gray-300 disabled:hover:bg-gray-300"
-                disabled={!showingReason}
+                disabled={!showingReason || isLoading || isSuccess}
                 onClick={(e) => {
                   e.preventDefault();
                   setFieldValue("reason", "");

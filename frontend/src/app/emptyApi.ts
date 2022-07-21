@@ -57,9 +57,14 @@ const baseQueryWithReauth: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQue
   return result;
 };
 
+export const TagTypes = {
+  ALL: "ALL" as const,
+  REPR_REQ: "repr_req" as const,
+};
+
 // initialize an empty emptyApi service that we'll inject endpoints into later as needed
 export const emptyApi = createApi({
   baseQuery: baseQueryWithReauth,
   endpoints: () => ({}),
-  tagTypes: ["REP_REQS"],
+  tagTypes: [TagTypes.REPR_REQ],
 });
