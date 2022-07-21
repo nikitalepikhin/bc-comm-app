@@ -6,8 +6,8 @@ import TextField from "../common/TextField";
 import { useLogInMutation, useRefreshTokenMutation } from "../app/enhancedApi";
 
 const initialValues = {
-  email: "user@email.com",
-  password: "pass12",
+  email: "",
+  password: "",
 };
 
 const validationSchema = yup.object({

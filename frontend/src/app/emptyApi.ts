@@ -17,6 +17,11 @@ const baseQuery = fetchBaseQuery({
   },
 });
 
+/**
+ * Add endpoints which will not trigger the access token refresh in case a 401 Unauthorized error is received here.
+ */
+const endpointsExcludedFromTokenRefresh = ["refreshToken"];
+
 const baseQueryWithReauth: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQueryError> = async (
   args,
   api,
@@ -25,7 +30,7 @@ const baseQueryWithReauth: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQue
   await mutex.waitForUnlock();
   console.log(`sending a request to ${api.endpoint}`);
   let result = await baseQuery(args, api, extraOptions);
-  if (result.error && result.error.status === 401 && api.endpoint !== "refreshToken") {
+  if (result.error && result.error.status === 401 && !endpointsExcludedFromTokenRefresh.includes(api.endpoint)) {
     console.log(`failed to send a request to ${api.endpoint}`);
     if (!mutex.isLocked()) {
       const release = await mutex.acquire();
@@ -56,4 +61,5 @@ const baseQueryWithReauth: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQue
 export const emptyApi = createApi({
   baseQuery: baseQueryWithReauth,
   endpoints: () => ({}),
+  tagTypes: ["REP_REQS"],
 });

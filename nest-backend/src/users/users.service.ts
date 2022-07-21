@@ -1,4 +1,4 @@
-import { BadRequestException, forwardRef, Inject, Injectable, InternalServerErrorException } from "@nestjs/common";
+import { BadRequestException, Injectable, InternalServerErrorException } from "@nestjs/common";
 import { PrismaService } from "../prisma/prisma.service";
 import { Status, User } from "@prisma/client";
 import CreateBaseUserDto from "./dto/create-base-user.dto";
@@ -6,6 +6,8 @@ import * as bcrypt from "bcrypt";
 import * as randomstring from "randomstring";
 import CreateRepresentativeUserDto from "./dto/create-representative-user.dto";
 import { SchoolsService } from "../schools/schools.service";
+import GetRepresentativeRequestsDto from "../representatives/dto/get-representative-requests.dto";
+import VerifyRepresentativeUserRequestDto from "../representatives/dto/verify-representative-user-request.dto";
 
 const usernameParams = {
   length: 8,

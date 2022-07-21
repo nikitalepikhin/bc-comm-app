@@ -1,25 +1,65 @@
 import React, { useState } from "react";
 import { Field, FieldProps, Form, Formik } from "formik";
+import { RepresentativeRequestDto } from "../../app/api";
+import { useVerifyRepresentativeUserMutation } from "../../app/enhancedApi";
+import { CircularProgress } from "@mui/material";
 
 const initialValues = {
   reason: "",
   approve: false,
 };
 
-const AdminRequestCard: React.FC = () => {
+interface AdminRequestCardPropsType {
+  request: RepresentativeRequestDto;
+}
+const AdminRequestCard: React.FC<AdminRequestCardPropsType> = ({ request }) => {
+  const userCreatedDate = new Date(Date.parse(request.user.created));
   const [showingReason, setShowingReason] = useState(false);
+  const [verifyRepresentative, { isLoading }] = useVerifyRepresentativeUserMutation();
   return (
-    <div className="flex flex-col justify-center items-start gap-2 bg-white rounded-md px-6 py-2 w-fit max-w-xl border border-gray-400">
-      <p>Representative James Cowell has created their account to represent Czech Technical University in Prague</p>
+    <div className="flex flex-col justify-center items-start gap-2 bg-white rounded-md px-6 py-2 sm:max-w-md max-w-2xl overflow-auto border border-gray-400">
+      {isLoading && <CircularProgress size={20} />}
+      <div>
+        <p>
+          Representative <span className="font-bold">{`${request.user.name}`}</span>
+        </p>
+        <div className="pl-4">
+          <p>
+            username: <span className="font-bold">{`${request.user.username}`}</span>
+          </p>
+          <p>
+            email: <span className="font-bold">{`${request.user.email}`}</span>
+          </p>
+          <p>
+            created: <span className="font-bold">{`${userCreatedDate.toLocaleString("cs-CZ")}`}</span>
+          </p>
+        </div>
+      </div>
+      <div>
+        <p>
+          School <span className="font-bold">{`${request.school.name}`}</span>
+        </p>
+        <div className="pl-4">
+          <p>
+            uuid: <span className="font-bold">{`${request.school.uuid}`}</span>
+          </p>
+        </div>
+      </div>
       <Formik
         initialValues={initialValues}
-        onSubmit={(values) => {
+        onSubmit={async (values) => {
           if (values.reason.length > 0) {
             values.approve = false;
           } else {
             values.approve = true;
           }
-          console.log(values);
+          await verifyRepresentative({
+            verifyRepresentativeUserRequestDto: {
+              verifiedUserUuid: request.user.uuid,
+              approve: values.approve,
+              reason: values.reason,
+            },
+          });
         }}
       >
         {({ values, setFieldValue, handleSubmit }) => (
