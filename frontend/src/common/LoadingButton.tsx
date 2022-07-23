@@ -1,25 +1,22 @@
 import React from "react";
-import { CircularProgress } from "@mui/material";
 
 interface LoadingButtonPropsType {
   loading: boolean;
   className: string;
+  disabled?: boolean;
   onClick: () => void;
-  loadingIconSize?: number;
 }
 
 const LoadingButton: React.FC<LoadingButtonPropsType> = ({
   loading,
+  disabled = false,
   className,
   onClick,
-  loadingIconSize = 20,
   children,
 }) => {
-  return loading ? (
-    <CircularProgress size={loadingIconSize} />
-  ) : (
-    <button className={className} onClick={onClick}>
-      {children}
+  return (
+    <button className={className} onClick={onClick} disabled={disabled}>
+      {loading ? "Loading..." : children}
     </button>
   );
 };

@@ -1,7 +1,10 @@
 import React, { useState } from "react";
 import { Field, FieldProps, Form, Formik } from "formik";
 import { RepresentativeRequestDto } from "../../app/api";
-import { useVerifyRepresentativeUserMutation } from "../../app/enhancedApi";
+import {
+  useGetRepresentativeVerificationRequestsQuery,
+  useVerifyRepresentativeUserMutation,
+} from "../../app/enhancedApi";
 import { CircularProgress } from "@mui/material";
 
 const initialValues = {
@@ -16,12 +19,13 @@ const AdminRequestCard: React.FC<AdminRequestCardPropsType> = ({ request }) => {
   const userCreatedDate = new Date(Date.parse(request.user.created));
   const [showingReason, setShowingReason] = useState(false);
   const [verifyRepresentative, { isLoading, isSuccess }] = useVerifyRepresentativeUserMutation();
+  const { isFetching } = useGetRepresentativeVerificationRequestsQuery();
   return (
-    <div className="flex flex-col justify-center items-start gap-2 bg-white rounded-md px-6 py-2 sm:max-w-md max-w-2xl overflow-auto border border-gray-400">
+    <div className="flex flex-col justify-center items-start gap-2 bg-white rounded-md px-6 py-2 w-full md:max-w-2xl border border-gray-400">
       {isLoading && <CircularProgress size={20} />}
       <div>
         <p>
-          Representative <span className="font-bold">{`${request.user.name}`}</span>
+          Representative: <span className="font-bold">{`${request.user.name}`}</span>
         </p>
         <div className="pl-4">
           <p>
@@ -37,7 +41,7 @@ const AdminRequestCard: React.FC<AdminRequestCardPropsType> = ({ request }) => {
       </div>
       <div>
         <p>
-          School <span className="font-bold">{`${request.school.name}`}</span>
+          School: <span className="font-bold">{`${request.school.name}`}</span>
         </p>
         <div className="pl-4">
           <p>
@@ -83,14 +87,14 @@ const AdminRequestCard: React.FC<AdminRequestCardPropsType> = ({ request }) => {
             <div className="flex flex-row gap-2 justify-start items-center flex-wrap">
               <button
                 className="px-4 py-1.5 text-white bg-green-600 hover:bg-green-800 rounded-md disabled:bg-gray-300 disabled:hover:bg-gray-300"
-                disabled={values.reason.length > 0 || showingReason || isLoading || isSuccess}
+                disabled={values.reason.length > 0 || showingReason || isLoading || isSuccess || isFetching}
                 type="submit"
               >
                 Approve
               </button>
               <button
                 className="px-4 py-1.5 text-white bg-red-600 hover:bg-red-800 rounded-md disabled:bg-gray-300 disabled:hover:bg-gray-300"
-                disabled={(values.reason.length === 0 && showingReason) || isLoading || isSuccess}
+                disabled={(values.reason.length === 0 && showingReason) || isLoading || isSuccess || isFetching}
                 type="submit"
                 onClick={(e) => {
                   e.preventDefault();
@@ -105,7 +109,7 @@ const AdminRequestCard: React.FC<AdminRequestCardPropsType> = ({ request }) => {
               </button>
               <button
                 className="px-4 py-1.5 text-white bg-gray-500 hover:bg-gray-700 rounded-md disabled:bg-gray-300 disabled:hover:bg-gray-300"
-                disabled={!showingReason || isLoading || isSuccess}
+                disabled={!showingReason || isLoading || isSuccess || isFetching}
                 onClick={(e) => {
                   e.preventDefault();
                   setFieldValue("reason", "");
