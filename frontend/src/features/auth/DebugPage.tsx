@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { useAppSelector } from "../app/hooks";
+import { useAppSelector } from "../../app/hooks";
 import { useNavigate } from "react-router-dom";
-import { useLazyHelloNoAuthQuery, useLazyHelloQuery, useLogOutMutation } from "../app/enhancedApi";
+import { useLazyHelloNoAuthQuery, useLazyHelloQuery, useLogOutMutation } from "../../app/enhancedApi";
 
 const code = "px-4 py-2 rounded-md bg-slate-700 text-white text-sm w-fit";
 const button = "bg-blue-600 hover:bg-blue-800 text-white px-4 py-1.5 rounded-md w-fit";

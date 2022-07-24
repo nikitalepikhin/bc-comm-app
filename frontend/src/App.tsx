@@ -2,17 +2,12 @@ import React, { useEffect } from "react";
 import { useLogOutMutation, useRefreshTokenMutation } from "./app/enhancedApi";
 import { Outlet } from "react-router-dom";
 import useAuthentication from "./common/hooks/useAuthentication";
-import LoadingPage from "./pages/LoadingPage";
+import LoadingPage from "./common/components/LoadingPage";
 
 const App: React.FC = () => {
   useAuthentication();
 
-  useEffect(() => {
-    console.log("app mounted");
-  }, []);
-
   const [, { isLoading, isUninitialized }] = useRefreshTokenMutation({ fixedCacheKey: "refresh-token-sub" });
-
   const [logOut] = useLogOutMutation();
 
   if (isLoading || isUninitialized) {

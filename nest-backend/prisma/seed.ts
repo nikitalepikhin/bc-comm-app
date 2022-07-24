@@ -18,6 +18,7 @@ async function seedAuthorities() {
   return await prisma.authority.createMany({
     data: [
       { name: Permission[Permission.SCHOOL_CREATE], roles: [Role.ADMIN] },
+      { name: Permission[Permission.SCHOOL_READ], roles: [Role.ADMIN] },
       { name: Permission[Permission.SCHOOL_UPDATE], roles: [Role.ADMIN, Role.REPRESENTATIVE] },
       { name: Permission[Permission.SCHOOL_DELETE], roles: [Role.ADMIN] },
       { name: Permission[Permission.REP_REQ_READ], roles: [Role.ADMIN] },

@@ -1,9 +1,9 @@
 import React from "react";
-import AdminRequestCard from "../features/admin-requests/AdminRequestCard";
-import { useGetRepresentativeVerificationRequestsQuery } from "../app/enhancedApi";
-import LoadingButton from "../common/LoadingButton";
+import RepresentativeVerificationRequest from "./RepresentativeVerificationRequest";
+import { useGetRepresentativeVerificationRequestsQuery } from "../../app/enhancedApi";
+import LoadingButton from "../../common/ui/LoadingButton";
 
-const AdminRequestsPage: React.FC = () => {
+const RepresentativeVerificationRequestsPage: React.FC = () => {
   const { data, isFetching, error, refetch } = useGetRepresentativeVerificationRequestsQuery();
   return (
     <div className="mx-6 my-2 flex flex-col justify-start items-center gap-2">
@@ -20,10 +20,10 @@ const AdminRequestsPage: React.FC = () => {
       {data &&
         data.requests.length > 0 &&
         data.requests.map((request) =>
-          request ? <AdminRequestCard key={request.user.uuid} request={request} /> : null
+          request ? <RepresentativeVerificationRequest key={request.user.uuid} request={request} /> : null
         )}
     </div>
   );
 };
 
-export default AdminRequestsPage;
+export default RepresentativeVerificationRequestsPage;

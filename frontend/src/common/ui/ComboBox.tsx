@@ -4,7 +4,7 @@ import { FieldInputProps, FormikErrors, FormikTouched } from "formik";
 import React, { ReactElement, useEffect, useState } from "react";
 import { ChevronDownIcon, ChevronUpIcon, XIcon } from "@heroicons/react/outline";
 import LoadingSpinner from "./LoadingSpinner";
-import { ComboBoxInputType } from "../pages/SignupPage";
+import { ComboBoxInputType } from "../../features/auth/SignupPage";
 
 interface ComboBoxPropsType<T, V> {
   id: string;

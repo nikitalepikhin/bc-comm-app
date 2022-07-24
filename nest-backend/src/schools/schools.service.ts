@@ -2,6 +2,8 @@ import { Injectable } from "@nestjs/common";
 import { PrismaService } from "../prisma/prisma.service";
 import CreateSchoolDto from "./dto/create-school.dto";
 import ValidateUserDto from "../users/dto/validate-user.dto";
+import { SchoolResponseDto } from "./dto/school-response.dto";
+import GetSchoolsResponseDto from "./dto/get-schools-response.dto";
 
 @Injectable()
 export class SchoolsService {
@@ -15,5 +17,22 @@ export class SchoolsService {
 
   async getSchoolByUuid(schoolUuid: string) {
     return await this.prisma.school.findUnique({ where: { uuid: schoolUuid } });
+  }
+
+  async getSchools(page: number, count: number): Promise<GetSchoolsResponseDto> {
+    const allSchools = await this.prisma.school.findMany();
+    const schools = await this.prisma.school.findMany({ skip: (page - 1) * count, take: count });
+    return {
+      pages: Math.ceil(allSchools.length / count),
+      schools: schools.map(({ uuid, name, countryCode, city, addressLineOne, addressLineTwo, postalCode }) => ({
+        uuid,
+        name,
+        countryCode,
+        city,
+        addressLineOne,
+        addressLineTwo,
+        postalCode,
+      })),
+    };
   }
 }

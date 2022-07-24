@@ -29,4 +29,6 @@ export const {
   useGetRepresentativeVerificationRequestsQuery,
   useVerifyRepresentativeUserMutation,
   useRequestVerificationQuery,
+  useLazyGetSchoolsQuery,
+  useCreateSchoolMutation,
 } = enhancedApi;

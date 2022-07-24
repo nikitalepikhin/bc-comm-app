@@ -13,11 +13,13 @@ export interface User {
 interface AuthState {
   user: User;
   accessToken: string | undefined;
+  present: boolean;
 }
 
 const initialState: AuthState = {
   user: { email: undefined, username: undefined, role: undefined, uuid: undefined },
   accessToken: undefined,
+  present: false,
 };
 
 const authSlice = createSlice({
@@ -32,10 +34,12 @@ const authSlice = createSlice({
         role: action.payload.role,
         uuid: action.payload.uuid,
       };
+      state.present = true;
     },
     logOut(state) {
       state.user = initialState.user;
       state.accessToken = initialState.accessToken;
+      state.present = false;
     },
   },
   extraReducers: (builder) => {
@@ -47,6 +51,7 @@ const authSlice = createSlice({
         uuid: action.payload.uuid,
       };
       state.accessToken = action.payload.accessToken;
+      state.present = true;
     });
     builder.addMatcher(enhancedApi.endpoints.refreshToken.matchFulfilled, (state, action) => {
       state.user = {
@@ -56,11 +61,12 @@ const authSlice = createSlice({
         uuid: action.payload.uuid,
       };
       state.accessToken = action.payload.accessToken;
+      state.present = true;
     });
     builder.addMatcher(enhancedApi.endpoints.logOut.matchFulfilled, (state) => {
       state.user = initialState.user;
       state.accessToken = initialState.accessToken;
-      console.log("user removed from store");
+      state.present = false;
     });
   },
 });

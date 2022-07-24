@@ -12,10 +12,10 @@ const initialValues = {
   approve: false,
 };
 
-interface AdminRequestCardPropsType {
+interface RepresentativeVerificationRequestPropsType {
   request: RepresentativeRequestDto;
 }
-const AdminRequestCard: React.FC<AdminRequestCardPropsType> = ({ request }) => {
+const RepresentativeVerificationRequest: React.FC<RepresentativeVerificationRequestPropsType> = ({ request }) => {
   const userCreatedDate = new Date(Date.parse(request.user.created));
   const [showingReason, setShowingReason] = useState(false);
   const [verifyRepresentative, { isLoading, isSuccess }] = useVerifyRepresentativeUserMutation();
@@ -129,4 +129,4 @@ const AdminRequestCard: React.FC<AdminRequestCardPropsType> = ({ request }) => {
   );
 };
 
-export default AdminRequestCard;
+export default RepresentativeVerificationRequest;

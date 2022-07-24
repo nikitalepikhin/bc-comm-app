@@ -5,11 +5,11 @@ import { store } from "./app/store";
 import "./index.css";
 import App from "./App";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import IndexPageResolver from "./pages/IndexPageResolver";
-import LoadingPage from "./pages/LoadingPage";
-import LoginPage from "./pages/LoginPage";
-import { DebugPage } from "./pages/DebugPage";
-import NotFoundPage from "./pages/NotFoundPage";
+import LoginPage from "./features/auth/LoginPage";
+import { DebugPage } from "./features/auth/DebugPage";
+import NotFoundPage from "./common/components/NotFoundPage";
+import SchoolsManagementPage from "./features/schools/SchoolsManagementPage";
+import { IndexPage } from "./common/components/IndexPage";
 
 ReactDOM.render(
   <React.StrictMode>
@@ -17,9 +17,10 @@ ReactDOM.render(
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<App />}>
-            <Route index element={<IndexPageResolver />} />
+            <Route index element={<IndexPage />} />
             <Route path={"/login"} element={<LoginPage />} />
             <Route path={"/debug"} element={<DebugPage />} />
+            <Route path={"/schools"} element={<SchoolsManagementPage />} />
             {/*<Route path={'/signup'} element={isLoading ? <LoadingPage /> : <SignupPage />} />*/}
             <Route path="*" element={<NotFoundPage />} />
           </Route>

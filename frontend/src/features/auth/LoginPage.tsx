@@ -2,8 +2,8 @@ import React from "react";
 import { Field, FieldProps, Form, Formik } from "formik";
 import * as yup from "yup";
 import { Navigate } from "react-router-dom";
-import TextField from "../common/TextField";
-import { useLogInMutation, useRefreshTokenMutation } from "../app/enhancedApi";
+import TextField from "../../common/ui/TextField";
+import { useLogInMutation, useRefreshTokenMutation } from "../../app/enhancedApi";
 
 const initialValues = {
   email: "",
@@ -19,7 +19,7 @@ const validationSchema = yup.object({
 });
 
 const LoginPage: React.FC = () => {
-  const [logIn, { data, error, isLoading, isSuccess: isLoginSuccess }] = useLogInMutation(); // todo show spinner while logging in + handle error
+  const [logIn, { isSuccess: isLoginSuccess }] = useLogInMutation(); // todo show spinner while logging in + handle error
   const [, { isSuccess: isRefreshTokenSuccess }] = useRefreshTokenMutation({
     fixedCacheKey: "refresh-token-sub",
   });
