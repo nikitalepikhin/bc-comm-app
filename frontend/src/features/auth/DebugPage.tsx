@@ -24,7 +24,7 @@ export const DebugPage: React.FC = () => {
   }, [resultHello, resultHelloNoAuth]);
 
   return (
-    <div className="mx-6 my-2 flex flex-col justify-start gap-1.5">
+    <div className="flex flex-col justify-start gap-1.5">
       <h1 className="text-3xl text-primary font-bold">Authentication Stats</h1>
 
       <div className="flex flex-row justify-start gap-2">
@@ -38,7 +38,8 @@ export const DebugPage: React.FC = () => {
       <p>Authenticated user:</p>
       <pre className={code}>{JSON.stringify(user.email ? user : "user data", null, 2)}</pre>
 
-      <div className="overflow-x-auto">
+      <p>Access token:</p>
+      <div className="overflow-scroll">
         <pre className={code}>{JSON.stringify(accessToken !== undefined ? accessToken : "access token", null, 2)}</pre>
       </div>
 

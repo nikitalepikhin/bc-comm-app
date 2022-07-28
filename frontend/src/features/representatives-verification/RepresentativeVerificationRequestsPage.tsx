@@ -6,7 +6,7 @@ import LoadingButton from "../../common/ui/LoadingButton";
 const RepresentativeVerificationRequestsPage: React.FC = () => {
   const { data, isFetching, error, refetch } = useGetRepresentativeVerificationRequestsQuery();
   return (
-    <div className="mx-6 my-2 flex flex-col justify-start items-center gap-2">
+    <div className="flex flex-col justify-start items-center gap-2">
       <LoadingButton
         loading={isFetching}
         disabled={isFetching}

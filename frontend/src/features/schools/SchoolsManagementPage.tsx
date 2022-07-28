@@ -17,6 +17,8 @@ const initialValues: SchoolsPagingFormValues = {
   count: countOptions[0],
 };
 
+const selectStyles = "py-0.5 border border-gray-500 rounded-md ml-2";
+
 const SchoolsManagementPage: React.FC = () => {
   const { present, role } = useUserData();
 
@@ -28,24 +30,25 @@ const SchoolsManagementPage: React.FC = () => {
 
   if (present && role === "ADMIN") {
     return (
-      <>
-        <div>
-          <Formik
-            initialValues={initialValues}
-            onSubmit={async (values) => {
-              await getSchools(values);
-            }}
-          >
-            {({ submitForm, setFieldValue, values }) => {
-              return (
-                <>
-                  <Form>
+      <div className="flex flex-col gap-2 justify-center items-center">
+        <Formik
+          initialValues={initialValues}
+          onSubmit={async (values) => {
+            await getSchools(values);
+          }}
+        >
+          {({ submitForm, setFieldValue, values, handleReset }) => {
+            return (
+              <>
+                <div className="flex flex-row justify-between items-center flex-wrap w-full">
+                  <Form className="flex flex-row items-center flex-wrap gap-2">
                     {data?.pages && data?.pages > 1 && (
-                      <div>
+                      <div className="flex flex-row justify-center items-center py-1">
                         <label htmlFor="page-select">Page:</label>
                         <Field name="page" id="page-select">
                           {({ field }: FieldProps) => (
                             <select
+                              className={selectStyles}
                               {...field}
                               onChange={(e) => {
                                 field.onChange(e);
@@ -58,7 +61,7 @@ const SchoolsManagementPage: React.FC = () => {
                                   for (let i = 1; i <= data.pages; i++) {
                                     options.push(
                                       <option key={i} value={i}>
-                                        {i}
+                                        {i} of {data?.pages}
                                       </option>
                                     );
                                   }
@@ -68,17 +71,18 @@ const SchoolsManagementPage: React.FC = () => {
                             </select>
                           )}
                         </Field>
-                        <span> / {data?.pages}</span>
                       </div>
                     )}
-                    <div>
+                    <div className="flex flex-row justify-center items-center py-1">
                       <label htmlFor="count-select">Items shown:</label>
                       <Field name="count" id="count-select">
                         {({ field }: FieldProps) => (
                           <select
+                            className={selectStyles}
                             {...field}
                             onChange={(e) => {
                               field.onChange(e);
+                              setFieldValue("page", "1");
                               submitForm();
                             }}
                           >
@@ -91,38 +95,56 @@ const SchoolsManagementPage: React.FC = () => {
                         )}
                       </Field>
                     </div>
+                    <button
+                      type="reset"
+                      onClick={(e) => {
+                        handleReset(e);
+                        submitForm();
+                      }}
+                      className="bg-blue-600 hover:bg-blue-800 text-white px-5 py-1 rounded-md h-full"
+                    >
+                      Reset
+                    </button>
                   </Form>
-                  <SchoolsTable data={data?.schools ?? []} loading={isFetching} />
-                  {data?.pages && data?.schools && data?.pages > 1 && (
-                    <div className="flex flex-row gap-2">
-                      <button
-                        className="text-white bg-blue-600 hover:bg-blue-800 px-3 py-1 rounded-md disabled:bg-gray-500 disabled:hover:bg-gray-500"
-                        onClick={() => {
-                          setFieldValue("page", (parseInt(values.page) - 1).toString());
-                          submitForm();
-                        }}
-                        disabled={values.page === "1"}
-                      >
-                        Prev
-                      </button>
-                      <button
-                        className="text-white bg-blue-600 hover:bg-blue-800 px-3 py-1 rounded-md disabled:bg-gray-500 disabled:hover:bg-gray-500"
-                        onClick={() => {
-                          setFieldValue("page", (parseInt(values.page) + 1).toString());
-                          submitForm();
-                        }}
-                        disabled={values.page === data?.pages.toString()}
-                      >
-                        Next
-                      </button>
-                    </div>
-                  )}
-                </>
-              );
-            }}
-          </Formik>
-        </div>
-      </>
+                  <div>
+                    <a
+                      href="schools/new"
+                      className="text-blue-600 hover:text-blue-800 hover:underline rounded-md px-5 py-1 h-full hover:cursor-pointer"
+                    >
+                      Add New School
+                    </a>
+                  </div>
+                </div>
+                <SchoolsTable data={data?.schools ?? []} loading={isFetching} />
+                {data?.pages && data?.schools && data?.pages > 1 && (
+                  <div className="flex flex-row gap-2">
+                    <button
+                      className="text-white bg-blue-600 hover:bg-blue-800 px-3 py-1 rounded-md disabled:bg-gray-500 disabled:hover:bg-gray-500"
+                      onClick={() => {
+                        setFieldValue("page", (parseInt(values.page) - 1).toString());
+                        submitForm();
+                      }}
+                      disabled={values.page === "1"}
+                    >
+                      Prev
+                    </button>
+                    <button
+                      className="text-white bg-blue-600 hover:bg-blue-800 px-3 py-1 rounded-md disabled:bg-gray-500 disabled:hover:bg-gray-500"
+                      onClick={() => {
+                        setFieldValue("page", (parseInt(values.page) + 1).toString());
+                        submitForm();
+                      }}
+                      disabled={values.page === data?.pages.toString()}
+                    >
+                      Next
+                    </button>
+                  </div>
+                )}
+              </>
+            );
+          }}
+        </Formik>
+      </div>
     );
   } else {
     return <Navigate to={"/"} replace />;
