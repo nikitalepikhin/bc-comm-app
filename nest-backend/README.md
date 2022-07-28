@@ -35,7 +35,7 @@ DNS.3 = commapp
       1. Open the certificate (SSL lock or security tab inside dev tools).
       2. Drag it to an open TextEdit window. Must be in plain text mode!
       3. Save as a `cert.crt` file inside the `.cert` folder.
-      4. Install the certificate into the Keychain Access app.
+      4. Install the certificate **private** key (cert.pem) into the Keychain Access app.
       5. Select `Always trust` for all options inside the `Trust` tab.
       6. Confirm the changes.
       7. Restart your browser.
