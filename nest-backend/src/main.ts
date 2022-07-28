@@ -26,7 +26,7 @@ async function bootstrap() {
   app.use(cookieParser());
 
   app.enableCors({
-    origin: "https://commapp.com",
+    origin: ["https://commapp.com", "https://commapp.com:49350"],
     allowedHeaders: ["Authorization", "Cache-Control", "Content-Type", "Cookie"],
     exposedHeaders: ["Set-Cookie"],
     methods: "GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS",
