@@ -56,6 +56,7 @@ export class RepresentativesService {
           verified: verifyRepresentativeUserRequest.approve,
           verifiedByUserUuid: user.uuid,
           verificationMessage: verifyRepresentativeUserRequest.reason,
+
           verifiedAt: new Date(),
           requestsVerification: false,
         },

@@ -21,9 +21,8 @@ ReactDOM.render(
             <Route path={"/login"} element={<LoginPage />} />
             <Route path={"/debug"} element={<DebugPage />} />
             <Route path={"/schools"} element={<SchoolsManagementPage />} />
-            {/*<Route path={'/signup'} element={isLoading ? <LoadingPage /> : <SignupPage />} />*/}
-            <Route path="*" element={<NotFoundPage />} />
           </Route>
+          <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </BrowserRouter>
     </Provider>
