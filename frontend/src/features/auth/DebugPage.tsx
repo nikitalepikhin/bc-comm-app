@@ -10,7 +10,7 @@ export const DebugPage: React.FC = () => {
   const { user, accessToken } = useAppSelector((state) => state.auth);
   const navigate = useNavigate();
 
-  const [logOut, {}] = useLogOutMutation();
+  const [logOut] = useLogOutMutation();
 
   const [getHello, resultHello] = useLazyHelloQuery();
   const [getNoAuthHello, resultHelloNoAuth] = useLazyHelloNoAuthQuery();

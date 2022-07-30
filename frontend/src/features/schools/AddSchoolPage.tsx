@@ -3,8 +3,6 @@ import { Field, FieldProps, Form, Formik } from "formik";
 import TextField from "../../common/ui/TextField";
 import Button from "../../common/components/Button";
 import { useCreateSchoolMutation } from "../../app/enhancedApi";
-import { Link } from "react-router-dom";
-import CancelHeroIcon from "../../common/icons/CancelHeroIcon";
 import AddSchoolFeedback from "./AddSchoolFeedback";
 
 const initialValues = {
@@ -32,7 +30,8 @@ const AddSchoolPage: React.FC = () => {
   }, [isSuccess, isError]);
 
   return (
-    <div className="my-4">
+    <div>
+      <div className="text-2xl font-bold text-center mx-auto my-4">Create New School</div>
       <Formik
         initialValues={initialValues}
         onSubmit={async (values, { resetForm }) => {

@@ -26,11 +26,7 @@ const SchoolsTableRow: React.FC<SchoolsTableRowPropsType> = ({ school }) => {
         <div className="flex flex-col justify-center items-center gap-2">
           {deleteInProgress && (
             <div className="text-center text-red-600 font-bold">
-              <span>
-                You are about to delete this school.
-                <br />
-                This cannot be undone!
-              </span>
+              <span>This cannot be undone!</span>
             </div>
           )}
           <div className="flex flex-row gap-2 justify-center items-center w-full">
@@ -55,7 +51,7 @@ const SchoolsTableRow: React.FC<SchoolsTableRowPropsType> = ({ school }) => {
               }}
               className="bg-red-600 hover:bg-red-800 text-white px-3 py-1 rounded-md"
             >
-              {deleteInProgress ? "Proceed" : "Delete"}
+              Delete
             </button>
             {deleteInProgress && (
               <button
