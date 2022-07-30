@@ -1,5 +1,6 @@
 import React from "react";
 import { SchoolResponseDto } from "../../app/api";
+import SchoolsTableRow from "./SchoolsTableRow";
 
 interface SchoolsTablePropsType {
   data: SchoolResponseDto[];
@@ -24,35 +25,12 @@ const SchoolsTable: React.FC<SchoolsTablePropsType> = ({ data, loading }) => {
         </thead>
         <tbody className="divide-y divide-gray-200">
           {data.length > 0 && !loading ? (
-            data.map((school) => (
-              <tr key={school.uuid} className="odd:bg-gray-50 even:bg-white h-fit">
-                <td className="px-3 py-1 font-mono leading-loose">
-                  <span className="bg-yellow-200 bg-opacity-50 rounded-md px-3 py-1">{school.uuid}</span>
-                </td>
-                <td className="px-3 py-1">{school.name}</td>
-                <td className="px-3 py-1">{school.countryCode}</td>
-                <td className="px-3 py-1">{school.city}</td>
-                <td className="px-3 py-1">{school.addressLineOne}</td>
-                <td className="px-3 py-1">{school.addressLineTwo}</td>
-                <td className="px-3 py-1">{school.postalCode}</td>
-                <td className="px-3 py-1">
-                  <div className="flex flex-row gap-2 justify-center items-center">
-                    <button
-                      onClick={() => {}}
-                      className="bg-blue-600 hover:bg-blue-800 text-white px-3 py-1 rounded-md"
-                    >
-                      Edit
-                    </button>
-                    <button onClick={() => {}} className="bg-red-600 hover:bg-red-800 text-white px-3 py-1 rounded-md">
-                      Delete
-                    </button>
-                  </div>
-                </td>
-              </tr>
-            ))
+            data.map((school) => <SchoolsTableRow key={school.uuid} school={school} />)
           ) : (
             <tr>
-              <td colSpan={100}>No schools found</td>
+              <td colSpan={100} className="text-center px-4 py-2">
+                No schools found
+              </td>
             </tr>
           )}
         </tbody>

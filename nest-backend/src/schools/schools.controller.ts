@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Query, Req, UseGuards } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Post, Query, Req, UseGuards } from "@nestjs/common";
 import { SchoolsService } from "./schools.service";
 import { ApiOkResponse, ApiOperation, ApiResponse } from "@nestjs/swagger";
 import { JwtAuthGuard } from "../auth/jwt-auth.guard";
@@ -8,6 +8,7 @@ import { RequirePermissionsGuard } from "../auth/require-permissions.guard";
 import GetSchoolsQueryParamsDto from "./dto/get-schools-query-params.dto";
 import { SchoolResponseDto } from "./dto/school-response.dto";
 import GetSchoolsResponseDto from "./dto/get-schools-response.dto";
+import { DeleteSchoolDto } from "./dto/delete-school.dto";
 
 @Controller("schools")
 export class SchoolsController {
@@ -37,5 +38,15 @@ export class SchoolsController {
       query.page ? parseInt(query.page) : 1,
       query.count ? parseInt(query.count) : 10,
     );
+  }
+
+  @ApiOperation({
+    summary: "Delete a school based on the provided UUID.",
+  })
+  @RequirePermissions(Permission.SCHOOL_DELETE)
+  @UseGuards(JwtAuthGuard, RequirePermissionsGuard)
+  @Delete("/")
+  async deleteSchool(@Body() deleteSchoolDto: DeleteSchoolDto) {
+    return await this.schoolService.deleteSchool(deleteSchoolDto);
   }
 }

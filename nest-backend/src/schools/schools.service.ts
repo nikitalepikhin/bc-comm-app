@@ -4,6 +4,7 @@ import CreateSchoolDto from "./dto/create-school.dto";
 import ValidateUserDto from "../users/dto/validate-user.dto";
 import { SchoolResponseDto } from "./dto/school-response.dto";
 import GetSchoolsResponseDto from "./dto/get-schools-response.dto";
+import { DeleteSchoolDto } from "./dto/delete-school.dto";
 
 @Injectable()
 export class SchoolsService {
@@ -34,5 +35,9 @@ export class SchoolsService {
         postalCode,
       })),
     };
+  }
+
+  async deleteSchool(deleteSchoolDto: DeleteSchoolDto) {
+    return await this.prisma.school.delete({ where: { uuid: deleteSchoolDto.uuid } });
   }
 }

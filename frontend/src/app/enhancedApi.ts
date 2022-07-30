@@ -1,5 +1,5 @@
 import { api } from "./api";
-import { TagTypes } from "./emptyApi";
+import { IdTypes, TagTypes } from "./emptyApi";
 
 export const enhancedApi = api.enhanceEndpoints({
   endpoints: {
@@ -8,14 +8,23 @@ export const enhancedApi = api.enhanceEndpoints({
         result
           ? [
               ...result.requests.map((request) => ({ type: TagTypes.REPR_REQ, id: request.user.uuid })),
-              { type: TagTypes.REPR_REQ, id: TagTypes.ALL },
+              { type: TagTypes.REPR_REQ, id: IdTypes.ALL },
             ]
-          : [{ type: TagTypes.REPR_REQ, id: TagTypes.ALL }],
+          : [{ type: TagTypes.REPR_REQ, id: IdTypes.ALL }],
     },
     verifyRepresentativeUser: {
       invalidatesTags: (result, error, arg) => [
         { type: TagTypes.REPR_REQ, id: arg.verifyRepresentativeUserRequestDto.verifiedUserUuid },
       ],
+    },
+    deleteSchool: {
+      invalidatesTags: [{ type: TagTypes.SCHOOL, id: IdTypes.ALL }],
+    },
+    getSchools: {
+      providesTags: [{ type: TagTypes.SCHOOL, id: IdTypes.ALL }],
+    },
+    createSchool: {
+      invalidatesTags: [{ type: TagTypes.SCHOOL, id: IdTypes.ALL }],
     },
   },
 });
@@ -29,6 +38,7 @@ export const {
   useGetRepresentativeVerificationRequestsQuery,
   useVerifyRepresentativeUserMutation,
   useRequestVerificationQuery,
-  useLazyGetSchoolsQuery,
+  useGetSchoolsQuery,
   useCreateSchoolMutation,
+  useDeleteSchoolMutation,
 } = enhancedApi;

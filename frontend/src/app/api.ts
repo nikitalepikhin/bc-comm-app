@@ -26,6 +26,9 @@ const injectedRtkApi = api.injectEndpoints({
     getSchools: build.query<GetSchoolsApiResponse, GetSchoolsApiArg>({
       query: (queryArg) => ({ url: `/schools`, params: { page: queryArg.page, count: queryArg.count } }),
     }),
+    deleteSchool: build.mutation<DeleteSchoolApiResponse, DeleteSchoolApiArg>({
+      query: (queryArg) => ({ url: `/schools`, method: "DELETE", body: queryArg.deleteSchoolDto }),
+    }),
     hello: build.query<HelloApiResponse, HelloApiArg>({
       query: () => ({ url: `/test/hello` }),
     }),
@@ -77,6 +80,10 @@ export type GetSchoolsApiResponse =
 export type GetSchoolsApiArg = {
   page: string;
   count: string;
+};
+export type DeleteSchoolApiResponse = unknown;
+export type DeleteSchoolApiArg = {
+  deleteSchoolDto: DeleteSchoolDto;
 };
 export type HelloApiResponse = unknown;
 export type HelloApiArg = void;
@@ -135,6 +142,9 @@ export type GetSchoolsResponseDto = {
   schools: SchoolResponseDto[];
   pages: number;
 };
+export type DeleteSchoolDto = {
+  uuid: string;
+};
 export type RepresentativeRequestSchoolFieldDto = {
   name: string;
   uuid: string;
@@ -166,6 +176,7 @@ export const {
   useLogOutMutation,
   useCreateSchoolMutation,
   useGetSchoolsQuery,
+  useDeleteSchoolMutation,
   useHelloQuery,
   useHelloNoAuthQuery,
   useRequestVerificationQuery,

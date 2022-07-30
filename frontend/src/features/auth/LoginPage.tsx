@@ -3,7 +3,7 @@ import { Field, FieldProps, Form, Formik } from "formik";
 import * as yup from "yup";
 import { Navigate } from "react-router-dom";
 import TextField from "../../common/ui/TextField";
-import { useLogInMutation, useRefreshTokenMutation } from "../../app/enhancedApi";
+import { useLogInMutation } from "../../app/enhancedApi";
 import { useAppSelector } from "../../app/hooks";
 
 const initialValues = {
