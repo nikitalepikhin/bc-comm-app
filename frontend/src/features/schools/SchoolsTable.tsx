@@ -8,7 +8,7 @@ interface SchoolsTablePropsType {
 
 const SchoolsTable: React.FC<SchoolsTablePropsType> = ({ data, loading }) => {
   return (
-    <div className="overflow-x-scroll w-full flex flex-row text-sm md:text-base">
+    <div className="overflow-auto w-full flex flex-row text-sm md:text-base">
       <table className="w-full border border-gray-200">
         <thead className="bg-white border-gray-200 bg-gray-200">
           <tr>

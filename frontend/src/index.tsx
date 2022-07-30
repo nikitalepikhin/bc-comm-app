@@ -10,6 +10,8 @@ import { DebugPage } from "./features/auth/DebugPage";
 import NotFoundPage from "./common/components/NotFoundPage";
 import SchoolsManagementPage from "./features/schools/SchoolsManagementPage";
 import { IndexPage } from "./common/components/IndexPage";
+import AddSchoolPage from "./features/schools/AddSchoolPage";
+import ProtectedRoute from "./common/components/ProtectedRoute";
 
 ReactDOM.render(
   <React.StrictMode>
@@ -18,9 +20,24 @@ ReactDOM.render(
         <Routes>
           <Route path="/" element={<App />}>
             <Route index element={<IndexPage />} />
-            <Route path={"/login"} element={<LoginPage />} />
-            <Route path={"/debug"} element={<DebugPage />} />
-            <Route path={"/schools"} element={<SchoolsManagementPage />} />
+            <Route path="login" element={<LoginPage />} />
+            <Route path="debug" element={<DebugPage />} />
+            <Route
+              path="schools"
+              element={
+                <ProtectedRoute allowedRoles={["ADMIN"]}>
+                  <SchoolsManagementPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="schools/new"
+              element={
+                <ProtectedRoute allowedRoles={["ADMIN"]}>
+                  <AddSchoolPage />
+                </ProtectedRoute>
+              }
+            />
           </Route>
           <Route path="*" element={<NotFoundPage />} />
         </Routes>

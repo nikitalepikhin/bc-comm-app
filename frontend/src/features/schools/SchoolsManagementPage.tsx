@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import useUserData from "../../common/hooks/useUserData";
+import useUserData from "../auth/useUserData";
 import { Navigate } from "react-router-dom";
 import { useLazyGetSchoolsQuery } from "../../app/enhancedApi";
 import SchoolsTable from "./SchoolsTable";

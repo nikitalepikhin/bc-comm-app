@@ -1,5 +1,5 @@
 import React from "react";
-import useUserData from "../hooks/useUserData";
+import useUserData from "../../features/auth/useUserData";
 import RepresentativeVerificationRequestsPage from "../../features/representatives-verification/RepresentativeVerificationRequestsPage";
 
 export const IndexPage: React.FC = () => {

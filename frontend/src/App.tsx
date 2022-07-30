@@ -1,7 +1,7 @@
 import React from "react";
 import { useRefreshTokenMutation } from "./app/enhancedApi";
-import { Outlet, useLocation } from "react-router-dom";
-import useAuthentication from "./common/hooks/useAuthentication";
+import { Outlet } from "react-router-dom";
+import useAuthentication from "./features/auth/useAuthentication";
 import LoadingPage from "./common/components/LoadingPage";
 import NavBar from "./NavBar";
 

@@ -4,6 +4,7 @@ import * as yup from "yup";
 import { Navigate } from "react-router-dom";
 import TextField from "../../common/ui/TextField";
 import { useLogInMutation, useRefreshTokenMutation } from "../../app/enhancedApi";
+import { useAppSelector } from "../../app/hooks";
 
 const initialValues = {
   email: "",
@@ -19,12 +20,10 @@ const validationSchema = yup.object({
 });
 
 const LoginPage: React.FC = () => {
-  const [logIn, { isSuccess: isLoginSuccess }] = useLogInMutation(); // todo show spinner while logging in + handle error
-  const [, { isSuccess: isRefreshTokenSuccess }] = useRefreshTokenMutation({
-    fixedCacheKey: "refresh-token-sub",
-  });
+  const [logIn] = useLogInMutation(); // todo show spinner while logging in + handle error
+  const { present } = useAppSelector((state) => state.auth);
 
-  return isLoginSuccess || isRefreshTokenSuccess ? (
+  return present ? (
     <Navigate to="/" replace />
   ) : (
     <div className="min-h-screen flex flex-col justify-center items-center py-8 px-6 sm:px-8">

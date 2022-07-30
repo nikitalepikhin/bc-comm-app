@@ -6,8 +6,6 @@ import * as bcrypt from "bcrypt";
 import * as randomstring from "randomstring";
 import CreateRepresentativeUserDto from "./dto/create-representative-user.dto";
 import { SchoolsService } from "../schools/schools.service";
-import GetRepresentativeRequestsDto from "../representatives/dto/get-representative-requests.dto";
-import VerifyRepresentativeUserRequestDto from "../representatives/dto/verify-representative-user-request.dto";
 
 const usernameParams = {
   length: 8,
@@ -33,6 +31,7 @@ export class UsersService {
 
   async findByEmail(email: string) {
     return await this.prisma.user.findUnique({ where: { email } });
+    ``;
   }
 
   async findByUuid(uuid: string) {

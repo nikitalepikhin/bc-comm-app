@@ -39,7 +39,7 @@ export const DebugPage: React.FC = () => {
       <pre className={code}>{JSON.stringify(user.email ? user : "user data", null, 2)}</pre>
 
       <p>Access token:</p>
-      <div className="overflow-scroll">
+      <div className="overflow-auto">
         <pre className={code}>{JSON.stringify(accessToken !== undefined ? accessToken : "access token", null, 2)}</pre>
       </div>
 
