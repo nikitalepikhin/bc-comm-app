@@ -5,6 +5,12 @@ import { v4 as uuidv4 } from "uuid";
 const prisma = new PrismaClient();
 
 const cvutUuid = uuidv4();
+const cvutFelUuid = uuidv4();
+const cvutFitUuid = uuidv4();
+const cvutFaUuid = uuidv4();
+const cvutFdUuid = uuidv4();
+const cvutFsUuid = uuidv4();
+
 const vseUuid = uuidv4();
 const ukUuid = uuidv4();
 const vutUuid = uuidv4();
@@ -21,9 +27,15 @@ async function seedAuthorities() {
       { name: Permission[Permission.SCHOOL_READ], roles: [Role.ADMIN] },
       { name: Permission[Permission.SCHOOL_UPDATE], roles: [Role.ADMIN, Role.REPRESENTATIVE] },
       { name: Permission[Permission.SCHOOL_DELETE], roles: [Role.ADMIN] },
+
+      { name: Permission[Permission.FACULTY_CREATE], roles: [Role.ADMIN, Role.REPRESENTATIVE] },
+      { name: Permission[Permission.FACULTY_READ], roles: [Role.ADMIN, Role.REPRESENTATIVE] },
+      { name: Permission[Permission.FACULTY_UPDATE], roles: [Role.ADMIN, Role.REPRESENTATIVE] },
+      { name: Permission[Permission.FACULTY_DELETE], roles: [Role.ADMIN, Role.REPRESENTATIVE] },
+
       { name: Permission[Permission.REP_REQ_READ], roles: [Role.ADMIN] },
       { name: Permission[Permission.REP_REQ_UPDATE], roles: [Role.ADMIN] },
-      { name: Permission[Permission.REP_REQ_VERIF], roles: [Role.REPRESENTATIVE] },
+      { name: Permission[Permission.REP_REQ_VERIFY], roles: [Role.REPRESENTATIVE] },
     ],
   });
 }
@@ -92,6 +104,73 @@ async function seedSchools() {
   });
 }
 
+async function seedFaculties() {
+  return await prisma.faculty.createMany({
+    data: [
+      {
+        uuid: cvutFelUuid,
+        schoolUuid: cvutUuid,
+        name: "Fakulta elektrotechnická",
+        countryCode: "CZE",
+        city: "Praha",
+        addressLineOne: "Technická 2",
+        addressLineTwo: "Praha 6",
+        postalCode: "166 27",
+        createdByUuid: adminUuid,
+        modifiedByUuid: adminUuid,
+      },
+      {
+        uuid: cvutFitUuid,
+        schoolUuid: cvutUuid,
+        name: "Fakulta informačních technologií",
+        countryCode: "CZE",
+        city: "Praha",
+        addressLineOne: "Thákurova 9",
+        addressLineTwo: "Praha 6",
+        postalCode: "160 00",
+        createdByUuid: adminUuid,
+        modifiedByUuid: adminUuid,
+      },
+      {
+        uuid: cvutFaUuid,
+        schoolUuid: cvutUuid,
+        name: "Fakulta architektury",
+        countryCode: "CZE",
+        city: "Praha",
+        addressLineOne: "Thákurova 9",
+        addressLineTwo: "Praha 6",
+        postalCode: "166 34",
+        createdByUuid: adminUuid,
+        modifiedByUuid: adminUuid,
+      },
+      {
+        uuid: cvutFsUuid,
+        schoolUuid: cvutUuid,
+        name: "Fakulta strojní",
+        countryCode: "CZE",
+        city: "Praha",
+        addressLineOne: "Technická 4",
+        addressLineTwo: "Praha 6",
+        postalCode: "166 07",
+        createdByUuid: adminUuid,
+        modifiedByUuid: adminUuid,
+      },
+      {
+        uuid: cvutFdUuid,
+        schoolUuid: cvutUuid,
+        name: "Fakulta dopravní",
+        countryCode: "CZE",
+        city: "Praha",
+        addressLineOne: "Konviktská 20",
+        addressLineTwo: "Praha 1",
+        postalCode: "110 00",
+        createdByUuid: adminUuid,
+        modifiedByUuid: adminUuid,
+      },
+    ],
+  });
+}
+
 async function seedOtherUsers() {
   await prisma.user.create({
     data: {
@@ -130,6 +209,7 @@ async function main() {
   await seedAuthorities();
   await seedAdminUser();
   await seedSchools();
+  await seedFaculties();
   await seedOtherUsers();
 }
 
