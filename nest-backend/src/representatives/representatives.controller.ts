@@ -12,7 +12,7 @@ export class RepresentativesController {
   constructor(private representativesService: RepresentativesService) {}
 
   @ApiOperation({ summary: "Request verification." })
-  @RequirePermissions(Permission.REP_REQ_VERIF)
+  @RequirePermissions(Permission.REP_REQ_VERIFY)
   @UseGuards(JwtAuthGuard, RequirePermissionsGuard)
   @Get("/request")
   async requestVerification(@Req() request) {

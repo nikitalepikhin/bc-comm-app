@@ -1,5 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { SchoolResponseDto } from "./school-response.dto";
+import SchoolResponseDto from "./school-response.dto";
 
 export default class GetSchoolsResponseDto {
   @ApiProperty({ name: "schools", type: [SchoolResponseDto] })

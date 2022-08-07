@@ -2,9 +2,9 @@ import { Injectable } from "@nestjs/common";
 import { PrismaService } from "../prisma/prisma.service";
 import CreateSchoolDto from "./dto/create-school.dto";
 import ValidateUserDto from "../users/dto/validate-user.dto";
-import { SchoolResponseDto } from "./dto/school-response.dto";
 import GetSchoolsResponseDto from "./dto/get-schools-response.dto";
-import { DeleteSchoolDto } from "./dto/delete-school.dto";
+import UpdateSchoolRequestDto from "./dto/update-school-request.dto";
+import DeleteSchoolDto from "./dto/delete-school.dto";
 
 @Injectable()
 export class SchoolsService {
@@ -16,8 +16,8 @@ export class SchoolsService {
     });
   }
 
-  async getSchoolByUuid(schoolUuid: string) {
-    return await this.prisma.school.findUnique({ where: { uuid: schoolUuid } });
+  async getSchoolByUuid(uuid: string) {
+    return await this.prisma.school.findUnique({ where: { uuid } });
   }
 
   async getSchools(page: number, count: number): Promise<GetSchoolsResponseDto> {
@@ -39,5 +39,19 @@ export class SchoolsService {
 
   async deleteSchool(deleteSchoolDto: DeleteSchoolDto) {
     return await this.prisma.school.delete({ where: { uuid: deleteSchoolDto.uuid } });
+  }
+
+  async updateSchool(updateSchoolRequestDto: UpdateSchoolRequestDto) {
+    return await this.prisma.school.update({
+      where: { uuid: updateSchoolRequestDto.uuid },
+      data: {
+        name: updateSchoolRequestDto.name,
+        countryCode: updateSchoolRequestDto.countryCode,
+        city: updateSchoolRequestDto.city,
+        addressLineOne: updateSchoolRequestDto.addressLineOne,
+        addressLineTwo: updateSchoolRequestDto.addressLineTwo,
+        postalCode: updateSchoolRequestDto.postalCode,
+      },
+    });
   }
 }

@@ -1,14 +1,16 @@
-import { Body, Controller, Delete, Get, Post, Query, Req, UseGuards } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Param, Post, Put, Query, Req, UseGuards } from "@nestjs/common";
 import { SchoolsService } from "./schools.service";
-import { ApiOkResponse, ApiOperation, ApiResponse } from "@nestjs/swagger";
+import { ApiOkResponse, ApiOperation } from "@nestjs/swagger";
 import { JwtAuthGuard } from "../auth/jwt-auth.guard";
 import CreateSchoolDto from "./dto/create-school.dto";
 import { Permission, RequirePermissions } from "../auth/permission.enum";
 import { RequirePermissionsGuard } from "../auth/require-permissions.guard";
 import GetSchoolsQueryParamsDto from "./dto/get-schools-query-params.dto";
-import { SchoolResponseDto } from "./dto/school-response.dto";
+import SchoolResponseDto from "./dto/school-response.dto";
 import GetSchoolsResponseDto from "./dto/get-schools-response.dto";
-import { DeleteSchoolDto } from "./dto/delete-school.dto";
+import GetSchoolByUuidResponseDto from "./dto/get-school-by-uuid-response.dto";
+import UpdateSchoolRequestDto from "./dto/update-school-request.dto";
+import DeleteSchoolDto from "./dto/delete-school.dto";
 
 @Controller("schools")
 export class SchoolsController {
@@ -33,11 +35,36 @@ export class SchoolsController {
   @RequirePermissions(Permission.SCHOOL_READ)
   @UseGuards(JwtAuthGuard, RequirePermissionsGuard)
   @Get("/")
-  async getSchools(@Query() query: GetSchoolsQueryParamsDto): Promise<GetSchoolsResponseDto> {
+  async getAllSchools(@Query() query: GetSchoolsQueryParamsDto): Promise<GetSchoolsResponseDto> {
     return await this.schoolService.getSchools(
       query.page ? parseInt(query.page) : 1,
       query.count ? parseInt(query.count) : 10,
     );
+  }
+
+  @ApiOperation({
+    summary: "Get a school by UUID.",
+  })
+  @ApiOkResponse({
+    description: "School by UUID.",
+    type: SchoolResponseDto,
+    content: {},
+  })
+  @RequirePermissions(Permission.SCHOOL_READ)
+  @UseGuards(JwtAuthGuard, RequirePermissionsGuard)
+  @Get("/:uuid")
+  async getSchoolByUuid(@Param() param: GetSchoolByUuidResponseDto): Promise<SchoolResponseDto> {
+    return await this.schoolService.getSchoolByUuid(param.uuid);
+  }
+
+  @ApiOperation({
+    summary: "Update a school based on the provided UUID.",
+  })
+  @RequirePermissions(Permission.SCHOOL_UPDATE)
+  @UseGuards(JwtAuthGuard, RequirePermissionsGuard)
+  @Put("/")
+  async updateSchool(@Body() updateSchoolRequestDto: UpdateSchoolRequestDto) {
+    return await this.schoolService.updateSchool(updateSchoolRequestDto);
   }
 
   @ApiOperation({

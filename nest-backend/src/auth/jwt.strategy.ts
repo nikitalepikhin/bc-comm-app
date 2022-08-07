@@ -1,6 +1,7 @@
 import { ExtractJwt, Strategy } from "passport-jwt";
 import { PassportStrategy } from "@nestjs/passport";
 import { Injectable } from "@nestjs/common";
+import UserDto from "./dto/user.dto";
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy, "jwt") {
@@ -17,7 +18,7 @@ export class JwtStrategy extends PassportStrategy(Strategy, "jwt") {
    * Invalid token will raise an exception behind the scenes and deny the request with a 401 error.
    * @param payload Access token payload.
    */
-  async validate(payload: any) {
+  async validate(payload: any): Promise<UserDto> {
     return {
       uuid: payload.id,
       email: payload.email,

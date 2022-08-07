@@ -1,7 +1,7 @@
 import { ExtractJwt, Strategy } from "passport-jwt";
 import { PassportStrategy } from "@nestjs/passport";
 import { Injectable } from "@nestjs/common";
-import { JwtRefreshStrategyUserDto } from "./dto/jwt-refresh-strategy-user.dto";
+import UserRefreshDto from "./dto/user-refresh.dto";
 import { Request } from "express";
 
 @Injectable()
@@ -25,7 +25,7 @@ export class JwtRefreshStrategy extends PassportStrategy(Strategy, "jwt-refresh"
    * Invalid token will raise an exception behind the scenes and deny the request with a 401 error.
    * @param payload Refresh token payload.
    */
-  async validate(payload: any): Promise<JwtRefreshStrategyUserDto> {
+  async validate(payload: any): Promise<UserRefreshDto> {
     return {
       uuid: payload.uuid,
       email: payload.email,

@@ -6,7 +6,7 @@ import ValidateUserDto from "../users/dto/validate-user.dto";
 import { JwtService } from "@nestjs/jwt";
 import { v4 as uuidv4 } from "uuid";
 import { RefreshTokensService } from "../refresh-tokens/refresh-tokens.service";
-import { JwtRefreshStrategyUserDto } from "./dto/jwt-refresh-strategy-user.dto";
+import UserRefreshDto from "./dto/user-refresh.dto";
 import CreateRepresentativeUserDto from "../users/dto/create-representative-user.dto";
 
 @Injectable()
@@ -41,7 +41,7 @@ export class AuthService {
     };
   }
 
-  async refreshToken(user: JwtRefreshStrategyUserDto, authCookie: string) {
+  async refreshToken(user: UserRefreshDto, authCookie: string) {
     const refreshToken = await this.refreshTokensService.setRefreshTokenToUsedByValue(authCookie);
     const username = (await this.usersService.findByUuid(user.uuid)).username;
     return {
@@ -83,10 +83,7 @@ export class AuthService {
     return refreshToken;
   }
 
-  private async createRefreshTokenForExistingFamily(
-    userDto: JwtRefreshStrategyUserDto,
-    family: string,
-  ): Promise<string> {
+  private async createRefreshTokenForExistingFamily(userDto: UserRefreshDto, family: string): Promise<string> {
     const payload = {
       uuid: userDto.uuid,
       email: userDto.email,

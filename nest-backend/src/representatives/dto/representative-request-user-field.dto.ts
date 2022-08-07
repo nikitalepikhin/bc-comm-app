@@ -1,6 +1,6 @@
 import { ApiProperty } from "@nestjs/swagger";
 
-export class RepresentativeRequestUserFieldDto {
+export default class RepresentativeRequestUserFieldDto {
   @ApiProperty()
   email: string;
 
