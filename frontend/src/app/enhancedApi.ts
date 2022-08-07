@@ -20,7 +20,7 @@ export const enhancedApi = api.enhanceEndpoints({
     deleteSchool: {
       invalidatesTags: [{ type: TagTypes.SCHOOL, id: IdTypes.ALL }],
     },
-    getSchools: {
+    getAllSchools: {
       providesTags: [{ type: TagTypes.SCHOOL, id: IdTypes.ALL }],
     },
     createSchool: {
@@ -38,7 +38,11 @@ export const {
   useGetRepresentativeVerificationRequestsQuery,
   useVerifyRepresentativeUserMutation,
   useRequestVerificationQuery,
-  useGetSchoolsQuery,
+  useGetAllSchoolsQuery,
+  useGetSchoolByUuidQuery,
   useCreateSchoolMutation,
+  useUpdateSchoolMutation,
   useDeleteSchoolMutation,
+  useCreateFacultyMutation,
+  useGetAllFacultiesQuery,
 } = enhancedApi;

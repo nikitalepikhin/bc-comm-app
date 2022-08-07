@@ -1,19 +1,19 @@
 import React from "react";
-import { SchoolResponseDto } from "../../app/api";
-import SchoolsTableRow from "./SchoolsTableRow";
+import { FacultyResponseDto } from "../../app/api";
+import FacultiesTableRow from "./FacultiesTableRow";
 
-interface SchoolsTablePropsType {
-  data: SchoolResponseDto[];
+interface FacultiesTablePropsType {
+  data: FacultyResponseDto[];
   loading: boolean;
 }
 
-const SchoolsTable: React.FC<SchoolsTablePropsType> = ({ data, loading }) => {
+const FacultiesTable: React.FC<FacultiesTablePropsType> = ({ data, loading }) => {
   return (
     <div className="overflow-auto w-full flex flex-row text-sm md:text-base">
       <table className="w-full border border-gray-200">
         <thead className="bg-white border-gray-200 bg-gray-200">
           <tr>
-            <th className="px-3 py-1">School UUID</th>
+            <th className="px-3 py-1">Faculty UUID</th>
             <th className="px-3 py-1">Name</th>
             <th className="px-3 py-1 w-10">Country</th>
             <th className="px-3 py-1 w-50">City</th>
@@ -25,11 +25,11 @@ const SchoolsTable: React.FC<SchoolsTablePropsType> = ({ data, loading }) => {
         </thead>
         <tbody className="divide-y divide-gray-200">
           {data.length > 0 && !loading ? (
-            data.map((school) => <SchoolsTableRow key={school.uuid} school={school} />)
+            data.map((faculty) => <FacultiesTableRow key={faculty.uuid} faculty={faculty} />)
           ) : (
             <tr>
               <td colSpan={100} className="text-center px-4 py-2">
-                No schools found
+                No faculties found
               </td>
             </tr>
           )}
@@ -39,4 +39,4 @@ const SchoolsTable: React.FC<SchoolsTablePropsType> = ({ data, loading }) => {
   );
 };
 
-export default SchoolsTable;
+export default FacultiesTable;

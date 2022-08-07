@@ -3,7 +3,7 @@ import FacultyResponseDto from "./faculty-response.dto";
 
 export default class GetFacultiesResponseDto {
   @ApiProperty({ name: "faculties", type: [FacultyResponseDto] })
-  schools: FacultyResponseDto[];
+  faculties: FacultyResponseDto[];
 
   @ApiProperty()
   pages: number;

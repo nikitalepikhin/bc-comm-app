@@ -1,32 +1,40 @@
 import React, { useCallback, useEffect, useState } from "react";
-import SchoolsTable from "./SchoolsTable";
-import { Field, FieldProps, Form, Formik } from "formik";
-import { enhancedApi, useGetAllSchoolsQuery } from "../../app/enhancedApi";
 import { useDispatch } from "react-redux";
-import { GetSchoolsResponseDto } from "../../app/api";
-import { Link } from "react-router-dom";
+import { enhancedApi, useGetAllFacultiesQuery, useGetSchoolByUuidQuery } from "../../app/enhancedApi";
+import { GetFacultiesResponseDto } from "../../app/api";
+import { Field, FieldProps, Form, Formik } from "formik";
+import { Link, useParams } from "react-router-dom";
+import FacultiesTable from "./FacultiesTable";
 
-interface SchoolsPagingFormValues {
+interface FacultiesPagingFormValues {
   page: string;
   count: string;
 }
 
 const countOptions = ["5", "10", "20"];
 
-const initialValues: SchoolsPagingFormValues = {
+const initialValues: FacultiesPagingFormValues = {
   page: "1",
   count: countOptions[0],
 };
 
-const SchoolsManagementPage: React.FC = () => {
+const FacultiesManagementPage: React.FC = () => {
   const dispatch = useDispatch();
-  const { data: queryData, isFetching } = useGetAllSchoolsQuery(initialValues);
-  const [data, setData] = useState<GetSchoolsResponseDto | undefined>(undefined);
+  const { schoolUuid } = useParams();
+  console.log(schoolUuid);
+  const { data: queryData, isFetching } = useGetAllFacultiesQuery({
+    ...initialValues,
+    schoolUuid: schoolUuid!,
+  });
+  const [data, setData] = useState<GetFacultiesResponseDto | undefined>(undefined);
+
+  const { data: schoolData, isFetching: getSchoolByUuidIsFetching } = useGetSchoolByUuidQuery({ uuid: schoolUuid! });
+  const [schoolName, setSchoolName] = useState<string | undefined>(undefined);
 
   const handleRefetch = useCallback(
-    async ({ page, count }: SchoolsPagingFormValues) => {
+    async ({ page, count }: FacultiesPagingFormValues) => {
       const result = await dispatch(
-        enhancedApi.endpoints.getAllSchools.initiate({ page, count }, { forceRefetch: true })
+        enhancedApi.endpoints.getAllFaculties.initiate({ page, count, schoolUuid: schoolUuid! }, { forceRefetch: true })
       );
       // @ts-ignore
       setData(result.data);
@@ -38,6 +46,12 @@ const SchoolsManagementPage: React.FC = () => {
     setData(queryData);
   }, [queryData]);
 
+  useEffect(() => {
+    if (schoolData?.name) {
+      setSchoolName(schoolData.name);
+    }
+  }, [schoolData]);
+
   return (
     <div className="flex flex-col gap-2 justify-center">
       <Formik
@@ -48,17 +62,34 @@ const SchoolsManagementPage: React.FC = () => {
       >
         {({ submitForm, setFieldValue, values, handleReset }) => {
           return (
-            <>
+            <div className="flex flex-col justify-start gap-2">
+              <div className="flex flex-row justify-between gap-2 items-center">
+                <Link to="/schools" className="text-blue-600 hover:text-blue-800 flex flex-row items-center">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                    <path
+                      fillRule="evenodd"
+                      d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
+                      clipRule="evenodd"
+                    />
+                  </svg>
+                  <span className="pl-0.5">Back to the schools table</span>
+                </Link>
+                {schoolName !== undefined && (
+                  <div>
+                    Showing faculties for: <span className="font-bold">{schoolName}</span>
+                  </div>
+                )}
+              </div>
               <div className="flex flex-row justify-between items-center flex-wrap w-full">
                 <Form className="flex flex-row items-center flex-wrap gap-2">
-                  {data?.pages && data?.pages > 1 && (
+                  {data?.pages !== undefined && data?.pages > 1 && (
                     <div className="flex flex-row justify-center items-center py-1">
                       <label htmlFor="page-select">Page:</label>
                       <Field name="page" id="page-select">
                         {({ field }: FieldProps) => (
                           <select
-                            className="py-0.5 border border-gray-500 rounded-md ml-2"
                             {...field}
+                            className="py-0.5 border border-gray-500 rounded-md ml-2"
                             onChange={(e) => {
                               field.onChange(e);
                               submitForm();
@@ -66,7 +97,7 @@ const SchoolsManagementPage: React.FC = () => {
                           >
                             {(() => {
                               const options = [];
-                              if (data?.pages) {
+                              if (data?.pages !== undefined) {
                                 for (let i = 1; i <= data.pages; i++) {
                                   options.push(
                                     <option key={i} value={i}>
@@ -87,8 +118,8 @@ const SchoolsManagementPage: React.FC = () => {
                     <Field name="count" id="count-select">
                       {({ field }: FieldProps) => (
                         <select
-                          className="py-0.5 border border-gray-500 rounded-md ml-2"
                           {...field}
+                          className="py-0.5 border border-gray-500 rounded-md ml-2"
                           onChange={(e) => {
                             field.onChange(e);
                             setFieldValue("page", "1");
@@ -117,15 +148,15 @@ const SchoolsManagementPage: React.FC = () => {
                 </Form>
                 <div>
                   <Link
-                    to="/schools/new"
+                    to={`/faculties/${schoolUuid}/new`}
                     className="text-blue-600 hover:text-blue-800 hover:underline rounded-md px-5 py-1 h-full hover:cursor-pointer"
                   >
-                    Add New School
+                    Add New Faculty
                   </Link>
                 </div>
               </div>
-              <SchoolsTable data={data?.schools ?? []} loading={isFetching} />
-              {data?.pages && data?.schools && data?.pages > 1 && (
+              <FacultiesTable data={data?.faculties ?? []} loading={isFetching} />
+              {data?.pages !== undefined && data?.faculties && data?.pages > 1 && (
                 <div className="flex flex-row gap-2">
                   <button
                     className="text-white bg-blue-600 hover:bg-blue-800 px-3 py-1 rounded-md disabled:bg-gray-500 disabled:hover:bg-gray-500"
@@ -149,7 +180,7 @@ const SchoolsManagementPage: React.FC = () => {
                   </button>
                 </div>
               )}
-            </>
+            </div>
           );
         }}
       </Formik>
@@ -157,4 +188,4 @@ const SchoolsManagementPage: React.FC = () => {
   );
 };
 
-export default SchoolsManagementPage;
+export default FacultiesManagementPage;

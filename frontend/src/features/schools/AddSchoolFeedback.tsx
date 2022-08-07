@@ -1,5 +1,4 @@
 import React, { Dispatch, SetStateAction } from "react";
-import { Link } from "react-router-dom";
 import CancelHeroIcon from "../../common/icons/CancelHeroIcon";
 import classNames from "classnames";
 
@@ -16,17 +15,6 @@ const AddSchoolFeedback: React.FC<AddSchoolMessagePropsType> = ({ message, setMe
         <div className={classNames("font-bold", { "text-lime-600": !isError }, { "text-red-600": isError })}>
           {message}
         </div>
-        {!isError && (
-          <div className="text-center">
-            You can find it in the{" "}
-            {
-              <Link to="/schools" className="text-blue-600 hover:text-blue-800 hover:underline">
-                schools table
-              </Link>
-            }
-            .
-          </div>
-        )}
       </div>
       <button type="button" onClick={() => setMessage(undefined)} className="hover:bg-gray-200 rounded-full p-1">
         <CancelHeroIcon />

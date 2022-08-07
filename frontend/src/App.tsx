@@ -3,7 +3,7 @@ import { useRefreshTokenMutation } from "./app/enhancedApi";
 import { Outlet } from "react-router-dom";
 import useAuthentication from "./features/auth/useAuthentication";
 import LoadingPage from "./common/components/LoadingPage";
-import NavBar from "./NavBar";
+import NavBar from "./common/components/NavBar";
 
 const App: React.FC = () => {
   useAuthentication();

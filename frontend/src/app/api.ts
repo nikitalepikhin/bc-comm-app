@@ -23,11 +23,17 @@ const injectedRtkApi = api.injectEndpoints({
     createSchool: build.mutation<CreateSchoolApiResponse, CreateSchoolApiArg>({
       query: (queryArg) => ({ url: `/schools`, method: "POST", body: queryArg.createSchoolDto }),
     }),
-    getSchools: build.query<GetSchoolsApiResponse, GetSchoolsApiArg>({
+    getAllSchools: build.query<GetAllSchoolsApiResponse, GetAllSchoolsApiArg>({
       query: (queryArg) => ({ url: `/schools`, params: { page: queryArg.page, count: queryArg.count } }),
+    }),
+    updateSchool: build.mutation<UpdateSchoolApiResponse, UpdateSchoolApiArg>({
+      query: (queryArg) => ({ url: `/schools`, method: "PUT", body: queryArg.updateSchoolRequestDto }),
     }),
     deleteSchool: build.mutation<DeleteSchoolApiResponse, DeleteSchoolApiArg>({
       query: (queryArg) => ({ url: `/schools`, method: "DELETE", body: queryArg.deleteSchoolDto }),
+    }),
+    getSchoolByUuid: build.query<GetSchoolByUuidApiResponse, GetSchoolByUuidApiArg>({
+      query: (queryArg) => ({ url: `/schools/${queryArg.uuid}` }),
     }),
     hello: build.query<HelloApiResponse, HelloApiArg>({
       query: () => ({ url: `/test/hello` }),
@@ -49,6 +55,15 @@ const injectedRtkApi = api.injectEndpoints({
         url: `/representatives/verify`,
         method: "POST",
         body: queryArg.verifyRepresentativeUserRequestDto,
+      }),
+    }),
+    createFaculty: build.mutation<CreateFacultyApiResponse, CreateFacultyApiArg>({
+      query: (queryArg) => ({ url: `/faculties`, method: "POST", body: queryArg.createFacultyDto }),
+    }),
+    getAllFaculties: build.query<GetAllFacultiesApiResponse, GetAllFacultiesApiArg>({
+      query: (queryArg) => ({
+        url: `/faculties/${queryArg.schoolUuid}`,
+        params: { page: queryArg.page, count: queryArg.count },
       }),
     }),
   }),
@@ -75,15 +90,23 @@ export type CreateSchoolApiResponse = unknown;
 export type CreateSchoolApiArg = {
   createSchoolDto: CreateSchoolDto;
 };
-export type GetSchoolsApiResponse =
+export type GetAllSchoolsApiResponse =
   /** status 200 Specified number of schools on a specified page. */ GetSchoolsResponseDto;
-export type GetSchoolsApiArg = {
+export type GetAllSchoolsApiArg = {
   page: string;
   count: string;
+};
+export type UpdateSchoolApiResponse = unknown;
+export type UpdateSchoolApiArg = {
+  updateSchoolRequestDto: UpdateSchoolRequestDto;
 };
 export type DeleteSchoolApiResponse = unknown;
 export type DeleteSchoolApiArg = {
   deleteSchoolDto: DeleteSchoolDto;
+};
+export type GetSchoolByUuidApiResponse = /** status 200 School by UUID. */ SchoolResponseDto;
+export type GetSchoolByUuidApiArg = {
+  uuid: string;
 };
 export type HelloApiResponse = unknown;
 export type HelloApiArg = void;
@@ -97,6 +120,17 @@ export type GetRepresentativeVerificationRequestsApiArg = void;
 export type VerifyRepresentativeUserApiResponse = unknown;
 export type VerifyRepresentativeUserApiArg = {
   verifyRepresentativeUserRequestDto: VerifyRepresentativeUserRequestDto;
+};
+export type CreateFacultyApiResponse = unknown;
+export type CreateFacultyApiArg = {
+  createFacultyDto: CreateFacultyDto;
+};
+export type GetAllFacultiesApiResponse =
+  /** status 200 Specified number of faculties on a specified page. */ GetFacultiesResponseDto;
+export type GetAllFacultiesApiArg = {
+  page: string;
+  count: string;
+  schoolUuid: string;
 };
 export type UserDataResponseDto = {
   email: string;
@@ -142,6 +176,15 @@ export type GetSchoolsResponseDto = {
   schools: SchoolResponseDto[];
   pages: number;
 };
+export type UpdateSchoolRequestDto = {
+  uuid: string;
+  name: string;
+  countryCode: string;
+  city: string;
+  addressLineOne: string;
+  addressLineTwo: string;
+  postalCode: string;
+};
 export type DeleteSchoolDto = {
   uuid: string;
 };
@@ -168,6 +211,28 @@ export type VerifyRepresentativeUserRequestDto = {
   reason: string;
   verifiedUserUuid: string;
 };
+export type CreateFacultyDto = {
+  schoolUuid: string;
+  name: string;
+  countryCode: string;
+  city: string;
+  addressLineOne: string;
+  addressLineTwo: string;
+  postalCode: string;
+};
+export type FacultyResponseDto = {
+  uuid: string;
+  name: string;
+  countryCode: string;
+  city: string;
+  addressLineOne: string;
+  addressLineTwo: string;
+  postalCode: string;
+};
+export type GetFacultiesResponseDto = {
+  faculties: FacultyResponseDto[];
+  pages: number;
+};
 export const {
   useLogInMutation,
   useSignUpBaseMutation,
@@ -175,11 +240,15 @@ export const {
   useRefreshTokenMutation,
   useLogOutMutation,
   useCreateSchoolMutation,
-  useGetSchoolsQuery,
+  useGetAllSchoolsQuery,
+  useUpdateSchoolMutation,
   useDeleteSchoolMutation,
+  useGetSchoolByUuidQuery,
   useHelloQuery,
   useHelloNoAuthQuery,
   useRequestVerificationQuery,
   useGetRepresentativeVerificationRequestsQuery,
   useVerifyRepresentativeUserMutation,
+  useCreateFacultyMutation,
+  useGetAllFacultiesQuery,
 } = injectedRtkApi;

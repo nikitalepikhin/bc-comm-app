@@ -1,6 +1,7 @@
 import React from "react";
 import useUserData from "../../features/auth/useUserData";
 import RepresentativeVerificationRequestsPage from "../../features/representatives-verification/RepresentativeVerificationRequestsPage";
+import { Link } from "react-router-dom";
 
 export const IndexPage: React.FC = () => {
   const { present, role } = useUserData();
@@ -18,9 +19,9 @@ export const IndexPage: React.FC = () => {
       <div className="m-2">
         <p className="inline">
           WELCOME, PLEASE LOG IN{" "}
-          <a href="/login" className="text-blue-600 hover:underline hover:text-blue-800">
+          <Link to="/login" className="text-blue-600 hover:underline hover:text-blue-800">
             HERE
-          </a>
+          </Link>
         </p>
       </div>
     );

@@ -25,12 +25,16 @@ export class FacultiesService {
     });
   }
 
-  async getFaculties(page: number, count: number): Promise<GetFacultiesResponseDto> {
-    const allFaculties = await this.prisma.faculty.findMany();
-    const faculties = await this.prisma.faculty.findMany({ skip: (page - 1) * count, take: count });
+  async getFaculties(page: number, count: number, schoolUuid: string): Promise<GetFacultiesResponseDto> {
+    const allFaculties = await this.prisma.faculty.findMany({ where: { schoolUuid } });
+    const faculties = await this.prisma.faculty.findMany({
+      where: { schoolUuid },
+      skip: (page - 1) * count,
+      take: count,
+    });
     return {
       pages: Math.ceil(allFaculties.length / count),
-      schools: faculties.map(({ uuid, name, countryCode, city, addressLineOne, addressLineTwo, postalCode }) => ({
+      faculties: faculties.map(({ uuid, name, countryCode, city, addressLineOne, addressLineTwo, postalCode }) => ({
         uuid,
         name,
         countryCode,

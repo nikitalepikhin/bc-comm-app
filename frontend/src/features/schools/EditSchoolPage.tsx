@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from "react";
+import { Link, useParams } from "react-router-dom";
 import { Field, FieldProps, Form, Formik } from "formik";
 import TextField from "../../common/ui/TextField";
 import Button from "../../common/components/Button";
-import { useCreateSchoolMutation } from "../../app/enhancedApi";
-import AddSchoolFeedback from "./AddSchoolFeedback";
-import { Link } from "react-router-dom";
+import { useGetSchoolByUuidQuery, useUpdateSchoolMutation } from "../../app/enhancedApi";
+import { CircularProgress } from "@mui/material";
 
-interface AddSchoolFormValues {
+interface EditSchoolFormValues {
+  uuid: string;
   name: string;
   countryCode: string;
   city: string;
@@ -15,45 +16,46 @@ interface AddSchoolFormValues {
   postalCode: string;
 }
 
-const initialValues: AddSchoolFormValues = {
-  name: "",
-  countryCode: "",
-  city: "",
-  addressLineOne: "",
-  addressLineTwo: "",
-  postalCode: "",
-};
-
-const AddSchoolPage: React.FC = () => {
-  const [message, setMessage] = useState<string | undefined>(undefined);
-  const [error, setError] = useState<string | undefined>(undefined);
-
-  const [addSchool, { isSuccess, isLoading, isError }] = useCreateSchoolMutation();
+const EditSchoolPage: React.FC = () => {
+  const { schoolUuid } = useParams();
+  const [initialValues, setInitialValues] = useState<EditSchoolFormValues | undefined>(undefined);
+  const { data, isLoading, isFetching } = useGetSchoolByUuidQuery({ uuid: schoolUuid ?? "" });
+  const [updateSchool] = useUpdateSchoolMutation();
 
   useEffect(() => {
-    if (isSuccess) {
-      setMessage("Successfully created a new school.");
+    if (data !== undefined) {
+      setInitialValues({
+        uuid: data.uuid ?? "",
+        name: data.name ?? "",
+        countryCode: data.countryCode ?? "",
+        city: data.city ?? "",
+        addressLineOne: data.addressLineOne ?? "",
+        addressLineTwo: data.addressLineTwo ?? "",
+        postalCode: data.postalCode ?? "",
+      });
     }
-    if (isError) {
-      setError("Error while creating a new school. Please check the provided values.");
-    }
-  }, [isSuccess, isError]);
+  }, [data]);
 
-  return (
+  return initialValues === undefined || isLoading || isFetching ? (
+    <div className="flex flex-col justify-center items-center gap-4 my-40">
+      <CircularProgress />
+      <div>Loading current school values...</div>
+    </div>
+  ) : (
     <div>
-      <div className="text-2xl font-bold text-center mx-auto mb-1 mt-4">Create New School</div>
+      <div className="text-2xl font-bold text-center mx-auto mb-1 mt-4">Edit School</div>
       <Formik
         initialValues={initialValues}
         onSubmit={async (values, { resetForm }) => {
-          await addSchool({ createSchoolDto: values });
+          await updateSchool({ updateSchoolRequestDto: values });
           resetForm();
         }}
       >
         {({ handleReset, handleSubmit }) => {
           return (
             <Form className="flex flex-col justify-start items-center gap-4">
-              {message !== undefined && <AddSchoolFeedback message={message} setMessage={setMessage} />}
-              {error !== undefined && <AddSchoolFeedback message={error} setMessage={setError} isError />}
+              {/*{message !== undefined && <AddSchoolFeedback message={message} setMessage={setMessage} />}*/}
+              {/*{error !== undefined && <AddSchoolFeedback message={error} setMessage={setError} isError />}*/}
 
               <Link to="/schools" className="text-blue-600 hover:text-blue-800 hover:underline">
                 Back to the schools table
@@ -141,7 +143,7 @@ const AddSchoolPage: React.FC = () => {
                 <Button type="reset" onClick={handleReset}>
                   Reset form
                 </Button>
-                <Button onClick={handleSubmit}>Create school</Button>
+                <Button onClick={handleSubmit}>Update school</Button>
               </div>
             </Form>
           );
@@ -151,4 +153,4 @@ const AddSchoolPage: React.FC = () => {
   );
 };
 
-export default AddSchoolPage;
+export default EditSchoolPage;

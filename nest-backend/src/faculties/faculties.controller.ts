@@ -1,5 +1,5 @@
-import { Body, Controller, Get, Post, Query, Req, UseGuards } from "@nestjs/common";
-import { ApiOkResponse, ApiOperation } from "@nestjs/swagger";
+import { Body, Controller, Get, Param, Post, Query, Req, UseGuards } from "@nestjs/common";
+import { ApiOkResponse, ApiOperation, ApiParam } from "@nestjs/swagger";
 import { Permission, RequirePermissions } from "../auth/permission.enum";
 import { JwtAuthGuard } from "../auth/jwt-auth.guard";
 import { RequirePermissionsGuard } from "../auth/require-permissions.guard";
@@ -16,13 +16,14 @@ export class FacultiesController {
   @RequirePermissions(Permission.FACULTY_CREATE)
   @UseGuards(JwtAuthGuard, RequirePermissionsGuard)
   @Post("/")
-  async createSchool(@Req() request, @Body() createFacultyDto: CreateFacultyDto) {
+  async createFaculty(@Req() request, @Body() createFacultyDto: CreateFacultyDto) {
     await this.facultiesService.createFaculty(createFacultyDto, request.user);
   }
 
   @ApiOperation({
     summary: "Get a specified number of faculties on a specified page.",
   })
+  @ApiParam({ name: "schoolUuid", type: String, required: true })
   @ApiOkResponse({
     description: "Specified number of faculties on a specified page.",
     type: GetFacultiesResponseDto,
@@ -30,11 +31,15 @@ export class FacultiesController {
   })
   @RequirePermissions(Permission.FACULTY_READ)
   @UseGuards(JwtAuthGuard, RequirePermissionsGuard)
-  @Get("/")
-  async getAllFaculties(@Query() query: GetFacultiesQueryParamsDto): Promise<GetFacultiesResponseDto> {
+  @Get("/:schoolUuid")
+  async getAllFaculties(
+    @Query() query: GetFacultiesQueryParamsDto,
+    @Param() { schoolUuid },
+  ): Promise<GetFacultiesResponseDto> {
     return await this.facultiesService.getFaculties(
       query.page ? parseInt(query.page) : 1,
       query.count ? parseInt(query.count) : 10,
+      schoolUuid,
     );
   }
 }

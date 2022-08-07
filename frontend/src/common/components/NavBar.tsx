@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { useLogOutMutation } from "./app/enhancedApi";
+import { useLogOutMutation } from "../../app/enhancedApi";
 
 const NavBar: React.FC = () => {
   const [logOut] = useLogOutMutation();

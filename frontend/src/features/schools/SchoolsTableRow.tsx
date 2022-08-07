@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { SchoolResponseDto } from "../../app/api";
 import { useDeleteSchoolMutation } from "../../app/enhancedApi";
+import { Link } from "react-router-dom";
 
 interface SchoolsTableRowPropsType {
   school: SchoolResponseDto;
@@ -31,13 +32,20 @@ const SchoolsTableRow: React.FC<SchoolsTableRowPropsType> = ({ school }) => {
           )}
           <div className="flex flex-row gap-2 justify-center items-center w-full">
             {!deleteInProgress && (
-              <button
-                type="button"
-                onClick={() => {}}
+              <Link
+                to={`/faculties/${school.uuid}`}
+                className="bg-blue-600 hover:bg-blue-800 text-white px-3 py-1 rounded-md"
+              >
+                Faculties
+              </Link>
+            )}
+            {!deleteInProgress && (
+              <Link
+                to={`/schools/edit/${school.uuid}`}
                 className="bg-blue-600 hover:bg-blue-800 text-white px-3 py-1 rounded-md"
               >
                 Edit
-              </button>
+              </Link>
             )}
             <button
               type="button"

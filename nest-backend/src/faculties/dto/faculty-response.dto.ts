@@ -2,6 +2,9 @@ import { ApiProperty } from "@nestjs/swagger";
 
 export default class FacultyResponseDto {
   @ApiProperty()
+  uuid: string;
+
+  @ApiProperty()
   name: string;
 
   @ApiProperty()
