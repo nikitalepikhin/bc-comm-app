@@ -2,8 +2,9 @@ import { Injectable } from "@nestjs/common";
 import { PrismaService } from "../prisma/prisma.service";
 import CreateFacultyDto from "./dto/create-faculty.dto";
 import UserDto from "../auth/dto/user.dto";
-import GetSchoolsResponseDto from "../schools/dto/get-schools-response.dto";
 import GetFacultiesResponseDto from "./dto/get-faculties-response.dto";
+import DeleteFacultyDto from "./dto/delete-faculty.dto";
+import UpdateFacultyRequestDto from "./dto/update-faculty-request.dto";
 
 @Injectable()
 export class FacultiesService {
@@ -44,5 +45,28 @@ export class FacultiesService {
         postalCode,
       })),
     };
+  }
+
+  async deleteFaculty(deleteFacultyDto: DeleteFacultyDto) {
+    console.log(`about to delete a faculty with uuid ${deleteFacultyDto.uuid}`);
+    return await this.prisma.faculty.delete({ where: { uuid: deleteFacultyDto.uuid } });
+  }
+
+  async updateFaculty(updateFacultyRequestDto: UpdateFacultyRequestDto) {
+    return this.prisma.faculty.update({
+      where: { uuid: updateFacultyRequestDto.uuid },
+      data: {
+        name: updateFacultyRequestDto.name,
+        countryCode: updateFacultyRequestDto.countryCode,
+        city: updateFacultyRequestDto.city,
+        addressLineOne: updateFacultyRequestDto.addressLineOne,
+        addressLineTwo: updateFacultyRequestDto.addressLineTwo,
+        postalCode: updateFacultyRequestDto.postalCode,
+      },
+    });
+  }
+
+  async getFacultyByUuid(uuid: string) {
+    return await this.prisma.faculty.findUnique({ where: { uuid } });
   }
 }

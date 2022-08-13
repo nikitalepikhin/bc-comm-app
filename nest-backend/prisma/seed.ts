@@ -10,6 +10,7 @@ const cvutFitUuid = uuidv4();
 const cvutFaUuid = uuidv4();
 const cvutFdUuid = uuidv4();
 const cvutFsUuid = uuidv4();
+const cvutFsvUuid = uuidv4();
 
 const vseUuid = uuidv4();
 const ukUuid = uuidv4();
@@ -164,6 +165,18 @@ async function seedFaculties() {
         addressLineOne: "Konviktská 20",
         addressLineTwo: "Praha 1",
         postalCode: "110 00",
+        createdByUuid: adminUuid,
+        modifiedByUuid: adminUuid,
+      },
+      {
+        uuid: cvutFsvUuid,
+        schoolUuid: cvutUuid,
+        name: "Fakulta stavební",
+        countryCode: "CZE",
+        city: "Praha",
+        addressLineOne: "Thákurova 7",
+        addressLineTwo: "Praha 6",
+        postalCode: "166 29",
         createdByUuid: adminUuid,
         modifiedByUuid: adminUuid,
       },

@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, Query, Req, UseGuards } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Param, Post, Put, Query, Req, UseGuards } from "@nestjs/common";
 import { ApiOkResponse, ApiOperation, ApiParam } from "@nestjs/swagger";
 import { Permission, RequirePermissions } from "../auth/permission.enum";
 import { JwtAuthGuard } from "../auth/jwt-auth.guard";
@@ -7,6 +7,14 @@ import { FacultiesService } from "./faculties.service";
 import CreateFacultyDto from "./dto/create-faculty.dto";
 import GetFacultiesResponseDto from "./dto/get-faculties-response.dto";
 import GetFacultiesQueryParamsDto from "./dto/get-faculties-query-params.dto";
+import DeleteSchoolDto from "../schools/dto/delete-school.dto";
+import DeleteFacultyDto from "./dto/delete-faculty.dto";
+import UpdateSchoolRequestDto from "../schools/dto/update-school-request.dto";
+import UpdateFacultyRequestDto from "./dto/update-faculty-request.dto";
+import SchoolResponseDto from "../schools/dto/school-response.dto";
+import GetSchoolByUuidRequestDto from "../schools/dto/get-school-by-uuid-request.dto";
+import FacultyResponseDto from "./dto/faculty-response.dto";
+import GetFacultyByUuidRequestDto from "./dto/get-faculty-by-uuid-request.dto";
 
 @Controller("faculties")
 export class FacultiesController {
@@ -41,5 +49,40 @@ export class FacultiesController {
       query.count ? parseInt(query.count) : 10,
       schoolUuid,
     );
+  }
+
+  @ApiOperation({
+    summary: "Get a faculty by UUID.",
+  })
+  @ApiOkResponse({
+    description: "Faculty by UUID.",
+    type: FacultyResponseDto,
+    content: {},
+  })
+  @RequirePermissions(Permission.FACULTY_READ)
+  @UseGuards(JwtAuthGuard, RequirePermissionsGuard)
+  @Get("/faculty/:uuid")
+  async getFacultyByUuid(@Param() param: GetFacultyByUuidRequestDto): Promise<FacultyResponseDto> {
+    return await this.facultiesService.getFacultyByUuid(param.uuid);
+  }
+
+  @ApiOperation({
+    summary: "Update a faculty based on the provided UUID.",
+  })
+  @RequirePermissions(Permission.FACULTY_UPDATE)
+  @UseGuards(JwtAuthGuard, RequirePermissionsGuard)
+  @Put("/")
+  async updateFaculty(@Body() updateFacultyRequestDto: UpdateFacultyRequestDto) {
+    return await this.facultiesService.updateFaculty(updateFacultyRequestDto);
+  }
+
+  @ApiOperation({
+    summary: "Delete a faculty based on the provided UUID.",
+  })
+  @RequirePermissions(Permission.FACULTY_DELETE)
+  @UseGuards(JwtAuthGuard, RequirePermissionsGuard)
+  @Delete("/")
+  async deleteFaculty(@Body() deleteFacultyDto: DeleteFacultyDto) {
+    return await this.facultiesService.deleteFaculty(deleteFacultyDto);
   }
 }

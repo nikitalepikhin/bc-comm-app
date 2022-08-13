@@ -8,7 +8,7 @@ import { RequirePermissionsGuard } from "../auth/require-permissions.guard";
 import GetSchoolsQueryParamsDto from "./dto/get-schools-query-params.dto";
 import SchoolResponseDto from "./dto/school-response.dto";
 import GetSchoolsResponseDto from "./dto/get-schools-response.dto";
-import GetSchoolByUuidResponseDto from "./dto/get-school-by-uuid-response.dto";
+import GetSchoolByUuidRequestDto from "./dto/get-school-by-uuid-request.dto";
 import UpdateSchoolRequestDto from "./dto/update-school-request.dto";
 import DeleteSchoolDto from "./dto/delete-school.dto";
 
@@ -53,7 +53,7 @@ export class SchoolsController {
   @RequirePermissions(Permission.SCHOOL_READ)
   @UseGuards(JwtAuthGuard, RequirePermissionsGuard)
   @Get("/:uuid")
-  async getSchoolByUuid(@Param() param: GetSchoolByUuidResponseDto): Promise<SchoolResponseDto> {
+  async getSchoolByUuid(@Param() param: GetSchoolByUuidRequestDto): Promise<SchoolResponseDto> {
     return await this.schoolService.getSchoolByUuid(param.uuid);
   }
 

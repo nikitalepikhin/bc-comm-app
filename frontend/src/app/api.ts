@@ -60,11 +60,20 @@ const injectedRtkApi = api.injectEndpoints({
     createFaculty: build.mutation<CreateFacultyApiResponse, CreateFacultyApiArg>({
       query: (queryArg) => ({ url: `/faculties`, method: "POST", body: queryArg.createFacultyDto }),
     }),
+    updateFaculty: build.mutation<UpdateFacultyApiResponse, UpdateFacultyApiArg>({
+      query: (queryArg) => ({ url: `/faculties`, method: "PUT", body: queryArg.updateFacultyRequestDto }),
+    }),
+    deleteFaculty: build.mutation<DeleteFacultyApiResponse, DeleteFacultyApiArg>({
+      query: (queryArg) => ({ url: `/faculties`, method: "DELETE", body: queryArg.deleteFacultyDto }),
+    }),
     getAllFaculties: build.query<GetAllFacultiesApiResponse, GetAllFacultiesApiArg>({
       query: (queryArg) => ({
         url: `/faculties/${queryArg.schoolUuid}`,
         params: { page: queryArg.page, count: queryArg.count },
       }),
+    }),
+    getFacultyByUuid: build.query<GetFacultyByUuidApiResponse, GetFacultyByUuidApiArg>({
+      query: (queryArg) => ({ url: `/faculties/faculty/${queryArg.uuid}` }),
     }),
   }),
   overrideExisting: false,
@@ -125,12 +134,24 @@ export type CreateFacultyApiResponse = unknown;
 export type CreateFacultyApiArg = {
   createFacultyDto: CreateFacultyDto;
 };
+export type UpdateFacultyApiResponse = unknown;
+export type UpdateFacultyApiArg = {
+  updateFacultyRequestDto: UpdateFacultyRequestDto;
+};
+export type DeleteFacultyApiResponse = unknown;
+export type DeleteFacultyApiArg = {
+  deleteFacultyDto: DeleteFacultyDto;
+};
 export type GetAllFacultiesApiResponse =
   /** status 200 Specified number of faculties on a specified page. */ GetFacultiesResponseDto;
 export type GetAllFacultiesApiArg = {
   page: string;
   count: string;
   schoolUuid: string;
+};
+export type GetFacultyByUuidApiResponse = /** status 200 Faculty by UUID. */ FacultyResponseDto;
+export type GetFacultyByUuidApiArg = {
+  uuid: string;
 };
 export type UserDataResponseDto = {
   email: string;
@@ -220,6 +241,18 @@ export type CreateFacultyDto = {
   addressLineTwo: string;
   postalCode: string;
 };
+export type UpdateFacultyRequestDto = {
+  uuid: string;
+  name: string;
+  countryCode: string;
+  city: string;
+  addressLineOne: string;
+  addressLineTwo: string;
+  postalCode: string;
+};
+export type DeleteFacultyDto = {
+  uuid: string;
+};
 export type FacultyResponseDto = {
   uuid: string;
   name: string;
@@ -250,5 +283,8 @@ export const {
   useGetRepresentativeVerificationRequestsQuery,
   useVerifyRepresentativeUserMutation,
   useCreateFacultyMutation,
+  useUpdateFacultyMutation,
+  useDeleteFacultyMutation,
   useGetAllFacultiesQuery,
+  useGetFacultyByUuidQuery,
 } = injectedRtkApi;

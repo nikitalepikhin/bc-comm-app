@@ -5,13 +5,14 @@ import { GetFacultiesResponseDto } from "../../app/api";
 import { Field, FieldProps, Form, Formik } from "formik";
 import { Link, useParams } from "react-router-dom";
 import FacultiesTable from "./FacultiesTable";
+import LinkWithIcon from "../../common/ui/LinkWithIcon";
 
 interface FacultiesPagingFormValues {
   page: string;
   count: string;
 }
 
-const countOptions = ["5", "10", "20"];
+const countOptions = ["10", "20", "30"];
 
 const initialValues: FacultiesPagingFormValues = {
   page: "1",
@@ -28,7 +29,7 @@ const FacultiesManagementPage: React.FC = () => {
   });
   const [data, setData] = useState<GetFacultiesResponseDto | undefined>(undefined);
 
-  const { data: schoolData, isFetching: getSchoolByUuidIsFetching } = useGetSchoolByUuidQuery({ uuid: schoolUuid! });
+  const { data: schoolData } = useGetSchoolByUuidQuery({ uuid: schoolUuid! });
   const [schoolName, setSchoolName] = useState<string | undefined>(undefined);
 
   const handleRefetch = useCallback(
@@ -55,6 +56,7 @@ const FacultiesManagementPage: React.FC = () => {
   return (
     <div className="flex flex-col gap-2 justify-center">
       <Formik
+        enableReinitialize
         initialValues={initialValues}
         onSubmit={(values) => {
           handleRefetch(values);
@@ -64,16 +66,20 @@ const FacultiesManagementPage: React.FC = () => {
           return (
             <div className="flex flex-col justify-start gap-2">
               <div className="flex flex-row justify-between gap-2 items-center">
-                <Link to="/schools" className="text-blue-600 hover:text-blue-800 flex flex-row items-center">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                    <path
-                      fillRule="evenodd"
-                      d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
-                      clipRule="evenodd"
-                    />
-                  </svg>
-                  <span className="pl-0.5">Back to the schools table</span>
-                </Link>
+                <LinkWithIcon
+                  to="/schools"
+                  svg={
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                      <path
+                        fillRule="evenodd"
+                        d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
+                        clipRule="evenodd"
+                      />
+                    </svg>
+                  }
+                >
+                  Back to the schools table
+                </LinkWithIcon>
                 {schoolName !== undefined && (
                   <div>
                     Showing faculties for: <span className="font-bold">{schoolName}</span>
@@ -157,7 +163,7 @@ const FacultiesManagementPage: React.FC = () => {
               </div>
               <FacultiesTable data={data?.faculties ?? []} loading={isFetching} />
               {data?.pages !== undefined && data?.faculties && data?.pages > 1 && (
-                <div className="flex flex-row gap-2">
+                <div className="flex flex-row justify-center w-full gap-2">
                   <button
                     className="text-white bg-blue-600 hover:bg-blue-800 px-3 py-1 rounded-md disabled:bg-gray-500 disabled:hover:bg-gray-500"
                     onClick={() => {
@@ -166,7 +172,16 @@ const FacultiesManagementPage: React.FC = () => {
                     }}
                     disabled={values.page === "1"}
                   >
-                    Prev
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-5 w-5"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                      strokeWidth={2}
+                    >
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+                    </svg>
                   </button>
                   <button
                     className="text-white bg-blue-600 hover:bg-blue-800 px-3 py-1 rounded-md disabled:bg-gray-500 disabled:hover:bg-gray-500"
@@ -176,7 +191,16 @@ const FacultiesManagementPage: React.FC = () => {
                     }}
                     disabled={values.page === data?.pages.toString()}
                   >
-                    Next
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-5 w-5"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                      strokeWidth={2}
+                    >
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+                    </svg>
                   </button>
                 </div>
               )}

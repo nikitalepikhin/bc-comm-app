@@ -23,8 +23,35 @@ export const enhancedApi = api.enhanceEndpoints({
     getAllSchools: {
       providesTags: [{ type: TagTypes.SCHOOL, id: IdTypes.ALL }],
     },
+    getSchoolByUuid: {
+      providesTags: (result, error, arg) => [{ type: TagTypes.SCHOOL, id: arg.uuid }],
+    },
     createSchool: {
       invalidatesTags: [{ type: TagTypes.SCHOOL, id: IdTypes.ALL }],
+    },
+    updateSchool: {
+      invalidatesTags: (result, error, arg) => [
+        { type: TagTypes.SCHOOL, id: arg.updateSchoolRequestDto.uuid },
+        { type: TagTypes.SCHOOL, id: IdTypes.ALL },
+      ],
+    },
+    deleteFaculty: {
+      invalidatesTags: [{ type: TagTypes.FACULTY, id: IdTypes.ALL }],
+    },
+    getAllFaculties: {
+      providesTags: [{ type: TagTypes.FACULTY, id: IdTypes.ALL }],
+    },
+    getFacultyByUuid: {
+      providesTags: (result, error, arg) => [{ type: TagTypes.FACULTY, id: arg.uuid }],
+    },
+    createFaculty: {
+      invalidatesTags: [{ type: TagTypes.FACULTY, id: IdTypes.ALL }],
+    },
+    updateFaculty: {
+      invalidatesTags: (result, error, arg) => [
+        { type: TagTypes.FACULTY, id: arg.updateFacultyRequestDto.uuid },
+        { type: TagTypes.FACULTY, id: IdTypes.ALL },
+      ],
     },
   },
 });
@@ -45,4 +72,7 @@ export const {
   useDeleteSchoolMutation,
   useCreateFacultyMutation,
   useGetAllFacultiesQuery,
+  useGetFacultyByUuidQuery,
+  useUpdateFacultyMutation,
+  useDeleteFacultyMutation,
 } = enhancedApi;

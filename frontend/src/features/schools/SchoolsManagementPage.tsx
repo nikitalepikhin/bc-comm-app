@@ -11,7 +11,7 @@ interface SchoolsPagingFormValues {
   count: string;
 }
 
-const countOptions = ["5", "10", "20"];
+const countOptions = ["10", "20", "30"];
 
 const initialValues: SchoolsPagingFormValues = {
   page: "1",

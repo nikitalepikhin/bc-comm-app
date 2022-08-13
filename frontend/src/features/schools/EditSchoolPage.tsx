@@ -5,6 +5,7 @@ import TextField from "../../common/ui/TextField";
 import Button from "../../common/components/Button";
 import { useGetSchoolByUuidQuery, useUpdateSchoolMutation } from "../../app/enhancedApi";
 import { CircularProgress } from "@mui/material";
+import LinkWithIcon from "../../common/ui/LinkWithIcon";
 
 interface EditSchoolFormValues {
   uuid: string;
@@ -19,7 +20,7 @@ interface EditSchoolFormValues {
 const EditSchoolPage: React.FC = () => {
   const { schoolUuid } = useParams();
   const [initialValues, setInitialValues] = useState<EditSchoolFormValues | undefined>(undefined);
-  const { data, isLoading, isFetching } = useGetSchoolByUuidQuery({ uuid: schoolUuid ?? "" });
+  const { data, isLoading, isFetching } = useGetSchoolByUuidQuery({ uuid: schoolUuid! });
   const [updateSchool] = useUpdateSchoolMutation();
 
   useEffect(() => {
@@ -43,8 +44,23 @@ const EditSchoolPage: React.FC = () => {
     </div>
   ) : (
     <div>
+      <LinkWithIcon
+        to="/schools"
+        svg={
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+            <path
+              fillRule="evenodd"
+              d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
+              clipRule="evenodd"
+            />
+          </svg>
+        }
+      >
+        Back to the schools table
+      </LinkWithIcon>
       <div className="text-2xl font-bold text-center mx-auto mb-1 mt-4">Edit School</div>
       <Formik
+        enableReinitialize
         initialValues={initialValues}
         onSubmit={async (values, { resetForm }) => {
           await updateSchool({ updateSchoolRequestDto: values });
@@ -56,10 +72,6 @@ const EditSchoolPage: React.FC = () => {
             <Form className="flex flex-col justify-start items-center gap-4">
               {/*{message !== undefined && <AddSchoolFeedback message={message} setMessage={setMessage} />}*/}
               {/*{error !== undefined && <AddSchoolFeedback message={error} setMessage={setError} isError />}*/}
-
-              <Link to="/schools" className="text-blue-600 hover:text-blue-800 hover:underline">
-                Back to the schools table
-              </Link>
 
               <Field name="name">
                 {({ field, form, meta }: FieldProps) => (
