@@ -15,7 +15,7 @@ export class RepresentativesController {
   @RequirePermissions(Permission.REP_REQ_VERIFY)
   @UseGuards(JwtAuthGuard, RequirePermissionsGuard)
   @Get("/request")
-  async requestVerification(@Req() request) {
+  async requestRepresentativeVerification(@Req() request) {
     await this.representativesService.requestVerification(request.user);
   }
 

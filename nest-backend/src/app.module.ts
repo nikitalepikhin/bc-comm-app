@@ -9,8 +9,9 @@ import { SchoolsModule } from './schools/schools.module';
 import { AuthoritiesModule } from './authorities/authorities.module';
 import { RepresentativesModule } from './representatives/representatives.module';
 import { FacultiesModule } from './faculties/faculties.module';
+import { TeachersModule } from './teachers/teachers.module';
 
 @Module({
-  imports: [AuthModule, UsersModule, PrismaModule, RefreshTokensModule, CookieModule, TestModule, SchoolsModule, AuthoritiesModule, RepresentativesModule, FacultiesModule],
+  imports: [AuthModule, UsersModule, PrismaModule, RefreshTokensModule, CookieModule, TestModule, SchoolsModule, AuthoritiesModule, RepresentativesModule, FacultiesModule, TeachersModule],
 })
 export class AppModule {}

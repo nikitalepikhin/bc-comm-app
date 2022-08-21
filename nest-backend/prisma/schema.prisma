@@ -48,6 +48,7 @@ model User {
   teacher                 Teacher?
   representative          Representative?
   verifiedRepresentatives Representative[]         @relation(name: "verification")
+  verifiedTeachers        Teacher[]                @relation(name: "verification")
   subscriptions           ChannelSubscribedUsers[]
   administratedChannels   ChannelAdminUsers[]
   createdPosts            Post[]
@@ -65,20 +66,24 @@ model User {
 }
 
 model Teacher {
-  userUuid            String   @id @unique @db.Uuid
-  user                User     @relation(fields: [userUuid], references: [uuid], onDelete: Cascade)
-  name                String   @db.VarChar(128)
-  nameModified        DateTime @default(now()) @db.Timestamp(6)
-  bio                 String?  @db.VarChar(1024)
-  bioModified         DateTime @default(now()) @db.Timestamp(6)
-  verified            Boolean  @default(false)
-  verificationMessage String?  @db.VarChar(300)
-  schoolUuid          String   @db.Uuid
-  school              School   @relation(fields: [schoolUuid], references: [uuid])
-  schoolModified      DateTime @default(now()) @db.Timestamp(6)
-  facultyUuid         String   @db.Uuid
-  faculty             Faculty  @relation(fields: [facultyUuid], references: [uuid])
-  facultyModified     DateTime @default(now()) @db.Timestamp(6)
+  userUuid             String    @id @unique @db.Uuid
+  user                 User      @relation(fields: [userUuid], references: [uuid], onDelete: Cascade)
+  name                 String    @db.VarChar(128)
+  nameModified         DateTime  @default(now()) @db.Timestamp(6)
+  bio                  String?   @db.VarChar(1024)
+  bioModified          DateTime  @default(now()) @db.Timestamp(6)
+  verified             Boolean   @default(false)
+  verificationMessage  String?   @db.VarChar(300)
+  verifiedAt           DateTime? @default(now()) @db.Timestamp(6)
+  verifiedBy           User?     @relation(name: "verification", fields: [verifiedByUserUuid], references: [uuid], onDelete: Cascade)
+  verifiedByUserUuid   String?   @db.Uuid
+  requestsVerification Boolean   @default(true)
+  schoolUuid           String    @db.Uuid
+  school               School    @relation(fields: [schoolUuid], references: [uuid])
+  schoolModified       DateTime  @default(now()) @db.Timestamp(6)
+  facultyUuid          String    @db.Uuid
+  faculty              Faculty   @relation(fields: [facultyUuid], references: [uuid])
+  facultyModified      DateTime  @default(now()) @db.Timestamp(6)
 }
 
 model Representative {

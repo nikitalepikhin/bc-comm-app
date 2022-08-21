@@ -2,6 +2,7 @@ import { BadRequestException, Injectable } from "@nestjs/common";
 import { PrismaService } from "../prisma/prisma.service";
 import GetRepresentativeRequestsDto from "./dto/get-representative-requests.dto";
 import VerifyRepresentativeUserRequestDto from "./dto/verify-representative-user-request.dto";
+import UserDto from "../auth/dto/user.dto";
 
 @Injectable()
 export class RepresentativesService {
@@ -35,7 +36,7 @@ export class RepresentativesService {
     return { requests: reps.map((rep) => ({ school: { ...rep.school }, user: { ...rep.user, name: rep.name } })) };
   }
 
-  async verifyRepresentativeUser(user, verifyRepresentativeUserRequest: VerifyRepresentativeUserRequestDto) {
+  async verifyRepresentativeUser(user: UserDto, verifyRepresentativeUserRequest: VerifyRepresentativeUserRequestDto) {
     const representative = await this.prisma.representative.findUnique({
       where: { userUuid: verifyRepresentativeUserRequest.verifiedUserUuid },
     });
@@ -56,7 +57,6 @@ export class RepresentativesService {
           verified: verifyRepresentativeUserRequest.approve,
           verifiedByUserUuid: user.uuid,
           verificationMessage: verifyRepresentativeUserRequest.reason,
-
           verifiedAt: new Date(),
           requestsVerification: false,
         },

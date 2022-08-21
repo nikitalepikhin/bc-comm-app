@@ -12,6 +12,9 @@ export enum Permission {
   REP_REQ_READ,
   REP_REQ_UPDATE,
   REP_REQ_VERIFY,
+  TEACHER_REQ_VERIFY,
+  TEACHER_REQ_READ,
+  TEACHER_REQ_UPDATE,
 }
 
 export const PERMISSIONS_KEY = "permissions";

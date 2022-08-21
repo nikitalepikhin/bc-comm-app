@@ -37,6 +37,10 @@ async function seedAuthorities() {
       { name: Permission[Permission.REP_REQ_READ], roles: [Role.ADMIN] },
       { name: Permission[Permission.REP_REQ_UPDATE], roles: [Role.ADMIN] },
       { name: Permission[Permission.REP_REQ_VERIFY], roles: [Role.REPRESENTATIVE] },
+
+      { name: Permission[Permission.TEACHER_REQ_READ], roles: [Role.ADMIN, Role.REPRESENTATIVE] },
+      { name: Permission[Permission.TEACHER_REQ_UPDATE], roles: [Role.ADMIN, Role.REPRESENTATIVE] },
+      { name: Permission[Permission.TEACHER_REQ_VERIFY], roles: [Role.ADMIN, Role.REPRESENTATIVE] },
     ],
   });
 }
