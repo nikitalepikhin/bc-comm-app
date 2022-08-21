@@ -3,6 +3,7 @@ import ReactDOM from "react-dom";
 import { Provider } from "react-redux";
 import { store } from "./app/store";
 import "./index.css";
+import "./inter.css";
 import App from "./App";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import LoginPage from "./features/auth/LoginPage";
@@ -16,6 +17,8 @@ import EditSchoolPage from "./features/schools/EditSchoolPage";
 import FacultiesManagementPage from "./features/faculties/FacultiesManagementPage";
 import AddFacultyPage from "./features/faculties/AddFacultyPage";
 import EditFacultyPage from "./features/faculties/EditFacultyPage";
+
+document.body.classList.add();
 
 ReactDOM.render(
   <React.StrictMode>

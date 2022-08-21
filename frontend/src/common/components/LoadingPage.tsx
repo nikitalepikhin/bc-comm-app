@@ -1,10 +1,10 @@
 import React from "react";
-import { CircularProgress } from "@mui/material";
+import LoadingSpinner from "../ui/LoadingSpinner";
 
 const LoadingPage: React.FC = () => {
   return (
     <div className="h-screen w-full flex flex-col justify-center items-center gap-2">
-      <CircularProgress variant="indeterminate" />
+      <LoadingSpinner size="h-10 w-10" />
     </div>
   );
 };

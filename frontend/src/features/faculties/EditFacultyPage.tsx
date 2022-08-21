@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useGetFacultyByUuidQuery, useUpdateFacultyMutation } from "../../app/enhancedApi";
-import { CircularProgress } from "@mui/material";
 import { Field, FieldProps, Form, Formik } from "formik";
 import TextField from "../../common/ui/TextField";
 import Button from "../../common/components/Button";
 import LinkWithIcon from "../../common/ui/LinkWithIcon";
+import LoadingSpinner from "../../common/ui/LoadingSpinner";
 
 interface EditFacultyFormValues {
   uuid: string;
@@ -40,7 +40,7 @@ const EditFacultyPage: React.FC = () => {
 
   return initialValues === undefined || isLoading || isFetching ? (
     <div className="flex flex-col justify-center items-center gap-4 my-40">
-      <CircularProgress />
+      <LoadingSpinner />
       <div>Loading current faculty values...</div>
     </div>
   ) : (
@@ -156,7 +156,7 @@ const EditFacultyPage: React.FC = () => {
                 <Button type="reset" onClick={handleReset}>
                   Reset form
                 </Button>
-                <Button onClick={handleSubmit}>Update faculty</Button>
+                <Button onClick={() => handleSubmit()}>Update faculty</Button>
               </div>
             </Form>
           );

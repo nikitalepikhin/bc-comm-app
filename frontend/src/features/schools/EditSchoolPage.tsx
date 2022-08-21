@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { Field, FieldProps, Form, Formik } from "formik";
 import TextField from "../../common/ui/TextField";
 import Button from "../../common/components/Button";
 import { useGetSchoolByUuidQuery, useUpdateSchoolMutation } from "../../app/enhancedApi";
-import { CircularProgress } from "@mui/material";
 import LinkWithIcon from "../../common/ui/LinkWithIcon";
+import LoadingSpinner from "../../common/ui/LoadingSpinner";
 
 interface EditSchoolFormValues {
   uuid: string;
@@ -39,7 +39,7 @@ const EditSchoolPage: React.FC = () => {
 
   return initialValues === undefined || isLoading || isFetching ? (
     <div className="flex flex-col justify-center items-center gap-4 my-40">
-      <CircularProgress />
+      <LoadingSpinner />
       <div>Loading current school values...</div>
     </div>
   ) : (
@@ -155,7 +155,7 @@ const EditSchoolPage: React.FC = () => {
                 <Button type="reset" onClick={handleReset}>
                   Reset form
                 </Button>
-                <Button onClick={handleSubmit}>Update school</Button>
+                <Button onClick={() => handleSubmit()}>Update school</Button>
               </div>
             </Form>
           );

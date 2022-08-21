@@ -7,12 +7,7 @@ const RepresentativeVerificationRequestsPage: React.FC = () => {
   const { data, isFetching, error, refetch } = useGetRepresentativeVerificationRequestsQuery();
   return (
     <div className="flex flex-col justify-start items-center gap-2">
-      <LoadingButton
-        loading={isFetching}
-        disabled={isFetching}
-        className="px-4 py-1.5 text-white bg-blue-600 hover:bg-blue-800 rounded-md w-fit"
-        onClick={() => refetch()}
-      >
+      <LoadingButton loading={isFetching} disabled={isFetching} onClick={() => refetch()}>
         Refresh requests list
       </LoadingButton>
       {error && <pre>{error}</pre>}

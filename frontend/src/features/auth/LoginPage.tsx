@@ -5,6 +5,7 @@ import { Navigate } from "react-router-dom";
 import TextField from "../../common/ui/TextField";
 import { useLogInMutation } from "../../app/enhancedApi";
 import { useAppSelector } from "../../app/hooks";
+import Button from "../../common/components/Button";
 
 const initialValues = {
   email: "",
@@ -65,13 +66,9 @@ const LoginPage: React.FC = () => {
                   )}
                 </Field>
                 <div className="flex justify-center mt-3">
-                  <button
-                    type="submit"
-                    className="h-10 w-full py-2 px-4 border border-transparent rounded text-base font-medium bg-blue-600 text-white hover:bg-blue-900 transition-all shadow disabled:text-gray-700 disabled:bg-gray-300"
-                    disabled={!isValid || !dirty}
-                  >
+                  <Button type="submit" variant="contained" disabled={!isValid || !dirty} className="w-full">
                     Log In
-                  </button>
+                  </Button>
                 </div>
               </Form>
             </div>
@@ -81,7 +78,7 @@ const LoginPage: React.FC = () => {
       <div className="mt-6">
         <p>
           Don't have an account?
-          <a href="/signup" className="text-blue-600 hover:underline hover:text-blue-900 pl-2">
+          <a href="/signup" className="text-accent hover:underline hover:text-accent-strong pl-2">
             Sign up
           </a>
         </p>

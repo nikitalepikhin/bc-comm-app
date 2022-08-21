@@ -132,7 +132,7 @@ const ComboBox = <T extends ComboBoxInputType, V extends Object>({
               )}
               {isLoading && (
                 <Combobox.Button disabled>
-                  <LoadingSpinner color="blue-600" height={6} extra={"mr-2"} />
+                  <LoadingSpinner />
                 </Combobox.Button>
               )}
             </div>

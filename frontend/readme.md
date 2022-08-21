@@ -22,3 +22,8 @@ SSL_CRT_FILE=.cert/cert.crt
 SSL_KEY_FILE=.cert/cert.key
 ```
 
+### Running a local production build over HTTPS
+
+```
+serve -s build -p 443 -l tcp://commapp.com:443 --no-port-switching --ssl-cert  ./.cert/cert.pem --ssl-key ./.cert/key.pem
+````

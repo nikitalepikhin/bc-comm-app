@@ -157,7 +157,7 @@ const AddFacultyPage: React.FC = () => {
                 <Button type="reset" onClick={handleReset}>
                   Reset form
                 </Button>
-                <Button onClick={handleSubmit}>Create school</Button>
+                <Button onClick={() => handleSubmit()}>Create school</Button>
               </div>
             </Form>
           );
