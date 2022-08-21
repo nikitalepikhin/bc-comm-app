@@ -8,7 +8,7 @@ interface LinkWithIconPropsType {
 
 const LinkWithIcon: React.FC<LinkWithIconPropsType> = ({ to, svg, children }) => {
   return (
-    <Link to={to} className="text-blue-600 hover:text-blue-800 flex flex-row items-center">
+    <Link to={to} className="text-accent hover:text-accent-strong flex flex-row items-center">
       {svg}
       <span className="pl-0.5">{children}</span>
     </Link>

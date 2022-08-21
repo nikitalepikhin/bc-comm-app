@@ -20,6 +20,8 @@ import EditFacultyPage from "./features/faculties/EditFacultyPage";
 
 document.body.classList.add();
 
+console.log(process.env.ENV);
+
 ReactDOM.render(
   <React.StrictMode>
     <Provider store={store}>
@@ -28,7 +30,7 @@ ReactDOM.render(
           <Route path="/" element={<App />}>
             <Route index element={<IndexPage />} />
             <Route path="login" element={<LoginPage />} />
-            <Route path="debug" element={<DebugPage />} />
+            {process.env.MODE === "dev" && <Route path="debug" element={<DebugPage />} />}
             <Route
               path="schools"
               element={

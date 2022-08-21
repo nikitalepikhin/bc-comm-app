@@ -4,7 +4,6 @@ import TextField from "../../common/ui/TextField";
 import Button from "../../common/components/Button";
 import { useCreateSchoolMutation } from "../../app/enhancedApi";
 import AddSchoolFeedback from "./AddSchoolFeedback";
-import { Link } from "react-router-dom";
 import LinkWithIcon from "../../common/ui/LinkWithIcon";
 
 interface AddSchoolFormValues {
