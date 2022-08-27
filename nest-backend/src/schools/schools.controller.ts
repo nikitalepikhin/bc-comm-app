@@ -11,6 +11,8 @@ import GetSchoolsResponseDto from "./dto/get-schools-response.dto";
 import GetSchoolByUuidRequestDto from "./dto/get-school-by-uuid-request.dto";
 import UpdateSchoolRequestDto from "./dto/update-school-request.dto";
 import DeleteSchoolDto from "./dto/delete-school.dto";
+import GetSchoolAutocompleteRequestDto from "./dto/get-school-autocomplete-request.dto";
+import GetSchoolAutocompleteResponseDto from "./dto/get-school-autocomplete-response.dto";
 
 @Controller("schools")
 export class SchoolsController {
@@ -55,6 +57,25 @@ export class SchoolsController {
   @Get("/:uuid")
   async getSchoolByUuid(@Param() param: GetSchoolByUuidRequestDto): Promise<SchoolResponseDto> {
     return await this.schoolService.getSchoolByUuid(param.uuid);
+  }
+
+  @ApiOperation({
+    summary: "Get school autocomplete value.",
+  })
+  @ApiOkResponse({
+    description: "School autocomplete values.",
+    type: GetSchoolAutocompleteResponseDto,
+    content: {},
+  })
+  @Post("/ac")
+  async getSchoolAutocomplete(
+    @Body() getSchoolAutocomplete: GetSchoolAutocompleteRequestDto,
+  ): Promise<GetSchoolAutocompleteResponseDto> {
+    if (getSchoolAutocomplete.value.length > 0) {
+      return await this.schoolService.getSchoolAutocomplete(getSchoolAutocomplete);
+    } else {
+      return { schools: [] };
+    }
   }
 
   @ApiOperation({

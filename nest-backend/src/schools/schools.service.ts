@@ -5,6 +5,9 @@ import ValidateUserDto from "../users/dto/validate-user.dto";
 import GetSchoolsResponseDto from "./dto/get-schools-response.dto";
 import UpdateSchoolRequestDto from "./dto/update-school-request.dto";
 import DeleteSchoolDto from "./dto/delete-school.dto";
+import GetSchoolAutocompleteRequestDto from "./dto/get-school-autocomplete-request.dto";
+import SchoolAutocompleteDto from "./dto/school-autocomplete.dto";
+import GetSchoolAutocompleteResponseDto from "./dto/get-school-autocomplete-response.dto";
 
 @Injectable()
 export class SchoolsService {
@@ -53,5 +56,18 @@ export class SchoolsService {
         postalCode: updateSchoolRequestDto.postalCode,
       },
     });
+  }
+
+  async getSchoolAutocomplete(
+    getSchoolAutocomplete: GetSchoolAutocompleteRequestDto,
+  ): Promise<GetSchoolAutocompleteResponseDto> {
+    return {
+      schools: (
+        await this.prisma.school.findMany({
+          where: { name: { contains: getSchoolAutocomplete.value, mode: "insensitive" } },
+          take: 10,
+        })
+      ).map((school) => ({ text: school.name, value: school.uuid })),
+    };
   }
 }

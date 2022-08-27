@@ -8,5 +8,6 @@ import { AuthoritiesModule } from "../authorities/authorities.module";
   controllers: [FacultiesController],
   providers: [FacultiesService],
   imports: [PrismaModule, AuthoritiesModule],
+  exports: [FacultiesService],
 })
 export class FacultiesModule {}

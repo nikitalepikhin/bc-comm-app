@@ -5,6 +5,9 @@ import UserDto from "../auth/dto/user.dto";
 import GetFacultiesResponseDto from "./dto/get-faculties-response.dto";
 import DeleteFacultyDto from "./dto/delete-faculty.dto";
 import UpdateFacultyRequestDto from "./dto/update-faculty-request.dto";
+import GetFacultyAutocompleteRequestDto from "./dto/get-faculty-autocomplete-request.dto";
+import FacultyAutocompleteDto from "./dto/faculty-autocomplete.dto";
+import GetFacultyAutocompleteResponseDto from "./dto/get-faculty-autocomplete-response.dto";
 
 @Injectable()
 export class FacultiesService {
@@ -68,5 +71,21 @@ export class FacultiesService {
 
   async getFacultyByUuid(uuid: string) {
     return await this.prisma.faculty.findUnique({ where: { uuid } });
+  }
+
+  async getFacultyAutocomplete(
+    getFacultyAutocomplete: GetFacultyAutocompleteRequestDto,
+  ): Promise<GetFacultyAutocompleteResponseDto> {
+    return {
+      faculties: (
+        await this.prisma.faculty.findMany({
+          where: {
+            name: { contains: getFacultyAutocomplete.value, mode: "insensitive" },
+            school: { uuid: getFacultyAutocomplete.schoolUuid },
+          },
+          take: 10,
+        })
+      ).map((faculty) => ({ text: faculty.name, value: faculty.uuid })),
+    };
   }
 }

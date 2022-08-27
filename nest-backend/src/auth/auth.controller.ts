@@ -11,6 +11,7 @@ import { ApiImplicitBody } from "@nestjs/swagger/dist/decorators/api-implicit-bo
 import LogInUserRequestDto from "../users/dto/log-in-user-request.dto";
 import UserDataResponseDto from "../users/dto/user-data-response.dto";
 import CreateRepresentativeUserDto from "../users/dto/create-representative-user.dto";
+import { CreateTeacherUserDto } from "../users/dto/create-teacher-user.dto";
 
 @ApiTags("auth")
 @Controller("auth")
@@ -40,6 +41,12 @@ export class AuthController {
     return await this.authService.signUpRepresentativeUser(createRepresentativeUserDto);
   }
 
+  @ApiOperation({ summary: "Sign up a teacher user." })
+  @Post("signup/teacher")
+  async signUpTeacher(@Body() createTeacherUserDto: CreateTeacherUserDto) {
+    return await this.authService.signUpTeacherUser(createTeacherUserDto);
+  }
+
   @ApiOperation({ summary: "Refresh the issued token pair." })
   @ApiResponse({ status: 201, description: "Authenticated user data", type: UserDataResponseDto, content: {} })
   @UseGuards(JwtRefreshAuthGuard)
@@ -67,6 +74,4 @@ export class AuthController {
   }
 
   // todo - register teacher
-
-  // todo - register representative
 }

@@ -8,6 +8,7 @@ import { v4 as uuidv4 } from "uuid";
 import { RefreshTokensService } from "../refresh-tokens/refresh-tokens.service";
 import UserRefreshDto from "./dto/user-refresh.dto";
 import CreateRepresentativeUserDto from "../users/dto/create-representative-user.dto";
+import { CreateTeacherUserDto } from "../users/dto/create-teacher-user.dto";
 
 @Injectable()
 export class AuthService {
@@ -95,5 +96,9 @@ export class AuthService {
     const refreshToken = this.jwtService.sign(payload);
     await this.refreshTokensService.createRefreshToken(refreshToken, family);
     return refreshToken;
+  }
+
+  async signUpTeacherUser(createTeacherUserDto: CreateTeacherUserDto) {
+    return await this.usersService.createTeacherUser(createTeacherUserDto);
   }
 }

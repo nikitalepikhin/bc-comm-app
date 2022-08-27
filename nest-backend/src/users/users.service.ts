@@ -6,6 +6,8 @@ import * as bcrypt from "bcrypt";
 import * as randomstring from "randomstring";
 import CreateRepresentativeUserDto from "./dto/create-representative-user.dto";
 import { SchoolsService } from "../schools/schools.service";
+import { CreateTeacherUserDto } from "./dto/create-teacher-user.dto";
+import { FacultiesService } from "../faculties/faculties.service";
 
 const usernameParams = {
   length: 8,
@@ -14,7 +16,11 @@ const usernameParams = {
 
 @Injectable()
 export class UsersService {
-  constructor(private prisma: PrismaService, private schoolService: SchoolsService) {}
+  constructor(
+    private prisma: PrismaService,
+    private schoolsService: SchoolsService,
+    private facultiesService: FacultiesService,
+  ) {}
 
   async createBaseUser(userDto: CreateBaseUserDto): Promise<User> {
     const { email, password, role } = userDto;
@@ -22,8 +28,8 @@ export class UsersService {
     if (existingUser) {
       throw new BadRequestException();
     }
-    const hashedPassword = await this.hashPassword(password);
-    const username = this.generateRandomUsername();
+    const hashedPassword = await UsersService.hashPassword(password);
+    const username = UsersService.generateRandomUsername();
     return await this.prisma.user.create({
       data: { email, password: hashedPassword, status: Status.ACTIVE, role, username },
     });
@@ -31,7 +37,6 @@ export class UsersService {
 
   async findByEmail(email: string) {
     return await this.prisma.user.findUnique({ where: { email } });
-    ``;
   }
 
   async findByUuid(uuid: string) {
@@ -44,12 +49,12 @@ export class UsersService {
     if (existingUser) {
       throw new BadRequestException();
     }
-    const school = await this.schoolService.getSchoolByUuid(schoolUuid);
+    const school = await this.schoolsService.getSchoolByUuid(schoolUuid);
     if (!school) {
       throw new InternalServerErrorException("Unknown school provided.");
     }
-    const hashedPassword = await this.hashPassword(password);
-    const username = this.generateRandomUsername();
+    const hashedPassword = await UsersService.hashPassword(password);
+    const username = UsersService.generateRandomUsername();
     return await this.prisma.representative.create({
       data: {
         user: {
@@ -69,12 +74,50 @@ export class UsersService {
     });
   }
 
-  private async hashPassword(password: string): Promise<string> {
+  async createTeacherUser(createTeacherUserDto: CreateTeacherUserDto) {
+    const { email, password, role, name, schoolUuid, facultyUuid } = createTeacherUserDto;
+    const existingUser = await this.prisma.user.findUnique({ where: { email } });
+    if (existingUser) {
+      throw new BadRequestException();
+    }
+    const school = await this.schoolsService.getSchoolByUuid(schoolUuid);
+    if (!school) {
+      throw new InternalServerErrorException("Unknown school provided.");
+    }
+    const faculty = await this.facultiesService.getFacultyByUuid(facultyUuid);
+    if (!faculty) {
+      throw new InternalServerErrorException("Unknown faculty provided.");
+    }
+    const hashedPassword = await UsersService.hashPassword(password);
+    const username = UsersService.generateRandomUsername();
+    return await this.prisma.teacher.create({
+      data: {
+        user: {
+          create: {
+            email,
+            password: hashedPassword,
+            status: Status.ACTIVE,
+            role,
+            username,
+          },
+        },
+        name,
+        school: {
+          connect: { uuid: schoolUuid },
+        },
+        faculty: {
+          connect: { uuid: facultyUuid },
+        },
+      },
+    });
+  }
+
+  private static async hashPassword(password: string): Promise<string> {
     const salt = await bcrypt.genSalt();
     return await bcrypt.hash(password, salt);
   }
 
-  private generateRandomUsername(): string {
+  private static generateRandomUsername(): string {
     return randomstring.generate(usernameParams).toLowerCase();
   }
 }

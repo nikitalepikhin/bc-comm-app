@@ -7,14 +7,12 @@ import { FacultiesService } from "./faculties.service";
 import CreateFacultyDto from "./dto/create-faculty.dto";
 import GetFacultiesResponseDto from "./dto/get-faculties-response.dto";
 import GetFacultiesQueryParamsDto from "./dto/get-faculties-query-params.dto";
-import DeleteSchoolDto from "../schools/dto/delete-school.dto";
 import DeleteFacultyDto from "./dto/delete-faculty.dto";
-import UpdateSchoolRequestDto from "../schools/dto/update-school-request.dto";
 import UpdateFacultyRequestDto from "./dto/update-faculty-request.dto";
-import SchoolResponseDto from "../schools/dto/school-response.dto";
-import GetSchoolByUuidRequestDto from "../schools/dto/get-school-by-uuid-request.dto";
 import FacultyResponseDto from "./dto/faculty-response.dto";
 import GetFacultyByUuidRequestDto from "./dto/get-faculty-by-uuid-request.dto";
+import GetFacultyAutocompleteRequestDto from "./dto/get-faculty-autocomplete-request.dto";
+import GetFacultyAutocompleteResponseDto from "./dto/get-faculty-autocomplete-response.dto";
 
 @Controller("faculties")
 export class FacultiesController {
@@ -64,6 +62,25 @@ export class FacultiesController {
   @Get("/faculty/:uuid")
   async getFacultyByUuid(@Param() param: GetFacultyByUuidRequestDto): Promise<FacultyResponseDto> {
     return await this.facultiesService.getFacultyByUuid(param.uuid);
+  }
+
+  @ApiOperation({
+    summary: "Get faculty autocomplete value.",
+  })
+  @ApiOkResponse({
+    description: "Faculty autocomplete values.",
+    type: GetFacultyAutocompleteResponseDto,
+    content: {},
+  })
+  @Post("/ac")
+  async getFacultyAutocomplete(
+    @Body() getFacultyAutocomplete: GetFacultyAutocompleteRequestDto,
+  ): Promise<GetFacultyAutocompleteResponseDto> {
+    if (getFacultyAutocomplete.value.length > 0) {
+      return await this.facultiesService.getFacultyAutocomplete(getFacultyAutocomplete);
+    } else {
+      return { faculties: [] };
+    }
   }
 
   @ApiOperation({
