@@ -59,12 +59,15 @@ export const enhancedApi = api.enhanceEndpoints({
 export const {
   useLogInMutation,
   useLogOutMutation,
+  useSignUpBaseMutation,
+  useSignUpTeacherMutation,
+  useSignUpRepresentativeMutation,
   useLazyHelloQuery,
   useLazyHelloNoAuthQuery,
   useRefreshTokenMutation,
   useGetRepresentativeVerificationRequestsQuery,
   useVerifyRepresentativeUserMutation,
-  useRequestVerificationQuery,
+  useRequestRepresentativeVerificationQuery,
   useGetAllSchoolsQuery,
   useGetSchoolByUuidQuery,
   useCreateSchoolMutation,
@@ -75,4 +78,6 @@ export const {
   useGetFacultyByUuidQuery,
   useUpdateFacultyMutation,
   useDeleteFacultyMutation,
+  useGetSchoolAutocompleteMutation,
+  useGetFacultyAutocompleteMutation,
 } = enhancedApi;

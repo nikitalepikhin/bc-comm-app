@@ -1,5 +1,17 @@
-import React from "react";
+import React, { useEffect } from "react";
 import * as yup from "yup";
+import { Field, FieldProps, Form, Formik } from "formik";
+import ComboBox from "../../common/ui/ComboBox";
+import {
+  useGetFacultyAutocompleteMutation,
+  useGetSchoolAutocompleteMutation,
+  useSignUpBaseMutation,
+  useSignUpTeacherMutation,
+  useSignUpRepresentativeMutation,
+} from "../../app/enhancedApi";
+import Button from "../../common/components/Button";
+import LoadingButton from "../../common/ui/LoadingButton";
+import { Link, useNavigate } from "react-router-dom";
 
 export interface ComboBoxInputType {
   value: string;
@@ -11,8 +23,8 @@ export interface FormValuesType {
   email: string;
   password: string;
   name: string;
-  school: ComboBoxInputType;
-  department: ComboBoxInputType;
+  school: { value: string; text: string } | null;
+  faculty: { value: string; text: string } | null;
 }
 
 const initialValues: FormValuesType = {
@@ -20,14 +32,8 @@ const initialValues: FormValuesType = {
   name: "",
   email: "",
   password: "",
-  school: {
-    value: "",
-    uuid: "",
-  },
-  department: {
-    value: "",
-    uuid: "",
-  },
+  school: null,
+  faculty: null,
 };
 
 const validationSchema = yup.object({
@@ -38,289 +44,240 @@ const validationSchema = yup.object({
     .required("Required"),
   password: yup.string().required("Required"),
   name: yup.string().when("type", {
-    is: "teacher",
+    is: (type: FormValuesType["type"]) => type === "teacher" || type === "representative",
     then: (schema) => schema.required("Required"),
-    otherwise: (schema) => schema.nullable(),
   }),
-  school: yup.object().when("type", {
-    is: (type: string) => type === "teacher" || type === "representative",
-    then: (schema) =>
-      schema.shape({
-        value: yup.string().required("Required"),
-        uuid: yup.string().required("Invalid option selected"),
-      }),
-    otherwise: (schema) =>
-      schema.shape({
-        value: yup.string().nullable(),
-        uuid: yup.string().nullable(),
-      }),
-  }),
+  school: yup
+    .object()
+    .nullable()
+    .when("type", {
+      is: (type: string) => type === "teacher" || type === "representative",
+      then: (schema) => schema.required("Required"),
+    }),
+  faculty: yup
+    .object()
+    .nullable()
+    .when("type", {
+      is: (type: string) => type === "teacher",
+      then: (schema) => schema.required("Required"),
+    }),
 });
 
-const mapTypes = (index: number) => ["student", "teacher", "representative"][index];
-
 const SignupPage: React.FC = () => {
+  const navigate = useNavigate();
+  const [getSchoolAutocomplete, { data: schoolSuggestions, isLoading: schoolAutocompleteIsLoading }] =
+    useGetSchoolAutocompleteMutation();
+  const [getFacultyAutocomplete, { data: facultySuggestions, isLoading: facultyAutocompleteIsLoading }] =
+    useGetFacultyAutocompleteMutation();
+  const [
+    signUpBaseUser,
+    { isLoading: signUpBaseUserIsLoading, isSuccess: signUpBaseUserIsSuccess, isError: signUpBaseUserIsError },
+  ] = useSignUpBaseMutation();
+  const [
+    signUpTeacherUser,
+    { isLoading: signUpTeacherUserIsLoading, isSuccess: signUpTeacherUserIsSuccess, isError: signUpTeacherUserIsError },
+  ] = useSignUpTeacherMutation();
+  const [
+    signUpRepresentativeUser,
+    {
+      isLoading: signUpRepresentativeUserIsLoading,
+      isSuccess: signUpRepresentativeUserIsSuccess,
+      isError: signUpRepresentativeUserIsError,
+    },
+  ] = useSignUpRepresentativeMutation();
+  const signUpIsLoading = signUpBaseUserIsLoading || signUpTeacherUserIsLoading || signUpRepresentativeUserIsLoading;
+  const signUpIsError = signUpBaseUserIsError || signUpTeacherUserIsError || signUpRepresentativeUserIsError;
+
+  useEffect(() => {
+    if (signUpBaseUserIsSuccess || signUpRepresentativeUserIsSuccess || signUpTeacherUserIsSuccess) {
+      navigate("/login");
+    }
+  }, [signUpBaseUserIsSuccess, signUpRepresentativeUserIsSuccess, signUpTeacherUserIsSuccess]);
+
   return (
-    <div>signup</div>
-    // <div className="min-h-screen flex flex-col justify-center items-center py-8 px-6 sm:px-8">
-    //   <div className="flex flex-col justify-start items-center min-h-[60vh] w-full">
-    //     <div>
-    //       <h2 className="text-2xl font-bold text-center">Create an account</h2>
-    //     </div>
-    //     <div className="mt-6 w-full md:max-w-lg">
-    //       <div className="bg-white py-8 px-6 shadow rounded-lg">
-    //         <Formik
-    //           initialValues={initialValues}
-    //           validationSchema={validationSchema}
-    //           validateOnMount={true}
-    //           validateOnChange={true}
-    //           validateOnBlur={true}
-    //           onSubmit={(values) => {
-    //             console.log("submitting", values);
-    //           }}
-    //         >
-    //           {({ isValid, dirty, errors, touched, values }) => {
-    //             console.log(errors);
-    //             console.log(errors.school === undefined);
-    //             return (
-    //               <Form>
-    //                 <Field name="type">
-    //                   {({ form: { setFieldValue } }: FieldProps) => (
-    //                     <Tab.Group onChange={(index) => setFieldValue("type", mapTypes(index))}>
-    //                       <Tab.List className="grid grid-cols-2 xs:grid-cols-3 items-center bg-gray-100 rounded-md shadow transition-all">
-    //                         <Tab as={React.Fragment}>
-    //                           {({ selected }) => (
-    //                             <button
-    //                               className={classNames(
-    //                                 "rounded py-2 px-1 xs:py-2 mx-1 my-1",
-    //                                 {
-    //                                   "ring-2 ring-blue-600 ring-offset-2 bg-blue-600 text-white hover:bg-blue-600":
-    //                                     selected,
-    //                                 },
-    //                                 { "hover:bg-gray-300": !selected }
-    //                               )}
-    //                             >
-    //                               <p className="truncate">Student</p>
-    //                             </button>
-    //                           )}
-    //                         </Tab>
-    //                         <Tab as={React.Fragment}>
-    //                           {({ selected }) => (
-    //                             <button
-    //                               className={classNames(
-    //                                 "rounded py-2 px-1 xs:py-2 mx-1 my-1",
-    //                                 {
-    //                                   "ring-2 ring-blue-600 ring-offset-2 bg-blue-600 text-white hover:bg-blue-600":
-    //                                     selected,
-    //                                 },
-    //                                 { "hover:bg-gray-300": !selected }
-    //                               )}
-    //                             >
-    //                               <p className="truncate">Teacher</p>
-    //                             </button>
-    //                           )}
-    //                         </Tab>
-    //                         <Tab as={React.Fragment}>
-    //                           {({ selected }) => (
-    //                             <button
-    //                               className={classNames(
-    //                                 "rounded py-2 px-1 xs:py-2 mx-1 my-1 col-span-2 xs:col-span-1",
-    //                                 {
-    //                                   "ring-2 ring-blue-600 ring-offset-2 bg-blue-600 text-white hover:bg-blue-600":
-    //                                     selected,
-    //                                 },
-    //                                 { "hover:bg-gray-300": !selected }
-    //                               )}
-    //                             >
-    //                               <p className="truncate">Representative</p>
-    //                             </button>
-    //                           )}
-    //                         </Tab>
-    //                       </Tab.List>
-    //                       <Tab.Panels className={classNames("mt-6")}>
-    //                         <Tab.Panel>
-    //                           <Field name={"email"}>
-    //                             {({ field }: FieldProps) => (
-    //                               <TextField
-    //                                 id={"email"}
-    //                                 type={"text"}
-    //                                 placeholder={"Email"}
-    //                                 label={"Email"}
-    //                                 errors={errors.email}
-    //                                 touched={touched.email}
-    //                                 field={field}
-    //                               />
-    //                             )}
-    //                           </Field>
-    //                           <Field name={"password"}>
-    //                             {({ field }: FieldProps) => (
-    //                               <TextField
-    //                                 id={"password"}
-    //                                 type={"password"}
-    //                                 placeholder={"Password"}
-    //                                 label={"Password"}
-    //                                 errors={errors.password}
-    //                                 touched={touched.password}
-    //                                 wrapperClasses={"mt-4"}
-    //                                 field={field}
-    //                               />
-    //                             )}
-    //                           </Field>
-    //                         </Tab.Panel>
-    //                         <Tab.Panel>
-    //                           <Field name={"email"}>
-    //                             {({ field }: FieldProps) => (
-    //                               <TextField
-    //                                 id={"email"}
-    //                                 type={"text"}
-    //                                 placeholder={"Email"}
-    //                                 label={"Email"}
-    //                                 errors={errors.email}
-    //                                 touched={touched.email}
-    //                                 field={field}
-    //                               />
-    //                             )}
-    //                           </Field>
-    //                           <Field name={"password"}>
-    //                             {({ field }: FieldProps) => (
-    //                               <TextField
-    //                                 id={"password"}
-    //                                 type={"password"}
-    //                                 placeholder={"Password"}
-    //                                 label={"Password"}
-    //                                 errors={errors.password}
-    //                                 touched={touched.password}
-    //                                 wrapperClasses={"mt-4"}
-    //                                 field={field}
-    //                               />
-    //                             )}
-    //                           </Field>
-    //                           <Field name="school.value">
-    //                             {({ field, form: { setFieldValue } }: FieldProps) => (
-    //                               <ComboBox<ComboBoxInputType, SchoolDto>
-    //                                 dataOptionName={"schools"}
-    //                                 field={field}
-    //                                 errors={errors.school}
-    //                                 touched={touched.school}
-    //                                 getDefaultValue={() => ({ value: "", uuid: "" })}
-    //                                 mapDataToMatchingOptions={(school: SchoolDto) => ({
-    //                                   value: school.value,
-    //                                   uuid: school.uuid,
-    //                                 })}
-    //                                 setFieldValue={(value) => setFieldValue("school", value)}
-    //                                 useGetDataQuery={useGetAllMatchingSchoolsQuery}
-    //                                 id={"school"}
-    //                                 placeholder={"School"}
-    //                                 label={"School"}
-    //                                 wrapperClasses={"mt-4"}
-    //                               />
-    //                             )}
-    //                           </Field>
-    //                           <Field name="department.value">
-    //                             {({ field, form: { setFieldValue, values } }: FieldProps) => (
-    //                               <ComboBox<ComboBoxInputType, DepartmentDto>
-    //                                 dataOptionName={"departments"}
-    //                                 field={field}
-    //                                 errors={errors.department}
-    //                                 touched={touched.department}
-    //                                 getDefaultValue={() => ({ value: "", uuid: "" })}
-    //                                 mapDataToMatchingOptions={(department: DepartmentDto) => ({
-    //                                   value: department.value,
-    //                                   uuid: department.uuid,
-    //                                 })}
-    //                                 setFieldValue={(value) => setFieldValue("department", value)}
-    //                                 useGetDataQuery={useGetAllMatchingDepartmentsQuery}
-    //                                 queryParams={{
-    //                                   school: values.school.uuid !== "" ? values.school.uuid : "nouuid",
-    //                                 }}
-    //                                 id={"department"}
-    //                                 placeholder={"Department"}
-    //                                 label={"Department"}
-    //                                 wrapperClasses={"mt-4"}
-    //                                 disabled={errors.school !== undefined}
-    //                               />
-    //                             )}
-    //                           </Field>
-    //                         </Tab.Panel>
-    //                         <Tab.Panel>
-    //                           <Field name={"email"}>
-    //                             {({ field }: FieldProps) => (
-    //                               <TextField
-    //                                 id={"email"}
-    //                                 type={"text"}
-    //                                 placeholder={"Email"}
-    //                                 label={"Email"}
-    //                                 errors={errors.email}
-    //                                 touched={touched.email}
-    //                                 field={field}
-    //                               />
-    //                             )}
-    //                           </Field>
-    //                           <Field name={"password"}>
-    //                             {({ field }: FieldProps) => (
-    //                               <TextField
-    //                                 id={"password"}
-    //                                 type={"password"}
-    //                                 placeholder={"Password"}
-    //                                 label={"Password"}
-    //                                 errors={errors.password}
-    //                                 touched={touched.password}
-    //                                 wrapperClasses={"mt-4"}
-    //                                 field={field}
-    //                               />
-    //                             )}
-    //                           </Field>
-    //                           <Field name="school.value">
-    //                             {({ field, form: { setFieldValue } }: FieldProps) => (
-    //                               <ComboBox<ComboBoxInputType, SchoolDto>
-    //                                 dataOptionName={"schools"}
-    //                                 field={field}
-    //                                 errors={errors.school}
-    //                                 touched={touched.school}
-    //                                 getDefaultValue={() => ({ value: "", uuid: "" })}
-    //                                 mapDataToMatchingOptions={(school: SchoolDto) => ({
-    //                                   value: school.value,
-    //                                   uuid: school.uuid,
-    //                                 })}
-    //                                 setFieldValue={(value) => setFieldValue("school", value)}
-    //                                 useGetDataQuery={useGetAllMatchingSchoolsQuery}
-    //                                 id={"school"}
-    //                                 placeholder={"School"}
-    //                                 label={"School"}
-    //                                 wrapperClasses={"mt-4"}
-    //                               />
-    //                             )}
-    //                           </Field>
-    //                         </Tab.Panel>
-    //                       </Tab.Panels>
-    //                     </Tab.Group>
-    //                   )}
-    //                 </Field>
-    //                 <div className="flex justify-center mt-4">
-    //                   <button
-    //                     type="submit"
-    //                     className="h-10 w-full py-2 px-4 border border-transparent rounded text-base font-medium bg-blue-600 text-white hover:bg-blue-900 transition-all shadow disabled:text-gray-700 disabled:bg-gray-300"
-    //                     disabled={!isValid || !dirty}
-    //                   >
-    //                     Sign Up
-    //                   </button>
-    //                 </div>
-    //               </Form>
-    //             );
-    //           }}
-    //         </Formik>
-    //       </div>
-    //     </div>
-    //     <div className="mt-6">
-    //       <p>
-    //         Already registered?
-    //         <a href="/login" className="text-blue-600 hover:underline hover:text-blue-900 pl-2">
-    //           Log in
-    //         </a>
-    //       </p>
-    //     </div>
-    //   </div>
-    // </div>
+    <div className="min-h-screen flex flex-col justify-center items-center py-8 px-6 sm:px-8">
+      <div className="flex flex-col justify-start items-center min-h-[60vh] w-full">
+        <div>
+          <h2 className="text-2xl font-bold text-center">Create an account</h2>
+        </div>
+        <div className="mt-6 w-full md:max-w-lg">
+          <div className="bg-white py-8 px-6 shadow rounded-lg">
+            {signUpIsError && <div>Error: could not create a new account.</div>}
+            <Formik
+              initialValues={initialValues}
+              validationSchema={validationSchema}
+              validateOnMount={false}
+              validateOnChange
+              validateOnBlur
+              onSubmit={(values) => {
+                switch (values.type) {
+                  case "student": {
+                    signUpBaseUser({
+                      createBaseUserDto: { email: values.email, password: values.password, role: "STUDENT" },
+                    });
+                    break;
+                  }
+                  case "teacher": {
+                    signUpTeacherUser({
+                      createTeacherUserDto: {
+                        email: values.email,
+                        password: values.password,
+                        name: values.name,
+                        schoolUuid: values.school!.value,
+                        facultyUuid: values.faculty!.value,
+                        role: "TEACHER",
+                      },
+                    });
+                    break;
+                  }
+                  case "representative": {
+                    signUpRepresentativeUser({
+                      createRepresentativeUserDto: {
+                        email: values.email,
+                        password: values.password,
+                        name: values.name,
+                        schoolUuid: values.school!.value,
+                        role: "REPRESENTATIVE",
+                      },
+                    });
+                    break;
+                  }
+                }
+              }}
+            >
+              {({ values, errors, setFieldValue, handleSubmit, isValid, dirty }) => (
+                <Form className="flex flex-col justify-between items-center gap-2 w-full">
+                  <Field name="type">
+                    {({ field }: FieldProps) => (
+                      <div className="flex flex-col">
+                        <div>
+                          <label htmlFor="student">Student</label>
+                          <input
+                            id="student"
+                            type="radio"
+                            {...field}
+                            value="student"
+                            checked={values.type === "student"}
+                          />
+                        </div>
+                        <div>
+                          <label htmlFor="teacher">Teacher</label>
+                          <input
+                            id="teacher"
+                            type="radio"
+                            {...field}
+                            value="teacher"
+                            checked={values.type === "teacher"}
+                          />
+                        </div>
+                        <div>
+                          <label htmlFor="representative">Representative</label>
+                          <input
+                            id="representative"
+                            type="radio"
+                            {...field}
+                            value="representative"
+                            checked={values.type === "representative"}
+                          />
+                        </div>
+                      </div>
+                    )}
+                  </Field>
+                  {values.type !== "student" && (
+                    <Field name="name">
+                      {({ field }: FieldProps) => (
+                        <div>
+                          <label htmlFor={field.name}>Name</label>
+                          <input type="text" {...field} />
+                        </div>
+                      )}
+                    </Field>
+                  )}
+                  <Field name="email">
+                    {({ field }: FieldProps) => (
+                      <div>
+                        <label htmlFor={field.name}>Email</label>
+                        <input type="text" {...field} />
+                      </div>
+                    )}
+                  </Field>
+                  <Field name="password">
+                    {({ field }: FieldProps) => (
+                      <div>
+                        <label htmlFor={field.name}>Password</label>
+                        <input type="password" {...field} />
+                      </div>
+                    )}
+                  </Field>
+                  {values.type !== "student" && (
+                    <Field name="school">
+                      {({ field }: FieldProps) => (
+                        <div>
+                          <label htmlFor={field.name}>School</label>
+                          <ComboBox
+                            name={field.name}
+                            initialState={values.school ? values.school : undefined}
+                            loading={schoolAutocompleteIsLoading}
+                            onChange={(value) => setFieldValue(field.name, value)}
+                            onInputChange={(value) =>
+                              getSchoolAutocomplete({ getSchoolAutocompleteRequestDto: { value } })
+                            }
+                            wait={1000}
+                            options={schoolSuggestions ? schoolSuggestions.schools : []}
+                          />
+                        </div>
+                      )}
+                    </Field>
+                  )}
+                  {values.type === "teacher" && (
+                    <Field name="faculty">
+                      {({ field }: FieldProps) => (
+                        <div>
+                          <label htmlFor={field.name}>Faculty</label>
+                          <ComboBox
+                            name={field.name}
+                            initialState={values.faculty ? values.faculty : undefined}
+                            loading={facultyAutocompleteIsLoading}
+                            disabled={values.school === null}
+                            onChange={(value) => setFieldValue(field.name, value)}
+                            onInputChange={(value) =>
+                              getFacultyAutocomplete({
+                                getFacultyAutocompleteRequestDto: { value, schoolUuid: values.school!.value },
+                              })
+                            }
+                            wait={1000}
+                            options={facultySuggestions ? facultySuggestions.faculties : []}
+                            dependencies={[values.school]}
+                          />
+                        </div>
+                      )}
+                    </Field>
+                  )}
+                  <LoadingButton
+                    variant="contained"
+                    className="w-full"
+                    onClick={() => handleSubmit()}
+                    loading={signUpIsLoading}
+                    disabled={!isValid || !dirty}
+                  >
+                    Create Account
+                  </LoadingButton>
+                  {Object.keys(errors).length > 0 && <pre>{JSON.stringify(errors, null, 2)}</pre>}
+                </Form>
+              )}
+            </Formik>
+          </div>
+        </div>
+        <div className="mt-6">
+          <p>
+            Already registered?
+            <Link to="/login" className="text-accent hover:underline hover:text-accent-strong pl-1.5">
+              Log in
+            </Link>
+          </p>
+        </div>
+      </div>
+    </div>
   );
 };
 

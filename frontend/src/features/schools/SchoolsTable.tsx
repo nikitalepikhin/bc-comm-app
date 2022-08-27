@@ -9,21 +9,21 @@ interface SchoolsTablePropsType {
 
 const SchoolsTable: React.FC<SchoolsTablePropsType> = ({ data, loading }) => {
   return (
-    <div className="overflow-auto w-full flex flex-row text-sm md:text-base">
-      <table className="w-full border border-gray-200">
-        <thead className="bg-white border-gray-200 bg-gray-200">
+    <div className="overflow-auto w-full flex flex-row text-sm md:text-base bg-white shadow">
+      <table className="w-full">
+        <thead className="bg-white">
           <tr>
-            <th className="px-3 py-1">School UUID</th>
-            <th className="px-3 py-1">Name</th>
-            <th className="px-3 py-1 w-10">Country</th>
-            <th className="px-3 py-1 w-50">City</th>
-            <th className="px-3 py-1 w-50">Address Line 1</th>
-            <th className="px-3 py-1 w-50">Address Line 2</th>
-            <th className="px-3 py-1 w-30">Postal Code</th>
-            <th className="px-3 py-1">Actions</th>
+            <th className="border-b-secondary px-3 py-1">School UUID</th>
+            <th className="border-b-secondary px-3 py-1">Name</th>
+            <th className="border-b-secondary px-3 py-1 w-10">Country</th>
+            <th className="border-b-secondary px-3 py-1 w-50">City</th>
+            <th className="border-b-secondary px-3 py-1 w-50">Address Line 1</th>
+            <th className="border-b-secondary px-3 py-1 w-50">Address Line 2</th>
+            <th className="border-b-secondary px-3 py-1 w-30">Postal Code</th>
+            <th className="border-b-secondary px-3 py-1">Actions</th>
           </tr>
         </thead>
-        <tbody className="divide-y divide-gray-200">
+        <tbody>
           {data.length > 0 && !loading ? (
             data.map((school) => <SchoolsTableRow key={school.uuid} school={school} />)
           ) : (

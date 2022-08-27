@@ -1,175 +1,87 @@
 import { Combobox } from "@headlessui/react";
-import classNames from "classnames";
-import { FieldInputProps, FormikErrors, FormikTouched } from "formik";
-import React, { ReactElement, useEffect, useState } from "react";
-import { ChevronDownIcon, ChevronUpIcon, XIcon } from "@heroicons/react/outline";
+import React, { useCallback, useState } from "react";
+import { debounce } from "lodash";
 import LoadingSpinner from "./LoadingSpinner";
-import { ComboBoxInputType } from "../../features/auth/SignupPage";
 
-interface ComboBoxPropsType<T, V> {
-  id: string;
-  placeholder: string;
-  label: string;
-  setFieldValue: (value: T) => void;
-  errors: FormikErrors<ComboBoxInputType> | undefined;
-  touched: FormikTouched<ComboBoxInputType> | undefined;
-  field: FieldInputProps<any>;
-  getDefaultValue: () => any;
-  dataOptionName: string;
-  useGetDataQuery: any;
-  mapDataToMatchingOptions: (value: V) => any;
-  wrapperClasses?: string;
-  disabled?: boolean;
-  queryParams?: { [key: string]: any };
+interface ComboBoxState {
+  text: string;
+  value: string;
 }
 
-const ComboBox = <T extends ComboBoxInputType, V extends Object>({
-  id,
-  placeholder,
-  label,
-  setFieldValue,
-  errors,
-  touched,
-  field,
-  getDefaultValue,
-  dataOptionName,
-  useGetDataQuery,
-  mapDataToMatchingOptions,
-  wrapperClasses,
-  disabled = false,
-  queryParams,
-}: ComboBoxPropsType<T, V>): ReactElement => {
-  const [selectedOption, setSelectedOption] = useState<T | undefined>(undefined);
-  const [matchingOptions, setMatchingOptions] = useState<T[]>([]);
-  const { data, isLoading } = useGetDataQuery({ substring: field.value, ...(queryParams ?? {}) });
+interface Props {
+  initialState?: ComboBoxState;
+  name: string;
+  loading?: boolean;
+  onChange: (value: ComboBoxState | null) => void;
+  onInputChange: (value: string) => void;
+  options: ComboBoxState[];
+  wait?: number;
+  disabled?: boolean;
+  dependencies?: any[];
+}
 
-  useEffect(() => {
-    if (data && data[dataOptionName]) {
-      setMatchingOptions(data[dataOptionName].map(mapDataToMatchingOptions));
-    }
-  }, [data]);
+const ComboBox: React.FC<Props> = ({
+  initialState = undefined,
+  name,
+  loading = false,
+  onChange,
+  onInputChange,
+  options,
+  wait = 0,
+  disabled = false,
+  dependencies = [],
+}) => {
+  const [state, setState] = useState<ComboBoxState | undefined>(initialState);
+
+  const debouncedOnInputChange = useCallback(
+    debounce((event: React.ChangeEvent<HTMLInputElement>) => onInputChange(event.target.value), wait),
+    [wait, ...dependencies]
+  );
 
   return (
-    <div className={classNames("relative", { [wrapperClasses ?? ""]: wrapperClasses !== undefined })}>
-      <Combobox
-        disabled={disabled}
-        value={selectedOption}
-        nullable
-        onChange={(option) => {
-          setSelectedOption(option);
-          if (option === undefined || option === null) {
-            setFieldValue(getDefaultValue());
-          } else {
-            setFieldValue(option);
-          }
-        }}
-      >
-        {({ open }) => (
-          <>
-            <div
-              className={classNames(
-                "relative group flex flex-row h-12 rounded-md bg-white border focus-within:border-blue-600 focus-within:ring-blue-600 focus-within:ring-1 focus-within:hover:border-blue-600",
-                { "border-red-500 hover:border-red-500": errors !== undefined && touched },
-                {
-                  "border-gray-400 hover:border-gray-600": !(errors !== undefined && touched),
-                },
-                { "border-gray-300 hover:border-gray-300": disabled }
-              )}
+    <Combobox
+      value={state}
+      disabled={disabled}
+      nullable
+      onChange={(value) => {
+        setState(value);
+        onChange(value ?? null);
+      }}
+    >
+      {(props) => (
+        <>
+          <Combobox.Input
+            name={name}
+            onChange={(event) => {
+              if (event.target.value.length > 0) {
+                debouncedOnInputChange(event);
+              }
+            }}
+            displayValue={(state: ComboBoxState) => state?.text}
+          />
+          {loading && <LoadingSpinner />}
+          {state !== undefined && (
+            <button
+              onClick={() => {
+                setState(undefined);
+                onChange(null);
+              }}
             >
-              <Combobox.Input onChange={() => {}} displayValue={() => field.value} as={React.Fragment}>
-                <input
-                  disabled={disabled}
-                  id={id}
-                  placeholder={placeholder}
-                  className={classNames("peer h-full w-full placeholder-transparent border-0 rounded-md focus:ring-0")}
-                  {...field}
-                  onChange={(event) => field.onChange(event)}
-                />
-              </Combobox.Input>
-              <Combobox.Label as={React.Fragment}>
-                <label
-                  className={classNames(
-                    "absolute bg-white rounded px-0.5 left-3 -top-2.5 text-sm font-light peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-3 peer-placeholder-shown:px-0.5 transition-all peer-focus:left-3 peer-focus:-top-2.5 peer-focus:text-sm peer-focus:text-blue-600 peer-focus:font-light peer-focus:px-0.5 hover:cursor-text peer-disabled:text-gray-300",
-                    { "text-red-500 hover:text-red-500": errors !== undefined && touched },
-                    {
-                      "text-gray-400 peer-hover:text-gray-600 group-hover:peer-placeholder-shown:text-gray-600 group-hover:peer-focus:text-blue-600":
-                        !(errors !== undefined && touched),
-                    },
-                    {
-                      "group-hover:peer-disabled:text-gray-300": disabled,
-                    }
-                  )}
-                  htmlFor={id}
-                >
-                  {label}
-                </label>
-              </Combobox.Label>
-              {field.value.length > 0 && (
-                <button
-                  onClick={() => {
-                    setFieldValue(getDefaultValue());
-                    setSelectedOption(undefined);
-                  }}
-                >
-                  <XIcon className="h-6 w-6 text-gray-400 mr-4" aria-hidden="true" />
-                </button>
-              )}
-              {!isLoading && !open && (
-                <Combobox.Button>
-                  <ChevronDownIcon
-                    className={classNames("h-6 w-6 text-gray-400 mr-2", { "text-gray-300": disabled })}
-                    aria-hidden="true"
-                  />
-                </Combobox.Button>
-              )}
-              {!isLoading && open && (
-                <Combobox.Button>
-                  <ChevronUpIcon
-                    className={classNames("h-6 w-6 text-gray-400 mr-2", { "text-gray-300": disabled })}
-                    aria-hidden="true"
-                  />
-                </Combobox.Button>
-              )}
-              {isLoading && (
-                <Combobox.Button disabled>
-                  <LoadingSpinner />
-                </Combobox.Button>
-              )}
-            </div>
-            {!open && errors !== undefined && touched !== undefined && (
-              <p className="text-sm text-red-500 ml-3">
-                {errors.value !== undefined && <>{errors.value}</>}
-                {errors.value === undefined && errors.uuid !== undefined && <>{errors.uuid}</>}
-              </p>
-            )}
-            <Combobox.Options className="mt-2 mb-4 px-1 py-1 max-h-60 w-full overflow-auto ring-gray-500 bg-gray-100 rounded-md shadow">
-              {matchingOptions.length === 0 && (
-                <Combobox.Option as={React.Fragment} value={getDefaultValue()}>
-                  {({ active }) => (
-                    <li className={classNames("px-3 py-1 min-h-8", { "bg-blue-600 text-white rounded-md": active })}>
-                      Nothing found
-                    </li>
-                  )}
-                </Combobox.Option>
-              )}
-              {matchingOptions.map((option, index) => (
-                <Combobox.Option key={`option-${index}`} value={option} as={React.Fragment}>
-                  {({ active }) => (
-                    <li
-                      className={classNames("px-3 py-1 min-h-8", {
-                        "bg-blue-600 ring-2 ring-blue-600 text-white rounded": active,
-                      })}
-                    >
-                      {option.value}
-                    </li>
-                  )}
-                </Combobox.Option>
-              ))}
-            </Combobox.Options>
-          </>
-        )}
-      </Combobox>
-    </div>
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-5 h-5">
+                <path d="M6.28 5.22a.75.75 0 00-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 101.06 1.06L10 11.06l3.72 3.72a.75.75 0 101.06-1.06L11.06 10l3.72-3.72a.75.75 0 00-1.06-1.06L10 8.94 6.28 5.22z" />
+              </svg>
+            </button>
+          )}
+          <Combobox.Options>
+            {options.map((option) => (
+              <Combobox.Option key={option.value} value={option}>
+                {option.text}
+              </Combobox.Option>
+            ))}
+          </Combobox.Options>
+        </>
+      )}
+    </Combobox>
   );
 };
 

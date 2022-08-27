@@ -1,7 +1,7 @@
 import React from "react";
 import classNames from "classnames";
 
-interface ButtonPropsType {
+export interface ButtonPropsType {
   className?: string;
   type?: "button" | "submit" | "reset" | undefined;
   variant?: "outlined" | "contained" | "standard";

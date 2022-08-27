@@ -5,13 +5,13 @@ import { useAppSelector } from "../../app/hooks";
 import classNames from "classnames";
 
 const NavBar: React.FC = () => {
-  const { email } = useAppSelector((state) => state.auth.user);
+  const { present } = useAppSelector((state) => state.auth);
   const location = useLocation();
   const [logOut] = useLogOutMutation();
 
   return (
     <div className="grid grid-cols-2 items-center justify-between items-end px-4 bg-white shadow">
-      <input type="checkbox" className="hidden peer" id="burger" />
+      <input type="checkbox" className="hidden peer transition-all" id="toggle" />
       <Link to="/" className="col-span-1 text-md lg:hidden inline-flex flex-row gap-1">
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -29,7 +29,7 @@ const NavBar: React.FC = () => {
         </svg>
         <span className="uppercase font-bold">CommApp</span>
       </Link>
-      <label htmlFor="burger" className="lg:hidden px-4 py-3 cursor-pointer ml-auto w-fit col-span-1">
+      <label htmlFor="toggle" className="lg:hidden px-4 py-3 cursor-pointer ml-auto w-fit col-span-1">
         <svg
           xmlns="http://www.w3.org/2000/svg"
           className="h-6 w-6"
@@ -42,7 +42,7 @@ const NavBar: React.FC = () => {
         </svg>
       </label>
 
-      <nav className="peer-checked:block transition-all hidden lg:block w-full col-span-2">
+      <nav className="peer-checked:block hidden lg:block w-full col-span-2">
         <div className="flex flex-col lg:flex-row justify-start lg:justify-between items-center pb-2 lg:pb-0">
           <div className="flex flex-col lg:flex-row justify-start lg:justify-between items-center w-full lg:w-fit">
             <Link to="/" className="px-2 py-3 hidden lg:inline-flex flex-row gap-1 w-fit">
@@ -82,15 +82,17 @@ const NavBar: React.FC = () => {
                 Debug
               </Link>
             )}
-            <Link
-              to="/schools"
-              className={classNames(
-                "border-2 lg:border-l-0 lg:border-r-0 lg:border-t-0 border-transparent hover:border-accent lg:hover:border-transparent lg:hover:border-b-accent rounded-md lg:rounded-none px-6 py-3 w-full text-center",
-                { "text-secondary": location.pathname !== "/schools" }
-              )}
-            >
-              Schools
-            </Link>
+            {present && (
+              <Link
+                to="/schools"
+                className={classNames(
+                  "border-2 lg:border-l-0 lg:border-r-0 lg:border-t-0 border-transparent hover:border-accent lg:hover:border-transparent lg:hover:border-b-accent rounded-md lg:rounded-none px-6 py-3 w-full text-center",
+                  { "text-secondary": location.pathname !== "/schools" }
+                )}
+              >
+                Schools
+              </Link>
+            )}
           </div>
           <div className="flex flex-col lg:flex-row justify-start lg:justify-between items-center w-full lg:w-fit">
             {/*{email !== undefined && (*/}
@@ -98,7 +100,7 @@ const NavBar: React.FC = () => {
             {/*    Logged in as <span className="font-bold">{`${email} (${role})`}</span>*/}
             {/*  </div>*/}
             {/*)}*/}
-            {email !== undefined && (
+            {present && (
               <button
                 type="button"
                 onClick={() => logOut()}

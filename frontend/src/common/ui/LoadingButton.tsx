@@ -1,37 +1,25 @@
 import React from "react";
 import LoadingSpinner from "./LoadingSpinner";
-import classNames from "classnames";
+import Button, { ButtonPropsType } from "../components/Button";
 
-interface LoadingButtonPropsType {
+interface LoadingButtonPropsType extends ButtonPropsType {
   loading: boolean;
-  className?: string;
-  color?: string;
-  hoverColor?: string;
-  disabled?: boolean;
-  onClick: () => void;
 }
 
 const LoadingButton: React.FC<LoadingButtonPropsType> = ({
+  type = "submit",
+  variant = "outlined",
   loading,
   disabled = false,
-  className,
+  className = "",
   onClick,
   children,
 }) => {
   return (
-    <button
-      className={classNames(
-        className,
-        "inline-flex items-center gap-2",
-        "px-4 py-1.5 text-accent bg-transparent border-2 border-accent hover:border-accent-strong hover:text-accent-strong rounded-md w-fit",
-        "disabled:border-secondary disabled:hover:border-secondary disabled:text-secondary disabled:hover:text-secondary"
-      )}
-      onClick={onClick}
-      disabled={disabled || loading}
-    >
+    <Button onClick={onClick} disabled={disabled || loading} type={type} variant={variant} className={className}>
       {loading && <LoadingSpinner size="h-4 w-4" border="border-2" color="border-secondary" />}
       {children}
-    </button>
+    </Button>
   );
 };
 

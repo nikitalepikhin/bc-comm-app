@@ -89,7 +89,7 @@ const RepresentativeVerificationRequest: React.FC<RepresentativeVerificationRequ
                 </Field>
               )}
             </div>
-            <div className="flex flex-row gap-2 justify-start items-center flex-wrap bg-gray px-4 py-4">
+            <div className="flex flex-row gap-2 justify-start items-center flex-wrap bg-gray px-4 py-3">
               <Button
                 variant="contained"
                 disabled={values.reason.length > 0 || showingReason || isLoading || isSuccess || isFetching}

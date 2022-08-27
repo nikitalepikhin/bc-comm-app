@@ -1,7 +1,7 @@
 import React from "react";
 import { Field, FieldProps, Form, Formik } from "formik";
 import * as yup from "yup";
-import { Navigate } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 import TextField from "../../common/ui/TextField";
 import { useLogInMutation } from "../../app/enhancedApi";
 import { useAppSelector } from "../../app/hooks";
@@ -78,9 +78,9 @@ const LoginPage: React.FC = () => {
       <div className="mt-6">
         <p>
           Don't have an account?
-          <a href="/signup" className="text-accent hover:underline hover:text-accent-strong pl-2">
+          <Link to="/signup" className="text-accent hover:underline hover:text-accent-strong pl-1.5">
             Sign up
-          </a>
+          </Link>
         </p>
       </div>
     </div>

@@ -11,6 +11,7 @@ module.exports = {
       },
     },
     colors: {
+      current: "currentColor",
       transparent: "transparent",
       primary: "#111827",
       secondary: "#6b7280",
@@ -19,6 +20,8 @@ module.exports = {
       "accent-strong": "#1e40af",
       white: "#ffffff",
       gray: "#f9fafb",
+      red: "#dc2626",
+      "red-strong": "#991b1b",
     },
   },
   plugins: [require("@tailwindcss/forms")],

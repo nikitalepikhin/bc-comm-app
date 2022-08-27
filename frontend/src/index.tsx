@@ -17,10 +17,7 @@ import EditSchoolPage from "./features/schools/EditSchoolPage";
 import FacultiesManagementPage from "./features/faculties/FacultiesManagementPage";
 import AddFacultyPage from "./features/faculties/AddFacultyPage";
 import EditFacultyPage from "./features/faculties/EditFacultyPage";
-
-document.body.classList.add();
-
-console.log(process.env.ENV);
+import SignupPage from "./features/auth/SignupPage";
 
 ReactDOM.render(
   <React.StrictMode>
@@ -30,6 +27,7 @@ ReactDOM.render(
           <Route path="/" element={<App />}>
             <Route index element={<IndexPage />} />
             <Route path="login" element={<LoginPage />} />
+            <Route path="signup" element={<SignupPage />} />
             {process.env.MODE === "dev" && <Route path="debug" element={<DebugPage />} />}
             <Route
               path="schools"

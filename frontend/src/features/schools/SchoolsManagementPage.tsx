@@ -5,6 +5,7 @@ import { enhancedApi, useGetAllSchoolsQuery } from "../../app/enhancedApi";
 import { useDispatch } from "react-redux";
 import { GetSchoolsResponseDto } from "../../app/api";
 import { Link } from "react-router-dom";
+import Button from "../../common/components/Button";
 
 interface SchoolsPagingFormValues {
   page: string;
@@ -104,21 +105,22 @@ const SchoolsManagementPage: React.FC = () => {
                       )}
                     </Field>
                   </div>
-                  <button
+                  <Button
                     type="reset"
                     onClick={(e) => {
                       handleReset(e);
                       submitForm();
                     }}
-                    className="bg-blue-600 hover:bg-blue-800 text-white px-5 py-1 rounded-md h-full"
+                    variant="outlined"
+                    className="px-5 py-0.5"
                   >
                     Reset
-                  </button>
+                  </Button>
                 </Form>
                 <div>
                   <Link
                     to="/schools/new"
-                    className="text-blue-600 hover:text-blue-800 hover:underline rounded-md px-5 py-1 h-full hover:cursor-pointer"
+                    className="text-accent hover:tebg-accent-strong hover:underline rounded-md px-5 py-1 h-full hover:cursor-pointer"
                   >
                     Add New School
                   </Link>
@@ -128,7 +130,7 @@ const SchoolsManagementPage: React.FC = () => {
               {data?.pages && data?.schools && data?.pages > 1 && (
                 <div className="flex flex-row gap-2">
                   <button
-                    className="text-white bg-blue-600 hover:bg-blue-800 px-3 py-1 rounded-md disabled:bg-gray-500 disabled:hover:bg-gray-500"
+                    className="text-white bg-accent hover:bg-accent-strong px-3 py-1 rounded-md disabled:bg-gray-500 disabled:hover:bg-gray-500"
                     onClick={() => {
                       setFieldValue("page", (parseInt(values.page) - 1).toString());
                       submitForm();
@@ -138,7 +140,7 @@ const SchoolsManagementPage: React.FC = () => {
                     Prev
                   </button>
                   <button
-                    className="text-white bg-blue-600 hover:bg-blue-800 px-3 py-1 rounded-md disabled:bg-gray-500 disabled:hover:bg-gray-500"
+                    className="text-white bg-accent hover:bg-accent-strong px-3 py-1 rounded-md disabled:bg-gray-500 disabled:hover:bg-gray-500"
                     onClick={() => {
                       setFieldValue("page", (parseInt(values.page) + 1).toString());
                       submitForm();
