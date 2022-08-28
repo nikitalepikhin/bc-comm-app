@@ -1,6 +1,7 @@
 import React from "react";
 import { FacultyResponseDto } from "../../app/api";
 import FacultiesTableRow from "./FacultiesTableRow";
+import LoadingSpinner from "../../common/ui/LoadingSpinner";
 
 interface FacultiesTablePropsType {
   data: FacultyResponseDto[];
@@ -29,7 +30,13 @@ const FacultiesTable: React.FC<FacultiesTablePropsType> = ({ data, loading }) =>
           ) : (
             <tr>
               <td colSpan={100} className="text-center px-4 py-2">
-                No faculties found
+                {loading ? (
+                  <div className="w-full flex flex-row justify-center items-center py-20">
+                    <LoadingSpinner size="h-10 w-10" />
+                  </div>
+                ) : (
+                  "No faculties found"
+                )}
               </td>
             </tr>
           )}

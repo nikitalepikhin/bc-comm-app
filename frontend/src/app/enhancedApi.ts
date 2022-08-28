@@ -17,6 +17,20 @@ export const enhancedApi = api.enhanceEndpoints({
         { type: TagTypes.REPR_REQ, id: arg.verifyRepresentativeUserRequestDto.verifiedUserUuid },
       ],
     },
+    getTeacherVerificationRequests: {
+      providesTags: (result) =>
+        result
+          ? [
+              ...result.requests.map((request) => ({ type: TagTypes.TEACHER_REQ, id: request.user.uuid })),
+              { type: TagTypes.TEACHER_REQ, id: IdTypes.ALL },
+            ]
+          : [{ type: TagTypes.TEACHER_REQ, id: IdTypes.ALL }],
+    },
+    verifyTeacherUser: {
+      invalidatesTags: (result, error, arg) => [
+        { type: TagTypes.TEACHER_REQ, id: arg.verifyTeacherUserRequestDto.verifiedUserUuid },
+      ],
+    },
     deleteSchool: {
       invalidatesTags: [{ type: TagTypes.SCHOOL, id: IdTypes.ALL }],
     },
@@ -68,6 +82,9 @@ export const {
   useGetRepresentativeVerificationRequestsQuery,
   useVerifyRepresentativeUserMutation,
   useRequestRepresentativeVerificationQuery,
+  useGetTeacherVerificationRequestsQuery,
+  useVerifyTeacherUserMutation,
+  useRequestTeacherVerificationQuery,
   useGetAllSchoolsQuery,
   useGetSchoolByUuidQuery,
   useCreateSchoolMutation,

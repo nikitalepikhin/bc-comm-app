@@ -72,13 +72,15 @@ const VerificationRequestsPage: React.FC = () => {
         <Tab.Panels>
           {role === "ADMIN" && (
             <Tab.Panel className="flex flex-col justify-start items-center gap-2">
-              <LoadingButton
-                loading={getRepresentativeRequestsIsFetching}
-                disabled={getRepresentativeRequestsIsFetching}
-                onClick={() => getRepresentativeRequestsRefetch()}
-              >
-                Refresh requests list
-              </LoadingButton>
+              {representativeRequests !== undefined && (
+                <LoadingButton
+                  loading={getRepresentativeRequestsIsFetching}
+                  disabled={getRepresentativeRequestsIsFetching}
+                  onClick={() => getRepresentativeRequestsRefetch()}
+                >
+                  Refresh requests list
+                </LoadingButton>
+              )}
               {representativeRequests?.requests.length === 0 && <p>No pending requests found.</p>}
               {representativeRequests &&
                 representativeRequests.requests.length > 0 &&
@@ -91,13 +93,15 @@ const VerificationRequestsPage: React.FC = () => {
           )}
 
           <Tab.Panel className="flex flex-col justify-start items-center gap-2">
-            <LoadingButton
-              loading={getTeacherRequestsIsFetching}
-              disabled={getTeacherRequestsIsFetching}
-              onClick={() => getTeacherRequestsRefetch()}
-            >
-              Refresh requests list
-            </LoadingButton>
+            {teacherRequests !== undefined && (
+              <LoadingButton
+                loading={getTeacherRequestsIsFetching}
+                disabled={getTeacherRequestsIsFetching}
+                onClick={() => getTeacherRequestsRefetch()}
+              >
+                Refresh requests list
+              </LoadingButton>
+            )}
             {teacherRequests?.requests.length === 0 && <p>No pending requests found.</p>}
             {teacherRequests &&
               teacherRequests.requests.length > 0 &&

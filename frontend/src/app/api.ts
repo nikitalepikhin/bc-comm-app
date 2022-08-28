@@ -41,6 +41,27 @@ const injectedRtkApi = api.injectEndpoints({
     getSchoolAutocomplete: build.mutation<GetSchoolAutocompleteApiResponse, GetSchoolAutocompleteApiArg>({
       query: (queryArg) => ({ url: `/schools/ac`, method: "POST", body: queryArg.getSchoolAutocompleteRequestDto }),
     }),
+    createFaculty: build.mutation<CreateFacultyApiResponse, CreateFacultyApiArg>({
+      query: (queryArg) => ({ url: `/faculties`, method: "POST", body: queryArg.createFacultyDto }),
+    }),
+    updateFaculty: build.mutation<UpdateFacultyApiResponse, UpdateFacultyApiArg>({
+      query: (queryArg) => ({ url: `/faculties`, method: "PUT", body: queryArg.updateFacultyRequestDto }),
+    }),
+    deleteFaculty: build.mutation<DeleteFacultyApiResponse, DeleteFacultyApiArg>({
+      query: (queryArg) => ({ url: `/faculties`, method: "DELETE", body: queryArg.deleteFacultyDto }),
+    }),
+    getAllFaculties: build.query<GetAllFacultiesApiResponse, GetAllFacultiesApiArg>({
+      query: (queryArg) => ({
+        url: `/faculties/${queryArg.schoolUuid}`,
+        params: { page: queryArg.page, count: queryArg.count },
+      }),
+    }),
+    getFacultyByUuid: build.query<GetFacultyByUuidApiResponse, GetFacultyByUuidApiArg>({
+      query: (queryArg) => ({ url: `/faculties/faculty/${queryArg.uuid}` }),
+    }),
+    getFacultyAutocomplete: build.mutation<GetFacultyAutocompleteApiResponse, GetFacultyAutocompleteApiArg>({
+      query: (queryArg) => ({ url: `/faculties/ac`, method: "POST", body: queryArg.getFacultyAutocompleteRequestDto }),
+    }),
     hello: build.query<HelloApiResponse, HelloApiArg>({
       query: () => ({ url: `/test/hello` }),
     }),
@@ -65,27 +86,6 @@ const injectedRtkApi = api.injectEndpoints({
         method: "POST",
         body: queryArg.verifyRepresentativeUserRequestDto,
       }),
-    }),
-    createFaculty: build.mutation<CreateFacultyApiResponse, CreateFacultyApiArg>({
-      query: (queryArg) => ({ url: `/faculties`, method: "POST", body: queryArg.createFacultyDto }),
-    }),
-    updateFaculty: build.mutation<UpdateFacultyApiResponse, UpdateFacultyApiArg>({
-      query: (queryArg) => ({ url: `/faculties`, method: "PUT", body: queryArg.updateFacultyRequestDto }),
-    }),
-    deleteFaculty: build.mutation<DeleteFacultyApiResponse, DeleteFacultyApiArg>({
-      query: (queryArg) => ({ url: `/faculties`, method: "DELETE", body: queryArg.deleteFacultyDto }),
-    }),
-    getAllFaculties: build.query<GetAllFacultiesApiResponse, GetAllFacultiesApiArg>({
-      query: (queryArg) => ({
-        url: `/faculties/${queryArg.schoolUuid}`,
-        params: { page: queryArg.page, count: queryArg.count },
-      }),
-    }),
-    getFacultyByUuid: build.query<GetFacultyByUuidApiResponse, GetFacultyByUuidApiArg>({
-      query: (queryArg) => ({ url: `/faculties/faculty/${queryArg.uuid}` }),
-    }),
-    getFacultyAutocomplete: build.mutation<GetFacultyAutocompleteApiResponse, GetFacultyAutocompleteApiArg>({
-      query: (queryArg) => ({ url: `/faculties/ac`, method: "POST", body: queryArg.getFacultyAutocompleteRequestDto }),
     }),
     requestTeacherVerification: build.query<RequestTeacherVerificationApiResponse, RequestTeacherVerificationApiArg>({
       query: () => ({ url: `/teachers/request` }),
@@ -150,19 +150,6 @@ export type GetSchoolAutocompleteApiResponse =
 export type GetSchoolAutocompleteApiArg = {
   getSchoolAutocompleteRequestDto: GetSchoolAutocompleteRequestDto;
 };
-export type HelloApiResponse = unknown;
-export type HelloApiArg = void;
-export type HelloNoAuthApiResponse = unknown;
-export type HelloNoAuthApiArg = void;
-export type RequestRepresentativeVerificationApiResponse = unknown;
-export type RequestRepresentativeVerificationApiArg = void;
-export type GetRepresentativeVerificationRequestsApiResponse =
-  /** status 200 Representative verification requests. */ GetRepresentativeRequestsDto;
-export type GetRepresentativeVerificationRequestsApiArg = void;
-export type VerifyRepresentativeUserApiResponse = unknown;
-export type VerifyRepresentativeUserApiArg = {
-  verifyRepresentativeUserRequestDto: VerifyRepresentativeUserRequestDto;
-};
 export type CreateFacultyApiResponse = unknown;
 export type CreateFacultyApiArg = {
   createFacultyDto: CreateFacultyDto;
@@ -190,6 +177,19 @@ export type GetFacultyAutocompleteApiResponse =
   /** status 200 Faculty autocomplete values. */ GetFacultyAutocompleteResponseDto;
 export type GetFacultyAutocompleteApiArg = {
   getFacultyAutocompleteRequestDto: GetFacultyAutocompleteRequestDto;
+};
+export type HelloApiResponse = unknown;
+export type HelloApiArg = void;
+export type HelloNoAuthApiResponse = unknown;
+export type HelloNoAuthApiArg = void;
+export type RequestRepresentativeVerificationApiResponse = unknown;
+export type RequestRepresentativeVerificationApiArg = void;
+export type GetRepresentativeVerificationRequestsApiResponse =
+  /** status 200 Representative verification requests. */ GetRepresentativeRequestsDto;
+export type GetRepresentativeVerificationRequestsApiArg = void;
+export type VerifyRepresentativeUserApiResponse = unknown;
+export type VerifyRepresentativeUserApiArg = {
+  verifyRepresentativeUserRequestDto: VerifyRepresentativeUserRequestDto;
 };
 export type RequestTeacherVerificationApiResponse = unknown;
 export type RequestTeacherVerificationApiArg = void;
@@ -274,29 +274,6 @@ export type GetSchoolAutocompleteResponseDto = {
 export type GetSchoolAutocompleteRequestDto = {
   value: string;
 };
-export type RepresentativeRequestSchoolFieldDto = {
-  name: string;
-  uuid: string;
-};
-export type RepresentativeRequestUserFieldDto = {
-  email: string;
-  username: string;
-  created: string;
-  uuid: string;
-  name: string;
-};
-export type RepresentativeRequestDto = {
-  school: RepresentativeRequestSchoolFieldDto;
-  user: RepresentativeRequestUserFieldDto;
-};
-export type GetRepresentativeRequestsDto = {
-  requests: RepresentativeRequestDto[];
-};
-export type VerifyRepresentativeUserRequestDto = {
-  approve: boolean;
-  reason: string;
-  verifiedUserUuid: string;
-};
 export type CreateFacultyDto = {
   schoolUuid: string;
   name: string;
@@ -342,7 +319,34 @@ export type GetFacultyAutocompleteRequestDto = {
   value: string;
   schoolUuid: string;
 };
+export type RepresentativeRequestSchoolFieldDto = {
+  name: string;
+  uuid: string;
+};
+export type RepresentativeRequestUserFieldDto = {
+  email: string;
+  username: string;
+  created: string;
+  uuid: string;
+  name: string;
+};
+export type RepresentativeRequestDto = {
+  school: RepresentativeRequestSchoolFieldDto;
+  user: RepresentativeRequestUserFieldDto;
+};
+export type GetRepresentativeRequestsDto = {
+  requests: RepresentativeRequestDto[];
+};
+export type VerifyRepresentativeUserRequestDto = {
+  approve: boolean;
+  reason: string;
+  verifiedUserUuid: string;
+};
 export type TeacherRequestSchoolFieldDto = {
+  name: string;
+  uuid: string;
+};
+export type TeacherRequestFacultyFieldDto = {
   name: string;
   uuid: string;
 };
@@ -355,6 +359,7 @@ export type TeacherRequestUserFieldDto = {
 };
 export type TeacherRequestDto = {
   school: TeacherRequestSchoolFieldDto;
+  faculty: TeacherRequestFacultyFieldDto;
   user: TeacherRequestUserFieldDto;
 };
 export type GetTeacherRequestsDto = {
@@ -378,17 +383,17 @@ export const {
   useDeleteSchoolMutation,
   useGetSchoolByUuidQuery,
   useGetSchoolAutocompleteMutation,
-  useHelloQuery,
-  useHelloNoAuthQuery,
-  useRequestRepresentativeVerificationQuery,
-  useGetRepresentativeVerificationRequestsQuery,
-  useVerifyRepresentativeUserMutation,
   useCreateFacultyMutation,
   useUpdateFacultyMutation,
   useDeleteFacultyMutation,
   useGetAllFacultiesQuery,
   useGetFacultyByUuidQuery,
   useGetFacultyAutocompleteMutation,
+  useHelloQuery,
+  useHelloNoAuthQuery,
+  useRequestRepresentativeVerificationQuery,
+  useGetRepresentativeVerificationRequestsQuery,
+  useVerifyRepresentativeUserMutation,
   useRequestTeacherVerificationQuery,
   useGetTeacherVerificationRequestsQuery,
   useVerifyTeacherUserMutation,

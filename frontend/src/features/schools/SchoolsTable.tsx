@@ -1,6 +1,7 @@
 import React from "react";
 import { SchoolResponseDto } from "../../app/api";
 import SchoolsTableRow from "./SchoolsTableRow";
+import LoadingSpinner from "../../common/ui/LoadingSpinner";
 
 interface SchoolsTablePropsType {
   data: SchoolResponseDto[];
@@ -29,7 +30,13 @@ const SchoolsTable: React.FC<SchoolsTablePropsType> = ({ data, loading }) => {
           ) : (
             <tr>
               <td colSpan={100} className="text-center px-4 py-2">
-                No schools found
+                {loading ? (
+                  <div className="w-full flex flex-row justify-center items-center py-20">
+                    <LoadingSpinner size="h-10 w-10" />
+                  </div>
+                ) : (
+                  "No schools found"
+                )}
               </td>
             </tr>
           )}

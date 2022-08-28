@@ -5,7 +5,10 @@ import { useAppSelector } from "../../app/hooks";
 import classNames from "classnames";
 
 const NavBar: React.FC = () => {
-  const { present } = useAppSelector((state) => state.auth);
+  const {
+    present,
+    user: { role },
+  } = useAppSelector((state) => state.auth);
   const location = useLocation();
   const [logOut] = useLogOutMutation();
 
@@ -44,7 +47,7 @@ const NavBar: React.FC = () => {
 
       <nav className="peer-checked:block hidden lg:block w-full col-span-2">
         <div className="flex flex-col lg:flex-row justify-start lg:justify-between items-center pb-2 lg:pb-0">
-          <div className="flex flex-col lg:flex-row justify-start lg:justify-between items-center w-full lg:w-fit">
+          <div className="flex flex-col lg:flex-row gap-1 lg:gap-0 justify-start lg:justify-between items-center w-full lg:w-fit">
             <Link to="/" className="px-2 py-3 hidden lg:inline-flex flex-row gap-1 w-fit">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -62,32 +65,49 @@ const NavBar: React.FC = () => {
               </svg>
               <span className="uppercase font-bold">CommApp</span>
             </Link>
-            <Link
-              to="/"
-              className={classNames(
-                "border-2 lg:border-l-0 lg:border-r-0 lg:border-t-0 border-transparent hover:border-accent lg:hover:border-transparent lg:hover:border-b-accent rounded-md lg:rounded-none px-6 py-3 w-full text-center",
-                { "text-secondary": location.pathname !== "/" }
-              )}
-            >
-              Home
-            </Link>
+            {present && (
+              <Link
+                to="/"
+                className={classNames(
+                  "border-2 hover:bg-gray rounded-md lg:rounded-none lg:border-x-0 lg:border-t-0 px-6 py-3 w-full text-center transition-all",
+                  {
+                    "border-accent": location.pathname === "/",
+                  },
+                  {
+                    "border-transparent": location.pathname !== "/",
+                  }
+                )}
+              >
+                Home
+              </Link>
+            )}
             {process.env.MODE === "dev" && (
               <Link
                 to="/debug"
                 className={classNames(
-                  "border-2 lg:border-l-0 lg:border-r-0 lg:border-t-0 border-transparent hover:border-accent lg:hover:border-transparent lg:hover:border-b-accent rounded-md lg:rounded-none px-6 py-3 w-full text-center",
-                  { "text-secondary": location.pathname !== "/debug" }
+                  "border-2 hover:bg-gray rounded-md lg:rounded-none lg:border-x-0 lg:border-t-0 px-6 py-3 w-full text-center transition-all",
+                  {
+                    "border-accent": location.pathname === "/",
+                  },
+                  {
+                    "border-transparent": location.pathname !== "/",
+                  }
                 )}
               >
                 Debug
               </Link>
             )}
-            {present && (
+            {present && role === "ADMIN" && (
               <Link
                 to="/schools"
                 className={classNames(
-                  "border-2 lg:border-l-0 lg:border-r-0 lg:border-t-0 border-transparent hover:border-accent lg:hover:border-transparent lg:hover:border-b-accent rounded-md lg:rounded-none px-6 py-3 w-full text-center",
-                  { "text-secondary": location.pathname !== "/schools" }
+                  "border-2 hover:bg-gray rounded-md lg:rounded-none lg:border-x-0 lg:border-t-0 px-6 py-3 w-full text-center transition-all",
+                  {
+                    "border-accent": location.pathname === "/schools",
+                  },
+                  {
+                    "border-transparent": location.pathname !== "/schools",
+                  }
                 )}
               >
                 Schools
@@ -95,17 +115,12 @@ const NavBar: React.FC = () => {
             )}
           </div>
           <div className="flex flex-col lg:flex-row justify-start lg:justify-between items-center w-full lg:w-fit">
-            {/*{email !== undefined && (*/}
-            {/*  <div className="px-3 py-1 rounded-md">*/}
-            {/*    Logged in as <span className="font-bold">{`${email} (${role})`}</span>*/}
-            {/*  </div>*/}
-            {/*)}*/}
             {present && (
               <button
                 type="button"
                 onClick={() => logOut()}
                 className={classNames(
-                  "border-2 lg:border-l-0 lg:border-r-0 lg:border-t-0 border-transparent hover:border-accent lg:hover:border-transparent lg:hover:border-b-accent rounded-md lg:rounded-none px-4 py-3 w-full text-center"
+                  "border-2 hover:bg-gray border-transparent rounded-md lg:rounded-none lg:border-x-0 lg:border-t-0 px-6 py-3 w-full text-center transition-all"
                 )}
               >
                 Log Out
