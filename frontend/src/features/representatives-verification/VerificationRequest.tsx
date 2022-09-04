@@ -88,7 +88,7 @@ const VerificationRequest: React.FC<Props> = ({ request, type }) => {
         initialValues={initialValues}
         onSubmit={async (values) => {
           values.approve = values.reason.length <= 0;
-          if (type == "teacher") {
+          if (type === "teacher") {
             verifyTeacher({
               verifyTeacherUserRequestDto: {
                 verifiedUserUuid: request.user.uuid,
