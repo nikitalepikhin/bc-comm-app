@@ -18,11 +18,13 @@ interface Props {
   wait?: number;
   disabled?: boolean;
   dependencies?: any[];
+  placeholder?: string;
 }
 
 const ComboBox: React.FC<Props> = ({
   initialState = undefined,
   name,
+  placeholder,
   loading = false,
   onChange,
   onInputChange,
@@ -52,6 +54,7 @@ const ComboBox: React.FC<Props> = ({
         <>
           <Combobox.Input
             name={name}
+            placeholder={placeholder}
             onChange={(event) => {
               if (event.target.value.length > 0) {
                 debouncedOnInputChange(event);

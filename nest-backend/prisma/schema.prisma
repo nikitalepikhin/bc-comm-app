@@ -142,8 +142,9 @@ model Faculty {
 
 model Channel {
   uuid           String                   @id @default(uuid()) @db.Uuid
+  textId         String                   @db.VarChar(20) @unique
   name           String                   @db.VarChar(255)
-  description    String?                  @db.VarChar(512)
+  description    String?                  @db.VarChar(4000)
   created        DateTime                 @default(now()) @db.Timestamp(6)
   modified       DateTime                 @default(now()) @db.Timestamp(6)
   createdBy      User                     @relation(name: "channelCreatedBy", fields: [createdByUuid], references: [uuid], onDelete: Cascade)

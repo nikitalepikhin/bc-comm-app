@@ -15,6 +15,10 @@ export enum Permission {
   TEACHER_REQ_VERIFY,
   TEACHER_REQ_READ,
   TEACHER_REQ_UPDATE,
+  CHANNEL_CREATE,
+  CHANNEL_READ,
+  CHANNEL_UPDATE,
+  CHANNEL_DELETE,
 }
 
 export const PERMISSIONS_KEY = "permissions";

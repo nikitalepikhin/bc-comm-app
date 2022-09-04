@@ -99,6 +99,12 @@ const injectedRtkApi = api.injectEndpoints({
     verifyTeacherUser: build.mutation<VerifyTeacherUserApiResponse, VerifyTeacherUserApiArg>({
       query: (queryArg) => ({ url: `/teachers/verify`, method: "POST", body: queryArg.verifyTeacherUserRequestDto }),
     }),
+    createChannel: build.mutation<CreateChannelApiResponse, CreateChannelApiArg>({
+      query: (queryArg) => ({ url: `/channels/new`, method: "POST", body: queryArg.createChannelRequestDto }),
+    }),
+    checkChannelIdAvailability: build.query<CheckChannelIdAvailabilityApiResponse, CheckChannelIdAvailabilityApiArg>({
+      query: (queryArg) => ({ url: `/channels/new/check/${queryArg.value}` }),
+    }),
   }),
   overrideExisting: false,
 });
@@ -199,6 +205,16 @@ export type GetTeacherVerificationRequestsApiArg = void;
 export type VerifyTeacherUserApiResponse = unknown;
 export type VerifyTeacherUserApiArg = {
   verifyTeacherUserRequestDto: VerifyTeacherUserRequestDto;
+};
+export type CreateChannelApiResponse = unknown;
+export type CreateChannelApiArg = {
+  createChannelRequestDto: CreateChannelRequestDto;
+};
+export type CheckChannelIdAvailabilityApiResponse =
+  /** status 200 Channel text ID if exists. */ CheckChannelIdAvailabilityResponseDto;
+export type CheckChannelIdAvailabilityApiArg = {
+  /** Text ID value to check. */
+  value: any;
 };
 export type UserDataResponseDto = {
   email: string;
@@ -370,6 +386,14 @@ export type VerifyTeacherUserRequestDto = {
   reason: string;
   verifiedUserUuid: string;
 };
+export type CreateChannelRequestDto = {
+  name: string;
+  description: string;
+  textId: string;
+};
+export type CheckChannelIdAvailabilityResponseDto = {
+  exists: boolean;
+};
 export const {
   useLogInMutation,
   useSignUpBaseMutation,
@@ -397,4 +421,6 @@ export const {
   useRequestTeacherVerificationQuery,
   useGetTeacherVerificationRequestsQuery,
   useVerifyTeacherUserMutation,
+  useCreateChannelMutation,
+  useCheckChannelIdAvailabilityQuery,
 } = injectedRtkApi;

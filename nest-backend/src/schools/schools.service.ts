@@ -1,19 +1,18 @@
 import { Injectable } from "@nestjs/common";
 import { PrismaService } from "../prisma/prisma.service";
 import CreateSchoolDto from "./dto/create-school.dto";
-import ValidateUserDto from "../users/dto/validate-user.dto";
 import GetSchoolsResponseDto from "./dto/get-schools-response.dto";
 import UpdateSchoolRequestDto from "./dto/update-school-request.dto";
 import DeleteSchoolDto from "./dto/delete-school.dto";
 import GetSchoolAutocompleteRequestDto from "./dto/get-school-autocomplete-request.dto";
-import SchoolAutocompleteDto from "./dto/school-autocomplete.dto";
 import GetSchoolAutocompleteResponseDto from "./dto/get-school-autocomplete-response.dto";
+import UserDto from "../auth/dto/user.dto";
 
 @Injectable()
 export class SchoolsService {
   constructor(private prisma: PrismaService) {}
 
-  async createSchool(schoolDto: CreateSchoolDto, userDto: ValidateUserDto) {
+  async createSchool(schoolDto: CreateSchoolDto, userDto: UserDto) {
     return await this.prisma.school.create({
       data: { ...schoolDto, createdByUuid: userDto.uuid, modifiedByUuid: userDto.uuid },
     });

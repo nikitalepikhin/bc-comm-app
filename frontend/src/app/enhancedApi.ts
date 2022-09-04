@@ -97,4 +97,6 @@ export const {
   useDeleteFacultyMutation,
   useGetSchoolAutocompleteMutation,
   useGetFacultyAutocompleteMutation,
+  useCreateChannelMutation,
+  useLazyCheckChannelIdAvailabilityQuery,
 } = enhancedApi;
