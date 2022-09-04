@@ -14,7 +14,7 @@ const ProtectedRoute: React.FC<ProtectedRoutePropsType> = ({ allowedRoles, child
     user: { role },
   } = useAppSelector((state) => state.auth);
 
-  return !present || role === undefined || !allowedRoles.includes(role) ? <Navigate to="/" /> : <>{children}</>;
+  return !present || role === undefined || !allowedRoles.includes(role) ? <Navigate to="/" replace /> : <>{children}</>;
 };
 
 export default ProtectedRoute;

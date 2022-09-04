@@ -18,6 +18,9 @@ import FacultiesManagementPage from "./features/faculties/FacultiesManagementPag
 import AddFacultyPage from "./features/faculties/AddFacultyPage";
 import EditFacultyPage from "./features/faculties/EditFacultyPage";
 import SignupPage from "./features/auth/SignupPage";
+import SchoolsRoutes from "./features/schools/SchoolsRoutes";
+import FacultiesRoutes from "./features/faculties/FacultiesRoutes";
+import ChannelsRoutes from "./features/channels/ChannelsRoutes";
 
 ReactDOM.render(
   <React.StrictMode>
@@ -29,54 +32,9 @@ ReactDOM.render(
             <Route path="login" element={<LoginPage />} />
             <Route path="signup" element={<SignupPage />} />
             {process.env.MODE === "dev" && <Route path="debug" element={<DebugPage />} />}
-            <Route
-              path="schools"
-              element={
-                <ProtectedRoute allowedRoles={["ADMIN"]}>
-                  <SchoolsManagementPage />
-                </ProtectedRoute>
-              }
-            ></Route>
-            <Route
-              path="schools/new"
-              element={
-                <ProtectedRoute allowedRoles={["ADMIN"]}>
-                  <AddSchoolPage />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="schools/edit/:schoolUuid"
-              element={
-                <ProtectedRoute allowedRoles={["ADMIN"]}>
-                  <EditSchoolPage />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="faculties/:schoolUuid"
-              element={
-                <ProtectedRoute allowedRoles={["ADMIN", "REPRESENTATIVE"]}>
-                  <FacultiesManagementPage />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="faculties/:schoolUuid/new"
-              element={
-                <ProtectedRoute allowedRoles={["ADMIN", "REPRESENTATIVE"]}>
-                  <AddFacultyPage />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="faculties/:schoolUuid/edit/:facultyUuid"
-              element={
-                <ProtectedRoute allowedRoles={["ADMIN", "REPRESENTATIVE"]}>
-                  <EditFacultyPage />
-                </ProtectedRoute>
-              }
-            />
+            <Route path="schools/*" element={<SchoolsRoutes />} />
+            <Route path="faculties/*" element={<FacultiesRoutes />} />
+            <Route path="channels/*" element={<ChannelsRoutes />} />
           </Route>
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
