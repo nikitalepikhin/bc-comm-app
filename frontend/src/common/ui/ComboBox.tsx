@@ -19,6 +19,7 @@ interface Props {
   disabled?: boolean;
   dependencies?: any[];
   placeholder?: string;
+  resetOnChange?: boolean;
 }
 
 const ComboBox: React.FC<Props> = ({
@@ -31,6 +32,7 @@ const ComboBox: React.FC<Props> = ({
   options,
   wait = 0,
   disabled = false,
+  resetOnChange = false,
   dependencies = [],
 }) => {
   const [state, setState] = useState<ComboBoxState | undefined>(initialState);
@@ -48,6 +50,10 @@ const ComboBox: React.FC<Props> = ({
       onChange={(value) => {
         setState(value);
         onChange(value ?? null);
+        if (resetOnChange) {
+          setState(undefined);
+          onChange(null);
+        }
       }}
     >
       {(props) => (
@@ -58,6 +64,10 @@ const ComboBox: React.FC<Props> = ({
             onChange={(event) => {
               if (event.target.value.length > 0) {
                 debouncedOnInputChange(event);
+                if (resetOnChange) {
+                  setState(undefined);
+                  onChange(null);
+                }
               }
             }}
             displayValue={(state: ComboBoxState) => state?.text}

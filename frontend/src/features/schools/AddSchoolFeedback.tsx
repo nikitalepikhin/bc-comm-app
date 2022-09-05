@@ -1,6 +1,6 @@
 import React, { Dispatch, SetStateAction } from "react";
-import CancelHeroIcon from "../../common/icons/CancelHeroIcon";
 import classNames from "classnames";
+import { XMarkIcon } from "@heroicons/react/20/solid";
 
 interface AddSchoolMessagePropsType {
   message: string | undefined;
@@ -17,7 +17,7 @@ const AddSchoolFeedback: React.FC<AddSchoolMessagePropsType> = ({ message, setMe
         </div>
       </div>
       <button type="button" onClick={() => setMessage(undefined)} className="hover:bg-gray-200 rounded-full p-1">
-        <CancelHeroIcon />
+        <XMarkIcon />
       </button>
     </div>
   );
