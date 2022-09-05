@@ -99,4 +99,5 @@ export const {
   useGetFacultyAutocompleteMutation,
   useCreateChannelMutation,
   useLazyCheckChannelIdAvailabilityQuery,
+  useSearchChannelsMutation,
 } = enhancedApi;

@@ -4,6 +4,8 @@ import CreateChannelRequestDto from "./dto/create-channel-request.dto";
 import UserDto from "../auth/dto/user.dto";
 import CheckChannelIdAvailabilityPathParamDto from "./dto/check-channel-id-availability-path-param.dto";
 import CheckChannelIdAvailabilityResponseDto from "./dto/check-channel-id-availability-response.dto";
+import GetChannelsSearchSuggestionsRequestDto from "./dto/get-channels-search-suggestions-request.dto";
+import GetChannelsSearchSuggestionsResponseDto from "./dto/get-channels-search-suggestions-response.dto";
 
 @Injectable()
 export class ChannelsService {
@@ -48,5 +50,32 @@ export class ChannelsService {
         throw new BadRequestException();
       }
     }
+  }
+
+  async searchChannels(
+    getChannelsSearchSuggestions: GetChannelsSearchSuggestionsRequestDto,
+  ): Promise<GetChannelsSearchSuggestionsResponseDto> {
+    return {
+      channels: (
+        await this.prisma.channel.findMany({
+          where: {
+            OR: [
+              {
+                textId: {
+                  contains: getChannelsSearchSuggestions.value,
+                  mode: "insensitive",
+                },
+              },
+              {
+                name: {
+                  contains: getChannelsSearchSuggestions.value,
+                  mode: "insensitive",
+                },
+              },
+            ],
+          },
+        })
+      ).map((channel) => ({ text: `${channel.name} (${channel.textId})`, value: channel.textId })),
+    };
   }
 }

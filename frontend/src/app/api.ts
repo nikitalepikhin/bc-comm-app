@@ -99,6 +99,13 @@ const injectedRtkApi = api.injectEndpoints({
     verifyTeacherUser: build.mutation<VerifyTeacherUserApiResponse, VerifyTeacherUserApiArg>({
       query: (queryArg) => ({ url: `/teachers/verify`, method: "POST", body: queryArg.verifyTeacherUserRequestDto }),
     }),
+    searchChannels: build.mutation<SearchChannelsApiResponse, SearchChannelsApiArg>({
+      query: (queryArg) => ({
+        url: `/channels/search`,
+        method: "POST",
+        body: queryArg.getChannelsSearchSuggestionsRequestDto,
+      }),
+    }),
     createChannel: build.mutation<CreateChannelApiResponse, CreateChannelApiArg>({
       query: (queryArg) => ({ url: `/channels/new`, method: "POST", body: queryArg.createChannelRequestDto }),
     }),
@@ -205,6 +212,11 @@ export type GetTeacherVerificationRequestsApiArg = void;
 export type VerifyTeacherUserApiResponse = unknown;
 export type VerifyTeacherUserApiArg = {
   verifyTeacherUserRequestDto: VerifyTeacherUserRequestDto;
+};
+export type SearchChannelsApiResponse =
+  /** status 200 Channels search suggestions. */ GetChannelsSearchSuggestionsResponseDto;
+export type SearchChannelsApiArg = {
+  getChannelsSearchSuggestionsRequestDto: GetChannelsSearchSuggestionsRequestDto;
 };
 export type CreateChannelApiResponse = unknown;
 export type CreateChannelApiArg = {
@@ -386,6 +398,16 @@ export type VerifyTeacherUserRequestDto = {
   reason: string;
   verifiedUserUuid: string;
 };
+export type ChannelsSearchSuggestionDto = {
+  text: string;
+  value: string;
+};
+export type GetChannelsSearchSuggestionsResponseDto = {
+  channels: ChannelsSearchSuggestionDto[];
+};
+export type GetChannelsSearchSuggestionsRequestDto = {
+  value: string;
+};
 export type CreateChannelRequestDto = {
   name: string;
   description: string;
@@ -421,6 +443,7 @@ export const {
   useRequestTeacherVerificationQuery,
   useGetTeacherVerificationRequestsQuery,
   useVerifyTeacherUserMutation,
+  useSearchChannelsMutation,
   useCreateChannelMutation,
   useCheckChannelIdAvailabilityQuery,
 } = injectedRtkApi;

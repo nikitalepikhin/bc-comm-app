@@ -8,29 +8,33 @@ import { Permission, RequirePermissions } from "../auth/permission.enum";
 import UserDto from "../auth/dto/user.dto";
 import CheckChannelIdAvailabilityPathParamDto from "./dto/check-channel-id-availability-path-param.dto";
 import CheckChannelIdAvailabilityResponseDto from "./dto/check-channel-id-availability-response.dto";
+import GetChannelsSearchSuggestionsResponseDto from "./dto/get-channels-search-suggestions-response.dto";
+import GetChannelsSearchSuggestionsRequestDto from "./dto/get-channels-search-suggestions-request.dto";
 
 @Controller("channels")
 export class ChannelsController {
   constructor(private channelsService: ChannelsService) {}
 
-  // @ApiOperation({
-  //   summary: "Get channels search suggestions.",
-  // })
-  // @ApiOkResponse({
-  //   description: "Channels search suggestions.",
-  //   type: GetChannelsSearchSuggestionsResponseDto,
-  //   content: {},
-  // })
-  // @Post("/search")
-  // async getChannelsSearchSuggestions(
-  //   @Body() getChannelsSearchSuggestions: GetChannelsSearchSuggestionsRequestDto,
-  // ): Promise<GetChannelsSearchSuggestionsResponseDto> {
-  //   if (getChannelsSearchSuggestions.value.length > 0) {
-  //     return await this.channelsService.getChannelsSearchSuggestions(getChannelsSearchSuggestions);
-  //   } else {
-  //     return { channels: [] };
-  //   }
-  // }
+  @ApiOperation({
+    summary: "Get channels search suggestions.",
+  })
+  @ApiOkResponse({
+    description: "Channels search suggestions.",
+    type: GetChannelsSearchSuggestionsResponseDto,
+    content: {},
+  })
+  @RequirePermissions(Permission.CHANNEL_READ)
+  @UseGuards(JwtAuthGuard, RequirePermissionsGuard)
+  @Post("/search")
+  async searchChannels(
+    @Body() getChannelsSearchSuggestions: GetChannelsSearchSuggestionsRequestDto,
+  ): Promise<GetChannelsSearchSuggestionsResponseDto> {
+    if (getChannelsSearchSuggestions.value.length > 0) {
+      return await this.channelsService.searchChannels(getChannelsSearchSuggestions);
+    } else {
+      return { channels: [] };
+    }
+  }
 
   @ApiOperation({ summary: "Create a new channel." })
   @RequirePermissions(Permission.CHANNEL_CREATE)
