@@ -38,7 +38,9 @@ const ComboBox: React.FC<Props> = ({
   const [state, setState] = useState<ComboBoxState | undefined>(initialState);
 
   const debouncedOnInputChange = useCallback(
-    debounce((event: React.ChangeEvent<HTMLInputElement>) => onInputChange(event.target.value), wait),
+    debounce((event: React.ChangeEvent<HTMLInputElement>) => {
+      onInputChange(event.target.value);
+    }, wait),
     [wait, ...dependencies]
   );
 
@@ -52,7 +54,6 @@ const ComboBox: React.FC<Props> = ({
         onChange(value ?? null);
         if (resetOnChange) {
           setState(undefined);
-          onChange(null);
         }
       }}
     >
@@ -64,10 +65,6 @@ const ComboBox: React.FC<Props> = ({
             onChange={(event) => {
               if (event.target.value.length > 0) {
                 debouncedOnInputChange(event);
-                if (resetOnChange) {
-                  setState(undefined);
-                  onChange(null);
-                }
               }
             }}
             displayValue={(state: ComboBoxState) => state?.text}

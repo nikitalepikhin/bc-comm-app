@@ -25,7 +25,7 @@ const ChannelSearch: React.FC<Props> = ({ onSelected }) => {
         onSubmit={({ channel }, { resetForm }) => {
           if (channel && channel.value.length > 0) {
             navigate(`/channels/${channel.value}`);
-            // resetForm();
+            resetForm();
             onSelected();
           }
         }}
@@ -43,6 +43,7 @@ const ChannelSearch: React.FC<Props> = ({ onSelected }) => {
                 onInputChange={(value) => searchChannels({ getChannelsSearchSuggestionsRequestDto: { value } })}
                 options={data ? data.channels : []}
                 wait={1000}
+                resetOnChange
               />
             )}
           </Field>
