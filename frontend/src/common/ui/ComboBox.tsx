@@ -3,7 +3,7 @@ import React, { useCallback, useState } from "react";
 import { debounce } from "lodash";
 import LoadingSpinner from "./LoadingSpinner";
 
-interface ComboBoxState {
+export interface ComboBoxState {
   text: string;
   value: string;
 }
@@ -75,6 +75,7 @@ const ComboBox: React.FC<Props> = ({
           {loading && <LoadingSpinner />}
           {state !== undefined && (
             <button
+              type="button"
               onClick={() => {
                 setState(undefined);
                 onChange(null);

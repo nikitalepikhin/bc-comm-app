@@ -1,4 +1,4 @@
-import React, { useCallback, useRef } from "react";
+import React, { useCallback, useEffect, useRef } from "react";
 import {
   Bars3Icon,
   ChatBubbleBottomCenterTextIcon,
@@ -21,6 +21,7 @@ const NavBar: React.FC = () => {
 
   const menuRef = useRef(null);
   const profileRef = useRef(null);
+  // const profileMenuRef = useRef(null);
   const searchRef = useRef(null);
 
   const onSelected = useCallback(() => {
@@ -34,6 +35,20 @@ const NavBar: React.FC = () => {
       (searchRef.current as HTMLInputElement).checked = false;
     }
   }, [menuRef, profileRef, searchRef]);
+
+  // todo - handle click outside
+  // useEffect(() => {
+  //   function handleClickOutside(event: any) {
+  //     // @ts-ignore
+  //     if (profileMenuRef.current && !profileMenuRef.current.contains(event.target)) {
+  //       onSelected();
+  //     }
+  //   }
+  //   document.addEventListener("mousedown", handleClickOutside);
+  //   return () => {
+  //     document.removeEventListener("mousedown", handleClickOutside);
+  //   };
+  // }, [profileMenuRef]);
 
   return (
     <nav className="grid grid-cols-2 lg:flex lg:flex-row justify-between items-center px-4 py-3 shadow">

@@ -1,32 +1,53 @@
 import React from "react";
-import ComboBox from "../../common/ui/ComboBox";
+import ComboBox, { ComboBoxState } from "../../common/ui/ComboBox";
 import { useNavigate } from "react-router-dom";
 import { useSearchChannelsMutation } from "../../app/enhancedApi";
+import { Field, FieldProps, Form, Formik } from "formik";
 
 interface Props {
   onSelected: () => void;
 }
 
+interface ChannelSearchFormValues {
+  channel: ComboBoxState | null;
+}
+
+const initialValues: ChannelSearchFormValues = { channel: null };
+
 const ChannelSearch: React.FC<Props> = ({ onSelected }) => {
   const navigate = useNavigate();
   const [searchChannels, { data }] = useSearchChannelsMutation();
 
-  // todo - make a formik form - and reset on submit
-
   return (
     <div>
-      <ComboBox
-        name="channel"
-        placeholder="Search channels..."
-        onChange={(value) => {
-          if (value !== undefined) {
-            navigate(`/channels/${value?.value}`);
+      <Formik
+        initialValues={initialValues}
+        onSubmit={({ channel }, { resetForm }) => {
+          if (channel && channel.value.length > 0) {
+            navigate(`/channels/${channel.value}`);
+            // resetForm();
+            onSelected();
           }
         }}
-        onInputChange={(value) => searchChannels({ getChannelsSearchSuggestionsRequestDto: { value } })}
-        options={data ? data.channels : []}
-        wait={1000}
-      />
+      >
+        <Form>
+          <Field name="channel">
+            {({ field, form: { handleSubmit, setFieldValue } }: FieldProps) => (
+              <ComboBox
+                name="channel"
+                placeholder="Search channels..."
+                onChange={(value) => {
+                  setFieldValue(field.name, value);
+                  handleSubmit();
+                }}
+                onInputChange={(value) => searchChannels({ getChannelsSearchSuggestionsRequestDto: { value } })}
+                options={data ? data.channels : []}
+                wait={1000}
+              />
+            )}
+          </Field>
+        </Form>
+      </Formik>
     </div>
   );
 };
