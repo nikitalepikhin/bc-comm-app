@@ -62,6 +62,7 @@ export const TagTypes = {
   TEACHER_REQ: "teacher_req" as const,
   SCHOOL: "school" as const,
   FACULTY: "faculty" as const,
+  CHANNEL: "channel" as const,
 };
 
 export const IdTypes = {
@@ -72,5 +73,5 @@ export const IdTypes = {
 export const emptyApi = createApi({
   baseQuery: baseQueryWithReauth,
   endpoints: () => ({}),
-  tagTypes: [TagTypes.REPR_REQ, TagTypes.TEACHER_REQ, TagTypes.SCHOOL, TagTypes.FACULTY],
+  tagTypes: [TagTypes.REPR_REQ, TagTypes.TEACHER_REQ, TagTypes.SCHOOL, TagTypes.FACULTY, TagTypes.CHANNEL],
 });

@@ -55,6 +55,10 @@ async function seedAuthorities() {
         name: Permission[Permission.CHANNEL_DELETE],
         roles: [Role.ADMIN, Role.REPRESENTATIVE, Role.TEACHER, Role.STUDENT],
       },
+      {
+        name: Permission[Permission.CHANNEL_MEMBER],
+        roles: [Role.TEACHER, Role.STUDENT],
+      },
     ],
   });
 }
@@ -215,7 +219,7 @@ async function seedOtherUsers() {
   });
   await prisma.representative.create({
     data: {
-      name: "Seed Demo Representative",
+      name: "Seed Representative",
       user: {
         create: {
           uuid: represUuid,
@@ -233,7 +237,31 @@ async function seedOtherUsers() {
       },
     },
   });
-  // todo seed a teacher user
+  await prisma.teacher.create({
+    data: {
+      name: "Seed Teacher",
+      user: {
+        create: {
+          uuid: teacherUuid,
+          username: "teacher1",
+          email: "teacher@email.com",
+          password: "$2b$10$36Pb6gDQLin7mf/miWIOfeh7w5rDVsQS8TeMlx/rHK78MY65IdvGq",
+          role: "TEACHER",
+          status: "ACTIVE",
+        },
+      },
+      school: {
+        connect: {
+          uuid: cvutUuid,
+        },
+      },
+      faculty: {
+        connect: {
+          uuid: cvutFelUuid,
+        },
+      },
+    },
+  });
 }
 
 async function main() {

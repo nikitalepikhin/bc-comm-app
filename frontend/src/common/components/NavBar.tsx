@@ -10,11 +10,12 @@ import NavBarLink from "./NavBarLink";
 import { useAppSelector } from "../../app/hooks";
 import { Link, useLocation } from "react-router-dom";
 import { useLogOutMutation } from "../../app/enhancedApi";
+import { RoleType } from "../../features/auth/authSlice";
 
 const NavBar: React.FC = () => {
   const {
     present,
-    user: { role },
+    user: { role, email },
   } = useAppSelector((state) => state.auth);
 
   const [logOut] = useLogOutMutation();
@@ -92,7 +93,10 @@ const NavBar: React.FC = () => {
               <UserCircleIcon className="h-6 w-6" />
             </label>
             <div className="flex lg:hidden peer-checked:flex flex-col justify-between items-center lg:fixed lg:top-14 lg:right-2 lg:shadow lg:p-4 lg:bg-white lg:rounded-md">
-              <div>Profile</div>
+              <div>{`Profile (${email})`}</div>
+              {role && (["REPRESENTATIVE", "TEACHER", "STUDENT"] as RoleType[]).includes(role) && (
+                <NavBarLink to="/channels/new">Create channel</NavBarLink>
+              )}
               <button
                 onClick={() => {
                   logOut();

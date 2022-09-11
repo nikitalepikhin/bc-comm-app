@@ -3,7 +3,7 @@ import { Link, To } from "react-router-dom";
 
 interface LinkWithIconPropsType {
   to: To;
-  svg: ReactNode;
+  svg?: ReactNode;
 }
 
 const LinkWithIcon: React.FC<LinkWithIconPropsType> = ({ to, svg, children }) => {

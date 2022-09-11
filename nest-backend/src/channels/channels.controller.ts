@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, Req, UseGuards } from "@nestjs/common";
+import { BadRequestException, Body, Controller, Get, Param, Post, Req, UseGuards } from "@nestjs/common";
 import { ApiOkResponse, ApiOperation, ApiParam } from "@nestjs/swagger";
 import { ChannelsService } from "./channels.service";
 import CreateChannelRequestDto from "./dto/create-channel-request.dto";
@@ -10,6 +10,9 @@ import CheckChannelIdAvailabilityPathParamDto from "./dto/check-channel-id-avail
 import CheckChannelIdAvailabilityResponseDto from "./dto/check-channel-id-availability-response.dto";
 import GetChannelsSearchSuggestionsResponseDto from "./dto/get-channels-search-suggestions-response.dto";
 import GetChannelsSearchSuggestionsRequestDto from "./dto/get-channels-search-suggestions-request.dto";
+import GetChannelByTextIdResponseDto from "./dto/get-channel-by-text-id-response.dto";
+import GetChannelByTextIdParamsDto from "./dto/get-channel-by-text-id-params.dto";
+import ToggleChannelMembershipRequestDto from "./dto/toggle-channel-membership-request.dto";
 
 @Controller("channels")
 export class ChannelsController {
@@ -44,6 +47,16 @@ export class ChannelsController {
     return await this.channelsService.createChannel(request.user as UserDto, createNewChannelRequest);
   }
 
+  @ApiOperation({ summary: "Get channel content based on the channel's text id." })
+  @ApiOkResponse({ description: "Channel data", type: GetChannelByTextIdResponseDto })
+  @RequirePermissions(Permission.CHANNEL_READ)
+  @UseGuards(JwtAuthGuard, RequirePermissionsGuard)
+  @Get("/:textId")
+  async getChannelByTextId(@Req() request, @Param() params: GetChannelByTextIdParamsDto) {
+    console.log(request.user, params.textId);
+    return await this.channelsService.getChannelByTextId(params.textId, request.user.uuid);
+  }
+
   @ApiOperation({ summary: "Check channel text id availability." })
   @ApiParam({ name: "value", description: "Text ID value to check." })
   @ApiOkResponse({
@@ -58,5 +71,13 @@ export class ChannelsController {
     @Param() params: CheckChannelIdAvailabilityPathParamDto,
   ): Promise<CheckChannelIdAvailabilityResponseDto> {
     return await this.channelsService.checkChannelIdAvailability(params.value);
+  }
+
+  @ApiOperation({ summary: "Toggle channel membership." })
+  @RequirePermissions(Permission.CHANNEL_MEMBER)
+  @UseGuards(JwtAuthGuard, RequirePermissionsGuard)
+  @Post("/member")
+  async toggleMembership(@Req() request, @Body() requestDto: ToggleChannelMembershipRequestDto) {
+    return await this.channelsService.toggleMembership(request.user as UserDto, requestDto);
   }
 }

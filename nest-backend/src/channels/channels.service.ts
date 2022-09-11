@@ -2,14 +2,16 @@ import { BadRequestException, Injectable } from "@nestjs/common";
 import { PrismaService } from "../prisma/prisma.service";
 import CreateChannelRequestDto from "./dto/create-channel-request.dto";
 import UserDto from "../auth/dto/user.dto";
-import CheckChannelIdAvailabilityPathParamDto from "./dto/check-channel-id-availability-path-param.dto";
 import CheckChannelIdAvailabilityResponseDto from "./dto/check-channel-id-availability-response.dto";
 import GetChannelsSearchSuggestionsRequestDto from "./dto/get-channels-search-suggestions-request.dto";
 import GetChannelsSearchSuggestionsResponseDto from "./dto/get-channels-search-suggestions-response.dto";
+import GetChannelByTextIdResponseDto from "./dto/get-channel-by-text-id-response.dto";
+import { UsersService } from "../users/users.service";
+import ToggleChannelMembershipRequestDto from "./dto/toggle-channel-membership-request.dto";
 
 @Injectable()
 export class ChannelsService {
-  constructor(private prisma: PrismaService) {}
+  constructor(private prisma: PrismaService, private usersService: UsersService) {}
 
   async createChannel(user: UserDto, createNewChannelRequest: CreateChannelRequestDto) {
     try {
@@ -77,5 +79,59 @@ export class ChannelsService {
         })
       ).map((channel) => ({ text: `${channel.name} (${channel.textId})`, value: channel.textId })),
     };
+  }
+
+  async getChannelByTextId(textId: string, userUuid: string): Promise<GetChannelByTextIdResponseDto> {
+    console.log(textId);
+    try {
+      const channel = await this.prisma.channel.findUniqueOrThrow({
+        where: { textId },
+        select: {
+          uuid: true,
+          textId: true,
+          name: true,
+          description: true,
+          subscribers: true,
+          created: true,
+          createdBy: true,
+        },
+      });
+      return {
+        uuid: channel.uuid,
+        textId: channel.textId,
+        name: channel.name,
+        description: channel.description,
+        created: channel.created,
+        memberCount: channel.subscribers.length,
+        isMember: !!channel.subscribers.find((sub) => sub.userUuid === userUuid),
+        isOwner: channel.createdBy.uuid === userUuid,
+        owner: {
+          uuid: channel.createdBy.uuid,
+          role: channel.createdBy.role,
+          username: channel.createdBy.username,
+        },
+      };
+    } catch (e) {
+      if (e.name.toString().toLowerCase().includes("notfounderror")) {
+        throw new BadRequestException();
+      } else {
+        throw e;
+      }
+    }
+  }
+
+  async toggleMembership(user: UserDto, requestDto: ToggleChannelMembershipRequestDto) {
+    const membership = await this.prisma.channelSubscribedUsers.findUnique({
+      where: { userUuid_channelUuid: { userUuid: user.uuid, channelUuid: requestDto.channelUuid } },
+    });
+    if (membership !== null) {
+      await this.prisma.channelSubscribedUsers.delete({
+        where: { userUuid_channelUuid: { userUuid: user.uuid, channelUuid: requestDto.channelUuid } },
+      });
+    } else {
+      await this.prisma.channelSubscribedUsers.create({
+        data: { userUuid: user.uuid, channelUuid: requestDto.channelUuid },
+      });
+    }
   }
 }

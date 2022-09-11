@@ -19,6 +19,7 @@ export enum Permission {
   CHANNEL_READ,
   CHANNEL_UPDATE,
   CHANNEL_DELETE,
+  CHANNEL_MEMBER,
 }
 
 export const PERMISSIONS_KEY = "permissions";

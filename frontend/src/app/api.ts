@@ -109,8 +109,18 @@ const injectedRtkApi = api.injectEndpoints({
     createChannel: build.mutation<CreateChannelApiResponse, CreateChannelApiArg>({
       query: (queryArg) => ({ url: `/channels/new`, method: "POST", body: queryArg.createChannelRequestDto }),
     }),
+    getChannelByTextId: build.query<GetChannelByTextIdApiResponse, GetChannelByTextIdApiArg>({
+      query: (queryArg) => ({ url: `/channels/${queryArg.textId}` }),
+    }),
     checkChannelIdAvailability: build.query<CheckChannelIdAvailabilityApiResponse, CheckChannelIdAvailabilityApiArg>({
       query: (queryArg) => ({ url: `/channels/new/check/${queryArg.value}` }),
+    }),
+    toggleMembership: build.mutation<ToggleMembershipApiResponse, ToggleMembershipApiArg>({
+      query: (queryArg) => ({
+        url: `/channels/member`,
+        method: "POST",
+        body: queryArg.toggleChannelMembershipRequestDto,
+      }),
     }),
   }),
   overrideExisting: false,
@@ -222,11 +232,19 @@ export type CreateChannelApiResponse = unknown;
 export type CreateChannelApiArg = {
   createChannelRequestDto: CreateChannelRequestDto;
 };
+export type GetChannelByTextIdApiResponse = /** status 200 Channel data */ GetChannelByTextIdResponseDto;
+export type GetChannelByTextIdApiArg = {
+  textId: string;
+};
 export type CheckChannelIdAvailabilityApiResponse =
   /** status 200 Channel text ID if exists. */ CheckChannelIdAvailabilityResponseDto;
 export type CheckChannelIdAvailabilityApiArg = {
   /** Text ID value to check. */
   value: any;
+};
+export type ToggleMembershipApiResponse = unknown;
+export type ToggleMembershipApiArg = {
+  toggleChannelMembershipRequestDto: ToggleChannelMembershipRequestDto;
 };
 export type UserDataResponseDto = {
   email: string;
@@ -413,8 +431,30 @@ export type CreateChannelRequestDto = {
   description: string;
   textId: string;
 };
+export type ChannelOwnerDto = {
+  uuid: string;
+  username: string;
+  name: string;
+  role: string;
+};
+export type GetChannelByTextIdResponseDto = {
+  uuid: string;
+  textId: string;
+  name: string;
+  description: string;
+  isOwner: boolean;
+  isMember: boolean;
+  memberCount: number;
+  created: string;
+  owner: ChannelOwnerDto;
+};
 export type CheckChannelIdAvailabilityResponseDto = {
   exists: boolean;
+};
+export type ToggleChannelMembershipRequestDto = {
+  channelUuid: string;
+  channelTextId: string;
+  joining: boolean;
 };
 export const {
   useLogInMutation,
@@ -445,5 +485,7 @@ export const {
   useVerifyTeacherUserMutation,
   useSearchChannelsMutation,
   useCreateChannelMutation,
+  useGetChannelByTextIdQuery,
   useCheckChannelIdAvailabilityQuery,
+  useToggleMembershipMutation,
 } = injectedRtkApi;

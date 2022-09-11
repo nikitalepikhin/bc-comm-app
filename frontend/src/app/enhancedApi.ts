@@ -3,6 +3,11 @@ import { IdTypes, TagTypes } from "./emptyApi";
 
 export const enhancedApi = api.enhanceEndpoints({
   endpoints: {
+    logIn: {
+      invalidatesTags: Object.values(TagTypes).map((type) => ({
+        type,
+      })),
+    },
     getRepresentativeVerificationRequests: {
       providesTags: (result) =>
         result
@@ -67,6 +72,33 @@ export const enhancedApi = api.enhanceEndpoints({
         { type: TagTypes.FACULTY, id: IdTypes.ALL },
       ],
     },
+    getChannelByTextId: {
+      providesTags: (result, error, arg) => [{ type: TagTypes.CHANNEL, id: arg.textId }],
+    },
+    toggleMembership: {
+      invalidatesTags: (result, error, arg) => [
+        { type: TagTypes.CHANNEL, id: arg.toggleChannelMembershipRequestDto.channelUuid },
+      ],
+      onQueryStarted: async (
+        { toggleChannelMembershipRequestDto: { channelTextId, joining } },
+        { dispatch, queryFulfilled }
+      ) => {
+        const patchResult = dispatch(
+          enhancedApi.util.updateQueryData("getChannelByTextId", { textId: channelTextId }, (draft) => {
+            if (joining) {
+              Object.assign(draft, { ...draft, isMember: true, memberCount: draft.memberCount + 1 });
+            } else {
+              Object.assign(draft, { ...draft, isMember: false, memberCount: draft.memberCount - 1 });
+            }
+          })
+        );
+        try {
+          await queryFulfilled;
+        } catch {
+          patchResult.undo();
+        }
+      },
+    },
   },
 });
 
@@ -100,4 +132,6 @@ export const {
   useCreateChannelMutation,
   useLazyCheckChannelIdAvailabilityQuery,
   useSearchChannelsMutation,
+  useGetChannelByTextIdQuery,
+  useToggleMembershipMutation,
 } = enhancedApi;
