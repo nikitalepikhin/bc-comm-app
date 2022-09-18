@@ -1,4 +1,4 @@
-import { BadRequestException, Body, Controller, Get, Param, Post, Req, UseGuards } from "@nestjs/common";
+import { Body, Controller, Get, Param, Post, Put, Req, UseGuards } from "@nestjs/common";
 import { ApiOkResponse, ApiOperation, ApiParam } from "@nestjs/swagger";
 import { ChannelsService } from "./channels.service";
 import CreateChannelRequestDto from "./dto/create-channel-request.dto";
@@ -13,6 +13,8 @@ import GetChannelsSearchSuggestionsRequestDto from "./dto/get-channels-search-su
 import GetChannelByTextIdResponseDto from "./dto/get-channel-by-text-id-response.dto";
 import GetChannelByTextIdParamsDto from "./dto/get-channel-by-text-id-params.dto";
 import ToggleChannelMembershipRequestDto from "./dto/toggle-channel-membership-request.dto";
+import UpdateChannelRequestDto from "./dto/update-channel-request.dto";
+import UpdateChannelResponseDto from "./dto/update-channel-response.dto";
 
 @Controller("channels")
 export class ChannelsController {
@@ -42,9 +44,18 @@ export class ChannelsController {
   @ApiOperation({ summary: "Create a new channel." })
   @RequirePermissions(Permission.CHANNEL_CREATE)
   @UseGuards(JwtAuthGuard, RequirePermissionsGuard)
-  @Post("/new")
+  @Post("/")
   async createChannel(@Req() request, @Body() createNewChannelRequest: CreateChannelRequestDto) {
     return await this.channelsService.createChannel(request.user as UserDto, createNewChannelRequest);
+  }
+
+  @ApiOperation({ summary: "Update an existing channel." })
+  @ApiOkResponse({ description: "Updated values for an existing channel.", type: UpdateChannelResponseDto })
+  @RequirePermissions(Permission.CHANNEL_UPDATE)
+  @UseGuards(JwtAuthGuard, RequirePermissionsGuard)
+  @Put("/")
+  async updateChannel(@Req() request, @Body() requestDto: UpdateChannelRequestDto) {
+    return await this.channelsService.updateChannel(request.user as UserDto, requestDto);
   }
 
   @ApiOperation({ summary: "Get channel content based on the channel's text id." })
@@ -53,7 +64,6 @@ export class ChannelsController {
   @UseGuards(JwtAuthGuard, RequirePermissionsGuard)
   @Get("/:textId")
   async getChannelByTextId(@Req() request, @Param() params: GetChannelByTextIdParamsDto) {
-    console.log(request.user, params.textId);
     return await this.channelsService.getChannelByTextId(params.textId, request.user.uuid);
   }
 

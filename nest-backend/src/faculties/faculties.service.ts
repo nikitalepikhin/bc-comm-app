@@ -51,7 +51,6 @@ export class FacultiesService {
   }
 
   async deleteFaculty(deleteFacultyDto: DeleteFacultyDto) {
-    console.log(`about to delete a faculty with uuid ${deleteFacultyDto.uuid}`);
     return await this.prisma.faculty.delete({ where: { uuid: deleteFacultyDto.uuid } });
   }
 

@@ -59,6 +59,12 @@ async function seedAuthorities() {
         name: Permission[Permission.CHANNEL_MEMBER],
         roles: [Role.TEACHER, Role.STUDENT],
       },
+
+      { name: Permission[Permission.POST_CREATE], roles: [Role.TEACHER, Role.STUDENT] },
+      { name: Permission[Permission.POST_READ], roles: [Role.ADMIN, Role.REPRESENTATIVE, Role.TEACHER, Role.STUDENT] },
+      { name: Permission[Permission.POST_UPDATE], roles: [Role.TEACHER, Role.STUDENT] },
+      { name: Permission[Permission.POST_DELETE], roles: [Role.TEACHER, Role.STUDENT] },
+      { name: Permission[Permission.POST_VOTE], roles: [Role.TEACHER, Role.STUDENT] },
     ],
   });
 }
@@ -264,12 +270,34 @@ async function seedOtherUsers() {
   });
 }
 
+async function seedChannels() {
+  await prisma.channel.create({
+    data: {
+      uuid: uuidv4(),
+      name: "Demo Seeded Channel",
+      description: "This is a demo channel that has been seeded by Prisma client.",
+      textId: "demo",
+      createdBy: {
+        connect: {
+          uuid: teacherUuid,
+        },
+      },
+      modifiedBy: {
+        connect: {
+          uuid: teacherUuid,
+        },
+      },
+    },
+  });
+}
+
 async function main() {
   await seedAuthorities();
   await seedAdminUser();
   await seedSchools();
   await seedFaculties();
   await seedOtherUsers();
+  await seedChannels();
 }
 
 main()

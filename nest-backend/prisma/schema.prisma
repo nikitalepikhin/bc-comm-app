@@ -52,8 +52,7 @@ model User {
   subscriptions           ChannelSubscribedUsers[]
   administratedChannels   ChannelAdminUsers[]
   createdPosts            Post[]
-  upvotedPosts            UserUpvotedPost[]
-  downvotedPosts          UserDownvotedPost[]
+  postVotes               UserPostVotes[]
   createdComments         Comment[]
   upvotedComments         UserUpvotedComment[]
   downvotedComments       UserDownvotedComment[]
@@ -142,7 +141,7 @@ model Faculty {
 
 model Channel {
   uuid           String                   @id @default(uuid()) @db.Uuid
-  textId         String                   @db.VarChar(20) @unique
+  textId         String                   @unique @db.VarChar(20)
   name           String                   @db.VarChar(255)
   description    String?                  @db.VarChar(4000)
   created        DateTime                 @default(now()) @db.Timestamp(6)
@@ -177,34 +176,25 @@ model ChannelAdminUsers {
 }
 
 model Post {
-  uuid        String              @id @default(uuid()) @db.Uuid
-  channelUuid String              @db.Uuid
-  channel     Channel             @relation(fields: [channelUuid], references: [uuid], onDelete: Cascade)
-  authorUuid  String              @db.Uuid
-  author      User                @relation(fields: [authorUuid], references: [uuid])
-  title       String              @db.VarChar(300)
-  body        String?             @db.VarChar(40000)
-  created     DateTime            @default(now()) @db.Timestamp(6)
-  modified    DateTime            @default(now()) @db.Timestamp(6)
-  upvotedBy   UserUpvotedPost[]
-  downvotedBy UserDownvotedPost[]
+  uuid        String          @id @default(uuid()) @db.Uuid
+  channelUuid String          @db.Uuid
+  channel     Channel         @relation(fields: [channelUuid], references: [uuid], onDelete: Cascade)
+  authorUuid  String          @db.Uuid
+  author      User            @relation(fields: [authorUuid], references: [uuid])
+  title       String          @db.VarChar(300)
+  body        String?         @db.VarChar(40000)
+  created     DateTime        @default(now()) @db.Timestamp(6)
+  modified    DateTime        @default(now()) @db.Timestamp(6)
+  votes       UserPostVotes[]
   comments    Comment[]
 }
 
-model UserUpvotedPost {
+model UserPostVotes {
   userUuid String @db.Uuid
   user     User   @relation(fields: [userUuid], references: [uuid], onDelete: Cascade)
   postUuid String @db.Uuid
   post     Post   @relation(fields: [postUuid], references: [uuid], onDelete: Cascade)
-
-  @@id([userUuid, postUuid])
-}
-
-model UserDownvotedPost {
-  userUuid String @db.Uuid
-  user     User   @relation(fields: [userUuid], references: [uuid], onDelete: Cascade)
-  postUuid String @db.Uuid
-  post     Post   @relation(fields: [postUuid], references: [uuid], onDelete: Cascade)
+  dir      Int    @db.SmallInt
 
   @@id([userUuid, postUuid])
 }

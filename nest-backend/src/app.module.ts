@@ -11,6 +11,7 @@ import { RepresentativesModule } from "./representatives/representatives.module"
 import { FacultiesModule } from "./faculties/faculties.module";
 import { TeachersModule } from "./teachers/teachers.module";
 import { ChannelsModule } from "./channels/channels.module";
+import { PostsModule } from "./posts/posts.module";
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { ChannelsModule } from "./channels/channels.module";
     FacultiesModule,
     TeachersModule,
     ChannelsModule,
+    PostsModule,
   ],
 })
 export class AppModule {}

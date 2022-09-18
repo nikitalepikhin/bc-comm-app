@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from "@nestjs/common";
+import { BadRequestException, Injectable, UnauthorizedException } from "@nestjs/common";
 import { PrismaService } from "../prisma/prisma.service";
 import CreateChannelRequestDto from "./dto/create-channel-request.dto";
 import UserDto from "../auth/dto/user.dto";
@@ -6,12 +6,13 @@ import CheckChannelIdAvailabilityResponseDto from "./dto/check-channel-id-availa
 import GetChannelsSearchSuggestionsRequestDto from "./dto/get-channels-search-suggestions-request.dto";
 import GetChannelsSearchSuggestionsResponseDto from "./dto/get-channels-search-suggestions-response.dto";
 import GetChannelByTextIdResponseDto from "./dto/get-channel-by-text-id-response.dto";
-import { UsersService } from "../users/users.service";
 import ToggleChannelMembershipRequestDto from "./dto/toggle-channel-membership-request.dto";
+import UpdateChannelRequestDto from "./dto/update-channel-request.dto";
+import UpdateChannelResponseDto from "./dto/update-channel-response.dto";
 
 @Injectable()
 export class ChannelsService {
-  constructor(private prisma: PrismaService, private usersService: UsersService) {}
+  constructor(private prisma: PrismaService) {}
 
   async createChannel(user: UserDto, createNewChannelRequest: CreateChannelRequestDto) {
     try {
@@ -30,6 +31,32 @@ export class ChannelsService {
       } else {
         throw e;
       }
+    }
+  }
+
+  async updateChannel(user: UserDto, requestDto: UpdateChannelRequestDto): Promise<UpdateChannelResponseDto> {
+    const channel = await this.prisma.channel.findUnique({
+      where: { uuid: requestDto.uuid },
+      select: { createdByUuid: true },
+    });
+    if (channel.createdByUuid !== user.uuid) {
+      throw new UnauthorizedException();
+    } else {
+      return await this.prisma.channel.update({
+        where: { uuid: requestDto.uuid },
+        data: {
+          name: requestDto.name,
+          textId: requestDto.textId,
+          description: requestDto.description,
+          modifiedByUuid: user.uuid,
+          modified: new Date(),
+        },
+        select: {
+          name: true,
+          textId: true,
+          description: true,
+        },
+      });
     }
   }
 
@@ -82,7 +109,6 @@ export class ChannelsService {
   }
 
   async getChannelByTextId(textId: string, userUuid: string): Promise<GetChannelByTextIdResponseDto> {
-    console.log(textId);
     try {
       const channel = await this.prisma.channel.findUniqueOrThrow({
         where: { textId },
@@ -94,6 +120,9 @@ export class ChannelsService {
           subscribers: true,
           created: true,
           createdBy: true,
+          _count: {
+            select: { subscribers: true },
+          },
         },
       });
       return {
@@ -102,7 +131,7 @@ export class ChannelsService {
         name: channel.name,
         description: channel.description,
         created: channel.created,
-        memberCount: channel.subscribers.length,
+        memberCount: channel._count.subscribers,
         isMember: !!channel.subscribers.find((sub) => sub.userUuid === userUuid),
         isOwner: channel.createdBy.uuid === userUuid,
         owner: {
