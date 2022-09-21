@@ -176,17 +176,18 @@ model ChannelAdminUsers {
 }
 
 model Post {
-  uuid        String          @id @default(uuid()) @db.Uuid
-  channelUuid String          @db.Uuid
-  channel     Channel         @relation(fields: [channelUuid], references: [uuid], onDelete: Cascade)
-  authorUuid  String          @db.Uuid
-  author      User            @relation(fields: [authorUuid], references: [uuid])
-  title       String          @db.VarChar(300)
-  body        String?         @db.VarChar(40000)
-  created     DateTime        @default(now()) @db.Timestamp(6)
-  modified    DateTime        @default(now()) @db.Timestamp(6)
-  votes       UserPostVotes[]
-  comments    Comment[]
+  uuid           String          @id @default(uuid()) @db.Uuid
+  channelUuid    String          @db.Uuid
+  channel        Channel         @relation(fields: [channelUuid], references: [uuid], onDelete: Cascade)
+  authorUuid     String          @db.Uuid
+  author         User            @relation(fields: [authorUuid], references: [uuid])
+  authorUsername String          @db.VarChar(32)
+  title          String          @db.VarChar(300)
+  body           String?         @db.VarChar(40000)
+  created        DateTime        @default(now()) @db.Timestamp(6)
+  modified       DateTime        @default(now()) @db.Timestamp(6)
+  votes          UserPostVotes[]
+  comments       Comment[]
 }
 
 model UserPostVotes {

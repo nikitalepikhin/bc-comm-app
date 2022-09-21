@@ -8,6 +8,8 @@ import CreateRepresentativeUserDto from "./dto/create-representative-user.dto";
 import { SchoolsService } from "../schools/schools.service";
 import { CreateTeacherUserDto } from "./dto/create-teacher-user.dto";
 import { FacultiesService } from "../faculties/faculties.service";
+import RefreshUsernameResponseDto from "./dto/refresh-username-response.dto";
+import UserDto from "../auth/dto/user.dto";
 
 const usernameParams = {
   length: 8,
@@ -119,5 +121,13 @@ export class UsersService {
 
   private static generateRandomUsername(): string {
     return randomstring.generate(usernameParams).toLowerCase();
+  }
+
+  async refreshUsername(user: UserDto): Promise<RefreshUsernameResponseDto> {
+    return await this.prisma.user.update({
+      where: { uuid: user.uuid },
+      data: { username: UsersService.generateRandomUsername() },
+      select: { username: true },
+    });
   }
 }

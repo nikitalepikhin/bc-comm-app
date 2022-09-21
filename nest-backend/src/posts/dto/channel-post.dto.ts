@@ -2,6 +2,9 @@ import { ApiProperty } from "@nestjs/swagger";
 
 export default class ChannelPostDto {
   @ApiProperty()
+  uuid: string;
+
+  @ApiProperty()
   title: string;
 
   @ApiProperty()
@@ -11,6 +14,9 @@ export default class ChannelPostDto {
   created: Date;
 
   @ApiProperty()
+  author: string;
+
+  @ApiProperty()
   edited: boolean;
 
   @ApiProperty()
@@ -18,4 +24,7 @@ export default class ChannelPostDto {
 
   @ApiProperty()
   down: number;
+
+  @ApiProperty()
+  vote: number;
 }

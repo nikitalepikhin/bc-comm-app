@@ -5,5 +5,8 @@ export default class VoteOnPostRequestDto {
   postUuid: string;
 
   @ApiProperty()
+  channelTextId: string;
+
+  @ApiProperty()
   dir: number;
 }

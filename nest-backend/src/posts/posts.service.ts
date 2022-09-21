@@ -6,31 +6,40 @@ import GetPostsForChannelResponseDto from "./dto/get-posts-for-channel-response.
 import UpdatePostRequestDto from "./dto/update-post-request.dto";
 import VoteOnPostRequestDto from "./dto/vote-on-post-request.dto";
 import DeletePostRequestDto from "./dto/delete-post-request.dto";
+import CreatePostResponseDto from "./dto/create-post-response.dto";
+import GetPostByUuidResponseDto from "./dto/get-post-by-uuid-response.dto";
+import { UsersService } from "../users/users.service";
 
 @Injectable()
 export class PostsService {
-  constructor(private prisma: PrismaService) {}
+  constructor(private prisma: PrismaService, private usersService: UsersService) {}
 
-  async createPost(user: UserDto, requestDto: CreatePostRequestDto) {
-    await this.prisma.post.create({
-      data: {
-        title: requestDto.title,
-        body: requestDto.body,
-        channel: {
-          connect: {
-            uuid: requestDto.channelUuid,
+  async createPost(user: UserDto, requestDto: CreatePostRequestDto): Promise<CreatePostResponseDto> {
+    const { username } = await this.usersService.findByUuid(user.uuid);
+    return {
+      uuid: (
+        await this.prisma.post.create({
+          data: {
+            title: requestDto.title,
+            body: requestDto.body,
+            channel: {
+              connect: {
+                uuid: requestDto.channelUuid,
+              },
+            },
+            authorUsername: username,
+            author: {
+              connect: {
+                uuid: user.uuid,
+              },
+            },
           },
-        },
-        author: {
-          connect: {
-            uuid: user.uuid,
-          },
-        },
-      },
-    });
+        })
+      ).uuid,
+    };
   }
 
-  async getPostsForChannel(channelTextId: string): Promise<GetPostsForChannelResponseDto> {
+  async getPostsForChannel(user: UserDto, channelTextId: string): Promise<GetPostsForChannelResponseDto> {
     return {
       posts: (
         await this.prisma.post.findMany({
@@ -39,22 +48,24 @@ export class PostsService {
               textId: channelTextId,
             },
           },
-          select: {
-            title: true,
-            body: true,
-            created: true,
-            modified: true,
+          include: {
             votes: true,
           },
         })
-      ).map(({ title, body, created, modified, votes }) => ({
-        title,
-        body,
-        created,
-        edited: created === modified,
-        up: votes.filter((vote) => vote.dir === 1).length,
-        down: votes.filter((vote) => vote.dir === -1).length,
-      })),
+      ).map(({ uuid, title, body, created, modified, votes, authorUsername }) => {
+        const vote = votes.find((vote) => vote.userUuid === user.uuid);
+        return {
+          uuid,
+          title,
+          body,
+          created,
+          author: authorUsername,
+          edited: created.getTime() !== modified.getTime(),
+          up: votes.filter((vote) => vote.dir === 1).length,
+          down: votes.filter((vote) => vote.dir === -1).length,
+          vote: vote ? vote.dir : 0,
+        };
+      }),
     };
   }
 
@@ -74,7 +85,7 @@ export class PostsService {
     if (post.author.uuid === user.uuid) {
       await this.prisma.post.update({
         where: { uuid: requestDto.postUuid },
-        data: { body: requestDto.body },
+        data: { body: requestDto.body, modified: new Date() },
       });
     } else {
       throw new UnauthorizedException();
@@ -125,5 +136,30 @@ export class PostsService {
     } else {
       throw new UnauthorizedException();
     }
+  }
+
+  async getPostByUuid(user: UserDto, postUuid: string): Promise<GetPostByUuidResponseDto> {
+    const post = await this.prisma.post.findUnique({ where: { uuid: postUuid }, include: { votes: true } });
+    const vote = await this.prisma.userPostVotes.findUnique({
+      where: {
+        userUuid_postUuid: {
+          postUuid,
+          userUuid: user.uuid,
+        },
+      },
+    });
+    return {
+      post: {
+        uuid: post.uuid,
+        title: post.title,
+        body: post.body,
+        created: post.created,
+        author: post.authorUsername,
+        edited: post.created === post.modified,
+        up: post.votes.filter((vote) => vote.dir === 1).length,
+        down: post.votes.filter((vote) => vote.dir === -1).length,
+        vote: vote ? vote.dir : 0,
+      },
+    };
   }
 }
