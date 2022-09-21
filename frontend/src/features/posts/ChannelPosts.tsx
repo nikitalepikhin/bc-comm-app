@@ -30,6 +30,7 @@ export default function ChannelPosts() {
           <LoadingSpinner size="h-10 w-10">Loading posts...</LoadingSpinner>
         </div>
       )}
+      {data?.posts.length === 0 && <div className='py-4 text-center'>It's quite here 🥱.<br/>Create a post using the button above.</div>}
       {data?.posts.map((post) => (
         <ChannelPost key={post.uuid} {...post} />
       ))}
