@@ -1,5 +1,6 @@
 import { api } from "./api";
 import { IdTypes, TagTypes } from "./emptyApi";
+import en from "javascript-time-ago/locale/en";
 
 export const enhancedApi = api.enhanceEndpoints({
   endpoints: {
@@ -76,9 +77,6 @@ export const enhancedApi = api.enhanceEndpoints({
       providesTags: (result, error, arg) => [{ type: TagTypes.CHANNEL, id: arg.textId }],
     },
     toggleMembership: {
-      invalidatesTags: (result, error, arg) => [
-        { type: TagTypes.CHANNEL, id: arg.toggleChannelMembershipRequestDto.channelUuid },
-      ],
       onQueryStarted: async (
         { toggleChannelMembershipRequestDto: { channelTextId, joining } },
         { dispatch, queryFulfilled }
@@ -96,6 +94,115 @@ export const enhancedApi = api.enhanceEndpoints({
           await queryFulfilled;
         } catch {
           patchResult.undo();
+        }
+      },
+    },
+    updateChannel: {
+      invalidatesTags: (result, error, arg) => [{ type: TagTypes.CHANNEL, id: arg.updateChannelRequestDto.textId }],
+      onQueryStarted: async (
+        { updateChannelRequestDto: { uuid, textId, oldTextId, name, description } },
+        { dispatch, queryFulfilled }
+      ) => {
+        const patchResult = dispatch(
+          enhancedApi.util.updateQueryData("getChannelByTextId", { textId: oldTextId }, (draft) => {
+            Object.assign(draft, { ...draft, name, description, textId });
+          })
+        );
+        try {
+          await queryFulfilled;
+        } catch {
+          patchResult.undo();
+        }
+      },
+    },
+    getPostsForChannel: {
+      providesTags: (result, error, arg) => {
+        if (result) {
+          return [
+            ...result.posts.map((post) => ({ type: TagTypes.POST, id: post.uuid })),
+            { type: TagTypes.POST, id: IdTypes.ALL },
+          ];
+        } else {
+          return [{ type: TagTypes.POST, id: IdTypes.ALL }];
+        }
+      },
+    },
+    getPostByUuid: {
+      providesTags: (result, error, arg) => {
+        if (result) {
+          return [{ type: TagTypes.POST, id: result.post.uuid }];
+        } else {
+          return [];
+        }
+      },
+    },
+    voteOnPost: {
+      invalidatesTags: (result, error, arg) => {
+        return [{ type: TagTypes.POST, id: arg.voteOnPostRequestDto.postUuid }];
+      },
+      onQueryStarted: async (
+        { voteOnPostRequestDto: { postUuid, dir, channelTextId } },
+        { dispatch, queryFulfilled }
+      ) => {
+        const calculateVotes = (up: number, down: number, vote: number, dir: number) => {
+          let result = {};
+          if (vote === 0) {
+            if (dir === 1) {
+              result = { up: up + 1, down, vote: dir };
+            } else if (dir === -1) {
+              result = { up, down: down + 1, vote: dir };
+            }
+          } else if (vote === 1) {
+            if (dir === 0) {
+              result = { up: up - 1, down, vote: dir };
+            } else if (dir === -1) {
+              result = { up: up - 1, down: down + 1, vote: dir };
+            }
+          } else if (vote === -1) {
+            if (dir === 0) {
+              result = { up, down: down - 1, vote: dir };
+            } else if (dir === 1) {
+              result = { up: up + 1, down: down - 1, vote: dir };
+            }
+          }
+          return result;
+        };
+
+        const patchSinglePost = dispatch(
+          enhancedApi.util.updateQueryData("getPostByUuid", { postUuid }, (draft) => {
+            Object.assign(draft, {
+              ...draft,
+              post: {
+                ...draft.post,
+                ...calculateVotes(draft.post.up, draft.post.down, draft.post.vote, dir),
+              },
+            });
+          })
+        );
+        const patchChannelPosts = dispatch(
+          enhancedApi.util.updateQueryData("getPostsForChannel", { channelTextId }, (draft) => {
+            Object.assign(draft, {
+              ...draft,
+              posts: [
+                ...draft.posts.map((post) => {
+                  if (post.uuid !== postUuid) {
+                    return post;
+                  } else {
+                    return {
+                      ...post,
+                      ...calculateVotes(post.up, post.down, post.vote, dir),
+                    };
+                  }
+                }),
+              ],
+            });
+          })
+        );
+        try {
+          await queryFulfilled;
+        } catch (e) {
+          patchSinglePost.undo();
+          patchChannelPosts.undo();
         }
       },
     },
@@ -134,4 +241,11 @@ export const {
   useSearchChannelsMutation,
   useGetChannelByTextIdQuery,
   useToggleMembershipMutation,
+  useUpdateChannelMutation,
+  useCreatePostMutation,
+  useGetPostsForChannelQuery,
+  useGetPostByUuidQuery,
+  useUpdatePostMutation,
+  useVoteOnPostMutation,
+  useDeletePostMutation,
 } = enhancedApi;

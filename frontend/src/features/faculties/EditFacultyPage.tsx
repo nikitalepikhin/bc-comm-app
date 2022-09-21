@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 import { useGetFacultyByUuidQuery, useUpdateFacultyMutation } from "../../app/enhancedApi";
 import { Field, FieldProps, Form, Formik } from "formik";
 import TextField from "../../common/ui/TextField";
-import Button from "../../common/components/Button";
+import Button from "../../common/ui/Button";
 import LinkWithIcon from "../../common/ui/LinkWithIcon";
 import LoadingSpinner from "../../common/ui/LoadingSpinner";
 

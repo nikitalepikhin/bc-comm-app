@@ -1,6 +1,6 @@
 import React from "react";
 import LoadingSpinner from "./LoadingSpinner";
-import Button, { ButtonPropsType } from "../components/Button";
+import Button, { ButtonPropsType } from "./Button";
 import classNames from "classnames";
 
 interface LoadingButtonPropsType extends ButtonPropsType {

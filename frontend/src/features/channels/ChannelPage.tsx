@@ -1,23 +1,27 @@
 import React from "react";
 import { useParams } from "react-router-dom";
-import { useGetChannelByTextIdQuery, useToggleMembershipMutation } from "../../app/enhancedApi";
+import {
+  useGetChannelByTextIdQuery,
+  useGetPostsForChannelQuery,
+  useToggleMembershipMutation,
+} from "../../app/enhancedApi";
 import { format } from "date-fns";
-import LoadingSpinner from "../../common/ui/LoadingSpinner";
-import Button from "../../common/components/Button";
+import Button from "../../common/ui/Button";
 import { ClipboardDocumentListIcon } from "@heroicons/react/24/outline";
 import { useAppSelector } from "../../app/hooks";
 import StyledLink from "../../common/ui/StyledLink";
-import LoadingButton from "../../common/ui/LoadingButton";
+import ChannelPosts from "../posts/ChannelPosts";
 
 const ChannelPage: React.FC = () => {
-  const { textId } = useParams();
+  const { textId } = useParams() as { textId: string };
   const { role } = useAppSelector((state) => state.auth.user);
   const { data, isFetching } = useGetChannelByTextIdQuery({ textId: textId! });
   const [toggleMembership, { isLoading }] = useToggleMembershipMutation();
+  const { data: posts } = useGetPostsForChannelQuery({ channelTextId: textId });
 
   return (
     <div className="flex flex-col justify-start items-center gap-2">
-      <div className="w-full flex flex-row justify-between items-center">
+      <div className="w-full flex flex-row justify-between items-center flex-wrap gap-2">
         <div>
           <h1 className="font-bold text-2xl">{data?.name}</h1>
           <div className="flex flex-row items-center gap-2">
@@ -42,7 +46,7 @@ const ChannelPage: React.FC = () => {
             </div>
           )}
         </div>
-        <div>
+        <div className="flex gap-2">
           <Button
             variant="contained"
             disabled={role !== "STUDENT" && role !== "TEACHER"}
@@ -68,12 +72,12 @@ const ChannelPage: React.FC = () => {
           <div className="flex flex-col justify-between items-start bg-white rounded-md shadow px-6 py-3 w-full">
             <h2 className="font-bold text-lg">About This Channel</h2>
             <div>{data?.description}</div>
-            <div className="flex flex-row justify-around items-center gap-2 w-full">
-              <div className="flex flex-col justify-between items-center">
+            <div className="flex flex-row justify-around items-center flex-wrap gap-2 w-full">
+              <div className="flex flex-col justify-start items-center flex-wrap">
                 <div className="font-bold">Member count</div>
                 <div>{data?.memberCount} 🧑‍🎓</div>
               </div>
-              <div className="flex flex-col justify-between items-center">
+              <div className="flex flex-col justify-start items-center flex-wrap">
                 <div className="font-bold">Date created</div>
                 <div>{data?.created ? format(new Date(data?.created), "dd.MM.yyyy") : "??.??.????"} 🎂</div>
               </div>
@@ -86,8 +90,8 @@ const ChannelPage: React.FC = () => {
             </div>
           )}
         </div>
-        <div className="h-96 w-full flex flex-row justify-center items-center font-bold text-lg bg-white shadow rounded-md">
-          Posts will be here...
+        <div className="w-full">
+          <ChannelPosts />
         </div>
       </div>
     </div>

@@ -20,10 +20,10 @@ module.exports = {
       "accent-strong": "#1e40af",
       white: "#ffffff",
       gray: "#f3f4f6",
-      "lightgray": "#f9fafb",
+      lightgray: "#f9fafb",
       red: "#dc2626",
       "red-strong": "#991b1b",
     },
   },
-  plugins: [require("@tailwindcss/forms")],
+  plugins: [require("@tailwindcss/forms"), require("@tailwindcss/line-clamp")],
 };

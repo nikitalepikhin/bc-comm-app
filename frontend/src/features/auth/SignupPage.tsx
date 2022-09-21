@@ -9,7 +9,7 @@ import {
   useSignUpTeacherMutation,
   useSignUpRepresentativeMutation,
 } from "../../app/enhancedApi";
-import Button from "../../common/components/Button";
+import Button from "../../common/ui/Button";
 import LoadingButton from "../../common/ui/LoadingButton";
 import { Link, useNavigate } from "react-router-dom";
 

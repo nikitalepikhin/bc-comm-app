@@ -3,14 +3,17 @@ import { Route, Routes } from "react-router-dom";
 import AddChannelPage from "./AddChannelPage";
 import ProtectedRoute from "../../common/components/ProtectedRoute";
 import ChannelPage from "./ChannelPage";
+import EditChannelPage from "./EditChannelPage";
+import AddPostPage from "../posts/AddPostPage";
+import PostPage from "../posts/PostPage";
 
-const ChannelsRoutes: React.FC = () => {
+export default function ChannelsRoutes() {
   return (
     <Routes>
       <Route
         path="/new"
         element={
-          <ProtectedRoute allowedRoles={["REPRESENTATIVE", "TEACHER", "STUDENT"]}>
+          <ProtectedRoute allowedRoles={["TEACHER", "STUDENT"]}>
             <AddChannelPage />
           </ProtectedRoute>
         }
@@ -23,8 +26,30 @@ const ChannelsRoutes: React.FC = () => {
           </ProtectedRoute>
         }
       />
+      <Route
+        path="/:textId/edit"
+        element={
+          <ProtectedRoute allowedRoles={["TEACHER", "STUDENT"]}>
+            <EditChannelPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/:textId/post/new"
+        element={
+          <ProtectedRoute allowedRoles={["TEACHER", "STUDENT"]}>
+            <AddPostPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/:textId/post/:postUuid"
+        element={
+          <ProtectedRoute allowedRoles={["ADMIN", "REPRESENTATIVE", "TEACHER", "STUDENT"]}>
+            <PostPage />
+          </ProtectedRoute>
+        }
+      />
     </Routes>
   );
-};
-
-export default ChannelsRoutes;
+}

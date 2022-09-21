@@ -4,7 +4,7 @@ import { useCreateFacultyMutation, useCreateSchoolMutation, useGetSchoolByUuidQu
 import { Field, FieldProps, Form, Formik } from "formik";
 import AddSchoolFeedback from "../schools/AddSchoolFeedback";
 import TextField from "../../common/ui/TextField";
-import Button from "../../common/components/Button";
+import Button from "../../common/ui/Button";
 import LinkWithIcon from "../../common/ui/LinkWithIcon";
 
 interface AddFacultyFormValues {
