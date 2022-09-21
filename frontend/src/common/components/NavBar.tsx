@@ -52,7 +52,7 @@ const NavBar: React.FC = () => {
   // }, [profileMenuRef]);
 
   return (
-    <nav className="grid grid-cols-2 lg:flex lg:flex-row justify-between items-center px-4 py-3 shadow">
+    <nav className="grid grid-cols-2 lg:flex lg:flex-row justify-between items-center px-4 py-3 shadow sticky top-0 bg-white">
       <input type="checkbox" id="menu" className="hidden peer transition-all" ref={menuRef} />
       <div className="col-span-1 lg:hidden">
         <Link to="/" onClick={onSelected}>

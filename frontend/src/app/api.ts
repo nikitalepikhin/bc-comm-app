@@ -23,6 +23,9 @@ const injectedRtkApi = api.injectEndpoints({
     logOut: build.mutation<LogOutApiResponse, LogOutApiArg>({
       query: () => ({ url: `/auth/logout`, method: "POST" }),
     }),
+    refreshUsername: build.query<RefreshUsernameApiResponse, RefreshUsernameApiArg>({
+      query: () => ({ url: `/users/refresh` }),
+    }),
     createSchool: build.mutation<CreateSchoolApiResponse, CreateSchoolApiArg>({
       query: (queryArg) => ({ url: `/schools`, method: "POST", body: queryArg.createSchoolDto }),
     }),
@@ -107,7 +110,10 @@ const injectedRtkApi = api.injectEndpoints({
       }),
     }),
     createChannel: build.mutation<CreateChannelApiResponse, CreateChannelApiArg>({
-      query: (queryArg) => ({ url: `/channels/new`, method: "POST", body: queryArg.createChannelRequestDto }),
+      query: (queryArg) => ({ url: `/channels`, method: "POST", body: queryArg.createChannelRequestDto }),
+    }),
+    updateChannel: build.mutation<UpdateChannelApiResponse, UpdateChannelApiArg>({
+      query: (queryArg) => ({ url: `/channels`, method: "PUT", body: queryArg.updateChannelRequestDto }),
     }),
     getChannelByTextId: build.query<GetChannelByTextIdApiResponse, GetChannelByTextIdApiArg>({
       query: (queryArg) => ({ url: `/channels/${queryArg.textId}` }),
@@ -121,6 +127,24 @@ const injectedRtkApi = api.injectEndpoints({
         method: "POST",
         body: queryArg.toggleChannelMembershipRequestDto,
       }),
+    }),
+    createPost: build.mutation<CreatePostApiResponse, CreatePostApiArg>({
+      query: (queryArg) => ({ url: `/posts`, method: "POST", body: queryArg.createPostRequestDto }),
+    }),
+    updatePost: build.mutation<UpdatePostApiResponse, UpdatePostApiArg>({
+      query: (queryArg) => ({ url: `/posts`, method: "PUT", body: queryArg.updatePostRequestDto }),
+    }),
+    deletePost: build.mutation<DeletePostApiResponse, DeletePostApiArg>({
+      query: (queryArg) => ({ url: `/posts`, method: "DELETE", body: queryArg.deletePostRequestDto }),
+    }),
+    getPostByUuid: build.query<GetPostByUuidApiResponse, GetPostByUuidApiArg>({
+      query: (queryArg) => ({ url: `/posts/${queryArg.postUuid}` }),
+    }),
+    getPostsForChannel: build.query<GetPostsForChannelApiResponse, GetPostsForChannelApiArg>({
+      query: (queryArg) => ({ url: `/posts/channel/${queryArg.channelTextId}` }),
+    }),
+    voteOnPost: build.mutation<VoteOnPostApiResponse, VoteOnPostApiArg>({
+      query: (queryArg) => ({ url: `/posts/vote`, method: "POST", body: queryArg.voteOnPostRequestDto }),
     }),
   }),
   overrideExisting: false,
@@ -146,6 +170,8 @@ export type RefreshTokenApiResponse = /** status 201 Authenticated user data */ 
 export type RefreshTokenApiArg = void;
 export type LogOutApiResponse = unknown;
 export type LogOutApiArg = void;
+export type RefreshUsernameApiResponse = unknown;
+export type RefreshUsernameApiArg = void;
 export type CreateSchoolApiResponse = unknown;
 export type CreateSchoolApiArg = {
   createSchoolDto: CreateSchoolDto;
@@ -232,6 +258,11 @@ export type CreateChannelApiResponse = unknown;
 export type CreateChannelApiArg = {
   createChannelRequestDto: CreateChannelRequestDto;
 };
+export type UpdateChannelApiResponse =
+  /** status 200 Updated values for an existing channel. */ UpdateChannelResponseDto;
+export type UpdateChannelApiArg = {
+  updateChannelRequestDto: UpdateChannelRequestDto;
+};
 export type GetChannelByTextIdApiResponse = /** status 200 Channel data */ GetChannelByTextIdResponseDto;
 export type GetChannelByTextIdApiArg = {
   textId: string;
@@ -245,6 +276,31 @@ export type CheckChannelIdAvailabilityApiArg = {
 export type ToggleMembershipApiResponse = unknown;
 export type ToggleMembershipApiArg = {
   toggleChannelMembershipRequestDto: ToggleChannelMembershipRequestDto;
+};
+export type CreatePostApiResponse = /** status 200 Uuid of the newly created post. */ CreatePostResponseDto;
+export type CreatePostApiArg = {
+  createPostRequestDto: CreatePostRequestDto;
+};
+export type UpdatePostApiResponse = unknown;
+export type UpdatePostApiArg = {
+  updatePostRequestDto: UpdatePostRequestDto;
+};
+export type DeletePostApiResponse = unknown;
+export type DeletePostApiArg = {
+  deletePostRequestDto: DeletePostRequestDto;
+};
+export type GetPostByUuidApiResponse = /** status 200 Post retrieved by uuid. */ GetPostByUuidResponseDto;
+export type GetPostByUuidApiArg = {
+  postUuid: string;
+};
+export type GetPostsForChannelApiResponse =
+  /** status 200 Posts for a specified channel. */ GetPostsForChannelResponseDto;
+export type GetPostsForChannelApiArg = {
+  channelTextId: string;
+};
+export type VoteOnPostApiResponse = unknown;
+export type VoteOnPostApiArg = {
+  voteOnPostRequestDto: VoteOnPostRequestDto;
 };
 export type UserDataResponseDto = {
   email: string;
@@ -428,8 +484,20 @@ export type GetChannelsSearchSuggestionsRequestDto = {
 };
 export type CreateChannelRequestDto = {
   name: string;
-  description: string;
+  description: string | null;
   textId: string;
+};
+export type UpdateChannelResponseDto = {
+  name: string;
+  textId: string;
+  description: string | null;
+};
+export type UpdateChannelRequestDto = {
+  uuid: string;
+  name: string;
+  textId: string;
+  oldTextId: string;
+  description: string | null;
 };
 export type ChannelOwnerDto = {
   uuid: string;
@@ -456,6 +524,43 @@ export type ToggleChannelMembershipRequestDto = {
   channelTextId: string;
   joining: boolean;
 };
+export type CreatePostResponseDto = {
+  uuid: string;
+};
+export type CreatePostRequestDto = {
+  title: string;
+  body: string;
+  channelUuid: string;
+};
+export type UpdatePostRequestDto = {
+  postUuid: string;
+  body: string;
+};
+export type DeletePostRequestDto = {
+  postUuid: string;
+};
+export type ChannelPostDto = {
+  uuid: string;
+  title: string;
+  body: string;
+  created: string;
+  author: string;
+  edited: boolean;
+  up: number;
+  down: number;
+  vote: number;
+};
+export type GetPostByUuidResponseDto = {
+  post: ChannelPostDto;
+};
+export type GetPostsForChannelResponseDto = {
+  posts: ChannelPostDto[];
+};
+export type VoteOnPostRequestDto = {
+  postUuid: string;
+  channelTextId: string;
+  dir: number;
+};
 export const {
   useLogInMutation,
   useSignUpBaseMutation,
@@ -463,6 +568,7 @@ export const {
   useSignUpTeacherMutation,
   useRefreshTokenMutation,
   useLogOutMutation,
+  useRefreshUsernameQuery,
   useCreateSchoolMutation,
   useGetAllSchoolsQuery,
   useUpdateSchoolMutation,
@@ -485,7 +591,14 @@ export const {
   useVerifyTeacherUserMutation,
   useSearchChannelsMutation,
   useCreateChannelMutation,
+  useUpdateChannelMutation,
   useGetChannelByTextIdQuery,
   useCheckChannelIdAvailabilityQuery,
   useToggleMembershipMutation,
+  useCreatePostMutation,
+  useUpdatePostMutation,
+  useDeletePostMutation,
+  useGetPostByUuidQuery,
+  useGetPostsForChannelQuery,
+  useVoteOnPostMutation,
 } = injectedRtkApi;

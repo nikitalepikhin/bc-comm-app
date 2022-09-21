@@ -8,7 +8,7 @@ import {
   useVerifyTeacherUserMutation,
 } from "../../app/enhancedApi";
 import LoadingSpinner from "../../common/ui/LoadingSpinner";
-import Button from "../../common/components/Button";
+import Button from "../../common/ui/Button";
 
 const initialValues = {
   reason: "",
