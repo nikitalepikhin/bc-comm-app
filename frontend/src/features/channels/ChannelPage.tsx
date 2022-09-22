@@ -1,37 +1,31 @@
 import React from "react";
-import { useParams } from "react-router-dom";
-import {
-  useGetChannelByTextIdQuery,
-  useGetPostsForChannelQuery,
-  useToggleMembershipMutation,
-} from "../../app/enhancedApi";
+import { Outlet, useParams } from "react-router-dom";
+import { useGetChannelByTextIdQuery, useToggleMembershipMutation } from "../../app/enhancedApi";
 import { format } from "date-fns";
 import Button from "../../common/ui/Button";
 import { ClipboardDocumentListIcon } from "@heroicons/react/24/outline";
 import { useAppSelector } from "../../app/hooks";
 import StyledLink from "../../common/ui/StyledLink";
-import ChannelPosts from "../posts/ChannelPosts";
+import LoadingSpinner from "../../common/ui/LoadingSpinner";
 
 const ChannelPage: React.FC = () => {
   const { textId } = useParams() as { textId: string };
   const { role } = useAppSelector((state) => state.auth.user);
-  const { data, isFetching } = useGetChannelByTextIdQuery({ textId: textId! });
-  const [toggleMembership, { isLoading }] = useToggleMembershipMutation();
-  const { data: posts } = useGetPostsForChannelQuery({ channelTextId: textId });
+  const { data, isLoading } = useGetChannelByTextIdQuery({ textId: textId! });
+  const [toggleMembership] = useToggleMembershipMutation();
 
-  return (
+  return isLoading ? (
+    <div>
+      <LoadingSpinner size="h-8 w-8" />
+    </div>
+  ) : (
     <div className="flex flex-col justify-start items-center gap-2">
       <div className="w-full flex flex-row justify-between items-center flex-wrap gap-2">
         <div>
           <h1 className="font-bold text-2xl">{data?.name}</h1>
           <div className="flex flex-row items-center gap-2">
             <p className="text-sm text-secondary">{textId}</p>
-            <button
-              type="button"
-              onClick={() => {
-                navigator.clipboard.writeText(window.location.href);
-              }}
-            >
+            <button type="button" onClick={() => navigator.clipboard.writeText(window.location.href)}>
               <ClipboardDocumentListIcon className="h-6 w-6" />
             </button>
           </div>
@@ -46,25 +40,26 @@ const ChannelPage: React.FC = () => {
             </div>
           )}
         </div>
-        <div className="flex gap-2">
-          <Button
-            variant="contained"
-            disabled={role !== "STUDENT" && role !== "TEACHER"}
-            onClick={() => {
-              if (data?.uuid) {
-                toggleMembership({
-                  toggleChannelMembershipRequestDto: {
-                    channelUuid: data?.uuid,
-                    channelTextId: data?.textId,
-                    joining: !data?.isMember,
-                  },
-                });
-              }
-            }}
-          >
-            {data?.isMember ? "Leave" : "Join"}
-          </Button>
-        </div>
+        {(role === "STUDENT" || role === "TEACHER") && (
+          <div className="flex gap-2">
+            <Button
+              variant="contained"
+              onClick={() => {
+                if (data?.uuid) {
+                  toggleMembership({
+                    toggleChannelMembershipRequestDto: {
+                      channelUuid: data?.uuid,
+                      channelTextId: data?.textId,
+                      joining: !data?.isMember,
+                    },
+                  });
+                }
+              }}
+            >
+              {data?.isMember ? "Leave" : "Join"}
+            </Button>
+          </div>
+        )}
       </div>
 
       <div className="flex flex-col justify-start items-stretch lg:flex-row-reverse lg:justify-between gap-2 w-full">
@@ -91,7 +86,7 @@ const ChannelPage: React.FC = () => {
           )}
         </div>
         <div className="w-full">
-          <ChannelPosts />
+          <Outlet />
         </div>
       </div>
     </div>

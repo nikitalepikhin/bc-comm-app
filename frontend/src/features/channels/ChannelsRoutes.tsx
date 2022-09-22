@@ -6,6 +6,8 @@ import ChannelPage from "./ChannelPage";
 import EditChannelPage from "./EditChannelPage";
 import AddPostPage from "../posts/AddPostPage";
 import PostPage from "../posts/PostPage";
+import ChannelPosts from "../posts/ChannelPosts";
+import EditPostPage from "../posts/EditPostPage";
 
 export default function ChannelsRoutes() {
   return (
@@ -25,28 +27,24 @@ export default function ChannelsRoutes() {
             <ChannelPage />
           </ProtectedRoute>
         }
-      />
+      >
+        <Route index element={<ChannelPosts />} />
+        <Route path="post/:postUuid" element={<PostPage />} />
+        <Route path="post/:postUuid/edit" element={<EditPostPage />} />
+        <Route
+          path="post/new"
+          element={
+            <ProtectedRoute allowedRoles={["TEACHER", "STUDENT"]}>
+              <AddPostPage />
+            </ProtectedRoute>
+          }
+        />
+      </Route>
       <Route
         path="/:textId/edit"
         element={
           <ProtectedRoute allowedRoles={["TEACHER", "STUDENT"]}>
             <EditChannelPage />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/:textId/post/new"
-        element={
-          <ProtectedRoute allowedRoles={["TEACHER", "STUDENT"]}>
-            <AddPostPage />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/:textId/post/:postUuid"
-        element={
-          <ProtectedRoute allowedRoles={["ADMIN", "REPRESENTATIVE", "TEACHER", "STUDENT"]}>
-            <PostPage />
           </ProtectedRoute>
         }
       />

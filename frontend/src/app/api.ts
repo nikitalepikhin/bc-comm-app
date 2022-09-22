@@ -500,7 +500,6 @@ export type UpdateChannelRequestDto = {
   description: string | null;
 };
 export type ChannelOwnerDto = {
-  uuid: string;
   username: string;
   name: string;
   role: string;
@@ -545,6 +544,7 @@ export type ChannelPostDto = {
   body: string;
   created: string;
   author: string;
+  isAuthor: boolean;
   edited: boolean;
   up: number;
   down: number;

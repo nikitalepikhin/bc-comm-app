@@ -135,7 +135,6 @@ export class ChannelsService {
         isMember: !!channel.subscribers.find((sub) => sub.userUuid === userUuid),
         isOwner: channel.createdBy.uuid === userUuid,
         owner: {
-          uuid: channel.createdBy.uuid,
           role: channel.createdBy.role,
           username: channel.createdBy.username,
         },

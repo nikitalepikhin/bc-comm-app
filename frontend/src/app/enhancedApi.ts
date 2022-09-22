@@ -206,6 +206,16 @@ export const enhancedApi = api.enhanceEndpoints({
         }
       },
     },
+    createPost: {
+      invalidatesTags: (result, error, arg) => [{ type: TagTypes.POST, id: IdTypes.ALL }],
+    },
+    updatePost: {
+      invalidatesTags: (result, error, arg) => [{ type: TagTypes.POST, id: arg.updatePostRequestDto.postUuid }],
+      onQueryStarted: async ({ updatePostRequestDto: { postUuid, body } }, { dispatch, queryFulfilled }) => {},
+    },
+    deletePost: {
+      invalidatesTags: (result, error, arg) => [{ type: TagTypes.POST, id: arg.deletePostRequestDto.postUuid }],
+    },
   },
 });
 

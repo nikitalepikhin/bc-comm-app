@@ -46,7 +46,6 @@ export class PostsController {
     @Req() request,
     @Param() params: GetPostsForChannelParamsDto,
   ): Promise<GetPostsForChannelResponseDto> {
-    console.log(request.user);
     return await this.postsService.getPostsForChannel(request.user as UserDto, params.channelTextId);
   }
 
