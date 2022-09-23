@@ -64,7 +64,7 @@ export default function AddPostPage() {
               )}
             </Field>
             <div>
-              <Button type="submit" onClick={() => handleSubmit()}>
+              <Button type="button" onClick={() => handleSubmit()}>
                 Create Post
               </Button>
             </div>

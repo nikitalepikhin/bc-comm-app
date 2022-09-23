@@ -1,5 +1,6 @@
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
+  previewFeatures = ["interactiveTransactions"]
 }
 
 datasource db {
@@ -187,6 +188,7 @@ model Post {
   created        DateTime        @default(now()) @db.Timestamp(6)
   modified       DateTime        @default(now()) @db.Timestamp(6)
   votes          UserPostVotes[]
+  resVote        BigInt          @default(0) @db.BigInt
   comments       Comment[]
 }
 

@@ -41,12 +41,16 @@ export class PostsController {
   @ApiOkResponse({ description: "Posts for a specified channel.", type: GetPostsForChannelResponseDto })
   @RequirePermissions(Permission.POST_READ)
   @UseGuards(JwtAuthGuard, RequirePermissionsGuard)
-  @Get("/channel/:channelTextId")
+  @Get("/channel/:channelTextId/:order")
   async getPostsForChannel(
     @Req() request,
     @Param() params: GetPostsForChannelParamsDto,
   ): Promise<GetPostsForChannelResponseDto> {
-    return await this.postsService.getPostsForChannel(request.user as UserDto, params.channelTextId);
+    return await this.postsService.getPostsForChannel(
+      request.user as UserDto,
+      params.channelTextId,
+      params.order ?? "new",
+    );
   }
 
   @ApiOperation({ summary: "Update a post with specified uuid." })

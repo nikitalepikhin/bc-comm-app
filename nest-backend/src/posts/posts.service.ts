@@ -9,6 +9,8 @@ import DeletePostRequestDto from "./dto/delete-post-request.dto";
 import CreatePostResponseDto from "./dto/create-post-response.dto";
 import GetPostByUuidResponseDto from "./dto/get-post-by-uuid-response.dto";
 import { UsersService } from "../users/users.service";
+import { Post, UserPostVotes } from "@prisma/client";
+import { PostsOrder } from "./dto/get-posts-for-channel-params.dto";
 
 @Injectable()
 export class PostsService {
@@ -39,20 +41,43 @@ export class PostsService {
     };
   }
 
-  async getPostsForChannel(user: UserDto, channelTextId: string): Promise<GetPostsForChannelResponseDto> {
+  async getPostsForChannel(
+    user: UserDto,
+    channelTextId: string,
+    order: PostsOrder,
+  ): Promise<GetPostsForChannelResponseDto> {
+    let posts: (Post & { votes: UserPostVotes[] })[] = [];
+    if (order === "new") {
+      posts = await this.prisma.post.findMany({
+        where: {
+          channel: {
+            textId: channelTextId,
+          },
+        },
+        include: {
+          votes: true,
+        },
+        orderBy: {
+          created: "desc",
+        },
+      });
+    } else {
+      posts = await this.prisma.post.findMany({
+        where: {
+          channel: {
+            textId: channelTextId,
+          },
+        },
+        include: {
+          votes: true,
+        },
+        orderBy: {
+          resVote: "desc",
+        },
+      });
+    }
     return {
-      posts: (
-        await this.prisma.post.findMany({
-          where: {
-            channel: {
-              textId: channelTextId,
-            },
-          },
-          include: {
-            votes: true,
-          },
-        })
-      ).map(({ uuid, title, body, created, modified, votes, authorUsername, authorUuid }) => {
+      posts: posts.map(({ uuid, title, body, created, modified, votes, authorUsername, authorUuid }) => {
         const vote = votes.find((vote) => vote.userUuid === user.uuid);
         return {
           uuid,
@@ -94,29 +119,9 @@ export class PostsService {
   }
 
   async voteOnPost(user: UserDto, requestDto: VoteOnPostRequestDto) {
-    if (requestDto.dir === 1 || requestDto.dir === -1) {
-      await this.prisma.post.update({
-        where: { uuid: requestDto.postUuid },
-        data: {
-          votes: {
-            upsert: {
-              where: {
-                userUuid_postUuid: {
-                  userUuid: user.uuid,
-                  postUuid: requestDto.postUuid,
-                },
-              },
-              create: {
-                userUuid: user.uuid,
-                dir: requestDto.dir,
-              },
-              update: { dir: requestDto.dir },
-            },
-          },
-        },
-      });
-    } else if (requestDto.dir === 0) {
-      await this.prisma.userPostVotes.delete({
+    await this.prisma.$transaction(async (tx) => {
+      // 1. select from UserPostVotes
+      const userPostVote = await tx.userPostVotes.findUnique({
         where: {
           userUuid_postUuid: {
             userUuid: user.uuid,
@@ -124,7 +129,47 @@ export class PostsService {
           },
         },
       });
-    }
+      // 2. calculate the increment
+      let increment: number = requestDto.dir;
+      if (userPostVote && userPostVote.dir && requestDto.dir === 0) {
+        increment = userPostVote.dir === 1 ? -1 : 1;
+      }
+      // 3. update UserPostVotes
+      if (requestDto.dir === 1 || requestDto.dir === -1) {
+        await tx.post.update({
+          where: { uuid: requestDto.postUuid },
+          data: {
+            votes: {
+              upsert: {
+                where: {
+                  userUuid_postUuid: {
+                    userUuid: user.uuid,
+                    postUuid: requestDto.postUuid,
+                  },
+                },
+                create: {
+                  userUuid: user.uuid,
+                  dir: requestDto.dir,
+                },
+                update: { dir: requestDto.dir },
+              },
+            },
+            resVote: {
+              increment,
+            },
+          },
+        });
+      } else if (requestDto.dir === 0) {
+        await tx.userPostVotes.delete({
+          where: {
+            userUuid_postUuid: {
+              userUuid: user.uuid,
+              postUuid: requestDto.postUuid,
+            },
+          },
+        });
+      }
+    });
   }
 
   async deletePost(user: UserDto, requestDto: DeletePostRequestDto) {
