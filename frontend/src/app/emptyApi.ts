@@ -68,6 +68,7 @@ export const TagTypes = {
 
 export const IdTypes = {
   ALL: "ALL" as const,
+  PARTIAL_LIST: "PARTIAL_LIST" as const,
 };
 
 // initialize an empty emptyApi service that we'll inject endpoints into later as needed

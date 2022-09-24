@@ -2,19 +2,54 @@ import { useGetPostsForChannelQuery } from "../../app/enhancedApi";
 import { useParams } from "react-router-dom";
 import Post from "./Post";
 import Button from "../../common/ui/Button";
-import React, { useEffect, useState } from "react";
+import React, {useEffect, useMemo, useState} from "react";
 import StyledLink from "../../common/ui/StyledLink";
 import LoadingSpinner from "../../common/ui/LoadingSpinner";
 import { useAppSelector } from "../../app/hooks";
+import { useInView } from "react-intersection-observer";
 
 export default function ChannelPosts() {
   const { textId } = useParams() as { textId: string };
   const { role } = useAppSelector((state) => state.auth.user);
   const [order, setOrder] = useState<"top" | "new">("new");
-  const { data, isLoading, refetch } = useGetPostsForChannelQuery({ channelTextId: textId, order });
+  const [page, setPage] = useState(1);
+  const {
+    data: lastData,
+    refetch: refetchLast,
+    isLoading: lastIsLoading,
+  } = useGetPostsForChannelQuery({ channelTextId: textId, order, page: page - 1 }, { skip: page === 1 });
+  const {
+    data: currentData,
+    refetch: refetchCurrent,
+    isLoading: currentIsLoading,
+  } = useGetPostsForChannelQuery({
+    channelTextId: textId,
+    order,
+    page,
+  });
+  const {
+    data: nextData,
+    refetch: refetchNext,
+    isLoading: nextIsLoading,
+  } = useGetPostsForChannelQuery({
+    channelTextId: textId,
+    order,
+    page: page + 1,
+  });
+
+  const combinedData = useMemo(() => {
+    const arr = new Array(10 * (page + 1));
+    for (const data of [lastData, currentData, nextData]) {
+
+    }
+  }, [])
+
+  const { inView, ref } = useInView();
 
   useEffect(() => {
-    refetch();
+    refetchLast();
+    refetchCurrent();
+    refetchNext();
   }, [order]);
 
   return (
@@ -34,18 +69,12 @@ export default function ChannelPosts() {
           </div>
         )}
       </div>
-      {isLoading && (
+      {(lastIsLoading || currentIsLoading || nextIsLoading) && (
         <div className="mt-6 flex flex-col justify-center items-center">
           <LoadingSpinner size="h-10 w-10">Loading posts...</LoadingSpinner>
         </div>
       )}
-      {data?.posts.length === 0 && (
-        <div className="py-4 text-center">
-          It's quite here 🥱.
-          <br />
-          Create a post using the button above.
-        </div>
-      )}
+      {data?.posts.length === 0 && <div className="py-4 text-center">It's quite here 🥱.</div>}
       {data?.posts.map((post) => (
         <Post key={post.uuid} {...post} />
       ))}

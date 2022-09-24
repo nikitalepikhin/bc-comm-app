@@ -120,10 +120,10 @@ export const enhancedApi = api.enhanceEndpoints({
         if (result) {
           return [
             ...result.posts.map((post) => ({ type: TagTypes.POST, id: post.uuid })),
-            { type: TagTypes.POST, id: IdTypes.ALL },
+            { type: TagTypes.POST, id: IdTypes.PARTIAL_LIST },
           ];
         } else {
-          return [{ type: TagTypes.POST, id: IdTypes.ALL }];
+          return [{ type: TagTypes.POST, id: IdTypes.PARTIAL_LIST }];
         }
       },
     },
@@ -180,7 +180,7 @@ export const enhancedApi = api.enhanceEndpoints({
           })
         );
         const patchChannelPosts = dispatch(
-          enhancedApi.util.updateQueryData("getPostsForChannel", { channelTextId }, (draft) => {
+          enhancedApi.util.updateQueryData("getPostsForChannel", { channelTextId, page: 1 }, (draft) => {
             Object.assign(draft, {
               ...draft,
               posts: [

@@ -23,7 +23,7 @@ export default function Post(props: Props) {
     <div className="py-2 px-4 shadow rounded-md w-full flex flex-row justify-between items-start gap-2">
       <PostVotes uuid={uuid} vote={vote} up={up} down={down} />
       <div className="flex flex-col justify-start grow">
-        <div className="flex flex-row justify-between items-center gap-2 relative">
+        <div className="flex flex-row justify-between items-center gap-2 relative z-0">
           <div className="text-sm text-secondary flex flex-row justify-between items-center gap-2 flex-wrap">
             <div>
               Posted by <span>{author}</span> <span>{timeAgo.format(new Date(created))}</span>
