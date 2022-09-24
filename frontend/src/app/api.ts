@@ -141,7 +141,10 @@ const injectedRtkApi = api.injectEndpoints({
       query: (queryArg) => ({ url: `/posts/${queryArg.postUuid}` }),
     }),
     getPostsForChannel: build.query<GetPostsForChannelApiResponse, GetPostsForChannelApiArg>({
-      query: (queryArg) => ({ url: `/posts/channel/${queryArg.channelTextId}/${queryArg.order}` }),
+      query: (queryArg) => ({
+        url: `/posts/channel/${queryArg.channelTextId}/${queryArg.order}`,
+        params: { page: queryArg.page },
+      }),
     }),
     voteOnPost: build.mutation<VoteOnPostApiResponse, VoteOnPostApiArg>({
       query: (queryArg) => ({ url: `/posts/vote`, method: "POST", body: queryArg.voteOnPostRequestDto }),
@@ -298,6 +301,7 @@ export type GetPostsForChannelApiResponse =
 export type GetPostsForChannelApiArg = {
   channelTextId: string;
   order?: string;
+  page: number;
 };
 export type VoteOnPostApiResponse = unknown;
 export type VoteOnPostApiArg = {
@@ -555,6 +559,7 @@ export type GetPostByUuidResponseDto = {
   post: ChannelPostDto;
 };
 export type GetPostsForChannelResponseDto = {
+  isLastPage: boolean;
   posts: ChannelPostDto[];
 };
 export type VoteOnPostRequestDto = {

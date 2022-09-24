@@ -44,9 +44,10 @@ export class PostsService {
   async getPostsForChannel(
     user: UserDto,
     channelTextId: string,
+    page: number,
     order: PostsOrder,
   ): Promise<GetPostsForChannelResponseDto> {
-    let posts: (Post & { votes: UserPostVotes[] })[] = [];
+    let posts: (Post & { votes: UserPostVotes[] })[];
     if (order === "new") {
       posts = await this.prisma.post.findMany({
         where: {
@@ -60,6 +61,8 @@ export class PostsService {
         orderBy: {
           created: "desc",
         },
+        skip: (page - 1) * 10,
+        take: 10,
       });
     } else {
       posts = await this.prisma.post.findMany({
@@ -74,9 +77,12 @@ export class PostsService {
         orderBy: {
           resVote: "desc",
         },
+        skip: (page - 1) * 10,
+        take: 10,
       });
     }
     return {
+      isLastPage: posts.length < 10,
       posts: posts.map(({ uuid, title, body, created, modified, votes, authorUsername, authorUuid }) => {
         const vote = votes.find((vote) => vote.userUuid === user.uuid);
         return {

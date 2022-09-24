@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, Req, UseGuards } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Param, Post, Put, Query, Req, UseGuards } from "@nestjs/common";
 import CreatePostRequestDto from "./dto/create-post-request.dto";
 import { ApiOkResponse, ApiOperation } from "@nestjs/swagger";
 import { JwtAuthGuard } from "../auth/jwt-auth.guard";
@@ -14,6 +14,7 @@ import DeletePostRequestDto from "./dto/delete-post-request.dto";
 import CreatePostResponseDto from "./dto/create-post-response.dto";
 import GetPostByUuidParamsDto from "./dto/get-post-by-uuid-params.dto";
 import GetPostByUuidResponseDto from "./dto/get-post-by-uuid-response.dto";
+import GetPostsForChannelQueryDto from "./dto/get-posts-for-channel-query.dto";
 
 @Controller("posts")
 export class PostsController {
@@ -45,10 +46,12 @@ export class PostsController {
   async getPostsForChannel(
     @Req() request,
     @Param() params: GetPostsForChannelParamsDto,
+    @Query() query: GetPostsForChannelQueryDto,
   ): Promise<GetPostsForChannelResponseDto> {
     return await this.postsService.getPostsForChannel(
       request.user as UserDto,
       params.channelTextId,
+      query.page,
       params.order ?? "new",
     );
   }
