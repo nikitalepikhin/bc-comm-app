@@ -2,7 +2,7 @@ import { useGetPostsForChannelQuery } from "../../app/enhancedApi";
 import { useParams } from "react-router-dom";
 import Post from "./Post";
 import Button from "../../common/ui/Button";
-import React, {useEffect, useMemo, useState} from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import StyledLink from "../../common/ui/StyledLink";
 import LoadingSpinner from "../../common/ui/LoadingSpinner";
 import { useAppSelector } from "../../app/hooks";
@@ -40,9 +40,12 @@ export default function ChannelPosts() {
   const combinedData = useMemo(() => {
     const arr = new Array(10 * (page + 1));
     for (const data of [lastData, currentData, nextData]) {
-
+      if (data !== undefined) {
+        arr.splice(data.offset, data.posts.length, ...data.posts);
+      }
     }
-  }, [])
+    return arr;
+  }, [lastData, currentData, nextData]);
 
   const { inView, ref } = useInView();
 
@@ -51,6 +54,12 @@ export default function ChannelPosts() {
     refetchCurrent();
     refetchNext();
   }, [order]);
+
+  useEffect(() => {
+    if (inView) {
+      setPage(page + 1);
+    }
+  }, [inView]);
 
   return (
     <div className="flex flex-col justify-start items-center w-full gap-2">
@@ -74,10 +83,18 @@ export default function ChannelPosts() {
           <LoadingSpinner size="h-10 w-10">Loading posts...</LoadingSpinner>
         </div>
       )}
-      {data?.posts.length === 0 && <div className="py-4 text-center">It's quite here 🥱.</div>}
-      {data?.posts.map((post) => (
-        <Post key={post.uuid} {...post} />
+      {combinedData.length === 0 && <div className="py-4 text-center">It's quite here 🥱.</div>}
+      <Button type="button" onClick={() => setPage(page > 1 ? page - 1 : page)}>
+        Load previous
+      </Button>
+      {combinedData.map((post, index) => (
+        <div className="w-full" ref={index === 29 ? ref : undefined}>
+          <Post key={post.uuid} {...post} />
+        </div>
       ))}
+      <Button type="button" onClick={() => setPage(page + 1)}>
+        Load more
+      </Button>
     </div>
   );
 }

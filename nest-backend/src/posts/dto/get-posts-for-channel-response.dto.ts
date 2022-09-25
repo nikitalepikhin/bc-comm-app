@@ -3,7 +3,7 @@ import ChannelPostDto from "./channel-post.dto";
 
 export default class GetPostsForChannelResponseDto {
   @ApiProperty()
-  isLastPage: boolean;
+  offset: number;
 
   @ApiProperty({ type: [ChannelPostDto] })
   posts: ChannelPostDto[];

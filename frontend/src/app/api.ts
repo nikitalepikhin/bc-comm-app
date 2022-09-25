@@ -559,7 +559,7 @@ export type GetPostByUuidResponseDto = {
   post: ChannelPostDto;
 };
 export type GetPostsForChannelResponseDto = {
-  isLastPage: boolean;
+  offset: number;
   posts: ChannelPostDto[];
 };
 export type VoteOnPostRequestDto = {

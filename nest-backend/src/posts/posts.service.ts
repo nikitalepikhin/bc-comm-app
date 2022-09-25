@@ -59,7 +59,7 @@ export class PostsService {
           votes: true,
         },
         orderBy: {
-          created: "desc",
+          created: "asc", // todo change back to desc
         },
         skip: (page - 1) * 10,
         take: 10,
@@ -82,7 +82,7 @@ export class PostsService {
       });
     }
     return {
-      isLastPage: posts.length < 10,
+      offset: 10 * (page - 1),
       posts: posts.map(({ uuid, title, body, created, modified, votes, authorUsername, authorUuid }) => {
         const vote = votes.find((vote) => vote.userUuid === user.uuid);
         return {
