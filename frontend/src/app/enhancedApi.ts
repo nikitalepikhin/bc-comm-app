@@ -1,6 +1,6 @@
 import { api } from "./api";
 import { IdTypes, TagTypes } from "./emptyApi";
-import en from "javascript-time-ago/locale/en";
+import { PatchCollection } from "@reduxjs/toolkit/dist/query/core/buildThunks";
 
 export const enhancedApi = api.enhanceEndpoints({
   endpoints: {
@@ -78,22 +78,33 @@ export const enhancedApi = api.enhanceEndpoints({
     },
     toggleMembership: {
       onQueryStarted: async (
-        { toggleChannelMembershipRequestDto: { channelTextId, joining } },
-        { dispatch, queryFulfilled }
+        { toggleChannelMembershipRequestDto: { joining, channelUuid } },
+        { dispatch, queryFulfilled, getState }
       ) => {
-        const patchResult = dispatch(
-          enhancedApi.util.updateQueryData("getChannelByTextId", { textId: channelTextId }, (draft) => {
-            if (joining) {
-              Object.assign(draft, { ...draft, isMember: true, memberCount: draft.memberCount + 1 });
-            } else {
-              Object.assign(draft, { ...draft, isMember: false, memberCount: draft.memberCount - 1 });
-            }
-          })
-        );
+        const patchResult: PatchCollection[] = [];
+        for (const { endpointName, originalArgs } of enhancedApi.util.selectInvalidatedBy(getState(), [
+          { type: TagTypes.CHANNEL },
+        ])) {
+          if (endpointName === "getChannelByTextId" && originalArgs.textId !== undefined) {
+            patchResult.push(
+              dispatch(
+                enhancedApi.util.updateQueryData(endpointName, { textId: originalArgs.textId }, (draft) => {
+                  if (draft.uuid === channelUuid) {
+                    if (joining) {
+                      Object.assign(draft, { ...draft, isMember: true, memberCount: draft.memberCount + 1 });
+                    } else {
+                      Object.assign(draft, { ...draft, isMember: false, memberCount: draft.memberCount - 1 });
+                    }
+                  }
+                })
+              )
+            );
+          }
+        }
         try {
           await queryFulfilled;
         } catch {
-          patchResult.undo();
+          patchResult.forEach((patch) => patch.undo());
         }
       },
     },
@@ -137,13 +148,7 @@ export const enhancedApi = api.enhanceEndpoints({
       },
     },
     voteOnPost: {
-      // invalidatesTags: (result, error, arg) => {
-      //   return [{ type: TagTypes.POST, id: arg.voteOnPostRequestDto.postUuid }];
-      // },
-      onQueryStarted: async (
-        { voteOnPostRequestDto: { postUuid, dir, channelTextId, page, order } },
-        { dispatch, queryFulfilled }
-      ) => {
+      onQueryStarted: async ({ voteOnPostRequestDto: { postUuid, dir } }, { dispatch, queryFulfilled, getState }) => {
         const calculateVotes = (up: number, down: number, vote: number, dir: number) => {
           let result = {};
           if (vote === 0) {
@@ -167,6 +172,39 @@ export const enhancedApi = api.enhanceEndpoints({
           }
           return result;
         };
+        const getPostsForChannelPatches: PatchCollection[] = [];
+        for (const { endpointName, originalArgs } of enhancedApi.util.selectInvalidatedBy(getState(), [
+          { type: TagTypes.POST, id: IdTypes.PARTIAL_LIST },
+        ])) {
+          if (
+            endpointName === "getPostsForChannel" &&
+            originalArgs.page !== undefined &&
+            originalArgs.channelTextId !== undefined &&
+            originalArgs.order !== undefined
+          ) {
+            getPostsForChannelPatches.push(
+              dispatch(
+                enhancedApi.util.updateQueryData(endpointName, originalArgs, (draft) => {
+                  Object.assign(draft, {
+                    ...draft,
+                    posts: [
+                      ...draft.posts.map((post) => {
+                        if (post.uuid !== postUuid) {
+                          return post;
+                        } else {
+                          return {
+                            ...post,
+                            ...calculateVotes(post.up, post.down, post.vote, dir),
+                          };
+                        }
+                      }),
+                    ],
+                  });
+                })
+              )
+            );
+          }
+        }
         const patchSinglePost = dispatch(
           enhancedApi.util.updateQueryData("getPostByUuid", { postUuid }, (draft) => {
             Object.assign(draft, {
@@ -178,30 +216,11 @@ export const enhancedApi = api.enhanceEndpoints({
             });
           })
         );
-        const patchChannelPosts = dispatch(
-          enhancedApi.util.updateQueryData("getPostsForChannel", { channelTextId, page, order }, (draft) => {
-            Object.assign(draft, {
-              ...draft,
-              posts: [
-                ...draft.posts.map((post) => {
-                  if (post.uuid !== postUuid) {
-                    return post;
-                  } else {
-                    return {
-                      ...post,
-                      ...calculateVotes(post.up, post.down, post.vote, dir),
-                    };
-                  }
-                }),
-              ],
-            });
-          })
-        );
         try {
           await queryFulfilled;
         } catch (e) {
           patchSinglePost.undo();
-          patchChannelPosts.undo();
+          getPostsForChannelPatches.forEach((patch) => patch.undo());
         }
       },
     },

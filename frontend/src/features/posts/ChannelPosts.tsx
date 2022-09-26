@@ -26,7 +26,7 @@ export default function ChannelPosts() {
 
   useEffect(() => {
     refetchCurrent();
-  }, [order]);
+  }, [order, refetchCurrent]);
 
   const ref = useRef(null);
 
@@ -67,7 +67,7 @@ export default function ChannelPosts() {
       </div>
       {currentData?.posts.map((post, index) => (
         <div className={classNames("w-full")} key={index}>
-          <Post {...post} page={page} order={order} />
+          <Post {...post} />
         </div>
       ))}
       <div className="w-full flex justify-center items-center">

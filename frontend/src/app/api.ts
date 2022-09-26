@@ -525,7 +525,6 @@ export type CheckChannelIdAvailabilityResponseDto = {
 };
 export type ToggleChannelMembershipRequestDto = {
   channelUuid: string;
-  channelTextId: string;
   joining: boolean;
 };
 export type CreatePostResponseDto = {
@@ -564,10 +563,7 @@ export type GetPostsForChannelResponseDto = {
 };
 export type VoteOnPostRequestDto = {
   postUuid: string;
-  channelTextId: string;
   dir: number;
-  page: number;
-  order: "new" | "top";
 };
 export const {
   useLogInMutation,

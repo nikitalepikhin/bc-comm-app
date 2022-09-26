@@ -5,8 +5,5 @@ export default class ToggleChannelMembershipRequestDto {
   channelUuid: string;
 
   @ApiProperty()
-  channelTextId: string;
-
-  @ApiProperty()
   joining: boolean;
 }

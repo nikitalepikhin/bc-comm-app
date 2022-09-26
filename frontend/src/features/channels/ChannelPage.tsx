@@ -49,7 +49,6 @@ const ChannelPage: React.FC = () => {
                   toggleMembership({
                     toggleChannelMembershipRequestDto: {
                       channelUuid: data?.uuid,
-                      channelTextId: data?.textId,
                       joining: !data?.isMember,
                     },
                   });

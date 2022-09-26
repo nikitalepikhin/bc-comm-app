@@ -1,7 +1,5 @@
-import { ChannelPostDto, GetChannelByTextIdApiArg, GetPostsForChannelApiArg } from "../../app/api";
-import { ArrowDownIcon, ArrowUpIcon } from "@heroicons/react/20/solid";
+import { ChannelPostDto } from "../../app/api";
 import { Link, useParams } from "react-router-dom";
-import { useVoteOnPostMutation } from "../../app/enhancedApi";
 import classNames from "classnames";
 import LinkWithIcon from "../../common/ui/LinkWithIcon";
 import { ChatBubbleBottomCenterTextIcon, ShareIcon } from "@heroicons/react/24/outline";
@@ -13,17 +11,15 @@ export type PostDisplayMode = "full" | "reduced";
 
 interface Props extends ChannelPostDto {
   mode?: PostDisplayMode;
-  page?: number;
-  order?: GetPostsForChannelApiArg["order"];
 }
 
 export default function Post(props: Props) {
-  const { uuid, title, body, created, author, isAuthor, edited, up, down, vote, mode = "reduced", page, order } = props;
+  const { uuid, title, body, created, author, isAuthor, edited, up, down, vote, mode = "reduced" } = props;
   const { textId } = useParams() as { textId: string; postUuid: string };
 
   return (
     <div className="py-2 px-4 shadow rounded-md w-full flex flex-row justify-between items-start gap-2">
-      <PostVotes uuid={uuid} vote={vote} up={up} down={down} page={page} order={order} />
+      <PostVotes uuid={uuid} vote={vote} up={up} down={down} />
       <div className="flex flex-col justify-start grow">
         <div className="flex flex-row justify-between items-center gap-2 relative z-0">
           <div className="text-sm text-secondary flex flex-row justify-between items-center gap-2 flex-wrap">
