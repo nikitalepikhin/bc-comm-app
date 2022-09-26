@@ -1,4 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
+import { PostsOrder } from "./posts-order.enum";
 
 export default class VoteOnPostRequestDto {
   @ApiProperty()
@@ -9,4 +10,10 @@ export default class VoteOnPostRequestDto {
 
   @ApiProperty()
   dir: number;
+
+  @ApiProperty()
+  page: number;
+
+  @ApiProperty({ enum: [...Object.values(PostsOrder)] })
+  order: PostsOrder;
 }

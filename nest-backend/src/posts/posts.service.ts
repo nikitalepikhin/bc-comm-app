@@ -9,8 +9,7 @@ import DeletePostRequestDto from "./dto/delete-post-request.dto";
 import CreatePostResponseDto from "./dto/create-post-response.dto";
 import GetPostByUuidResponseDto from "./dto/get-post-by-uuid-response.dto";
 import { UsersService } from "../users/users.service";
-import { Post, UserPostVotes } from "@prisma/client";
-import { PostsOrder } from "./dto/get-posts-for-channel-params.dto";
+import { PostsOrder } from "./dto/posts-order.enum";
 
 @Injectable()
 export class PostsService {
@@ -47,9 +46,25 @@ export class PostsService {
     page: number,
     order: PostsOrder,
   ): Promise<GetPostsForChannelResponseDto> {
-    let posts: (Post & { votes: UserPostVotes[] })[];
-    if (order === "new") {
-      posts = await this.prisma.post.findMany({
+    const posts = await this.prisma.post.findMany({
+      where: {
+        channel: {
+          textId: channelTextId,
+        },
+      },
+      include: {
+        votes: true,
+      },
+      orderBy: {
+        created: order === "new" ? "desc" : undefined,
+        resVote: order === "top" ? "desc" : undefined,
+      },
+      skip: (page - 1) * 10,
+      take: 10,
+    });
+    let hasMore: boolean = posts.length === 10;
+    if (hasMore) {
+      const nextPagePosts = await this.prisma.post.findMany({
         where: {
           channel: {
             textId: channelTextId,
@@ -59,30 +74,16 @@ export class PostsService {
           votes: true,
         },
         orderBy: {
-          created: "asc", // todo change back to desc
+          created: order === "new" ? "desc" : undefined,
+          resVote: order === "top" ? "desc" : undefined,
         },
-        skip: (page - 1) * 10,
+        skip: page * 10,
         take: 10,
       });
-    } else {
-      posts = await this.prisma.post.findMany({
-        where: {
-          channel: {
-            textId: channelTextId,
-          },
-        },
-        include: {
-          votes: true,
-        },
-        orderBy: {
-          resVote: "desc",
-        },
-        skip: (page - 1) * 10,
-        take: 10,
-      });
+      hasMore = nextPagePosts.length > 0;
     }
     return {
-      offset: 10 * (page - 1),
+      hasMore,
       posts: posts.map(({ uuid, title, body, created, modified, votes, authorUsername, authorUuid }) => {
         const vote = votes.find((vote) => vote.userUuid === user.uuid);
         return {

@@ -137,11 +137,11 @@ export const enhancedApi = api.enhanceEndpoints({
       },
     },
     voteOnPost: {
-      invalidatesTags: (result, error, arg) => {
-        return [{ type: TagTypes.POST, id: arg.voteOnPostRequestDto.postUuid }];
-      },
+      // invalidatesTags: (result, error, arg) => {
+      //   return [{ type: TagTypes.POST, id: arg.voteOnPostRequestDto.postUuid }];
+      // },
       onQueryStarted: async (
-        { voteOnPostRequestDto: { postUuid, dir, channelTextId } },
+        { voteOnPostRequestDto: { postUuid, dir, channelTextId, page, order } },
         { dispatch, queryFulfilled }
       ) => {
         const calculateVotes = (up: number, down: number, vote: number, dir: number) => {
@@ -167,7 +167,6 @@ export const enhancedApi = api.enhanceEndpoints({
           }
           return result;
         };
-
         const patchSinglePost = dispatch(
           enhancedApi.util.updateQueryData("getPostByUuid", { postUuid }, (draft) => {
             Object.assign(draft, {
@@ -180,7 +179,7 @@ export const enhancedApi = api.enhanceEndpoints({
           })
         );
         const patchChannelPosts = dispatch(
-          enhancedApi.util.updateQueryData("getPostsForChannel", { channelTextId, page: 1 }, (draft) => {
+          enhancedApi.util.updateQueryData("getPostsForChannel", { channelTextId, page, order }, (draft) => {
             Object.assign(draft, {
               ...draft,
               posts: [

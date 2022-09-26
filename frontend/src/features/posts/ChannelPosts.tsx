@@ -1,23 +1,19 @@
 import { useGetPostsForChannelQuery } from "../../app/enhancedApi";
 import { useParams } from "react-router-dom";
-import Post from "./Post";
 import Button from "../../common/ui/Button";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import StyledLink from "../../common/ui/StyledLink";
 import LoadingSpinner from "../../common/ui/LoadingSpinner";
 import { useAppSelector } from "../../app/hooks";
-import { useInView } from "react-intersection-observer";
+import classNames from "classnames";
+import Post from "./Post";
+import { GetPostsForChannelApiArg } from "../../app/api";
 
 export default function ChannelPosts() {
   const { textId } = useParams() as { textId: string };
   const { role } = useAppSelector((state) => state.auth.user);
-  const [order, setOrder] = useState<"top" | "new">("new");
+  const [order, setOrder] = useState<GetPostsForChannelApiArg["order"]>("new");
   const [page, setPage] = useState(1);
-  const {
-    data: lastData,
-    refetch: refetchLast,
-    isLoading: lastIsLoading,
-  } = useGetPostsForChannelQuery({ channelTextId: textId, order, page: page - 1 }, { skip: page === 1 });
   const {
     data: currentData,
     refetch: refetchCurrent,
@@ -27,39 +23,12 @@ export default function ChannelPosts() {
     order,
     page,
   });
-  const {
-    data: nextData,
-    refetch: refetchNext,
-    isLoading: nextIsLoading,
-  } = useGetPostsForChannelQuery({
-    channelTextId: textId,
-    order,
-    page: page + 1,
-  });
-
-  const combinedData = useMemo(() => {
-    const arr = new Array(10 * (page + 1));
-    for (const data of [lastData, currentData, nextData]) {
-      if (data !== undefined) {
-        arr.splice(data.offset, data.posts.length, ...data.posts);
-      }
-    }
-    return arr;
-  }, [lastData, currentData, nextData]);
-
-  const { inView, ref } = useInView();
 
   useEffect(() => {
-    refetchLast();
     refetchCurrent();
-    refetchNext();
   }, [order]);
 
-  useEffect(() => {
-    if (inView) {
-      setPage(page + 1);
-    }
-  }, [inView]);
+  const ref = useRef(null);
 
   return (
     <div className="flex flex-col justify-start items-center w-full gap-2">
@@ -78,23 +47,46 @@ export default function ChannelPosts() {
           </div>
         )}
       </div>
-      {(lastIsLoading || currentIsLoading || nextIsLoading) && (
+      {currentIsLoading && (
         <div className="mt-6 flex flex-col justify-center items-center">
           <LoadingSpinner size="h-10 w-10">Loading posts...</LoadingSpinner>
         </div>
       )}
-      {combinedData.length === 0 && <div className="py-4 text-center">It's quite here 🥱.</div>}
-      <Button type="button" onClick={() => setPage(page > 1 ? page - 1 : page)}>
-        Load previous
-      </Button>
-      {combinedData.map((post, index) => (
-        <div className="w-full" ref={index === 29 ? ref : undefined}>
-          <Post key={post.uuid} {...post} />
+      {currentData?.posts.length === 0 && <div className="py-4 text-center">It's quite here 🥱</div>}
+      <div ref={ref} className="w-full flex justify-center items-center gap-2">
+        {page > 1 && (
+          <>
+            <Button type="button" onClick={() => setPage(page > 1 ? page - 1 : page)}>
+              Load previous
+            </Button>
+            <Button type="button" onClick={() => setPage(1)}>
+              Go to the beginning
+            </Button>
+          </>
+        )}
+      </div>
+      {currentData?.posts.map((post, index) => (
+        <div className={classNames("w-full")} key={index}>
+          <Post {...post} page={page} order={order} />
         </div>
       ))}
-      <Button type="button" onClick={() => setPage(page + 1)}>
-        Load more
-      </Button>
+      <div className="w-full flex justify-center items-center">
+        {currentData?.hasMore ? (
+          <Button
+            type="button"
+            onClick={() => {
+              setPage(page + 1);
+              if (ref.current) {
+                (ref.current as HTMLDivElement).scrollIntoView({ behavior: "smooth" });
+              }
+            }}
+          >
+            Load more
+          </Button>
+        ) : (
+          <div className="px-4 py-2 bg-gray rounded-md">You are all caught up 👏</div>
+        )}
+      </div>
     </div>
   );
 }

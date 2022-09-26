@@ -300,7 +300,7 @@ export type GetPostsForChannelApiResponse =
   /** status 200 Posts for a specified channel. */ GetPostsForChannelResponseDto;
 export type GetPostsForChannelApiArg = {
   channelTextId: string;
-  order?: string;
+  order: "new" | "top";
   page: number;
 };
 export type VoteOnPostApiResponse = unknown;
@@ -559,13 +559,15 @@ export type GetPostByUuidResponseDto = {
   post: ChannelPostDto;
 };
 export type GetPostsForChannelResponseDto = {
-  offset: number;
+  hasMore: boolean;
   posts: ChannelPostDto[];
 };
 export type VoteOnPostRequestDto = {
   postUuid: string;
   channelTextId: string;
   dir: number;
+  page: number;
+  order: "new" | "top";
 };
 export const {
   useLogInMutation,

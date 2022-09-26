@@ -52,7 +52,7 @@ export class PostsController {
       request.user as UserDto,
       params.channelTextId,
       query.page,
-      params.order ?? "new",
+      params.order,
     );
   }
 

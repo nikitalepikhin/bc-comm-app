@@ -1,11 +1,10 @@
 import { ApiProperty } from "@nestjs/swagger";
+import { PostsOrder } from "./posts-order.enum";
 
 export default class GetPostsForChannelParamsDto {
   @ApiProperty()
   channelTextId: string;
 
-  @ApiProperty({ required: false })
-  order?: PostsOrder;
+  @ApiProperty({ enum: [...Object.values(PostsOrder)] })
+  order: PostsOrder;
 }
-
-export type PostsOrder = "new" | "top";
