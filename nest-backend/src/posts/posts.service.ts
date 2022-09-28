@@ -96,7 +96,7 @@ export class PostsService {
           edited: created.getTime() !== modified.getTime(),
           up: votes.filter((vote) => vote.dir === 1).length,
           down: votes.filter((vote) => vote.dir === -1).length,
-          vote: vote ? vote.dir : 0,
+          dir: vote ? vote.dir : 0,
         };
       }),
     };
@@ -212,7 +212,7 @@ export class PostsService {
         edited: post.created.getTime() !== post.modified.getTime(),
         up: post.votes.filter((vote) => vote.dir === 1).length,
         down: post.votes.filter((vote) => vote.dir === -1).length,
-        vote: vote ? vote.dir : 0,
+        dir: vote ? vote.dir : 0,
       },
     };
   }

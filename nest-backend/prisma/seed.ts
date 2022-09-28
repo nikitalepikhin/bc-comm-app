@@ -65,6 +65,15 @@ async function seedAuthorities() {
       { name: Permission[Permission.POST_UPDATE], roles: [Role.TEACHER, Role.STUDENT] },
       { name: Permission[Permission.POST_DELETE], roles: [Role.TEACHER, Role.STUDENT] },
       { name: Permission[Permission.POST_VOTE], roles: [Role.TEACHER, Role.STUDENT] },
+
+      { name: Permission[Permission.COMMENT_CREATE], roles: [Role.TEACHER, Role.STUDENT] },
+      {
+        name: Permission[Permission.COMMENT_READ],
+        roles: [Role.ADMIN, Role.REPRESENTATIVE, Role.TEACHER, Role.STUDENT],
+      },
+      { name: Permission[Permission.COMMENT_UPDATE], roles: [Role.TEACHER, Role.STUDENT] },
+      { name: Permission[Permission.COMMENT_DELETE], roles: [Role.TEACHER, Role.STUDENT] },
+      { name: Permission[Permission.COMMENT_VOTE], roles: [Role.TEACHER, Role.STUDENT] },
     ],
   });
 }

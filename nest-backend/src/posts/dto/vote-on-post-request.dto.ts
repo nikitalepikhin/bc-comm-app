@@ -4,6 +4,6 @@ export default class VoteOnPostRequestDto {
   @ApiProperty()
   postUuid: string;
 
-  @ApiProperty()
+  @ApiProperty({ enum: [-1, 0, 1] })
   dir: number;
 }

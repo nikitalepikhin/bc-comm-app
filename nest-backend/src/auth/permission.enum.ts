@@ -25,6 +25,11 @@ export enum Permission {
   POST_UPDATE,
   POST_DELETE,
   POST_VOTE,
+  COMMENT_CREATE,
+  COMMENT_READ,
+  COMMENT_UPDATE,
+  COMMENT_DELETE,
+  COMMENT_VOTE,
 }
 
 export const PERMISSIONS_KEY = "permissions";

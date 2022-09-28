@@ -28,6 +28,6 @@ export default class ChannelPostDto {
   @ApiProperty()
   down: number;
 
-  @ApiProperty()
-  vote: number;
+  @ApiProperty({ enum: [-1, 0, 1] })
+  dir: number;
 }

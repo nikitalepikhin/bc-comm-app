@@ -55,8 +55,7 @@ model User {
   createdPosts            Post[]
   postVotes               UserPostVotes[]
   createdComments         Comment[]
-  upvotedComments         UserUpvotedComment[]
-  downvotedComments       UserDownvotedComment[]
+  commentVotes            UserCommentVotes[]
   createdChannels         Channel[]                @relation("channelCreatedBy")
   modifiedChannels        Channel[]                @relation("channelModifiedBy")
   createdSchools          School[]                 @relation("schoolCreatedBy")
@@ -203,33 +202,28 @@ model UserPostVotes {
 }
 
 model Comment {
-  uuid          String                 @id @default(uuid()) @db.Uuid
-  postUuid      String                 @db.Uuid
-  post          Post                   @relation(fields: [postUuid], references: [uuid])
-  authorUuid    String                 @db.Uuid
-  author        User                   @relation(fields: [authorUuid], references: [uuid])
-  body          String                 @db.VarChar(10000)
-  parentUuid    String?                @db.Uuid
-  parent        Comment?               @relation(name: "parentComment", fields: [parentUuid], references: [uuid])
-  childComments Comment[]              @relation(name: "parentComment")
-  upvotedBy     UserUpvotedComment[]
-  downvotedBy   UserDownvotedComment[]
+  uuid           String             @id @default(uuid()) @db.Uuid
+  postUuid       String             @db.Uuid
+  post           Post               @relation(fields: [postUuid], references: [uuid])
+  authorUuid     String             @db.Uuid
+  author         User               @relation(fields: [authorUuid], references: [uuid])
+  authorUsername String             @db.VarChar(32)
+  body           String             @db.VarChar(10000)
+  parentUuid     String?            @db.Uuid
+  parent         Comment?           @relation(name: "parentComment", fields: [parentUuid], references: [uuid])
+  childComments  Comment[]          @relation(name: "parentComment")
+  votes          UserCommentVotes[]
+  resVote        BigInt             @default(0) @db.BigInt
+  created        DateTime           @default(now()) @db.Timestamp(6)
+  modified       DateTime           @default(now()) @db.Timestamp(6)
 }
 
-model UserUpvotedComment {
+model UserCommentVotes {
   userUuid    String  @db.Uuid
   user        User    @relation(fields: [userUuid], references: [uuid], onDelete: Cascade)
   commentUuid String  @db.Uuid
   comment     Comment @relation(fields: [commentUuid], references: [uuid], onDelete: Cascade)
-
-  @@id([userUuid, commentUuid])
-}
-
-model UserDownvotedComment {
-  userUuid    String  @db.Uuid
-  user        User    @relation(fields: [userUuid], references: [uuid], onDelete: Cascade)
-  commentUuid String  @db.Uuid
-  comment     Comment @relation(fields: [commentUuid], references: [uuid], onDelete: Cascade)
+  dir         Int     @db.SmallInt
 
   @@id([userUuid, commentUuid])
 }
