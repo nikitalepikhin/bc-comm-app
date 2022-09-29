@@ -1,23 +1,9 @@
-CREATE
-    OR REPLACE FUNCTION get_post_comments(
-    post_uuid UUID, user_uuid UUID, page int DEFAULT 1,
-    order_by boolean DEFAULT FALSE, _limit int DEFAULT 10,
-    levels int DEFAULT 6
-) RETURNS TABLE (
-                    UUID UUID,
-                    "postUuid" UUID,
-                    "authorUuid" UUID,
-                    BODY varchar(10000),
-                    "parentUuid" UUID,
-                    "authorUsername" varchar(32),
-                    "resVote" bigint,
-                    created timestamp,
-                    modified timestamp,
-                    LEVEL int,
-                    up bigint,
-                    down bigint,
-                    dir smallint
-                ) LANGUAGE PLPGSQL AS $$ begin return query (
+create function get_post_comments(post_uuid uuid, user_uuid uuid, page integer DEFAULT 1, _limit integer DEFAULT 10, levels integer DEFAULT 6)
+    returns TABLE(uuid uuid, "postUuid" uuid, "authorUuid" uuid, body character varying, "parentUuid" uuid, "authorUsername" character varying, "resVote" bigint, created timestamp without time zone, modified timestamp without time zone, level integer, up bigint, down bigint, dir smallint)
+    language plpgsql
+as
+$$
+begin return query (
     with recursive cte_comments as (
         (
             select
@@ -28,18 +14,10 @@ CREATE
             where
                     C."postUuid" = post_uuid
               and C."parentUuid" is null
-            order by
-                (
-                    case when order_by = false then cast(
-                            extract(
-                                    epoch
-                                    from
-                                    C.created
-                                ) as bigint
-                        ) else C."resVote" end
-                    ) desc
             limit
-                _limit offset (page -1) * _limit
+                (_limit + 1)
+            offset
+                (page -1) * _limit
         )
         union
         select
@@ -100,4 +78,4 @@ CREATE
         ) as Q on Q.uuid = R.uuid
 );
 end;
-$$
+$$;

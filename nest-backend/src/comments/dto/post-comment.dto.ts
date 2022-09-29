@@ -2,6 +2,9 @@ import { ApiProperty, getSchemaPath, refs } from "@nestjs/swagger";
 
 export default class PostCommentDto {
   @ApiProperty()
+  uuid: string;
+
+  @ApiProperty()
   body: string;
 
   @ApiProperty()
