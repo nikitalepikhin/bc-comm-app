@@ -10,6 +10,8 @@ import GetPostCommentsParamsDto from "./dto/get-comments-under-post-params.dto";
 import GetPostCommentsQueryDto from "./dto/get-comments-under-post-query.dto";
 import CreateCommentRequestDto from "./dto/create-comment-request.dto";
 import CreateCommentResponseDto from "./dto/create-comment-response.dto";
+import GetCommentCommentsResponseDto from "./dto/get-comment-comments-response.dto";
+import GetCommentCommentsParamsDto from "./dto/get-comment-comments-params.dto";
 
 @Controller("comments")
 export class CommentsController {
@@ -37,8 +39,17 @@ export class CommentsController {
     return await this.commentsService.getPostComments(
       request.user as UserDto,
       params.postUuid,
-      query.page,
       params.order,
+      query.page,
     );
+  }
+
+  @ApiOperation({ summary: "Get comment comments." })
+  @ApiOkResponse({ description: "Comment comments.", type: GetCommentCommentsResponseDto })
+  @RequirePermissions(Permission.COMMENT_READ)
+  @UseGuards(JwtAuthGuard, RequirePermissionsGuard)
+  @Get("/comment/:commentUuid")
+  async getCommentComments(@Req() request, @Param() params: GetCommentCommentsParamsDto) {
+    return await this.commentsService.getCommentComments(request.user as UserDto, params.commentUuid);
   }
 }

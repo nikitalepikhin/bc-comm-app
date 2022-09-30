@@ -1,4 +1,4 @@
-import { ApiProperty, getSchemaPath, refs } from "@nestjs/swagger";
+import { ApiProperty, getSchemaPath } from "@nestjs/swagger";
 
 export default class PostCommentDto {
   @ApiProperty()

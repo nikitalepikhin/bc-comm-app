@@ -10,6 +10,7 @@ import { Prisma } from "@prisma/client";
 import { PostComment } from "./model/post-comment";
 import { OutPostCommentDto } from "./model/out-post-comment.dto";
 import PostCommentDto from "./dto/post-comment.dto";
+import GetCommentCommentsResponseDto from "./dto/get-comment-comments-response.dto";
 
 @Injectable()
 export class CommentsService {
@@ -34,16 +35,32 @@ export class CommentsService {
   async getPostComments(
     user: UserDto,
     postUuid: string,
-    page: number,
     order: CommentsOrder,
+    page: number,
   ): Promise<GetCommentsUnderPostResponseDto> {
     const limit = 10;
-    const levels = 6;
-    const query = Prisma.sql`select * from get_post_comments(${postUuid}::uuid, ${
-      user.uuid
-    }::uuid, ${page}::int, ${limit}::int, ${levels + 1}::int)`;
+    const levels = 7; // retrieve one more level than needed to establish the hasMore property
+    const query = Prisma.sql`select * from get_post_comments(${postUuid}::uuid, ${user.uuid}::uuid, ${page}::int, ${limit}::int, ${levels}::int)`;
     const comments = await this.prisma.$queryRaw<PostComment[]>(query);
+    const out: OutPostCommentDto[] = this.constructCommentsTree(comments);
+    return {
+      hasMore: out.length > 10,
+      comments: out
+        .slice(0, 10)
+        .sort(order === "new" ? CommentsService.sortCommentsByDateCreated : CommentsService.sortCommentsByResVote)
+        .map((comment) => this.mapOutCommentToDtoComment(user.uuid, comment)),
+    };
+  }
 
+  async getCommentComments(user: UserDto, commentUuid: string): Promise<GetCommentCommentsResponseDto> {
+    const levels = 7; // retrieve one more level than needed to establish the hasMore property
+    const query = Prisma.sql`select * from get_comment_comments(${commentUuid}::uuid, ${user.uuid}::uuid, ${levels}::int)`;
+    const comments = await this.prisma.$queryRaw<PostComment[]>(query);
+    const out = this.constructCommentsTree(comments);
+    return { comments: out.slice(0, 10).map((comment) => this.mapOutCommentToDtoComment(user.uuid, comment)) };
+  }
+
+  private constructCommentsTree(comments: PostComment[]): OutPostCommentDto[] {
     // 1. create a map
     const commentsMap = new Map<string, OutPostCommentDto>();
     comments.forEach((c) => {
@@ -70,12 +87,7 @@ export class CommentsService {
       }
     });
 
-    return {
-      hasMore: out.length > 10,
-      comments: out
-        .sort(order === "new" ? CommentsService.sortCommentsByDateCreated : CommentsService.sortCommentsByResVote)
-        .map((comment) => this.mapOutCommentToDtoComment(user.uuid, comment)),
-    };
+    return out;
   }
 
   private mapOutCommentToDtoComment(userUuid, comment: OutPostCommentDto): PostCommentDto {
