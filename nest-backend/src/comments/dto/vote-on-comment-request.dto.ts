@@ -1,8 +1,8 @@
 import { ApiProperty } from "@nestjs/swagger";
 
-export default class VoteOnPostRequestDto {
+export default class VoteOnCommentRequestDto {
   @ApiProperty()
-  postUuid: string;
+  uuid: string;
 
   @ApiProperty()
   dir: number;

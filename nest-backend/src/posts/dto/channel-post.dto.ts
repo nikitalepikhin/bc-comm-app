@@ -28,6 +28,9 @@ export default class ChannelPostDto {
   @ApiProperty()
   down: number;
 
-  @ApiProperty({ enum: [-1, 0, 1] })
+  @ApiProperty()
   dir: number;
+
+  @ApiProperty()
+  commentsCount: number;
 }

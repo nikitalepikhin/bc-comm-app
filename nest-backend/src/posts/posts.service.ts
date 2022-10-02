@@ -46,6 +46,7 @@ export class PostsService {
     page: number,
     order: PostsOrder,
   ): Promise<GetPostsForChannelResponseDto> {
+    const pageSize = 10;
     const posts = await this.prisma.post.findMany({
       where: {
         channel: {
@@ -54,37 +55,20 @@ export class PostsService {
       },
       include: {
         votes: true,
+        _count: {
+          select: { comments: true },
+        },
       },
       orderBy: {
         created: order === "new" ? "desc" : undefined,
         resVote: order === "top" ? "desc" : undefined,
       },
-      skip: (page - 1) * 10,
-      take: 10,
+      skip: (page - 1) * pageSize,
+      take: pageSize + 1,
     });
-    let hasMore: boolean = posts.length === 10;
-    if (hasMore) {
-      const nextPagePosts = await this.prisma.post.findMany({
-        where: {
-          channel: {
-            textId: channelTextId,
-          },
-        },
-        include: {
-          votes: true,
-        },
-        orderBy: {
-          created: order === "new" ? "desc" : undefined,
-          resVote: order === "top" ? "desc" : undefined,
-        },
-        skip: page * 10,
-        take: 10,
-      });
-      hasMore = nextPagePosts.length > 0;
-    }
     return {
-      hasMore,
-      posts: posts.map(({ uuid, title, body, created, modified, votes, authorUsername, authorUuid }) => {
+      hasMore: posts.length > pageSize,
+      posts: posts.map(({ uuid, title, body, created, modified, votes, authorUsername, authorUuid, _count }) => {
         const vote = votes.find((vote) => vote.userUuid === user.uuid);
         return {
           uuid,
@@ -97,6 +81,7 @@ export class PostsService {
           up: votes.filter((vote) => vote.dir === 1).length,
           down: votes.filter((vote) => vote.dir === -1).length,
           dir: vote ? vote.dir : 0,
+          commentsCount: _count.comments,
         };
       }),
     };
@@ -192,7 +177,10 @@ export class PostsService {
   }
 
   async getPostByUuid(user: UserDto, postUuid: string): Promise<GetPostByUuidResponseDto> {
-    const post = await this.prisma.post.findUnique({ where: { uuid: postUuid }, include: { votes: true } });
+    const post = await this.prisma.post.findUnique({
+      where: { uuid: postUuid },
+      include: { votes: true, _count: { select: { comments: true } } },
+    });
     const vote = await this.prisma.userPostVotes.findUnique({
       where: {
         userUuid_postUuid: {
@@ -213,6 +201,7 @@ export class PostsService {
         up: post.votes.filter((vote) => vote.dir === 1).length,
         down: post.votes.filter((vote) => vote.dir === -1).length,
         dir: vote ? vote.dir : 0,
+        commentsCount: post._count.comments,
       },
     };
   }

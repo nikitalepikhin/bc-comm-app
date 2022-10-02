@@ -52,7 +52,13 @@ export default function ChannelPosts() {
           <LoadingSpinner size="h-10 w-10">Loading posts...</LoadingSpinner>
         </div>
       )}
-      {currentData?.posts.length === 0 && <div className="py-4 text-center">It's quite here 🥱</div>}
+      {currentData?.posts.length === 0 && (
+        <div className="py-4 text-center">
+          It's quite in here... 😴
+          <br />
+          Be the first to create a new post.
+        </div>
+      )}
       <div ref={ref} className="w-full flex justify-center items-center gap-2">
         {page > 1 && (
           <>

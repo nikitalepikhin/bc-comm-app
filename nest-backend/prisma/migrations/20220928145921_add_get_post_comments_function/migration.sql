@@ -1,4 +1,4 @@
-create function get_post_comments(post_uuid uuid, user_uuid uuid, page integer DEFAULT 1, _limit integer DEFAULT 10, levels integer DEFAULT 6)
+create function get_post_comments(post_uuid uuid, user_uuid uuid, page integer DEFAULT 1, order_by varchar(3) default 'new', _limit integer DEFAULT 10, levels integer DEFAULT 6)
     returns TABLE(uuid uuid, "postUuid" uuid, "authorUuid" uuid, body character varying, "parentUuid" uuid, "authorUsername" character varying, "resVote" bigint, created timestamp without time zone, modified timestamp without time zone, level integer, up bigint, down bigint, dir smallint)
     language plpgsql
 as
@@ -14,10 +14,13 @@ begin return query (
             where
                     C."postUuid" = post_uuid
               and C."parentUuid" is null
+            order by
+                case when order_by = 'new' then C.created end desc,
+                case when order_by = 'top' then C."resVote" end desc
             limit
                 (_limit + 1)
             offset
-                (page -1) * _limit
+                (page - 1) * _limit
         )
         union
         select

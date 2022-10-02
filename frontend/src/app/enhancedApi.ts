@@ -194,7 +194,7 @@ export const enhancedApi = api.enhanceEndpoints({
                         } else {
                           return {
                             ...post,
-                            ...calculateVotes(post.up, post.down, post.vote, dir),
+                            ...calculateVotes(post.up, post.down, post.dir, dir),
                           };
                         }
                       }),
@@ -211,7 +211,7 @@ export const enhancedApi = api.enhanceEndpoints({
               ...draft,
               post: {
                 ...draft.post,
-                ...calculateVotes(draft.post.up, draft.post.down, draft.post.vote, dir),
+                ...calculateVotes(draft.post.up, draft.post.down, draft.post.dir, dir),
               },
             });
           })
@@ -276,4 +276,9 @@ export const {
   useUpdatePostMutation,
   useVoteOnPostMutation,
   useDeletePostMutation,
+  useCreateCommentMutation,
+  useUpdateCommentMutation,
+  useDeleteCommentMutation,
+  useGetPostCommentsQuery,
+  useGetCommentCommentsQuery,
 } = enhancedApi;

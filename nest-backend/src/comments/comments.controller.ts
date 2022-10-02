@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, Query, Req, UseGuards } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Param, Post, Put, Query, Req, UseGuards } from "@nestjs/common";
 import { CommentsService } from "./comments.service";
 import { ApiOkResponse, ApiOperation } from "@nestjs/swagger";
 import { Permission, RequirePermissions } from "../auth/permission.enum";
@@ -12,6 +12,10 @@ import CreateCommentRequestDto from "./dto/create-comment-request.dto";
 import CreateCommentResponseDto from "./dto/create-comment-response.dto";
 import GetCommentCommentsResponseDto from "./dto/get-comment-comments-response.dto";
 import GetCommentCommentsParamsDto from "./dto/get-comment-comments-params.dto";
+import UpdateCommentRequestDto from "./dto/update-comment-request.dto";
+import DeleteCommentRequestDto from "./dto/delete-comment-request.dto";
+import VoteOnCommentRequestDto from "./dto/vote-on-comment-request.dto";
+import { TransformDirPipe } from "../common/util/transform-dir.pipe";
 
 @Controller("comments")
 export class CommentsController {
@@ -51,5 +55,29 @@ export class CommentsController {
   @Get("/comment/:commentUuid")
   async getCommentComments(@Req() request, @Param() params: GetCommentCommentsParamsDto) {
     return await this.commentsService.getCommentComments(request.user as UserDto, params.commentUuid);
+  }
+
+  @ApiOperation({ summary: "Update a comment." })
+  @RequirePermissions(Permission.COMMENT_UPDATE)
+  @UseGuards(JwtAuthGuard, RequirePermissionsGuard)
+  @Put("/")
+  async updateComment(@Req() request, @Body() requestDto: UpdateCommentRequestDto) {
+    await this.commentsService.updateComment(request.user as UserDto, requestDto);
+  }
+
+  @ApiOperation({ summary: "Delete a comment." })
+  @RequirePermissions(Permission.COMMENT_DELETE)
+  @UseGuards(JwtAuthGuard, RequirePermissionsGuard)
+  @Delete("/")
+  async deleteComment(@Req() request, @Body() requestDto: DeleteCommentRequestDto) {
+    await this.commentsService.deleteComment(request.user as UserDto, requestDto);
+  }
+
+  @ApiOperation({ summary: "Vote on a comment" })
+  @RequirePermissions(Permission.COMMENT_VOTE)
+  @UseGuards(JwtAuthGuard, RequirePermissionsGuard)
+  @Post("/vote")
+  async voteOnComment(@Req() request, @Body() requestDto: VoteOnCommentRequestDto) {
+    await this.commentsService.voteOnComment(request.user as UserDto, requestDto);
   }
 }

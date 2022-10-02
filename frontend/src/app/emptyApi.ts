@@ -75,6 +75,7 @@ export const IdTypes = {
 export const emptyApi = createApi({
   baseQuery: baseQueryWithReauth,
   endpoints: () => ({}),
+  keepUnusedDataFor: 60,
   tagTypes: [
     TagTypes.REPR_REQ,
     TagTypes.TEACHER_REQ,

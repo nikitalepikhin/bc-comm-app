@@ -1,4 +1,4 @@
-import { ApiProperty, getSchemaPath } from "@nestjs/swagger";
+import { ApiProperty } from "@nestjs/swagger";
 
 export default class PostCommentDto {
   @ApiProperty()
@@ -25,9 +25,15 @@ export default class PostCommentDto {
   @ApiProperty()
   down: number;
 
-  @ApiProperty({ enum: [-1, 0, 1] })
+  @ApiProperty({ enum: ["-1", "0", "1"] })
   dir: number;
 
-  @ApiProperty({ oneOf: [{ type: "array", items: { $ref: getSchemaPath(PostCommentDto) } }, { type: "boolean" }] })
-  comments: PostCommentDto[] | boolean;
+  @ApiProperty({ type: [PostCommentDto] })
+  comments: PostCommentDto[];
+
+  @ApiProperty()
+  hasMore: boolean;
+
+  @ApiProperty()
+  level: number;
 }

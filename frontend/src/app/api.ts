@@ -149,6 +149,27 @@ const injectedRtkApi = api.injectEndpoints({
     voteOnPost: build.mutation<VoteOnPostApiResponse, VoteOnPostApiArg>({
       query: (queryArg) => ({ url: `/posts/vote`, method: "POST", body: queryArg.voteOnPostRequestDto }),
     }),
+    createComment: build.mutation<CreateCommentApiResponse, CreateCommentApiArg>({
+      query: (queryArg) => ({ url: `/comments`, method: "POST", body: queryArg.createCommentRequestDto }),
+    }),
+    updateComment: build.mutation<UpdateCommentApiResponse, UpdateCommentApiArg>({
+      query: (queryArg) => ({ url: `/comments`, method: "PUT", body: queryArg.updateCommentRequestDto }),
+    }),
+    deleteComment: build.mutation<DeleteCommentApiResponse, DeleteCommentApiArg>({
+      query: (queryArg) => ({ url: `/comments`, method: "DELETE", body: queryArg.deleteCommentRequestDto }),
+    }),
+    getPostComments: build.query<GetPostCommentsApiResponse, GetPostCommentsApiArg>({
+      query: (queryArg) => ({
+        url: `/comments/post/${queryArg.postUuid}/${queryArg.order}`,
+        params: { page: queryArg.page },
+      }),
+    }),
+    getCommentComments: build.query<GetCommentCommentsApiResponse, GetCommentCommentsApiArg>({
+      query: (queryArg) => ({ url: `/comments/comment/${queryArg.commentUuid}` }),
+    }),
+    voteOnComment: build.mutation<VoteOnCommentApiResponse, VoteOnCommentApiArg>({
+      query: (queryArg) => ({ url: `/comments/vote`, method: "POST", body: queryArg.voteOnCommentRequestDto }),
+    }),
   }),
   overrideExisting: false,
 });
@@ -306,6 +327,32 @@ export type GetPostsForChannelApiArg = {
 export type VoteOnPostApiResponse = unknown;
 export type VoteOnPostApiArg = {
   voteOnPostRequestDto: VoteOnPostRequestDto;
+};
+export type CreateCommentApiResponse = /** status 200 UUID of the newly created comment. */ CreateCommentResponseDto;
+export type CreateCommentApiArg = {
+  createCommentRequestDto: CreateCommentRequestDto;
+};
+export type UpdateCommentApiResponse = unknown;
+export type UpdateCommentApiArg = {
+  updateCommentRequestDto: UpdateCommentRequestDto;
+};
+export type DeleteCommentApiResponse = unknown;
+export type DeleteCommentApiArg = {
+  deleteCommentRequestDto: DeleteCommentRequestDto;
+};
+export type GetPostCommentsApiResponse = /** status 200 Post comments. */ GetCommentsUnderPostResponseDto;
+export type GetPostCommentsApiArg = {
+  postUuid: string;
+  order: "top" | "new";
+  page: number;
+};
+export type GetCommentCommentsApiResponse = /** status 200 Comment comments. */ GetCommentCommentsResponseDto;
+export type GetCommentCommentsApiArg = {
+  commentUuid: string;
+};
+export type VoteOnCommentApiResponse = unknown;
+export type VoteOnCommentApiArg = {
+  voteOnCommentRequestDto: VoteOnCommentRequestDto;
 };
 export type UserDataResponseDto = {
   email: string;
@@ -552,7 +599,8 @@ export type ChannelPostDto = {
   edited: boolean;
   up: number;
   down: number;
-  vote: number;
+  dir: number;
+  commentsCount: number;
 };
 export type GetPostByUuidResponseDto = {
   post: ChannelPostDto;
@@ -563,6 +611,46 @@ export type GetPostsForChannelResponseDto = {
 };
 export type VoteOnPostRequestDto = {
   postUuid: string;
+  dir: number;
+};
+export type CreateCommentResponseDto = {
+  uuid: string;
+};
+export type CreateCommentRequestDto = {
+  postUuid: string;
+  body: string;
+  parentUuid?: string;
+};
+export type UpdateCommentRequestDto = {
+  uuid: string;
+  body: string;
+};
+export type DeleteCommentRequestDto = {
+  uuid: string;
+};
+export type PostCommentDto = {
+  uuid: string;
+  body: string;
+  author: string;
+  isAuthor: boolean;
+  dateCreated: string;
+  edited: boolean;
+  up: number;
+  down: number;
+  dir: "-1" | "0" | "1";
+  comments: PostCommentDto[];
+  hasMore: boolean;
+  level: number;
+};
+export type GetCommentsUnderPostResponseDto = {
+  hasMore: boolean;
+  comments: PostCommentDto[];
+};
+export type GetCommentCommentsResponseDto = {
+  comments: PostCommentDto[];
+};
+export type VoteOnCommentRequestDto = {
+  uuid: string;
   dir: number;
 };
 export const {
@@ -605,4 +693,10 @@ export const {
   useGetPostByUuidQuery,
   useGetPostsForChannelQuery,
   useVoteOnPostMutation,
+  useCreateCommentMutation,
+  useUpdateCommentMutation,
+  useDeleteCommentMutation,
+  useGetPostCommentsQuery,
+  useGetCommentCommentsQuery,
+  useVoteOnCommentMutation,
 } = injectedRtkApi;
