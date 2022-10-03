@@ -14,6 +14,9 @@ export default class ChannelPostDto {
   created: Date;
 
   @ApiProperty()
+  modified: Date;
+
+  @ApiProperty()
   author: string;
 
   @ApiProperty()

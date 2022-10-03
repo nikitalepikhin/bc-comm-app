@@ -594,6 +594,7 @@ export type ChannelPostDto = {
   title: string;
   body: string;
   created: string;
+  modified: string;
   author: string;
   isAuthor: boolean;
   edited: boolean;
@@ -610,7 +611,7 @@ export type GetPostsForChannelResponseDto = {
   posts: ChannelPostDto[];
 };
 export type VoteOnPostRequestDto = {
-  postUuid: string;
+  uuid: string;
   dir: number;
 };
 export type CreateCommentResponseDto = {
@@ -633,11 +634,12 @@ export type PostCommentDto = {
   body: string;
   author: string;
   isAuthor: boolean;
-  dateCreated: string;
+  created: string;
+  modified: string;
   edited: boolean;
   up: number;
   down: number;
-  dir: "-1" | "0" | "1";
+  dir: number;
   comments: PostCommentDto[];
   hasMore: boolean;
   level: number;

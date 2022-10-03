@@ -1,8 +1,12 @@
-create function get_comment_comments(comment_uuid uuid, user_uuid uuid, levels integer DEFAULT 6)
-    returns TABLE(uuid uuid, "postUuid" uuid, "authorUuid" uuid, body character varying, "parentUuid" uuid, "authorUsername" character varying, "resVote" bigint, created timestamp without time zone, modified timestamp without time zone, level integer, up bigint, down bigint, dir smallint)
-    language plpgsql
-as
-$$
+CREATE FUNCTION GET_COMMENT_COMMENTS(COMMENT_UUID UUID,
+                                     USER_UUID UUID,
+                                     LEVELS integer DEFAULT 6) RETURNS TABLE(UUID UUID,
+                                                                             "postUuid" UUID,
+                                                                             "authorUuid" UUID,
+                                                                             BODY CHARACTER varying, "parentUuid" UUID,
+                                                                             "authorUsername" CHARACTER varying, "resVote" bigint, CREATED TIMESTAMP WITHOUT TIME ZONE,
+                                                                             MODIFIED TIMESTAMP WITHOUT TIME ZONE,
+                                                                             LEVEL integer, UP bigint, DOWN bigint, DIR smallint) LANGUAGE PLPGSQL AS $$
 begin
     return query (
         with recursive cte_comments as (

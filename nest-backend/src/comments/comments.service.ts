@@ -56,7 +56,9 @@ export class CommentsService {
     const limit = 10;
     const levels = 7; // retrieve one more level than needed to establish the hasMore property
     const query = Prisma.sql`select *
-                             from get_post_comments(${postUuid}::uuid, ${user.uuid}::uuid, ${page}::int, ${order}, ${limit}::int,
+                             from get_post_comments(${postUuid}::uuid, ${user.uuid}::uuid, ${page}::int, ${
+      order === "new"
+    }::boolean, ${limit}::int,
                                                     ${levels}::int)`;
     const comments = await this.prisma.$queryRaw<PostComment[]>(query);
     const tree: OutPostCommentDto[] = this.constructCommentsTree(comments);
@@ -213,7 +215,8 @@ export class CommentsService {
       body: comment.body,
       author: comment.authorUsername,
       isAuthor: comment.authorUuid === userUuid,
-      dateCreated: comment.created,
+      created: comment.created,
+      modified: comment.modified,
       edited: comment.created.getTime() !== comment.modified.getTime(),
       up: Number(comment.up),
       down: Number(comment.down),

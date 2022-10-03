@@ -1,5 +1,5 @@
 import { useEffect, useLayoutEffect, useState } from "react";
-import Button from "../ui/Button";
+import Button from "./Button";
 
 interface Props {
   show: boolean;

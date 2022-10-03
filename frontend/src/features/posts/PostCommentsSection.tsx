@@ -2,7 +2,6 @@ import { useGetPostCommentsQuery } from "../../app/enhancedApi";
 import { useParams } from "react-router-dom";
 import { useEffect } from "react";
 import { GetPostCommentsApiArg } from "../../app/api";
-import LoadingSpinner from "../../common/ui/LoadingSpinner";
 import Comment from "../comments/Comment";
 
 interface Props {
@@ -15,17 +14,17 @@ interface Props {
 export default function PostCommentsSection(props: Props) {
   const { page, isLastPage, order, setHasMore } = props;
   const { postUuid } = useParams() as { postUuid: string };
-  const { data, isLoading, isFetching, refetch } = useGetPostCommentsQuery({ postUuid, page, order });
+  const { data, refetch } = useGetPostCommentsQuery({ postUuid, page, order });
 
   useEffect(() => {
     if (isLastPage && data && data.hasMore) {
       setHasMore(data.hasMore);
     }
-  }, [isLastPage, data]);
+  }, [isLastPage, data, setHasMore]);
 
   useEffect(() => {
     refetch();
-  }, [page, order]);
+  }, [page, order, setHasMore, refetch]);
 
   return (
     <>
@@ -37,7 +36,8 @@ export default function PostCommentsSection(props: Props) {
           edited={comment.edited}
           isAuthor={comment.isAuthor}
           author={comment.author}
-          dateCreated={comment.dateCreated}
+          created={comment.created}
+          modified={comment.modified}
           up={comment.up}
           down={comment.down}
           dir={comment.dir}

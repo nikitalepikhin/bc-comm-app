@@ -12,14 +12,14 @@ export default function PostCommentsPage() {
   const [page, setPage] = useState(1);
   const pages = Array.from(Array(page + 1).keys()).slice(1);
   const [hasMore, setHasMore] = useState(false);
-  const { data } = useGetPostByUuidQuery({ postUuid });
+  const { data, isLoading } = useGetPostByUuidQuery({ postUuid });
 
   return (
     <div>
-      {data && data.post.commentsCount > 0 ? (
+      {data && data.post.commentsCount > 0 && (
         <div className="flex flex-row justify-start items-center gap-2">
           <Button
-            variant="standard"
+            variant={order === "new" ? "outlined" : "standard"}
             onClick={() => {
               setPage(1);
               setHasMore(false);
@@ -29,7 +29,7 @@ export default function PostCommentsPage() {
             New
           </Button>
           <Button
-            variant="standard"
+            variant={order === "top" ? "outlined" : "standard"}
             onClick={() => {
               setPage(1);
               setHasMore(false);
@@ -39,14 +39,15 @@ export default function PostCommentsPage() {
             Top
           </Button>
         </div>
-      ) : (
+      )}
+      {!isLoading && data && data.post.commentsCount === 0 && (
         <div className="w-full text-center px-4 py-2">
           It's quite in here... 😴
           <br />
           Be the first to leave a comment.
         </div>
       )}
-      <CommentForm postUuid={postUuid} />
+      {!isLoading && <CommentForm postUuid={postUuid} />}
       {pages.map((page, index) => (
         <PostCommentsSection
           key={page}

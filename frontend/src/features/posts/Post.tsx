@@ -5,7 +5,7 @@ import LinkWithIcon from "../../common/ui/LinkWithIcon";
 import { ChatBubbleBottomCenterTextIcon, ShareIcon } from "@heroicons/react/24/outline";
 import timeAgo from "../../common/util/time";
 import PostContextMenu from "./PostContextMenu";
-import PostVotes from "./PostVotes";
+import Votes from "../../common/components/Votes";
 import Badge from "../../common/ui/Badge";
 
 interface Props extends ChannelPostDto {
@@ -19,7 +19,7 @@ export default function Post(props: Props) {
   return (
     <>
       <div className="py-2 px-4 shadow rounded-md w-full flex flex-row justify-between items-start gap-2">
-        <PostVotes uuid={uuid} vote={dir} up={up} down={down} />
+        <Votes uuid={uuid} currentVote={dir} up={up} down={down} mode="post" />
         <div className="flex flex-col justify-start grow">
           <div className="flex flex-row justify-between items-center gap-2 relative z-0">
             <div className="text-sm text-secondary flex flex-row justify-between items-center gap-2 flex-wrap">
@@ -27,6 +27,12 @@ export default function Post(props: Props) {
                 <span>{`Posted by ${author}`}</span>
                 <span>·</span>
                 <span>{timeAgo.format(new Date(created))}</span>
+                {edited && (
+                  <>
+                    <span>·</span>
+                    <span>{`edited ${timeAgo.format(new Date(created))}`}</span>
+                  </>
+                )}
               </div>
               {edited && <Badge>Edited</Badge>}
             </div>

@@ -148,26 +148,29 @@ export const enhancedApi = api.enhanceEndpoints({
       },
     },
     voteOnPost: {
-      onQueryStarted: async ({ voteOnPostRequestDto: { postUuid, dir } }, { dispatch, queryFulfilled, getState }) => {
-        const calculateVotes = (up: number, down: number, vote: number, dir: number) => {
+      onQueryStarted: async ({ voteOnPostRequestDto: { uuid, dir } }, { dispatch, queryFulfilled, getState }) => {
+        const calculateVotes = (up: number, down: number, currentVote: number, dir: number) => {
           let result = {};
-          if (vote === 0) {
+          if (currentVote === 0) {
+            // if currently there's no vote
             if (dir === 1) {
-              result = { up: up + 1, down, vote: dir };
+              result = { up: up + 1, down, dir };
             } else if (dir === -1) {
-              result = { up, down: down + 1, vote: dir };
+              result = { up, down: down + 1, dir };
             }
-          } else if (vote === 1) {
+          } else if (currentVote === 1) {
+            // if currently there's an upvote
             if (dir === 0) {
-              result = { up: up - 1, down, vote: dir };
+              result = { up: up - 1, down, dir };
             } else if (dir === -1) {
-              result = { up: up - 1, down: down + 1, vote: dir };
+              result = { up: up - 1, down: down + 1, dir };
             }
-          } else if (vote === -1) {
+          } else if (currentVote === -1) {
+            // if currently there's a downvote
             if (dir === 0) {
-              result = { up, down: down - 1, vote: dir };
+              result = { up, down: down - 1, dir };
             } else if (dir === 1) {
-              result = { up: up + 1, down: down - 1, vote: dir };
+              result = { up: up + 1, down: down - 1, dir };
             }
           }
           return result;
@@ -189,7 +192,7 @@ export const enhancedApi = api.enhanceEndpoints({
                     ...draft,
                     posts: [
                       ...draft.posts.map((post) => {
-                        if (post.uuid !== postUuid) {
+                        if (post.uuid !== uuid) {
                           return post;
                         } else {
                           return {
@@ -206,7 +209,7 @@ export const enhancedApi = api.enhanceEndpoints({
           }
         }
         const patchSinglePost = dispatch(
-          enhancedApi.util.updateQueryData("getPostByUuid", { postUuid }, (draft) => {
+          enhancedApi.util.updateQueryData("getPostByUuid", { postUuid: uuid }, (draft) => {
             Object.assign(draft, {
               ...draft,
               post: {

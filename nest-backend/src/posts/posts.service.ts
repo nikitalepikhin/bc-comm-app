@@ -75,6 +75,7 @@ export class PostsService {
           title,
           body,
           created,
+          modified,
           author: authorUsername,
           isAuthor: authorUuid === user.uuid,
           edited: created.getTime() !== modified.getTime(),
@@ -117,7 +118,7 @@ export class PostsService {
         where: {
           userUuid_postUuid: {
             userUuid: user.uuid,
-            postUuid: requestDto.postUuid,
+            postUuid: requestDto.uuid,
           },
         },
       });
@@ -129,14 +130,14 @@ export class PostsService {
       // 3. update UserPostVotes
       if (requestDto.dir === 1 || requestDto.dir === -1) {
         await tx.post.update({
-          where: { uuid: requestDto.postUuid },
+          where: { uuid: requestDto.uuid },
           data: {
             votes: {
               upsert: {
                 where: {
                   userUuid_postUuid: {
                     userUuid: user.uuid,
-                    postUuid: requestDto.postUuid,
+                    postUuid: requestDto.uuid,
                   },
                 },
                 create: {
@@ -156,7 +157,7 @@ export class PostsService {
           where: {
             userUuid_postUuid: {
               userUuid: user.uuid,
-              postUuid: requestDto.postUuid,
+              postUuid: requestDto.uuid,
             },
           },
         });
@@ -195,6 +196,7 @@ export class PostsService {
         title: post.title,
         body: post.body,
         created: post.created,
+        modified: post.modified,
         author: post.authorUsername,
         isAuthor: post.authorUuid === user.uuid,
         edited: post.created.getTime() !== post.modified.getTime(),

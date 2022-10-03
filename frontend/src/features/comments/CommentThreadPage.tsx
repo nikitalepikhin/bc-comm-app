@@ -36,7 +36,8 @@ export default function CommentThreadPage() {
             body={comment.body}
             author={comment.author}
             isAuthor={comment.isAuthor}
-            dateCreated={comment.dateCreated}
+            created={comment.created}
+            modified={comment.modified}
             edited={comment.edited}
             up={comment.up}
             down={comment.down}

@@ -1,84 +1,92 @@
-create function get_post_comments(post_uuid uuid, user_uuid uuid, page integer DEFAULT 1, order_by varchar(3) default 'new', _limit integer DEFAULT 10, levels integer DEFAULT 6)
-    returns TABLE(uuid uuid, "postUuid" uuid, "authorUuid" uuid, body character varying, "parentUuid" uuid, "authorUsername" character varying, "resVote" bigint, created timestamp without time zone, modified timestamp without time zone, level integer, up bigint, down bigint, dir smallint)
-    language plpgsql
-as
-$$
-begin return query (
-    with recursive cte_comments as (
+CREATE
+    OR REPLACE FUNCTION GET_POST_COMMENTS (POST_UUID UUID,
+
+                                           USER_UUID UUID,
+
+                                           PAGE INT DEFAULT 1,
+
+                                           ORDER_BY_CREATED boolean DEFAULT TRUE,
+
+                                           _LIMIT INT DEFAULT 10,
+
+                                           LEVELS INT DEFAULT 6) RETURNS TABLE (UUID UUID ,
+                                                                                "postUuid" UUID ,
+                                                                                "authorUuid" UUID ,
+                                                                                BODY VARCHAR ,"parentUuid" UUID ,
+                                                                                "authorUsername" VARCHAR ,"resVote" BIGINT ,CREATED TIMESTAMP WITHOUT TIME ZONE ,
+                                                                                MODIFIED TIMESTAMP WITHOUT TIME ZONE ,
+                                                                                LEVEL INT ,UP BIGINT ,DOWN BIGINT ,DIR SMALLINT) LANGUAGE PLPGSQL AS $$
+
+BEGIN
+    RETURN query(WITH recursive cte_comments AS (
         (
-            select
-                C.*,
-                1 as level
-            from
-                "Comment" as C
-            where
-                    C."postUuid" = post_uuid
-              and C."parentUuid" is null
-            order by
-                case when order_by = 'new' then C.created end desc,
-                case when order_by = 'top' then C."resVote" end desc
-            limit
-                (_limit + 1)
-            offset
-                (page - 1) * _limit
+            SELECT C.*
+                 ,1 AS level
+                 ,UP.up
+                 ,DOWN.down
+                 ,D.dir
+            FROM "Comment" AS C
+                     LEFT JOIN (
+                SELECT count(*) AS up
+                     ,V."commentUuid"
+                FROM "UserCommentVotes" AS V
+                WHERE V.dir = 1
+                GROUP BY "commentUuid"
+            ) AS UP ON UP."commentUuid" = C.uuid
+                     LEFT JOIN (
+                SELECT count(*) AS down
+                     ,V."commentUuid"
+                FROM "UserCommentVotes" AS V
+                WHERE V.dir = - 1
+                GROUP BY "commentUuid"
+            ) AS DOWN ON DOWN."commentUuid" = C.uuid
+                     LEFT JOIN (
+                SELECT V.dir
+                     ,V."commentUuid"
+                FROM "UserCommentVotes" AS V
+                WHERE V."userUuid" = user_uuid
+            ) AS D ON D."commentUuid" = C.uuid
+            WHERE C."postUuid" = post_uuid
+              AND C."parentUuid" IS NULL
+            ORDER BY CASE
+                         WHEN order_by_created IS true
+                             THEN cast(extract(epoch FROM C.created) AS BIGINT)
+                END DESC
+                   ,CASE
+                        WHEN order_by_created IS false
+                            THEN C."resVote"
+                END DESC limit(_limit + 1) offset(page - 1) * _limit
         )
-        union
-        select
-            C.*,
-            E.level + 1 as level
-        from
-            cte_comments as E
-                join "Comment" as C on E.uuid = C."parentUuid"
-        where
-                E.level < levels
-    )
-    select
-        R.uuid,
-        R."postUuid",
-        R."authorUuid",
-        R.body,
-        R."parentUuid",
-        R."authorUsername",
-        R."resVote",
-        R.created,
-        R.modified,
-        R.level,
-        U.up,
-        D.down,
-        Q.dir
-    from
-        cte_comments as R
-            left join (
-            select
-                count(*) as up,
-                V."commentUuid" as uuid
-            from
-                "UserCommentVotes" as V
-            where
-                    V.dir = 1
-            group by
-                "commentUuid"
-        ) as U on U.uuid = R.uuid
-            left join (
-            select
-                count(*) as down,
-                V."commentUuid" as uuid
-            from
-                "UserCommentVotes" as V
-            where
-                    V.dir = -1
-            group by
-                "commentUuid"
-        ) as D on U.uuid = R.uuid
-            left join (
-            select
-                V.dir,
-                V."commentUuid" as uuid
-            from
-                "UserCommentVotes" as V
-            where
-                    V."userUuid" = user_uuid
-        ) as Q on Q.uuid = R.uuid
-);
-end;
-$$;
+
+        UNION
+
+        SELECT C.*
+             ,E.level + 1 AS level
+             ,UP.up
+             ,DOWN.down
+             ,D.dir
+        FROM cte_comments AS E
+                 INNER JOIN "Comment" AS C ON E.uuid = C."parentUuid"
+                 LEFT JOIN (
+            SELECT count(*) AS up
+                 ,V."commentUuid"
+            FROM "UserCommentVotes" AS V
+            WHERE V.dir = 1
+            GROUP BY "commentUuid"
+        ) AS UP ON UP."commentUuid" = C.uuid
+                 LEFT JOIN (
+            SELECT count(*) AS down
+                 ,V."commentUuid"
+            FROM "UserCommentVotes" AS V
+            WHERE V.dir = - 1
+            GROUP BY "commentUuid"
+        ) AS DOWN ON DOWN."commentUuid" = C.uuid
+                 LEFT JOIN (
+            SELECT V.dir
+                 ,V."commentUuid"
+            FROM "UserCommentVotes" AS V
+            WHERE V."userUuid" = user_uuid
+        ) AS D ON D."commentUuid" = C.uuid
+        WHERE E.level < levels
+    ) SELECT R.uuid, R."postUuid", R."authorUuid", R.body, R."parentUuid", R."authorUsername", R."resVote", R.created, R.modified, R.level, R.up, R.down, R.dir FROM cte_comments AS R);
+END;$$;

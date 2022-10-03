@@ -14,7 +14,10 @@ export default class PostCommentDto {
   isAuthor: boolean;
 
   @ApiProperty()
-  dateCreated: Date;
+  created: Date;
+
+  @ApiProperty()
+  modified: Date;
 
   @ApiProperty()
   edited: boolean;
@@ -25,7 +28,7 @@ export default class PostCommentDto {
   @ApiProperty()
   down: number;
 
-  @ApiProperty({ enum: ["-1", "0", "1"] })
+  @ApiProperty()
   dir: number;
 
   @ApiProperty({ type: [PostCommentDto] })

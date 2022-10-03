@@ -2,31 +2,32 @@ import { PostCommentDto } from "../../app/api";
 import classNames from "classnames";
 import timeAgo from "../../common/util/time";
 import Badge from "../../common/ui/Badge";
-import CommentVotes from "./CommentVotes";
 import StyledLink from "../../common/ui/StyledLink";
 import { useState } from "react";
 import CommentForm from "./CommentForm";
-import Dialog from "../../common/components/Dialog";
+import Dialog from "../../common/ui/Dialog";
 import { useDeleteCommentMutation } from "../../app/enhancedApi";
 import { useParams } from "react-router-dom";
+import Votes from "../../common/components/Votes";
 
 interface Props {
   uuid: string;
   body: string;
   author: string;
   isAuthor: boolean;
-  dateCreated: string;
+  created: string;
+  modified: string;
   edited: boolean;
   up: number;
   down: number;
-  dir: "-1" | "0" | "1";
+  dir: number;
   hasMore: boolean;
   level: number;
   children: PostCommentDto[];
 }
 
 export default function Comment(props: Props) {
-  const { uuid, body, author, isAuthor, dateCreated, edited, up, down, dir, children, hasMore, level } = props;
+  const { uuid, body, author, isAuthor, created, modified, edited, up, down, dir, children, hasMore, level } = props;
   const { postUuid, textId } = useParams() as { textId: string; postUuid: string };
   const [isReplying, setIsReplying] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
@@ -50,21 +51,23 @@ export default function Comment(props: Props) {
           <div className="flex flex-row justify-between items-center gap-1 text-sm text-secondary">
             <div>{author}</div>
             <div>·</div>
-            <div>{timeAgo.format(new Date(dateCreated))}</div>
+            <div>{`${timeAgo.format(new Date(created))}`}</div>
+            {edited && (
+              <>
+                <div>·</div>
+                <div>{`edited ${timeAgo.format(new Date(modified))}`}</div>
+              </>
+            )}
           </div>
           {edited && <Badge>Edited</Badge>}
         </div>
         {isEditing ? (
           <CommentForm postUuid={postUuid} body={body} uuid={uuid} onClose={() => setIsEditing(false)} />
         ) : (
-          <div className="w-full">
-            {uuid}
-            <br />
-            {body}
-          </div>
+          <div className="w-full">{body}</div>
         )}
         <div className="w-full flex flex-row justify-start items-center gap-2">
-          <CommentVotes />
+          <Votes uuid={uuid} currentVote={dir} up={up} down={down} mode="comment" />
           <button type="button" onClick={() => setIsReplying(true)}>
             Reply
           </button>
@@ -75,7 +78,11 @@ export default function Comment(props: Props) {
           )}
           <button
             type="button"
-            onClick={() => navigator.clipboard.writeText(window.location.origin + `/comments/${uuid}`)}
+            onClick={() =>
+              navigator.clipboard.writeText(
+                window.location.origin + `/channels/${textId}/post/${postUuid}/comment/${uuid}`
+              )
+            }
           >
             Share
           </button>
@@ -99,7 +106,8 @@ export default function Comment(props: Props) {
           body={comment.body}
           author={comment.author}
           isAuthor={comment.isAuthor}
-          dateCreated={comment.dateCreated}
+          created={comment.created}
+          modified={comment.modified}
           edited={comment.edited}
           up={comment.up}
           down={comment.down}
