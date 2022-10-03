@@ -54,10 +54,7 @@ export default function PostCommentsPage() {
           page={page}
           isLastPage={index === pages.length - 1}
           order={order}
-          setHasMore={(value) => {
-            console.log(`setting has more to ${String(value)}`);
-            setHasMore(value);
-          }}
+          setHasMore={(value) => setHasMore(value)}
         />
       ))}
       {hasMore && (

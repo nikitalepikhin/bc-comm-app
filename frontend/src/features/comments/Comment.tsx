@@ -40,15 +40,15 @@ export default function Comment(props: Props) {
       <div
         className={classNames(
           "flex flex-col gap-2 justify-start items-start bg-white rounded-md shadow px-4 py-2",
-          { "ml-[20px]": level === 2 },
-          { "ml-[40px]": level === 3 },
-          { "ml-[60px]": level === 4 },
-          { "ml-[80px]": level === 5 },
-          { "ml-[100px]": level === 6 }
+          { "ml-[30px]": level === 2 },
+          { "ml-[60px]": level === 3 },
+          { "ml-[90px]": level === 4 },
+          { "ml-[120px]": level === 5 },
+          { "ml-[150px]": level === 6 }
         )}
       >
-        <div className="flex flex-row justify-between items-center gap-2 w-full">
-          <div className="flex flex-row justify-between items-center gap-1 text-sm text-secondary">
+        <div className="flex flex-row justify-between items-center gap-2 w-full flex-wrap">
+          <div className="flex flex-row justify-between items-center gap-1 text-sm text-secondary flex-wrap">
             <div>{author}</div>
             <div>·</div>
             <div>{`${timeAgo.format(new Date(created))}`}</div>
@@ -64,15 +64,15 @@ export default function Comment(props: Props) {
         {isEditing ? (
           <CommentForm postUuid={postUuid} body={body} uuid={uuid} onClose={() => setIsEditing(false)} />
         ) : (
-          <div className="w-full">{body}</div>
+          <div className="w-full break-words">{body}</div>
         )}
-        <div className="w-full flex flex-row justify-start items-center gap-2">
+        <div className="w-full flex flex-row justify-start items-center gap-2 flex-wrap">
           <Votes uuid={uuid} currentVote={dir} up={up} down={down} mode="comment" />
-          <button type="button" onClick={() => setIsReplying(true)}>
+          <button type="button" onClick={() => setIsReplying(true)} className="text-sm text-secondary">
             Reply
           </button>
           {isAuthor && (
-            <button type="button" onClick={() => setIsEditing(true)}>
+            <button type="button" onClick={() => setIsEditing(true)} className="text-sm text-secondary">
               Edit
             </button>
           )}
@@ -83,11 +83,12 @@ export default function Comment(props: Props) {
                 window.location.origin + `/channels/${textId}/post/${postUuid}/comment/${uuid}`
               )
             }
+            className="text-sm text-secondary"
           >
             Share
           </button>
           {isAuthor && (
-            <button type="button" onClick={() => setIsDeleting(true)}>
+            <button type="button" onClick={() => setIsDeleting(true)} className="text-sm text-secondary">
               Delete
             </button>
           )}
