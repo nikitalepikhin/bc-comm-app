@@ -45,4 +45,7 @@ export default class PostCommentDto {
 
   @ApiProperty({ nullable: true })
   rootUuid: string | null;
+
+  @ApiProperty()
+  postUuid: string;
 }

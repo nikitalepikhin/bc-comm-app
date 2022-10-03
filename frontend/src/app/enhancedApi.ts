@@ -1,6 +1,7 @@
-import { api } from "./api";
+import { api, GetCommentsUnderPostResponseDto, PostCommentDto } from "./api";
 import { IdTypes, TagTypes } from "./emptyApi";
-import { PatchCollection } from "@reduxjs/toolkit/dist/query/core/buildThunks";
+import { MaybeDrafted, PatchCollection } from "@reduxjs/toolkit/dist/query/core/buildThunks";
+import { calculateVotes } from "./apiUtil";
 
 export const enhancedApi = api.enhanceEndpoints({
   endpoints: {
@@ -149,32 +150,6 @@ export const enhancedApi = api.enhanceEndpoints({
     },
     voteOnPost: {
       onQueryStarted: async ({ voteOnPostRequestDto: { uuid, dir } }, { dispatch, queryFulfilled, getState }) => {
-        const calculateVotes = (up: number, down: number, currentVote: number, dir: number) => {
-          let result = {};
-          if (currentVote === 0) {
-            // if currently there's no vote
-            if (dir === 1) {
-              result = { up: up + 1, down, dir };
-            } else if (dir === -1) {
-              result = { up, down: down + 1, dir };
-            }
-          } else if (currentVote === 1) {
-            // if currently there's an upvote
-            if (dir === 0) {
-              result = { up: up - 1, down, dir };
-            } else if (dir === -1) {
-              result = { up: up - 1, down: down + 1, dir };
-            }
-          } else if (currentVote === -1) {
-            // if currently there's a downvote
-            if (dir === 0) {
-              result = { up, down: down - 1, dir };
-            } else if (dir === 1) {
-              result = { up: up + 1, down: down - 1, dir };
-            }
-          }
-          return result;
-        };
         const getPostsForChannelPatches: PatchCollection[] = [];
         for (const { endpointName, originalArgs } of enhancedApi.util.selectInvalidatedBy(getState(), [
           { type: TagTypes.POST, id: IdTypes.PARTIAL_LIST },
@@ -236,6 +211,85 @@ export const enhancedApi = api.enhanceEndpoints({
     },
     deletePost: {
       invalidatesTags: (result, error, arg) => [{ type: TagTypes.POST, id: arg.deletePostRequestDto.postUuid }],
+    },
+    getPostComments: {
+      providesTags: (result, error, arg) => {
+        if (result) {
+          return [
+            { type: TagTypes.COMMENT, id: arg.postUuid },
+            { type: TagTypes.COMMENT, id: IdTypes.PARTIAL_LIST },
+          ];
+        } else {
+          return [{ type: TagTypes.COMMENT, id: IdTypes.PARTIAL_LIST }];
+        }
+      },
+    },
+    getCommentComments: {
+      providesTags: (result, error, arg) => {
+        if (result) {
+          return [
+            { type: TagTypes.COMMENT, id: result.comments[0].postUuid },
+            { type: TagTypes.COMMENT, id: IdTypes.PARTIAL_LIST },
+          ];
+        } else {
+          return [{ type: TagTypes.COMMENT, id: IdTypes.PARTIAL_LIST }];
+        }
+      },
+    },
+    createComment: {
+      invalidatesTags: (result, error, arg) => [{ type: TagTypes.COMMENT, id: arg.createCommentRequestDto.postUuid }],
+    },
+    updateComment: {
+      invalidatesTags: (result, error, arg) => [{ type: TagTypes.COMMENT, id: arg.updateCommentRequestDto.postUuid }],
+    },
+    voteOnComment: {
+      onQueryStarted: async ({ voteOnCommentRequestDto: { uuid, dir } }, { dispatch, queryFulfilled, getState }) => {
+        const commentMapperHelper = (comment: PostCommentDto): PostCommentDto => {
+          if (comment.uuid === uuid) {
+            return { ...comment, ...calculateVotes(comment.up, comment.down, comment.dir, dir) };
+          } else {
+            return { ...comment, comments: comment.comments.map(commentMapperHelper) };
+          }
+        };
+        const getPostCommentsPatches: PatchCollection[] = [];
+        for (const { endpointName, originalArgs } of enhancedApi.util.selectInvalidatedBy(getState(), [
+          { type: TagTypes.COMMENT, id: IdTypes.PARTIAL_LIST },
+        ])) {
+          if (endpointName === "getPostComments") {
+            const patch = dispatch(
+              enhancedApi.util.updateQueryData(endpointName, originalArgs, (draft) => {
+                Object.assign(draft, {
+                  ...draft,
+                  comments: draft.comments.map(commentMapperHelper),
+                });
+              })
+            );
+            getPostCommentsPatches.push(patch);
+          }
+        }
+        const getCommentCommentsPatches: PatchCollection[] = [];
+        for (const { endpointName, originalArgs } of enhancedApi.util.selectInvalidatedBy(getState(), [
+          { type: TagTypes.COMMENT, id: IdTypes.PARTIAL_LIST },
+        ])) {
+          if (endpointName === "getCommentComments") {
+            const patch = dispatch(
+              enhancedApi.util.updateQueryData(endpointName, originalArgs, (draft) => {
+                Object.assign(draft, {
+                  ...draft,
+                  comments: draft.comments.map(commentMapperHelper),
+                });
+              })
+            );
+            getCommentCommentsPatches.push(patch);
+          }
+        }
+        try {
+          await queryFulfilled;
+        } catch (e) {
+          getPostCommentsPatches.forEach((patch) => patch.undo());
+          getCommentCommentsPatches.forEach((patch) => patch.undo());
+        }
+      },
     },
   },
 });

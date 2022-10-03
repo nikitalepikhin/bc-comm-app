@@ -38,15 +38,16 @@ export default function CommentForm(props: Props) {
         enableReinitialize
         initialValues={initialValues}
         validationSchema={validationSchema}
-        onSubmit={(values) => {
+        onSubmit={(values, { resetForm }) => {
           if (body !== undefined && uuid !== undefined) {
-            updateComment({ updateCommentRequestDto: { body: values.body, uuid } });
+            updateComment({ updateCommentRequestDto: { body: values.body, uuid, postUuid } });
           } else {
             createComment({ createCommentRequestDto: { postUuid, parentUuid, body: values.body } });
           }
           if (onClose !== undefined) {
             onClose();
           }
+          resetForm();
         }}
       >
         {({ handleSubmit }) => (
@@ -63,7 +64,7 @@ export default function CommentForm(props: Props) {
               )}
             </Field>
             <div className="flex flex-row justify-end items-center gap-2 w-full">
-              {onClose !== undefined && (
+              {!isCreating && (
                 <Button onClick={onClose} type="button" variant="outlined">
                   Cancel
                 </Button>

@@ -47,7 +47,7 @@ export default function PostCommentsPage() {
           Be the first to leave a comment.
         </div>
       )}
-      {!isLoading && <CommentForm postUuid={postUuid} />}
+      {!isLoading && <CommentForm postUuid={postUuid} onClose={() => setOrder("new")} />}
       {pages.map((page, index) => (
         <PostCommentsSection
           key={page}

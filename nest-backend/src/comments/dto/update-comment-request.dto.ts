@@ -6,4 +6,7 @@ export default class UpdateCommentRequestDto {
 
   @ApiProperty()
   body: string;
+
+  @ApiProperty()
+  postUuid: string;
 }

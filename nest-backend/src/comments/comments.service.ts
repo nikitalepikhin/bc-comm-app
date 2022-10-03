@@ -225,6 +225,7 @@ export class CommentsService {
       level: comment.level,
       parentUuid: comment.parentUuid,
       rootUuid,
+      postUuid: comment.postUuid,
       comments: hasMore ? [] : childComments,
     };
   }

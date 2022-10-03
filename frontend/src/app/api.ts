@@ -625,6 +625,7 @@ export type CreateCommentRequestDto = {
 export type UpdateCommentRequestDto = {
   uuid: string;
   body: string;
+  postUuid: string;
 };
 export type DeleteCommentRequestDto = {
   uuid: string;
@@ -645,6 +646,7 @@ export type PostCommentDto = {
   level: number;
   parentUuid: string | null;
   rootUuid: string | null;
+  postUuid: string;
 };
 export type GetCommentsUnderPostResponseDto = {
   hasMore: boolean;
