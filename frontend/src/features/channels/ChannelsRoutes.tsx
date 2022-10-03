@@ -8,6 +8,8 @@ import AddPostPage from "../posts/AddPostPage";
 import PostPage from "../posts/PostPage";
 import ChannelPosts from "../posts/ChannelPosts";
 import EditPostPage from "../posts/EditPostPage";
+import CommentThreadPage from "../comments/CommentThreadPage";
+import PostCommentsPage from "../posts/PostCommentsPage";
 
 export default function ChannelsRoutes() {
   return (
@@ -29,7 +31,10 @@ export default function ChannelsRoutes() {
         }
       >
         <Route index element={<ChannelPosts />} />
-        <Route path="post/:postUuid" element={<PostPage />} />
+        <Route path="post/:postUuid" element={<PostPage />}>
+          <Route index element={<PostCommentsPage />} />
+          <Route path="comment/:commentUuid" element={<CommentThreadPage />} />
+        </Route>
         <Route path="post/:postUuid/edit" element={<EditPostPage />} />
         <Route
           path="post/new"

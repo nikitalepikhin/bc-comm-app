@@ -1,9 +1,10 @@
-import { useParams } from "react-router-dom";
+import { Outlet, useParams } from "react-router-dom";
 import Post from "./Post";
 import { useGetPostByUuidQuery } from "../../app/enhancedApi";
 import LoadingSpinner from "../../common/ui/LoadingSpinner";
 import LinkWithIcon from "../../common/ui/LinkWithIcon";
 import { XMarkIcon } from "@heroicons/react/20/solid";
+import PostCommentsPage from "./PostCommentsPage";
 
 export default function PostPage() {
   const { textId, postUuid } = useParams() as { textId: string; postUuid: string };
@@ -17,7 +18,8 @@ export default function PostPage() {
         </LinkWithIcon>
       </div>
       {isLoading && <LoadingSpinner size="h-8 w-8" />}
-      {data && data.post && <Post {...data.post} mode="full" />}
+      {data && data.post && <Post {...data.post} isFull />}
+      <Outlet />
     </div>
   );
 }

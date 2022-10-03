@@ -36,4 +36,10 @@ export default class PostCommentDto {
 
   @ApiProperty()
   level: number;
+
+  @ApiProperty({ nullable: true })
+  parentUuid: string | null;
+
+  @ApiProperty({ nullable: true })
+  rootUuid: string | null;
 }

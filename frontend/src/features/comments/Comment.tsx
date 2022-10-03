@@ -8,10 +8,10 @@ import { useState } from "react";
 import CommentForm from "./CommentForm";
 import Dialog from "../../common/components/Dialog";
 import { useDeleteCommentMutation } from "../../app/enhancedApi";
+import { useParams } from "react-router-dom";
 
 interface Props {
   uuid: string;
-  postUuid: string;
   body: string;
   author: string;
   isAuthor: boolean;
@@ -26,8 +26,8 @@ interface Props {
 }
 
 export default function Comment(props: Props) {
-  const { uuid, body, author, isAuthor, dateCreated, edited, up, down, dir, children, hasMore, level, postUuid } =
-    props;
+  const { uuid, body, author, isAuthor, dateCreated, edited, up, down, dir, children, hasMore, level } = props;
+  const { postUuid, textId } = useParams() as { textId: string; postUuid: string };
   const [isReplying, setIsReplying] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
@@ -57,7 +57,11 @@ export default function Comment(props: Props) {
         {isEditing ? (
           <CommentForm postUuid={postUuid} body={body} uuid={uuid} onClose={() => setIsEditing(false)} />
         ) : (
-          <div className="w-full">{body}</div>
+          <div className="w-full">
+            {uuid}
+            <br />
+            {body}
+          </div>
         )}
         <div className="w-full flex flex-row justify-start items-center gap-2">
           <CommentVotes />
@@ -85,13 +89,12 @@ export default function Comment(props: Props) {
       </div>
       {hasMore && (
         <div className={"ml-[100px]"}>
-          <StyledLink to={`/comments/${uuid}`}>Show more in this thread</StyledLink>
+          <StyledLink to={`/channels/${textId}/post/${postUuid}/comment/${uuid}`}>Show more in this thread</StyledLink>
         </div>
       )}
       {children.map((comment) => (
         <Comment
           key={comment.uuid}
-          postUuid={postUuid}
           uuid={comment.uuid}
           body={comment.body}
           author={comment.author}

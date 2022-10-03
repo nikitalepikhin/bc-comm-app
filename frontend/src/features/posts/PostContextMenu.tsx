@@ -2,18 +2,17 @@ import { ChevronDownIcon, ChevronUpIcon } from "@heroicons/react/20/solid";
 import DeletePostButton from "./DeletePostButton";
 import LinkWithIcon from "../../common/ui/LinkWithIcon";
 import { PencilIcon } from "@heroicons/react/24/outline";
-import { PostDisplayMode } from "./Post";
 import classNames from "classnames";
 
 interface Props {
   isAuthor: boolean;
   uuid: string;
-  mode: PostDisplayMode;
+  isFull: boolean;
   textId: string;
 }
 
 export default function PostContextMenu(props: Props) {
-  const { isAuthor, uuid, mode, textId } = props;
+  const { isAuthor, uuid, isFull, textId } = props;
   return (
     <>
       {isAuthor && (
@@ -38,7 +37,7 @@ export default function PostContextMenu(props: Props) {
           "flex-col lg:flex-row justify-end items-center gap-2 flex-wrap peer-checked:flex hidden lg:flex absolute top-6 -right-2 lg:static bg-white rounded-md lg:bg-transparent lg:rounded-none shadow lg:shadow-none px-3 py-1 lg:p-0"
         )}
       >
-        {isAuthor && mode === "full" && <DeletePostButton />}
+        {isAuthor && isFull && <DeletePostButton />}
         {isAuthor && (
           <LinkWithIcon to={`/channels/${textId}/post/${uuid}/edit`} svg={<PencilIcon className="h-4 w-4" />}>
             Edit

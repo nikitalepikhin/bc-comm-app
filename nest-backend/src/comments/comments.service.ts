@@ -59,13 +59,13 @@ export class CommentsService {
                              from get_post_comments(${postUuid}::uuid, ${user.uuid}::uuid, ${page}::int, ${order}, ${limit}::int,
                                                     ${levels}::int)`;
     const comments = await this.prisma.$queryRaw<PostComment[]>(query);
-    const out: OutPostCommentDto[] = this.constructCommentsTree(comments);
+    const tree: OutPostCommentDto[] = this.constructCommentsTree(comments);
     return {
-      hasMore: out.length > 10,
-      comments: out
+      hasMore: tree.length > 10,
+      comments: tree
         .slice(0, 10)
         // .sort(order === "new" ? CommentsService.sortCommentsByDateCreated : CommentsService.sortCommentsByResVote)
-        .map((comment) => this.mapOutCommentToDtoComment(user.uuid, comment)),
+        .map((comment) => this.mapOutCommentToDtoComment(user.uuid, comment, comment.uuid)),
     };
   }
 
@@ -74,8 +74,11 @@ export class CommentsService {
     const query = Prisma.sql`select *
                              from get_comment_comments(${commentUuid}::uuid, ${user.uuid}::uuid, ${levels}::int)`;
     const comments = await this.prisma.$queryRaw<PostComment[]>(query);
-    const out = this.constructCommentsTree(comments);
-    return { comments: out.slice(0, 10).map((comment) => this.mapOutCommentToDtoComment(user.uuid, comment)) };
+    const tree = this.constructCommentsTree(comments);
+    const rootUuid = await this.getRootCommentUuid(tree[0].uuid);
+    return {
+      comments: tree.slice(0, 10).map((comment) => this.mapOutCommentToDtoComment(user.uuid, comment, rootUuid)),
+    };
   }
 
   async updateComment(user: UserDto, requestDto: UpdateCommentRequestDto) {
@@ -164,6 +167,12 @@ export class CommentsService {
     });
   }
 
+  private async getRootCommentUuid(commentUuid: string) {
+    const query = Prisma.sql`select uuid from get_comment_root(${commentUuid}::uuid)`;
+    const [{ uuid }] = await this.prisma.$queryRaw<[{ uuid: string }]>(query);
+    return uuid;
+  }
+
   private constructCommentsTree(comments: PostComment[]): OutPostCommentDto[] {
     // 1. create a map
     const commentsMap = new Map<string, OutPostCommentDto>();
@@ -178,7 +187,7 @@ export class CommentsService {
 
     // 2. populate child comments arrays
     comments.forEach((c) => {
-      if (c.parentUuid !== null) {
+      if (c.parentUuid !== null && commentsMap.get(c.parentUuid) !== undefined) {
         commentsMap.get(c.parentUuid).comments.push(commentsMap.get(c.uuid));
       }
     });
@@ -194,9 +203,9 @@ export class CommentsService {
     return out;
   }
 
-  private mapOutCommentToDtoComment(userUuid, comment: OutPostCommentDto): PostCommentDto {
+  private mapOutCommentToDtoComment(userUuid, comment: OutPostCommentDto, rootUuid: string): PostCommentDto {
     const childComments: PostCommentDto[] = comment.comments.map((comment) =>
-      this.mapOutCommentToDtoComment(userUuid, comment),
+      this.mapOutCommentToDtoComment(userUuid, comment, rootUuid),
     );
     const hasMore = childComments.length > 0 && comment.level === 6;
     return {
@@ -209,9 +218,11 @@ export class CommentsService {
       up: Number(comment.up),
       down: Number(comment.down),
       dir: comment.dir ?? 0,
-      comments: hasMore ? [] : childComments,
       hasMore: hasMore,
       level: comment.level,
+      parentUuid: comment.parentUuid,
+      rootUuid,
+      comments: hasMore ? [] : childComments,
     };
   }
 }

@@ -7,29 +7,13 @@ import timeAgo from "../../common/util/time";
 import PostContextMenu from "./PostContextMenu";
 import PostVotes from "./PostVotes";
 import Badge from "../../common/ui/Badge";
-import PostComments from "./PostComments";
-
-export type PostDisplayMode = "full" | "reduced";
 
 interface Props extends ChannelPostDto {
-  mode?: PostDisplayMode;
+  isFull?: boolean;
 }
 
 export default function Post(props: Props) {
-  const {
-    uuid,
-    title,
-    body,
-    created,
-    author,
-    isAuthor,
-    edited,
-    up,
-    down,
-    dir,
-    mode = "reduced",
-    commentsCount,
-  } = props;
+  const { uuid, title, body, created, author, isAuthor, edited, up, down, dir, isFull = false, commentsCount } = props;
   const { textId } = useParams() as { textId: string; postUuid: string };
 
   return (
@@ -46,39 +30,30 @@ export default function Post(props: Props) {
               </div>
               {edited && <Badge>Edited</Badge>}
             </div>
-            <PostContextMenu isAuthor={isAuthor} uuid={uuid} textId={textId} mode={mode} />
+            <PostContextMenu isAuthor={isAuthor} uuid={uuid} textId={textId} isFull={isFull} />
           </div>
-          {mode === "reduced" ? (
+          {isFull ? (
+            <h2 className="text-lg font-bold">{title}</h2>
+          ) : (
             <Link
               to={`/channels/${textId}/post/${uuid}`}
               className="text-lg font-bold hover:text-accent transition-all"
             >
               {title}
             </Link>
-          ) : (
-            <h2 className="text-lg font-bold">{title}</h2>
           )}
-          <div className={classNames("my-1 w-full", { "max-h-52 line-clamp-3": mode === "reduced" })}>{body}</div>
+          <div className={classNames("my-1 w-full", { "max-h-52 line-clamp-3": !isFull })}>{body}</div>
           <div className="flex flex-row justify-start items-center gap-2 text-sm flex-wrap">
-            {mode === "reduced" ? (
-              <LinkWithIcon
-                to={`/channels/${textId}/post/${uuid}`}
-                svg={<ChatBubbleBottomCenterTextIcon className="h-4 w-4" />}
-              >
-                {`${commentsCount} Comments`}
-              </LinkWithIcon>
-            ) : (
-              <div className="flex flex-row justify-start items-center gap-1">
-                <ChatBubbleBottomCenterTextIcon className="h-4 w-4" />
-                <span>{`${commentsCount} Comments`}</span>
-              </div>
-            )}
+            <LinkWithIcon
+              to={`/channels/${textId}/post/${uuid}`}
+              svg={<ChatBubbleBottomCenterTextIcon className="h-4 w-4" />}
+            >
+              {`${commentsCount} Comments`}
+            </LinkWithIcon>
             <button
               type="button"
               className="flex flex-row justify-start items-center gap-1 text-accent hover:text-accent-strong"
-              onClick={() =>
-                navigator.clipboard.writeText(window.location.href + (mode === "reduced" ? `/post/${uuid}` : ""))
-              }
+              onClick={() => navigator.clipboard.writeText(window.location.href + (!isFull ? `/post/${uuid}` : ""))}
             >
               <ShareIcon className="h-4 w-4" />
               <span>Share</span>
@@ -86,7 +61,6 @@ export default function Post(props: Props) {
           </div>
         </div>
       </div>
-      {mode === "full" && <PostComments />}
     </>
   );
 }

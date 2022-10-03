@@ -14,7 +14,6 @@ import SignupPage from "./features/auth/SignupPage";
 import SchoolsRoutes from "./features/schools/SchoolsRoutes";
 import FacultiesRoutes from "./features/faculties/FacultiesRoutes";
 import ChannelsRoutes from "./features/channels/ChannelsRoutes";
-import CommentsRoutes from "./features/comments/CommentsRoutes";
 
 ReactDOM.render(
   <React.StrictMode>
@@ -29,7 +28,6 @@ ReactDOM.render(
             <Route path="schools/*" element={<SchoolsRoutes />} />
             <Route path="faculties/*" element={<FacultiesRoutes />} />
             <Route path="channels/*" element={<ChannelsRoutes />} />
-            <Route path="comments/*" element={<CommentsRoutes />} />
           </Route>
           <Route path="*" element={<NotFoundPage />} />
         </Routes>

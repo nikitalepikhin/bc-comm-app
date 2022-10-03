@@ -641,6 +641,8 @@ export type PostCommentDto = {
   comments: PostCommentDto[];
   hasMore: boolean;
   level: number;
+  parentUuid: string | null;
+  rootUuid: string | null;
 };
 export type GetCommentsUnderPostResponseDto = {
   hasMore: boolean;

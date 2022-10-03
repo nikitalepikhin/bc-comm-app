@@ -1,5 +1,5 @@
 import { PostComment } from "./post-comment";
 
-export type OutPostCommentDto = Omit<PostComment, "parentUuid"> & {
+export type OutPostCommentDto = PostComment & {
   comments: OutPostCommentDto[];
 };

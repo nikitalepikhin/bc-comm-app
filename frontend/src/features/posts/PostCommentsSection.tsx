@@ -32,7 +32,6 @@ export default function PostCommentsSection(props: Props) {
       {data?.comments.map((comment) => (
         <Comment
           key={comment.uuid}
-          postUuid={postUuid}
           uuid={comment.uuid}
           body={comment.body}
           edited={comment.edited}

@@ -6,7 +6,7 @@ import Button from "../../common/ui/Button";
 import { useGetPostByUuidQuery } from "../../app/enhancedApi";
 import CommentForm from "../comments/CommentForm";
 
-export default function PostComments() {
+export default function PostCommentsPage() {
   const { postUuid } = useParams() as { postUuid: string };
   const [order, setOrder] = useState<GetPostCommentsApiArg["order"]>("new");
   const [page, setPage] = useState(1);
