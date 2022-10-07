@@ -14,6 +14,7 @@ export default function ChannelPosts() {
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(false);
   const pages = Array.from(Array(page + 1).keys()).slice(1);
+  const [initialDatetime] = useState(new Date());
 
   const { ref, inView } = useInView({ triggerOnce: true });
   useEffect(() => {
@@ -65,6 +66,7 @@ export default function ChannelPosts() {
           order={order}
           hasMore={hasMore}
           setHasMore={(value) => setHasMore(value)}
+          initialDatetime={initialDatetime}
         />
       ))}
     </div>

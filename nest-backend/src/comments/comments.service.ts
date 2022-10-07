@@ -52,22 +52,20 @@ export class CommentsService {
     postUuid: string,
     order: CommentsOrder,
     page: number,
+    after: Date,
   ): Promise<GetCommentsUnderPostResponseDto> {
     const limit = 10;
     const levels = 7; // retrieve one more level than needed to establish the hasMore property
     const query = Prisma.sql`select *
-                             from get_post_comments(${postUuid}::uuid, ${user.uuid}::uuid, ${page}::int, ${
-      order === "new"
-    }::boolean, ${limit}::int,
+                             from get_post_comments(${postUuid}::uuid, ${
+      user.uuid
+    }::uuid, ${page}::int, ${after}::timestamp(6), ${order === "new"}::boolean, ${limit}::int,
                                                     ${levels}::int)`;
     const comments = await this.prisma.$queryRaw<PostComment[]>(query);
     const tree: OutPostCommentDto[] = this.constructCommentsTree(comments);
     return {
       hasMore: tree.length > 10,
-      comments: tree
-        .slice(0, 10)
-        // .sort(order === "new" ? CommentsService.sortCommentsByDateCreated : CommentsService.sortCommentsByResVote)
-        .map((comment) => this.mapOutCommentToDtoComment(user.uuid, comment, comment.uuid)),
+      comments: tree.slice(0, 10).map((comment) => this.mapOutCommentToDtoComment(user.uuid, comment, comment.uuid)),
     };
   }
 

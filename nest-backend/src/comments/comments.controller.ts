@@ -34,7 +34,7 @@ export class CommentsController {
   @ApiOkResponse({ description: "Post comments.", type: GetPostCommentsResponseDto })
   @RequirePermissions(Permission.COMMENT_READ)
   @UseGuards(JwtAuthGuard, RequirePermissionsGuard)
-  @Get("/post/:postUuid/:order")
+  @Get("/post/:postUuid")
   async getPostComments(
     @Req() request,
     @Param() params: GetPostCommentsParamsDto,
@@ -43,8 +43,9 @@ export class CommentsController {
     return await this.commentsService.getPostComments(
       request.user as UserDto,
       params.postUuid,
-      params.order,
+      query.order,
       query.page,
+      query.after,
     );
   }
 

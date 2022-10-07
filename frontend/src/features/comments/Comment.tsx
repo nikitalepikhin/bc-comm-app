@@ -125,7 +125,7 @@ export default function Comment(props: Props) {
         body="Are you sure you want to delete your comment?"
         onConfirm={() => {
           setIsDeleting(false);
-          deleteComment({ deleteCommentRequestDto: { uuid } });
+          deleteComment({ deleteCommentRequestDto: { uuid, postUuid } });
         }}
         onCancel={() => setIsDeleting(false)}
         confirmText="Delete"

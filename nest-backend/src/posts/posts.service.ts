@@ -45,12 +45,16 @@ export class PostsService {
     channelTextId: string,
     page: number,
     order: PostsOrder,
+    after: Date,
   ): Promise<GetPostsForChannelResponseDto> {
     const pageSize = 10;
     const posts = await this.prisma.post.findMany({
       where: {
         channel: {
           textId: channelTextId,
+        },
+        created: {
+          lte: after,
         },
       },
       include: {
@@ -68,23 +72,25 @@ export class PostsService {
     });
     return {
       hasMore: posts.length > pageSize,
-      posts: posts.map(({ uuid, title, body, created, modified, votes, authorUsername, authorUuid, _count }) => {
-        const vote = votes.find((vote) => vote.userUuid === user.uuid);
-        return {
-          uuid,
-          title,
-          body,
-          created,
-          modified,
-          author: authorUsername,
-          isAuthor: authorUuid === user.uuid,
-          edited: created.getTime() !== modified.getTime(),
-          up: votes.filter((vote) => vote.dir === 1).length,
-          down: votes.filter((vote) => vote.dir === -1).length,
-          dir: vote ? vote.dir : 0,
-          commentsCount: _count.comments,
-        };
-      }),
+      posts: posts
+        .slice(0, 10)
+        .map(({ uuid, title, body, created, modified, votes, authorUsername, authorUuid, _count }) => {
+          const vote = votes.find((vote) => vote.userUuid === user.uuid);
+          return {
+            uuid,
+            title,
+            body,
+            created,
+            modified,
+            author: authorUsername,
+            isAuthor: authorUuid === user.uuid,
+            edited: created.getTime() !== modified.getTime(),
+            up: votes.filter((vote) => vote.dir === 1).length,
+            down: votes.filter((vote) => vote.dir === -1).length,
+            dir: vote ? vote.dir : 0,
+            commentsCount: _count.comments,
+          };
+        }),
     };
   }
 

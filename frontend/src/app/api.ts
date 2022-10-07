@@ -142,8 +142,8 @@ const injectedRtkApi = api.injectEndpoints({
     }),
     getPostsForChannel: build.query<GetPostsForChannelApiResponse, GetPostsForChannelApiArg>({
       query: (queryArg) => ({
-        url: `/posts/channel/${queryArg.channelTextId}/${queryArg.order}`,
-        params: { page: queryArg.page },
+        url: `/posts/channel/${queryArg.channelTextId}`,
+        params: { page: queryArg.page, order: queryArg.order, after: queryArg.after },
       }),
     }),
     voteOnPost: build.mutation<VoteOnPostApiResponse, VoteOnPostApiArg>({
@@ -160,8 +160,8 @@ const injectedRtkApi = api.injectEndpoints({
     }),
     getPostComments: build.query<GetPostCommentsApiResponse, GetPostCommentsApiArg>({
       query: (queryArg) => ({
-        url: `/comments/post/${queryArg.postUuid}/${queryArg.order}`,
-        params: { page: queryArg.page },
+        url: `/comments/post/${queryArg.postUuid}`,
+        params: { page: queryArg.page, order: queryArg.order, after: queryArg.after },
       }),
     }),
     getCommentComments: build.query<GetCommentCommentsApiResponse, GetCommentCommentsApiArg>({
@@ -321,8 +321,9 @@ export type GetPostsForChannelApiResponse =
   /** status 200 Posts for a specified channel. */ GetPostsForChannelResponseDto;
 export type GetPostsForChannelApiArg = {
   channelTextId: string;
-  order: "new" | "top";
   page: number;
+  order: "new" | "top";
+  after: string;
 };
 export type VoteOnPostApiResponse = unknown;
 export type VoteOnPostApiArg = {
@@ -343,8 +344,9 @@ export type DeleteCommentApiArg = {
 export type GetPostCommentsApiResponse = /** status 200 Post comments. */ GetCommentsUnderPostResponseDto;
 export type GetPostCommentsApiArg = {
   postUuid: string;
-  order: "top" | "new";
   page: number;
+  order: "top" | "new";
+  after: string;
 };
 export type GetCommentCommentsApiResponse = /** status 200 Comment comments. */ GetCommentCommentsResponseDto;
 export type GetCommentCommentsApiArg = {
@@ -629,6 +631,7 @@ export type UpdateCommentRequestDto = {
 };
 export type DeleteCommentRequestDto = {
   uuid: string;
+  postUuid: string;
 };
 export type PostCommentDto = {
   uuid: string;

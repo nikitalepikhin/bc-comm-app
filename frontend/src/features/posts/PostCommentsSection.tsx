@@ -3,18 +3,26 @@ import { useParams } from "react-router-dom";
 import { useEffect } from "react";
 import { GetPostCommentsApiArg } from "../../app/api";
 import Comment from "../comments/Comment";
+import { useAppSelector } from "../../app/hooks";
 
 interface Props {
   page: number;
   isLastPage: boolean;
   order: GetPostCommentsApiArg["order"];
   setHasMore: (value: boolean) => void;
+  // initialDatetime: Date;todo
 }
 
 export default function PostCommentsSection(props: Props) {
   const { page, isLastPage, order, setHasMore } = props;
   const { postUuid } = useParams() as { postUuid: string };
-  const { data, refetch } = useGetPostCommentsQuery({ postUuid, page, order });
+  const { postCommentsRequestDate } = useAppSelector((state) => state.comments);
+  const { data, refetch } = useGetPostCommentsQuery({
+    postUuid,
+    page,
+    order,
+    after: postCommentsRequestDate,
+  });
 
   useEffect(() => {
     if (isLastPage && data && data.hasMore) {

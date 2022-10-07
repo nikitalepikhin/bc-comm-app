@@ -42,7 +42,7 @@ export class PostsController {
   @ApiOkResponse({ description: "Posts for a specified channel.", type: GetPostsForChannelResponseDto })
   @RequirePermissions(Permission.POST_READ)
   @UseGuards(JwtAuthGuard, RequirePermissionsGuard)
-  @Get("/channel/:channelTextId/:order")
+  @Get("/channel/:channelTextId")
   async getPostsForChannel(
     @Req() request,
     @Param() params: GetPostsForChannelParamsDto,
@@ -52,7 +52,8 @@ export class PostsController {
       request.user as UserDto,
       params.channelTextId,
       query.page,
-      params.order,
+      query.order,
+      query.after,
     );
   }
 

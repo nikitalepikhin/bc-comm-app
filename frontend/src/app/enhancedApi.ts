@@ -1,6 +1,6 @@
-import { api, GetCommentsUnderPostResponseDto, PostCommentDto } from "./api";
+import { api, PostCommentDto } from "./api";
 import { IdTypes, TagTypes } from "./emptyApi";
-import { MaybeDrafted, PatchCollection } from "@reduxjs/toolkit/dist/query/core/buildThunks";
+import { PatchCollection } from "@reduxjs/toolkit/dist/query/core/buildThunks";
 import { calculateVotes } from "./apiUtil";
 
 export const enhancedApi = api.enhanceEndpoints({
@@ -237,10 +237,45 @@ export const enhancedApi = api.enhanceEndpoints({
       },
     },
     createComment: {
-      invalidatesTags: (result, error, arg) => [{ type: TagTypes.COMMENT, id: arg.createCommentRequestDto.postUuid }],
+      invalidatesTags: (result, error, arg) => {
+        return [{ type: TagTypes.COMMENT, id: arg.createCommentRequestDto.postUuid }];
+      },
     },
     updateComment: {
       invalidatesTags: (result, error, arg) => [{ type: TagTypes.COMMENT, id: arg.updateCommentRequestDto.postUuid }],
+      onQueryStarted: async (
+        { updateCommentRequestDto: { uuid, postUuid, body } },
+        { dispatch, queryFulfilled, getState }
+      ) => {
+        const updateCommentMapper = (comment: PostCommentDto): PostCommentDto => {
+          if (comment.uuid === uuid) {
+            return { ...comment, body, modified: new Date().toISOString(), edited: true };
+          } else {
+            return { ...comment, comments: comment.comments.map(updateCommentMapper) };
+          }
+        };
+
+        const patches: PatchCollection[] = [];
+        for (const { endpointName, originalArgs } of enhancedApi.util.selectInvalidatedBy(getState(), [
+          { type: TagTypes.COMMENT, id: postUuid },
+        ])) {
+          if (endpointName === "getPostComments") {
+            const patch = dispatch(
+              enhancedApi.util.updateQueryData(endpointName, originalArgs, (draft) => {
+                Object.assign(draft, { ...draft, comments: draft.comments.map(updateCommentMapper) });
+              })
+            );
+            patches.push(patch);
+            console.log("found the comment to update");
+          }
+        }
+
+        try {
+          await queryFulfilled;
+        } catch (e) {
+          patches.forEach((patch) => patch.undo());
+        }
+      },
     },
     voteOnComment: {
       onQueryStarted: async ({ voteOnCommentRequestDto: { uuid, dir } }, { dispatch, queryFulfilled, getState }) => {
@@ -290,6 +325,10 @@ export const enhancedApi = api.enhanceEndpoints({
           getCommentCommentsPatches.forEach((patch) => patch.undo());
         }
       },
+    },
+
+    deleteComment: {
+      invalidatesTags: (result, error, arg) => [{ type: TagTypes.COMMENT, id: arg.deleteCommentRequestDto.postUuid }],
     },
   },
 });

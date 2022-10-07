@@ -10,6 +10,7 @@ interface Props {
   body?: string;
   parentUuid?: string;
   onClose?: () => void;
+  setInitialDatetime?: (value: Date) => void;
 }
 
 interface NewCommentFormValues {
@@ -21,7 +22,7 @@ const validationSchema = yup.object({
 });
 
 export default function CommentForm(props: Props) {
-  const { uuid, body, postUuid, parentUuid, onClose } = props;
+  const { uuid, body, postUuid, parentUuid, onClose, setInitialDatetime } = props;
   const [createComment] = useCreateCommentMutation();
   const [updateComment] = useUpdateCommentMutation();
   const initialValues: NewCommentFormValues = {
@@ -69,7 +70,17 @@ export default function CommentForm(props: Props) {
                   Cancel
                 </Button>
               )}
-              <Button type="button" onClick={() => handleSubmit()}>
+              <Button
+                type="button"
+                onClick={() => {
+                  if (setInitialDatetime !== undefined) {
+                    const date = new Date();
+                    setInitialDatetime(date);
+                    console.log("setting initial date to ", date);
+                  }
+                  handleSubmit();
+                }}
+              >
                 Comment
               </Button>
             </div>
