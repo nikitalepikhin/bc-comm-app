@@ -3,14 +3,13 @@ import { useParams } from "react-router-dom";
 import { useEffect } from "react";
 import { GetPostCommentsApiArg } from "../../app/api";
 import Comment from "../comments/Comment";
-import { useAppSelector } from "../../app/hooks";
+import { useAppDispatch, useAppSelector } from "../../app/hooks";
 
 interface Props {
   page: number;
   isLastPage: boolean;
   order: GetPostCommentsApiArg["order"];
   setHasMore: (value: boolean) => void;
-  // initialDatetime: Date;todo
 }
 
 export default function PostCommentsSection(props: Props) {

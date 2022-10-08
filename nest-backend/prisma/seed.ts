@@ -74,6 +74,8 @@ async function seedAuthorities() {
       { name: Permission[Permission.COMMENT_UPDATE], roles: [Role.TEACHER, Role.STUDENT] },
       { name: Permission[Permission.COMMENT_DELETE], roles: [Role.TEACHER, Role.STUDENT] },
       { name: Permission[Permission.COMMENT_VOTE], roles: [Role.TEACHER, Role.STUDENT] },
+
+      { name: Permission[Permission.FEED_READ], roles: [Role.TEACHER, Role.STUDENT] },
     ],
   });
 }

@@ -13,6 +13,7 @@ import { TeachersModule } from "./teachers/teachers.module";
 import { ChannelsModule } from "./channels/channels.module";
 import { PostsModule } from "./posts/posts.module";
 import { CommentsModule } from './comments/comments.module';
+import { FeedModule } from './feed/feed.module';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { CommentsModule } from './comments/comments.module';
     ChannelsModule,
     PostsModule,
     CommentsModule,
+    FeedModule,
   ],
 })
 export class AppModule {}

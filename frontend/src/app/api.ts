@@ -170,6 +170,9 @@ const injectedRtkApi = api.injectEndpoints({
     voteOnComment: build.mutation<VoteOnCommentApiResponse, VoteOnCommentApiArg>({
       query: (queryArg) => ({ url: `/comments/vote`, method: "POST", body: queryArg.voteOnCommentRequestDto }),
     }),
+    getUserFeed: build.query<GetUserFeedApiResponse, GetUserFeedApiArg>({
+      query: (queryArg) => ({ url: `/feed`, params: { page: queryArg.page, after: queryArg.after } }),
+    }),
   }),
   overrideExisting: false,
 });
@@ -355,6 +358,12 @@ export type GetCommentCommentsApiArg = {
 export type VoteOnCommentApiResponse = unknown;
 export type VoteOnCommentApiArg = {
   voteOnCommentRequestDto: VoteOnCommentRequestDto;
+};
+export type GetUserFeedApiResponse =
+  /** status 200 Posts from channel that user is subscribed to. */ GetUserFeedResponseDto;
+export type GetUserFeedApiArg = {
+  page: number;
+  after: string;
 };
 export type UserDataResponseDto = {
   email: string;
@@ -662,6 +671,26 @@ export type VoteOnCommentRequestDto = {
   uuid: string;
   dir: number;
 };
+export type FeedPostDto = {
+  uuid: string;
+  channelTextId: string;
+  title: string;
+  body: string;
+  created: string;
+  modified: string;
+  author: string;
+  isAuthor: boolean;
+  edited: boolean;
+  up: number;
+  down: number;
+  dir: number;
+  commentsCount: number;
+};
+export type GetUserFeedResponseDto = {
+  hasMore: boolean;
+  hasNew: boolean;
+  posts: FeedPostDto[];
+};
 export const {
   useLogInMutation,
   useSignUpBaseMutation,
@@ -708,4 +737,5 @@ export const {
   useGetPostCommentsQuery,
   useGetCommentCommentsQuery,
   useVoteOnCommentMutation,
+  useGetUserFeedQuery,
 } = injectedRtkApi;

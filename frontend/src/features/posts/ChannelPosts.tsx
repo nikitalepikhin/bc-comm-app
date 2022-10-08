@@ -65,7 +65,7 @@ export default function ChannelPosts() {
           isLastPage={index === pages.length - 1}
           order={order}
           hasMore={hasMore}
-          setHasMore={(value) => setHasMore(value)}
+          setHasMore={setHasMore}
           initialDatetime={initialDatetime}
         />
       ))}

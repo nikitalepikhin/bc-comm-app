@@ -12,12 +12,13 @@ interface Props {
   order: GetPostCommentsApiArg["order"];
   hasMore: boolean;
   setHasMore: (value: boolean) => void;
-  initialDatetime: Date;
+  initialDatetime: Date; //todo - get from state
 }
 
 function ChannelPostsSection(props: Props, ref: ForwardedRef<HTMLDivElement>) {
   const { page, isLastPage, order, hasMore, setHasMore, initialDatetime } = props;
   const { textId } = useParams() as { textId: string };
+
   const { data, refetch, isLoading } = useGetPostsForChannelQuery({
     channelTextId: textId,
     order,
@@ -32,9 +33,8 @@ function ChannelPostsSection(props: Props, ref: ForwardedRef<HTMLDivElement>) {
   }, [isLastPage, data, setHasMore]);
 
   useEffect(() => {
-    console.log(`page ${page} is refetching`);
     refetch();
-  }, [order]); // todo when to refetch ???
+  }, [order]);
 
   return (
     <>

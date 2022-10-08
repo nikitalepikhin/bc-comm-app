@@ -30,6 +30,7 @@ export enum Permission {
   COMMENT_UPDATE,
   COMMENT_DELETE,
   COMMENT_VOTE,
+  FEED_READ,
 }
 
 export const PERMISSIONS_KEY = "permissions";

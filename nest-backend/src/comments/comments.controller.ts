@@ -15,7 +15,6 @@ import GetCommentCommentsParamsDto from "./dto/get-comment-comments-params.dto";
 import UpdateCommentRequestDto from "./dto/update-comment-request.dto";
 import DeleteCommentRequestDto from "./dto/delete-comment-request.dto";
 import VoteOnCommentRequestDto from "./dto/vote-on-comment-request.dto";
-import { TransformDirPipe } from "../common/util/transform-dir.pipe";
 
 @Controller("comments")
 export class CommentsController {

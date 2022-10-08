@@ -326,7 +326,6 @@ export const enhancedApi = api.enhanceEndpoints({
         }
       },
     },
-
     deleteComment: {
       invalidatesTags: (result, error, arg) => [{ type: TagTypes.COMMENT, id: arg.deleteCommentRequestDto.postUuid }],
     },
@@ -377,4 +376,5 @@ export const {
   useDeleteCommentMutation,
   useGetPostCommentsQuery,
   useGetCommentCommentsQuery,
+  useGetUserFeedQuery,
 } = enhancedApi;
