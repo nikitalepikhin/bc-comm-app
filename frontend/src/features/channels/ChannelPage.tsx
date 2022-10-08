@@ -3,7 +3,7 @@ import { Outlet, useParams } from "react-router-dom";
 import { useGetChannelByTextIdQuery, useToggleMembershipMutation } from "../../app/enhancedApi";
 import { format } from "date-fns";
 import Button from "../../common/ui/Button";
-import { ClipboardDocumentListIcon } from "@heroicons/react/24/outline";
+import { ClipboardDocumentListIcon, ShareIcon } from "@heroicons/react/24/outline";
 import { useAppSelector } from "../../app/hooks";
 import StyledLink from "../../common/ui/StyledLink";
 import LoadingSpinner from "../../common/ui/LoadingSpinner";
@@ -26,7 +26,7 @@ const ChannelPage: React.FC = () => {
           <div className="flex flex-row items-center gap-2">
             <p className="text-sm text-secondary">{textId}</p>
             <button type="button" onClick={() => navigator.clipboard.writeText(window.location.href)}>
-              <ClipboardDocumentListIcon className="h-6 w-6" />
+              <ShareIcon className="h-4 w-4" />
             </button>
           </div>
           {data?.owner.role && (
