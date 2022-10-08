@@ -2,6 +2,7 @@ import { useEffect, useLayoutEffect, useState } from "react";
 import Button from "./Button";
 import { createPortal } from "react-dom";
 import { doc } from "prettier";
+import LoadingSpinner from "./LoadingSpinner";
 
 interface Props {
   show: boolean;
@@ -11,10 +12,11 @@ interface Props {
   confirmText?: string;
   onCancel?: () => void;
   cancelText?: string;
+  isLoading?: boolean;
 }
 
 export default function Dialog(props: Props) {
-  const { show, title, body, onCancel, cancelText, onConfirm, confirmText } = props;
+  const { show, title, body, onCancel, cancelText, onConfirm, confirmText, isLoading } = props;
 
   useLayoutEffect(() => {
     const domBody = document.querySelector("body");
@@ -31,6 +33,7 @@ export default function Dialog(props: Props) {
   }, [show]);
 
   // todo - add dialog sizing
+  // todo - replace confirm button with loading button
 
   const mountPoint = document.getElementById("portal");
 
@@ -43,7 +46,10 @@ export default function Dialog(props: Props) {
               <div>{body}</div>
               <div className="flex flex-row justify-end items-center flex-wrap gap-2 w-full">
                 <Button onClick={onCancel}>{cancelText ?? "Cancel"}</Button>
-                <Button onClick={onConfirm}>{confirmText ?? "Confirm"}</Button>
+                {((isLoading !== undefined && !isLoading) || isLoading === undefined) && (
+                  <Button onClick={onConfirm}>{confirmText ?? "Confirm"}</Button>
+                )}
+                {isLoading !== undefined && isLoading && <LoadingSpinner />}
               </div>
             </div>
           </dialog>,

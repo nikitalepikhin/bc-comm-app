@@ -1,4 +1,4 @@
-import { Injectable, UnauthorizedException } from "@nestjs/common";
+import { Injectable, NotFoundException, UnauthorizedException } from "@nestjs/common";
 import { PrismaService } from "../prisma/prisma.service";
 import CreatePostRequestDto from "./dto/create-post-request.dto";
 import UserDto from "../auth/dto/user.dto";
@@ -38,6 +38,45 @@ export class PostsService {
         })
       ).uuid,
     };
+  }
+
+  async getPostByUuid(user: UserDto, postUuid: string): Promise<GetPostByUuidResponseDto> {
+    try {
+      const post = await this.prisma.post.findUniqueOrThrow({
+        where: { uuid: postUuid },
+        include: { votes: true, _count: { select: { comments: true } } },
+      });
+      const vote = await this.prisma.userPostVotes.findUnique({
+        where: {
+          userUuid_postUuid: {
+            postUuid,
+            userUuid: user.uuid,
+          },
+        },
+      });
+      return {
+        post: {
+          uuid: post.uuid,
+          title: post.title,
+          body: post.body,
+          created: post.created,
+          modified: post.modified,
+          author: post.authorUsername,
+          isAuthor: post.authorUuid === user.uuid,
+          edited: post.created.getTime() !== post.modified.getTime(),
+          up: post.votes.filter((vote) => vote.dir === 1).length,
+          down: post.votes.filter((vote) => vote.dir === -1).length,
+          dir: vote ? vote.dir : 0,
+          commentsCount: post._count.comments,
+        },
+      };
+    } catch (e) {
+      if (e.name.toString().toLowerCase().includes("notfounderror")) {
+        throw new NotFoundException();
+      } else {
+        throw e;
+      }
+    }
   }
 
   async getPostsForChannel(
@@ -181,36 +220,5 @@ export class PostsService {
     } else {
       throw new UnauthorizedException();
     }
-  }
-
-  async getPostByUuid(user: UserDto, postUuid: string): Promise<GetPostByUuidResponseDto> {
-    const post = await this.prisma.post.findUnique({
-      where: { uuid: postUuid },
-      include: { votes: true, _count: { select: { comments: true } } },
-    });
-    const vote = await this.prisma.userPostVotes.findUnique({
-      where: {
-        userUuid_postUuid: {
-          postUuid,
-          userUuid: user.uuid,
-        },
-      },
-    });
-    return {
-      post: {
-        uuid: post.uuid,
-        title: post.title,
-        body: post.body,
-        created: post.created,
-        modified: post.modified,
-        author: post.authorUsername,
-        isAuthor: post.authorUuid === user.uuid,
-        edited: post.created.getTime() !== post.modified.getTime(),
-        up: post.votes.filter((vote) => vote.dir === 1).length,
-        down: post.votes.filter((vote) => vote.dir === -1).length,
-        dir: vote ? vote.dir : 0,
-        commentsCount: post._count.comments,
-      },
-    };
   }
 }

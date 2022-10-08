@@ -32,8 +32,7 @@ const ChannelForm: React.FC<ChannelFormPropsType> = ({
   setTextIdError,
   mode,
 }) => {
-  const [checkChannelIdAvailability, { data: channelIdAvailability, isError: checkChannelIdAvailabilityIsError }] =
-    useLazyCheckChannelIdAvailabilityQuery();
+  const [checkChannelIdAvailability] = useLazyCheckChannelIdAvailabilityQuery();
 
   const debouncedCheckChannelIdAvailability = useCallback(
     debounce(async (value: string) => {

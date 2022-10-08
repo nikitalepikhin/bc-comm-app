@@ -4,10 +4,15 @@ import { useGetPostByUuidQuery } from "../../app/enhancedApi";
 import LoadingSpinner from "../../common/ui/LoadingSpinner";
 import LinkWithIcon from "../../common/ui/LinkWithIcon";
 import { XMarkIcon } from "@heroicons/react/20/solid";
+import ErrorPage from "../../common/components/ErrorPage";
 
 export default function PostPage() {
   const { textId, postUuid } = useParams() as { textId: string; postUuid: string };
-  const { data, isLoading } = useGetPostByUuidQuery({ postUuid });
+  const { data, isLoading, isError, error } = useGetPostByUuidQuery({ postUuid });
+
+  if (isError && error !== undefined && "status" in error) {
+    return <ErrorPage message="This post does not exist." />;
+  }
 
   return (
     <div className="flex flex-col w-full justify-start items-stretch gap-2">

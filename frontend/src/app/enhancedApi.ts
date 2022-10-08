@@ -82,30 +82,29 @@ export const enhancedApi = api.enhanceEndpoints({
         { toggleChannelMembershipRequestDto: { joining, channelUuid } },
         { dispatch, queryFulfilled, getState }
       ) => {
-        const patchResult: PatchCollection[] = [];
+        const patches: PatchCollection[] = [];
         for (const { endpointName, originalArgs } of enhancedApi.util.selectInvalidatedBy(getState(), [
           { type: TagTypes.CHANNEL },
         ])) {
           if (endpointName === "getChannelByTextId" && originalArgs.textId !== undefined) {
-            patchResult.push(
-              dispatch(
-                enhancedApi.util.updateQueryData(endpointName, { textId: originalArgs.textId }, (draft) => {
-                  if (draft.uuid === channelUuid) {
-                    if (joining) {
-                      Object.assign(draft, { ...draft, isMember: true, memberCount: draft.memberCount + 1 });
-                    } else {
-                      Object.assign(draft, { ...draft, isMember: false, memberCount: draft.memberCount - 1 });
-                    }
+            const patch = dispatch(
+              enhancedApi.util.updateQueryData(endpointName, { textId: originalArgs.textId }, (draft) => {
+                if (draft.uuid === channelUuid) {
+                  if (joining) {
+                    Object.assign(draft, { ...draft, isMember: true, memberCount: draft.memberCount + 1 });
+                  } else {
+                    Object.assign(draft, { ...draft, isMember: false, memberCount: draft.memberCount - 1 });
                   }
-                })
-              )
+                }
+              })
             );
+            patches.push(patch);
           }
         }
         try {
           await queryFulfilled;
         } catch {
-          patchResult.forEach((patch) => patch.undo());
+          patches.forEach((patch) => patch.undo());
         }
       },
     },

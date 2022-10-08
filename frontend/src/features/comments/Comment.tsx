@@ -3,7 +3,7 @@ import classNames from "classnames";
 import timeAgo from "../../common/util/time";
 import Badge from "../../common/ui/Badge";
 import StyledLink from "../../common/ui/StyledLink";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import CommentForm from "./CommentForm";
 import Dialog from "../../common/ui/Dialog";
 import { useDeleteCommentMutation } from "../../app/enhancedApi";
@@ -32,8 +32,13 @@ export default function Comment(props: Props) {
   const [isReplying, setIsReplying] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [deleteComment, { isLoading, isSuccess }] = useDeleteCommentMutation();
 
-  const [deleteComment] = useDeleteCommentMutation();
+  useEffect(() => {
+    if (isSuccess) {
+      setIsDeleting(false);
+    }
+  }, [isSuccess]);
 
   return (
     <>
@@ -121,15 +126,13 @@ export default function Comment(props: Props) {
       ))}
       <Dialog
         show={isDeleting}
-        title="Delete comment"
+        title="Delete Comment"
         body="Are you sure you want to delete your comment?"
-        onConfirm={() => {
-          setIsDeleting(false);
-          deleteComment({ deleteCommentRequestDto: { uuid, postUuid } });
-        }}
+        onConfirm={() => deleteComment({ deleteCommentRequestDto: { uuid, postUuid } })}
         onCancel={() => setIsDeleting(false)}
         confirmText="Delete"
         cancelText="Keep"
+        isLoading={isLoading}
       />
     </>
   );

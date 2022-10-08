@@ -7,8 +7,7 @@ import "./inter.css";
 import App from "./App";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import LoginPage from "./features/auth/LoginPage";
-import { DebugPage } from "./features/auth/DebugPage";
-import NotFoundPage from "./common/components/NotFoundPage";
+import ErrorPage from "./common/components/ErrorPage";
 import { IndexPage } from "./common/components/IndexPage";
 import SignupPage from "./features/auth/SignupPage";
 import SchoolsRoutes from "./features/schools/SchoolsRoutes";
@@ -24,12 +23,11 @@ ReactDOM.render(
             <Route index element={<IndexPage />} />
             <Route path="login" element={<LoginPage />} />
             <Route path="signup" element={<SignupPage />} />
-            {process.env.MODE === "dev" && <Route path="debug" element={<DebugPage />} />}
             <Route path="schools/*" element={<SchoolsRoutes />} />
             <Route path="faculties/*" element={<FacultiesRoutes />} />
             <Route path="channels/*" element={<ChannelsRoutes />} />
+            <Route path="*" element={<ErrorPage />} />
           </Route>
-          <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </BrowserRouter>
     </Provider>

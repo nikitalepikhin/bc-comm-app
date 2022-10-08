@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable, UnauthorizedException } from "@nestjs/common";
+import { BadRequestException, Injectable, NotFoundException, UnauthorizedException } from "@nestjs/common";
 import { PrismaService } from "../prisma/prisma.service";
 import CreateChannelRequestDto from "./dto/create-channel-request.dto";
 import UserDto from "../auth/dto/user.dto";
@@ -141,7 +141,7 @@ export class ChannelsService {
       };
     } catch (e) {
       if (e.name.toString().toLowerCase().includes("notfounderror")) {
-        throw new BadRequestException();
+        throw new NotFoundException();
       } else {
         throw e;
       }

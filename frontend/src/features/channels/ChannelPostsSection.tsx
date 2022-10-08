@@ -20,7 +20,7 @@ function ChannelPostsSection(props: Props, ref: ForwardedRef<HTMLDivElement>) {
   const { textId } = useParams() as { textId: string };
   const { postsLoadTime } = useAppSelector((state) => state.posts);
 
-  const { data, refetch, isLoading } = useGetPostsForChannelQuery({
+  const { data, refetch, isLoading, isError, error } = useGetPostsForChannelQuery({
     channelTextId: textId,
     order,
     page,

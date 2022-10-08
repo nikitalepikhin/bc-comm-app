@@ -3,16 +3,21 @@ import { Outlet, useParams } from "react-router-dom";
 import { useGetChannelByTextIdQuery, useToggleMembershipMutation } from "../../app/enhancedApi";
 import { format } from "date-fns";
 import Button from "../../common/ui/Button";
-import { ClipboardDocumentListIcon, ShareIcon } from "@heroicons/react/24/outline";
+import { ShareIcon } from "@heroicons/react/24/outline";
 import { useAppSelector } from "../../app/hooks";
 import StyledLink from "../../common/ui/StyledLink";
 import LoadingSpinner from "../../common/ui/LoadingSpinner";
+import ErrorPage from "../../common/components/ErrorPage";
 
 const ChannelPage: React.FC = () => {
   const { textId } = useParams() as { textId: string };
   const { role } = useAppSelector((state) => state.auth.user);
-  const { data, isLoading } = useGetChannelByTextIdQuery({ textId: textId! });
+  const { data, isLoading, isError, error } = useGetChannelByTextIdQuery({ textId: textId! });
   const [toggleMembership] = useToggleMembershipMutation();
+
+  if (isError && error !== undefined && "status" in error) {
+    return <ErrorPage code={String(error.status)} message="This channel does not exist." />;
+  }
 
   return isLoading ? (
     <div>
