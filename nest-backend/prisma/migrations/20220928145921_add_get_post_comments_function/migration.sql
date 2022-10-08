@@ -5,6 +5,8 @@ CREATE
 
                                            PAGE INT DEFAULT 1,
 
+                                           AFTER timestamp(6) default CURRENT_TIMESTAMP,
+
                                            ORDER_BY_CREATED boolean DEFAULT TRUE,
 
                                            _LIMIT INT DEFAULT 10,
@@ -48,6 +50,7 @@ BEGIN
             ) AS D ON D."commentUuid" = C.uuid
             WHERE C."postUuid" = post_uuid
               AND C."parentUuid" IS NULL
+              AND C.created <= AFTER
             ORDER BY CASE
                          WHEN order_by_created IS true
                              THEN cast(extract(epoch FROM C.created) AS BIGINT)

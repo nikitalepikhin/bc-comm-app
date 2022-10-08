@@ -31,6 +31,7 @@ export default function Post(props: Props) {
     title,
     body,
     created,
+    modified,
     author,
     isAuthor,
     edited,
@@ -62,7 +63,7 @@ export default function Post(props: Props) {
               {edited && (
                 <>
                   <span>·</span>
-                  <span>{`edited ${timeAgo.format(new Date(created))}`}</span>
+                  <span>{`edited ${timeAgo.format(new Date(modified))}`}</span>
                 </>
               )}
             </div>

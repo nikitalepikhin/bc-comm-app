@@ -150,7 +150,7 @@ export const enhancedApi = api.enhanceEndpoints({
     },
     voteOnPost: {
       onQueryStarted: async ({ voteOnPostRequestDto: { uuid, dir } }, { dispatch, queryFulfilled, getState }) => {
-        const getPostsForChannelPatches: PatchCollection[] = [];
+        const patches: PatchCollection[] = [];
         for (const { endpointName, originalArgs } of enhancedApi.util.selectInvalidatedBy(getState(), [
           { type: TagTypes.POST, id: IdTypes.PARTIAL_LIST },
         ])) {
@@ -160,30 +160,45 @@ export const enhancedApi = api.enhanceEndpoints({
             originalArgs.channelTextId !== undefined &&
             originalArgs.order !== undefined
           ) {
-            getPostsForChannelPatches.push(
-              dispatch(
-                enhancedApi.util.updateQueryData(endpointName, originalArgs, (draft) => {
-                  Object.assign(draft, {
-                    ...draft,
-                    posts: [
-                      ...draft.posts.map((post) => {
-                        if (post.uuid !== uuid) {
-                          return post;
-                        } else {
-                          return {
-                            ...post,
-                            ...calculateVotes(post.up, post.down, post.dir, dir),
-                          };
-                        }
-                      }),
-                    ],
-                  });
-                })
-              )
+            const patch = dispatch(
+              enhancedApi.util.updateQueryData(endpointName, originalArgs, (draft) => {
+                Object.assign(draft, {
+                  ...draft,
+                  posts: [
+                    ...draft.posts.map((post) => {
+                      if (post.uuid === uuid) {
+                        return {
+                          ...post,
+                          ...calculateVotes(post.up, post.down, post.dir, dir),
+                        };
+                      } else {
+                        return post;
+                      }
+                    }),
+                  ],
+                });
+              })
             );
+            patches.push(patch);
+          } else if (endpointName === "getUserFeed") {
+            const patch = dispatch(
+              enhancedApi.util.updateQueryData(endpointName, originalArgs, (draft) => {
+                Object.assign(draft, {
+                  ...draft,
+                  posts: draft.posts.map((post) => {
+                    if (post.uuid === uuid) {
+                      return { ...post, ...calculateVotes(post.up, post.down, post.dir, dir) };
+                    } else {
+                      return post;
+                    }
+                  }),
+                });
+              })
+            );
+            patches.push(patch);
           }
         }
-        const patchSinglePost = dispatch(
+        const patch = dispatch(
           enhancedApi.util.updateQueryData("getPostByUuid", { postUuid: uuid }, (draft) => {
             Object.assign(draft, {
               ...draft,
@@ -194,11 +209,11 @@ export const enhancedApi = api.enhanceEndpoints({
             });
           })
         );
+        patches.push(patch);
         try {
           await queryFulfilled;
         } catch (e) {
-          patchSinglePost.undo();
-          getPostsForChannelPatches.forEach((patch) => patch.undo());
+          patches.forEach((patch) => patch.undo());
         }
       },
     },
@@ -239,6 +254,45 @@ export const enhancedApi = api.enhanceEndpoints({
     createComment: {
       invalidatesTags: (result, error, arg) => {
         return [{ type: TagTypes.COMMENT, id: arg.createCommentRequestDto.postUuid }];
+      },
+      onQueryStarted: async ({ createCommentRequestDto: { postUuid } }, { dispatch, queryFulfilled, getState }) => {
+        const patches: PatchCollection[] = [];
+        for (const { endpointName, originalArgs } of enhancedApi.util.selectInvalidatedBy(getState(), [
+          { type: TagTypes.POST, id: postUuid },
+        ])) {
+          if (endpointName === "getPostsForChannel" || endpointName === "getUserFeed") {
+            const patch = dispatch(
+              enhancedApi.util.updateQueryData(endpointName, originalArgs, (draft) => {
+                Object.assign(draft, {
+                  ...draft,
+                  posts: draft.posts.map((post) => {
+                    if (post.uuid === postUuid) {
+                      return { ...post, commentsCount: post.commentsCount + 1 };
+                    } else {
+                      return post;
+                    }
+                  }),
+                });
+              })
+            );
+            patches.push(patch);
+          } else if (endpointName === "getPostByUuid") {
+            const patch = dispatch(
+              enhancedApi.util.updateQueryData(endpointName, originalArgs, (draft) => {
+                Object.assign(draft, {
+                  ...draft,
+                  post: { ...draft.post, commentsCount: draft.post.commentsCount + 1 },
+                });
+              })
+            );
+            patches.push(patch);
+          }
+        }
+        try {
+          await queryFulfilled;
+        } catch (e) {
+          patches.forEach((patch) => patch.undo());
+        }
       },
     },
     updateComment: {
@@ -328,6 +382,57 @@ export const enhancedApi = api.enhanceEndpoints({
     },
     deleteComment: {
       invalidatesTags: (result, error, arg) => [{ type: TagTypes.COMMENT, id: arg.deleteCommentRequestDto.postUuid }],
+      onQueryStarted: async ({ deleteCommentRequestDto: { postUuid } }, { dispatch, queryFulfilled, getState }) => {
+        const patches: PatchCollection[] = [];
+        for (const { endpointName, originalArgs } of enhancedApi.util.selectInvalidatedBy(getState(), [
+          { type: TagTypes.POST, id: postUuid },
+        ])) {
+          if (endpointName === "getPostsForChannel" || endpointName === "getUserFeed") {
+            const patch = dispatch(
+              enhancedApi.util.updateQueryData(endpointName, originalArgs, (draft) => {
+                Object.assign(draft, {
+                  ...draft,
+                  posts: draft.posts.map((post) => {
+                    if (post.uuid === postUuid) {
+                      return { ...post, commentsCount: post.commentsCount - 1 };
+                    } else {
+                      return post;
+                    }
+                  }),
+                });
+              })
+            );
+            patches.push(patch);
+          } else if (endpointName === "getPostByUuid") {
+            const patch = dispatch(
+              enhancedApi.util.updateQueryData(endpointName, originalArgs, (draft) => {
+                Object.assign(draft, {
+                  ...draft,
+                  post: { ...draft.post, commentsCount: draft.post.commentsCount - 1 },
+                });
+              })
+            );
+            patches.push(patch);
+          }
+        }
+        try {
+          await queryFulfilled;
+        } catch (e) {
+          patches.forEach((patch) => patch.undo());
+        }
+      },
+    },
+    getUserFeed: {
+      providesTags: (result, error, arg) => {
+        if (result) {
+          return [
+            ...result.posts.map((post) => ({ type: TagTypes.POST, id: post.uuid })),
+            { type: TagTypes.POST, id: IdTypes.PARTIAL_LIST },
+          ];
+        } else {
+          return [{ type: TagTypes.POST, id: IdTypes.PARTIAL_LIST }];
+        }
+      },
     },
   },
 });

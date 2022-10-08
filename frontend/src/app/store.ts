@@ -5,6 +5,7 @@ import authReducer from "../features/auth/authSlice";
 import commentsSlice from "../features/comments/commentsSlice";
 import { api } from "./api";
 import feedSlice from "../feed/feedSlice";
+import postsSlice from "../features/posts/postsSlice";
 
 export const store = configureStore({
   reducer: {
@@ -12,6 +13,7 @@ export const store = configureStore({
     auth: authReducer,
     comments: commentsSlice,
     feed: feedSlice,
+    posts: postsSlice,
   },
   ...devToolsEnhancer(),
   middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(api.middleware),

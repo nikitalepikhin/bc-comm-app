@@ -2,20 +2,30 @@ import { createSlice } from "@reduxjs/toolkit";
 import { enhancedApi } from "../../app/enhancedApi";
 
 interface CommentsState {
-  postCommentsRequestDate: string;
+  commentsLoadTime: string;
 }
 
 const initialState: CommentsState = {
-  postCommentsRequestDate: new Date().toISOString(),
+  commentsLoadTime: new Date().toISOString(),
 };
 
 const commentsSlice = createSlice({
   name: "comments",
   initialState,
-  reducers: {},
+  reducers: {
+    resetCommentsLoadTime(state) {
+      state.commentsLoadTime = new Date().toISOString();
+    },
+  },
   extraReducers: (builder) => {
     builder.addMatcher(enhancedApi.endpoints.createComment.matchFulfilled, (state) => {
-      state.postCommentsRequestDate = new Date().toISOString();
+      state.commentsLoadTime = new Date().toISOString();
+    });
+    builder.addMatcher(enhancedApi.endpoints.updateComment.matchFulfilled, (state) => {
+      state.commentsLoadTime = new Date().toISOString();
+    });
+    builder.addMatcher(enhancedApi.endpoints.deleteComment.matchFulfilled, (state) => {
+      state.commentsLoadTime = new Date().toISOString();
     });
   },
 });

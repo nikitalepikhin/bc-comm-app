@@ -2,10 +2,11 @@ import { useParams } from "react-router-dom";
 import Button from "../../common/ui/Button";
 import React, { useEffect, useRef, useState } from "react";
 import StyledLink from "../../common/ui/StyledLink";
-import { useAppSelector } from "../../app/hooks";
+import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { GetPostsForChannelApiArg } from "../../app/api";
 import ChannelPostsSection from "../channels/ChannelPostsSection";
 import { useInView } from "react-intersection-observer";
+import { resetPostsLoadTime } from "./postsSlice";
 
 export default function ChannelPosts() {
   const { textId } = useParams() as { textId: string };
@@ -14,7 +15,7 @@ export default function ChannelPosts() {
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(false);
   const pages = Array.from(Array(page + 1).keys()).slice(1);
-  const [initialDatetime] = useState(new Date());
+  const dispatch = useAppDispatch();
 
   const { ref, inView } = useInView({ triggerOnce: true });
   useEffect(() => {
@@ -23,6 +24,10 @@ export default function ChannelPosts() {
       setHasMore(false);
     }
   }, [inView]);
+
+  useEffect(() => {
+    dispatch(resetPostsLoadTime());
+  }, []);
 
   return (
     <div className="flex flex-col justify-start items-center w-full gap-2">
@@ -66,7 +71,6 @@ export default function ChannelPosts() {
           order={order}
           hasMore={hasMore}
           setHasMore={setHasMore}
-          initialDatetime={initialDatetime}
         />
       ))}
     </div>

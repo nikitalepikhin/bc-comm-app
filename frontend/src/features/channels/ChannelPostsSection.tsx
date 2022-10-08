@@ -5,6 +5,7 @@ import { GetPostCommentsApiArg } from "../../app/api";
 import { useGetPostsForChannelQuery } from "../../app/enhancedApi";
 import { useParams } from "react-router-dom";
 import LoadingSpinner from "../../common/ui/LoadingSpinner";
+import { useAppSelector } from "../../app/hooks";
 
 interface Props {
   page: number;
@@ -12,18 +13,18 @@ interface Props {
   order: GetPostCommentsApiArg["order"];
   hasMore: boolean;
   setHasMore: (value: boolean) => void;
-  initialDatetime: Date; //todo - get from state
 }
 
 function ChannelPostsSection(props: Props, ref: ForwardedRef<HTMLDivElement>) {
-  const { page, isLastPage, order, hasMore, setHasMore, initialDatetime } = props;
+  const { page, isLastPage, order, hasMore, setHasMore } = props;
   const { textId } = useParams() as { textId: string };
+  const { postsLoadTime } = useAppSelector((state) => state.posts);
 
   const { data, refetch, isLoading } = useGetPostsForChannelQuery({
     channelTextId: textId,
     order,
     page,
-    after: initialDatetime.toISOString(),
+    after: postsLoadTime,
   });
 
   useEffect(() => {
