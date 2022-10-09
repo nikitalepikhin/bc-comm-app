@@ -1,5 +1,10 @@
 import classNames from "classnames";
-import { CheckCircleIcon, ExclamationTriangleIcon, InformationCircleIcon } from "@heroicons/react/24/solid";
+import {
+  CheckCircleIcon,
+  ExclamationCircleIcon,
+  ExclamationTriangleIcon,
+  InformationCircleIcon,
+} from "@heroicons/react/24/solid";
 import Button from "./Button";
 import { XMarkIcon } from "@heroicons/react/24/solid";
 import IconButton from "./IconButton";
@@ -22,16 +27,16 @@ export default function Alert(props: Props) {
         { "w-full": fullWidth },
         { "w-fit": !fullWidth },
         {
-          "border-red-600 bg-red-100/50 text-red-900": severity === "error",
+          "border-red-600 bg-red-100/50 dark:bg-red-100/90 text-red-900": severity === "error",
         },
         {
-          "border-amber-600 bg-amber-100/50 text-amber-900": severity === "warning",
+          "border-amber-600 bg-amber-100/50 dark:bg-amber-100/90 text-amber-900": severity === "warning",
         },
         {
-          "border-slate-600 bg-slate-100/50 text-slate-900": severity === "info",
+          "border-slate-600 bg-slate-100/50 dark:bg-slate-100/90 text-slate-900": severity === "info",
         },
         {
-          "border-lime-600 bg-lime-100/50 text-lime-900": severity === "success",
+          "border-lime-600 bg-lime-100/50 dark:bg-lime-100/90 text-lime-900": severity === "success",
         }
       )}
     >
@@ -44,14 +49,11 @@ export default function Alert(props: Props) {
           { "bg-lime-400/30": severity === "success" }
         )}
       >
-        {(severity === "error" || severity === "warning") && (
-          <ExclamationTriangleIcon
-            className={classNames(
-              "h-10 w-10",
-              { "text-red-600": severity === "error" },
-              { "text-amber-600": severity === "warning" }
-            )}
-          />
+        {severity === "error" && (
+          <ExclamationTriangleIcon className={classNames("h-10 w-10", { "text-red-600": severity === "error" })} />
+        )}
+        {severity === "warning" && (
+          <ExclamationCircleIcon className={classNames("h-10 w-10", { "text-amber-600": severity === "warning" })} />
         )}
         {severity === "success" && <CheckCircleIcon className={classNames("h-10 w-10 text-lime-600")} />}
         {severity === "info" && <InformationCircleIcon className={classNames("h-10 w-10 text-slate-600")} />}
