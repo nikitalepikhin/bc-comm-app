@@ -26,18 +26,13 @@ export const DebugPage: React.FC = () => {
       <h1 className="text-3xl text-primary font-bold uppercase">Authentication Debug</h1>
 
       <div className="flex flex-row justify-start gap-2">
-        <Button variant="outlined" onClick={() => navigate("/login")}>
-          Login page
-        </Button>
-        <Button variant="outlined" onClick={() => navigate("/")}>
-          Home page
-        </Button>
+        <Button onClick={() => navigate("/login")}>Login page</Button>
+        <Button onClick={() => navigate("/")}>Home page</Button>
         {user.email !== undefined && (
           <Button
             onClick={() => {
               logOut();
             }}
-            variant="outlined"
           >
             Log Out
           </Button>
@@ -57,9 +52,7 @@ export const DebugPage: React.FC = () => {
 
       <p>Test protected route:</p>
       <div className="flex flex-row gap-1.5">
-        <Button variant="outlined" onClick={() => getHello()}>
-          Protected route request
-        </Button>
+        <Button onClick={() => getHello()}>Protected route request</Button>
       </div>
       <pre className="px-4 py-2 rounded-md rounded-md shadow overflow-hidden bg-white text-sm w-fit">
         {JSON.stringify(hello.error ? hello.error : hello.data ?? "undefined", null, 2)}
@@ -67,9 +60,7 @@ export const DebugPage: React.FC = () => {
 
       <p>Test unprotected route:</p>
       <div className="flex flex-row gap-1.5">
-        <Button variant="outlined" onClick={() => getNoAuthHello()}>
-          Unprotected route request
-        </Button>
+        <Button onClick={() => getNoAuthHello()}>Unprotected route request</Button>
       </div>
       <pre className="px-4 py-2 rounded-md rounded-md shadow overflow-hidden bg-white text-sm w-fit">
         {JSON.stringify(helloNoAuth.error ? helloNoAuth.error : helloNoAuth.data ?? "undefined", null, 2)}

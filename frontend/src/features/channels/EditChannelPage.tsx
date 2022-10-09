@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useGetChannelByTextIdQuery, useUpdateChannelMutation } from "../../app/enhancedApi";
 import ChannelForm, { ChannelFormValues } from "./ChannelForm";
+import PageWrapper from "../../common/ui/PageWrapper";
 
 const EditChannelPage: React.FC = () => {
   const { textId } = useParams();
@@ -29,7 +30,7 @@ const EditChannelPage: React.FC = () => {
   };
 
   return (
-    <div>
+    <PageWrapper>
       <ChannelForm
         mode="update"
         initialValues={initialValues}
@@ -47,7 +48,7 @@ const EditChannelPage: React.FC = () => {
         textIdError={textIdError}
         setTextIdError={setTextIdError}
       />
-    </div>
+    </PageWrapper>
   );
 };
 

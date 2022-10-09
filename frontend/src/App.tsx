@@ -6,14 +6,15 @@ import NavBar from "./common/components/NavBar";
 
 const App: React.FC = () => {
   const { isLoading, isUninitialized } = useAuthentication();
+  // const { prefersDarkMode } = useDarkMode();todo
   return (
-    <div>
+    <div id="app" className="font-inter text-primary bg-slate-100 dark:text-white dark:bg-slate-900 min-h-screen">
       {isLoading || isUninitialized ? (
         <LoadingPage />
       ) : (
         <>
           <NavBar />
-          <div className="2xl:max-w-screen-2xl mx-4 my-2 2xl:mx-auto">
+          <div className="2xl:max-w-screen-2xl mx-3 2xl:mx-auto">
             <Outlet />
           </div>
         </>

@@ -35,7 +35,6 @@ export default function ChannelPosts() {
         <div className="flex flex-row gap-2">
           <Button
             type="button"
-            variant={order === "new" ? "outlined" : "standard"}
             onClick={() => {
               setOrder("new");
               setPage(1);
@@ -46,7 +45,6 @@ export default function ChannelPosts() {
           </Button>
           <Button
             type="button"
-            variant={order === "top" ? "outlined" : "standard"}
             onClick={() => {
               setOrder("top");
               setPage(1);

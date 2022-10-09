@@ -19,7 +19,6 @@ export default function PostCommentsPage() {
       {data && data.post.commentsCount > 0 && (
         <div className="flex flex-row justify-start items-center gap-2">
           <Button
-            variant={order === "new" ? "outlined" : "standard"}
             onClick={() => {
               setPage(1);
               setHasMore(false);
@@ -29,7 +28,6 @@ export default function PostCommentsPage() {
             New
           </Button>
           <Button
-            variant={order === "top" ? "outlined" : "standard"}
             onClick={() => {
               setPage(1);
               setHasMore(false);

@@ -132,7 +132,7 @@ export default function Comment(props: Props) {
         onCancel={() => setIsDeleting(false)}
         confirmText="Delete"
         cancelText="Keep"
-        isLoading={isLoading}
+        loading={isLoading}
       />
     </>
   );

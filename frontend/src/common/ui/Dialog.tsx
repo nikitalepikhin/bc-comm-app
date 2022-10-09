@@ -1,22 +1,38 @@
-import { useEffect, useLayoutEffect, useState } from "react";
+import { useLayoutEffect } from "react";
 import Button from "./Button";
 import { createPortal } from "react-dom";
-import { doc } from "prettier";
-import LoadingSpinner from "./LoadingSpinner";
+import Container from "./Container";
+import classNames from "classnames";
+import { XMarkIcon } from "@heroicons/react/20/solid";
 
 interface Props {
   show: boolean;
   title?: string;
   body?: string;
-  onConfirm?: () => void;
+  size?: "xs" | "sm" | "md" | "lg";
+  onConfirm: () => void;
   confirmText?: string;
-  onCancel?: () => void;
+  danger?: boolean;
+  onClose?: () => void;
+  onCancel: () => void;
   cancelText?: string;
-  isLoading?: boolean;
+  loading?: boolean;
 }
 
 export default function Dialog(props: Props) {
-  const { show, title, body, onCancel, cancelText, onConfirm, confirmText, isLoading } = props;
+  const {
+    show,
+    title,
+    body,
+    size = "md",
+    onCancel,
+    onClose,
+    cancelText,
+    onConfirm,
+    confirmText,
+    danger = false,
+    loading = false,
+  } = props;
 
   useLayoutEffect(() => {
     const domBody = document.querySelector("body");
@@ -32,25 +48,50 @@ export default function Dialog(props: Props) {
     };
   }, [show]);
 
-  // todo - add dialog sizing
-  // todo - replace confirm button with loading button
+  // todo icon button
 
   const mountPoint = document.getElementById("portal");
 
   if (mountPoint) {
     return show
       ? createPortal(
-          <dialog className="flex justify-center items-center w-screen h-screen fixed top-0 left-0 z-50 bg-primary/80">
-            <div className="flex flex-col justify-start items-center bg-white rounded-md px-4 py-2 max-w-screen-md w-full shadow">
-              <div className="text-lg font-bold w-full">{title}</div>
-              <div>{body}</div>
-              <div className="flex flex-row justify-end items-center flex-wrap gap-2 w-full">
-                <Button onClick={onCancel}>{cancelText ?? "Cancel"}</Button>
-                {((isLoading !== undefined && !isLoading) || isLoading === undefined) && (
-                  <Button onClick={onConfirm}>{confirmText ?? "Confirm"}</Button>
-                )}
-                {isLoading !== undefined && isLoading && <LoadingSpinner />}
-              </div>
+          <dialog
+            className={classNames(
+              "flex justify-center items-center",
+              "w-screen h-screen",
+              "fixed top-0 left-0 z-50",
+              "bg-slate-900/80 dark:bg-slate-900/90"
+            )}
+          >
+            <div
+              className={classNames(
+                "w-full",
+                { "max-w-screen-xs": size === "xs" },
+                { "max-w-screen-sm": size === "sm" },
+                { "max-w-screen-md": size === "md" },
+                { "max-w-screen-lg": size === "lg" },
+                "relative overflow-auto rounded-md",
+                "font-inter text-primary bg-slate-100 dark:text-white dark:bg-slate-900"
+              )}
+            >
+              {onClose && (
+                <Button className="absolute top-2 right-3 bg-white" onClick={onClose}>
+                  <XMarkIcon className="text-primary h-4 w-4" />
+                </Button>
+              )}
+              <Container
+                title={title}
+                actions={
+                  <>
+                    <Button onClick={onCancel}>{cancelText ?? "Cancel"}</Button>
+                    <Button onClick={onConfirm} loading={loading} variant={danger ? "danger" : "accent"}>
+                      {confirmText ?? "Confirm"}
+                    </Button>
+                  </>
+                }
+              >
+                {body}
+              </Container>
             </div>
           </dialog>,
           mountPoint

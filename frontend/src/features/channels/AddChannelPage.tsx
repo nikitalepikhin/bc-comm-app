@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useCreateChannelMutation } from "../../app/enhancedApi";
 import ChannelForm, { ChannelFormValues } from "./ChannelForm";
+import PageWrapper from "../../common/ui/PageWrapper";
 
 const initialValues: ChannelFormValues = {
   textId: "",
@@ -13,7 +14,7 @@ const AddChannelPage: React.FC = () => {
   const [textIdError, setTextIdError] = useState<string | undefined>(undefined);
 
   return (
-    <div>
+    <PageWrapper>
       <ChannelForm
         mode="create"
         initialValues={initialValues}
@@ -34,7 +35,7 @@ const AddChannelPage: React.FC = () => {
         textIdError={textIdError}
         setTextIdError={setTextIdError}
       />
-    </div>
+    </PageWrapper>
   );
 };
 

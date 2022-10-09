@@ -1,4 +1,5 @@
-const colors = require("tailwindcss/lib/public/colors");
+const colors = require("tailwindcss/colors");
+
 module.exports = {
   content: ["./src/**/*.{js,jsx,ts,tsx}"],
   theme: {
@@ -9,21 +10,17 @@ module.exports = {
       fontFamily: {
         inter: ["Inter"],
       },
-    },
-    colors: {
-      current: "currentColor",
-      transparent: "transparent",
-      primary: "#111827",
-      secondary: "#6b7280",
-      accent: "#2563eb",
-      "accent-light": "#93c5fd",
-      "accent-strong": "#1e40af",
-      white: "#ffffff",
-      gray: "#f3f4f6",
-      lightgray: "#f9fafb",
-      red: "#dc2626",
-      "red-strong": "#991b1b",
+      colors: {
+        // text colors
+        primary: colors.slate["900"],
+        secondary: colors.slate["500"],
+        // background colors
+        background: colors.slate["100"],
+        "background-dark": colors.slate["900"],
+        transparent: "transparent",
+      },
     },
   },
+  darkMode: "class",
   plugins: [require("@tailwindcss/forms"), require("@tailwindcss/line-clamp")],
 };

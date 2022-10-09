@@ -6,6 +6,7 @@ import TextField from "../../common/ui/TextField";
 import { useLogInMutation } from "../../app/enhancedApi";
 import { useAppSelector } from "../../app/hooks";
 import Button from "../../common/ui/Button";
+import PageWrapper from "../../common/ui/PageWrapper";
 
 const initialValues = {
   email: "",
@@ -27,63 +28,65 @@ const LoginPage: React.FC = () => {
   return present ? (
     <Navigate to="/" replace />
   ) : (
-    <div className="min-h-screen flex flex-col justify-center items-center py-8 px-6 sm:px-8">
-      <div>
-        <h2 className="text-2xl font-bold text-center">Welcome back!</h2>
-      </div>
-      <Formik
-        initialValues={initialValues}
-        onSubmit={({ email, password }) => logIn({ logInUserRequestDto: { email, password } })}
-        validationSchema={validationSchema}
-        validateOnChange={true}
-        validateOnMount={true}
-      >
-        {({ isValid, dirty }) => (
-          <div className="mt-6 w-full md:max-w-md ">
-            <div className="bg-white py-8 px-6 shadow rounded-lg">
-              <Form>
-                <Field name={"email"}>
-                  {({ field }: FieldProps) => (
-                    <TextField id={"email"} type={"text"} placeholder={"Email"} label={"Email"} field={field} />
-                  )}
-                </Field>
-                <Field name={"password"}>
-                  {({ field }: FieldProps) => (
-                    <TextField
-                      id={"password"}
-                      type={"password"}
-                      placeholder={"Password"}
-                      label={"Password"}
-                      wrapperClasses={"mt-4"}
-                      field={field}
-                    >
-                      {/*<p className="flex justify-end">*/}
-                      {/*  <a href="#" className="text-blue-600 hover:underline hover:text-blue-900 text-sm mr-2 mt-0.5">*/}
-                      {/*    Forgot your password?*/}
-                      {/*  </a>*/}
-                      {/*</p>*/}
-                    </TextField>
-                  )}
-                </Field>
-                <div className="flex justify-center mt-3">
-                  <Button type="submit" variant="contained" disabled={!isValid || !dirty} className="w-full">
-                    Log In
-                  </Button>
-                </div>
-              </Form>
+    <PageWrapper>
+      <div className="min-h-screen flex flex-col justify-center items-center py-8 px-6 sm:px-8">
+        <div>
+          <h2 className="text-2xl font-bold text-center">Welcome back!</h2>
+        </div>
+        <Formik
+          initialValues={initialValues}
+          onSubmit={({ email, password }) => logIn({ logInUserRequestDto: { email, password } })}
+          validationSchema={validationSchema}
+          validateOnChange={true}
+          validateOnMount={true}
+        >
+          {({ isValid, dirty }) => (
+            <div className="mt-6 w-full md:max-w-md ">
+              <div className="bg-white py-8 px-6 shadow rounded-lg">
+                <Form>
+                  <Field name={"email"}>
+                    {({ field }: FieldProps) => (
+                      <TextField id={"email"} type={"text"} placeholder={"Email"} label={"Email"} field={field} />
+                    )}
+                  </Field>
+                  <Field name={"password"}>
+                    {({ field }: FieldProps) => (
+                      <TextField
+                        id={"password"}
+                        type={"password"}
+                        placeholder={"Password"}
+                        label={"Password"}
+                        wrapperClasses={"mt-4"}
+                        field={field}
+                      >
+                        {/*<p className="flex justify-end">*/}
+                        {/*  <a href="#" className="text-blue-600 hover:underline hover:text-blue-900 text-sm mr-2 mt-0.5">*/}
+                        {/*    Forgot your password?*/}
+                        {/*  </a>*/}
+                        {/*</p>*/}
+                      </TextField>
+                    )}
+                  </Field>
+                  <div className="flex justify-center mt-3">
+                    <Button type="submit" disabled={!isValid || !dirty} className="w-full">
+                      Log In
+                    </Button>
+                  </div>
+                </Form>
+              </div>
             </div>
-          </div>
-        )}
-      </Formik>
-      <div className="mt-6">
-        <p>
-          Don't have an account?
-          <Link to="/signup" className="text-accent hover:underline hover:text-accent-strong pl-1.5">
-            Sign up
-          </Link>
-        </p>
+          )}
+        </Formik>
+        <div className="mt-6">
+          <p>
+            Don't have an account?
+            <Link to="/signup" className="text-accent hover:underline hover:text-accent-strong pl-1.5">
+              Sign up
+            </Link>
+          </p>
+        </div>
       </div>
-    </div>
+    </PageWrapper>
   );
 };
 

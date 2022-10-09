@@ -11,6 +11,7 @@ import { useAppSelector } from "../../app/hooks";
 import { Link, useLocation } from "react-router-dom";
 import { useLogOutMutation } from "../../app/enhancedApi";
 import { RoleType } from "../../features/auth/authSlice";
+import useTheme from "../hooks/useTheme";
 
 const NavBar: React.FC = () => {
   const {
@@ -19,6 +20,8 @@ const NavBar: React.FC = () => {
   } = useAppSelector((state) => state.auth);
 
   const [logOut] = useLogOutMutation();
+
+  const { setTheme } = useTheme(); //todo remove from here ???
 
   const menuRef = useRef(null);
   const profileRef = useRef(null);
@@ -67,7 +70,7 @@ const NavBar: React.FC = () => {
       )}
 
       <div className="col-span-full hidden peer-checked:flex lg:flex flex-col lg:flex-row justify-between items-center gap-4">
-        <Link to="/" onClick={onSelected}>
+        <Link to="/" onClick={onSelected} className="text-primary">
           <div className="hidden lg:flex flex-row justify-between items-center gap-1">
             <ChatBubbleBottomCenterTextIcon className="h-6 w-6" />
             <span className="uppercase hidden lg:inline">CommApp</span>
@@ -104,6 +107,27 @@ const NavBar: React.FC = () => {
                 }}
               >
                 Log out
+              </button>
+              <button
+                className="text-slate-900 bg-white border border-slate-200 hover:bg-slate-50 focus:ring-2 focus:ring-blue-600 focus:ring-offset-2 focus:outline-none py-2 px-3 rounded-md text-sm"
+                type="button"
+                onClick={() => setTheme("light")}
+              >
+                light
+              </button>
+              <button
+                className="text-slate-900 bg-white border border-slate-200 hover:bg-slate-50 focus:ring-2 focus:ring-blue-600 focus:ring-offset-2 focus:outline-none py-2 px-3 rounded-md text-sm"
+                type="button"
+                onClick={() => setTheme("dark")}
+              >
+                dark
+              </button>
+              <button
+                className="text-slate-900 bg-white border border-slate-200 hover:bg-slate-50 focus:ring-2 focus:ring-blue-600 focus:ring-offset-2 focus:outline-none py-2 px-3 rounded-md text-sm"
+                type="button"
+                onClick={() => setTheme("system")}
+              >
+                system
               </button>
             </div>
           </div>

@@ -58,18 +58,12 @@ const SchoolsTableRow: React.FC<SchoolsTableRowPropsType> = ({ school }) => {
                   setDeleteInProgress(false);
                 }
               }}
-              variant="contained"
               className="px-3 py-0.5 bg-red hover:bg-red-strong border-red hover:border-red-strong"
             >
               Delete
             </Button>
             {deleteInProgress && (
-              <Button
-                type="button"
-                variant="outlined"
-                className="px-3 py-0.5"
-                onClick={() => setDeleteInProgress(false)}
-              >
+              <Button type="button" className="px-3 py-0.5" onClick={() => setDeleteInProgress(false)}>
                 Cancel
               </Button>
             )}

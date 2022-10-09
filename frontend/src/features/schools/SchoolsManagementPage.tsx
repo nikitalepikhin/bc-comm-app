@@ -111,7 +111,6 @@ const SchoolsManagementPage: React.FC = () => {
                       handleReset(e);
                       submitForm();
                     }}
-                    variant="outlined"
                     className="px-5 py-0.5"
                   >
                     Reset

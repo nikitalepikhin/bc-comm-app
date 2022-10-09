@@ -127,7 +127,6 @@ const VerificationRequest: React.FC<Props> = ({ request, type }) => {
             </div>
             <div className="flex flex-row gap-2 justify-start items-center flex-wrap bg-gray px-4 py-3">
               <Button
-                variant="contained"
                 disabled={values.reason.length > 0 || showingReason || isLoading || isSuccess || isFetching}
                 type="submit"
               >
@@ -136,7 +135,6 @@ const VerificationRequest: React.FC<Props> = ({ request, type }) => {
               <Button
                 disabled={(values.reason.length === 0 && showingReason) || isLoading || isSuccess || isFetching}
                 type="submit"
-                variant="outlined"
                 onClick={(e) => {
                   e.preventDefault();
                   if (showingReason) {
@@ -150,7 +148,6 @@ const VerificationRequest: React.FC<Props> = ({ request, type }) => {
               </Button>
               {showingReason && (
                 <Button
-                  variant="standard"
                   disabled={!showingReason || isLoading || isSuccess || isFetching}
                   onClick={(e) => {
                     e.preventDefault();

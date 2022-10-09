@@ -4,11 +4,11 @@ import {
   useGetRepresentativeVerificationRequestsQuery,
   useGetTeacherVerificationRequestsQuery,
 } from "../../app/enhancedApi";
-import LoadingButton from "../../common/ui/LoadingButton";
 import { Tab } from "@headlessui/react";
 import classNames from "classnames";
 import { useAppSelector } from "../../app/hooks";
 import { skipToken } from "@reduxjs/toolkit/query";
+import Button from "../../common/ui/Button";
 
 const VerificationRequestsPage: React.FC = () => {
   const {
@@ -73,13 +73,13 @@ const VerificationRequestsPage: React.FC = () => {
           {role === "ADMIN" && (
             <Tab.Panel className="flex flex-col justify-start items-center gap-2">
               {representativeRequests !== undefined && (
-                <LoadingButton
+                <Button
                   loading={getRepresentativeRequestsIsFetching}
                   disabled={getRepresentativeRequestsIsFetching}
                   onClick={() => getRepresentativeRequestsRefetch()}
                 >
                   Refresh requests list
-                </LoadingButton>
+                </Button>
               )}
               {representativeRequests?.requests.length === 0 && <p>No pending requests found.</p>}
               {representativeRequests &&
@@ -94,13 +94,13 @@ const VerificationRequestsPage: React.FC = () => {
 
           <Tab.Panel className="flex flex-col justify-start items-center gap-2">
             {teacherRequests !== undefined && (
-              <LoadingButton
+              <Button
                 loading={getTeacherRequestsIsFetching}
                 disabled={getTeacherRequestsIsFetching}
                 onClick={() => getTeacherRequestsRefetch()}
               >
                 Refresh requests list
-              </LoadingButton>
+              </Button>
             )}
             {teacherRequests?.requests.length === 0 && <p>No pending requests found.</p>}
             {teacherRequests &&

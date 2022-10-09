@@ -66,7 +66,7 @@ export default function CommentForm(props: Props) {
             </Field>
             <div className="flex flex-row justify-end items-center gap-2 w-full">
               {!isCreating && (
-                <Button onClick={onClose} type="button" variant="outlined">
+                <Button onClick={onClose} type="button">
                   Cancel
                 </Button>
               )}

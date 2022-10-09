@@ -10,6 +10,7 @@ import StyledLink from "../../common/ui/StyledLink";
 import Dialog from "../../common/ui/Dialog";
 import { useEffect, useState } from "react";
 import { useDeletePostMutation } from "../../app/enhancedApi";
+import Box from "../../common/ui/Box";
 
 interface Props {
   isFull?: boolean;
@@ -58,7 +59,7 @@ export default function Post(props: Props) {
 
   return (
     <>
-      <div className="flex flex-row justify-between items-start gap-2 shadow rounded-md px-4 py-4">
+      <Box className="flex flex-row justify-between items-start gap-2">
         <Votes uuid={uuid} currentVote={dir} up={up} down={down} mode="post" />
         <div className="flex flex-col justify-start grow">
           <div className="flex flex-row justify-between items-center gap-2 relative z-0">
@@ -120,16 +121,18 @@ export default function Post(props: Props) {
             </button>
           </div>
         </div>
-      </div>
+      </Box>
       <Dialog
         show={deleteInProgress}
         title="Delete Post"
         body="Are you sure you want to delete your post?"
+        size="xs"
         cancelText="Keep"
         confirmText="Delete"
+        danger
         onCancel={() => setDeleteInProgress(false)}
         onConfirm={() => deletePost({ deletePostRequestDto: { postUuid: uuid } })}
-        isLoading={isLoading}
+        loading={isLoading}
       />
     </>
   );

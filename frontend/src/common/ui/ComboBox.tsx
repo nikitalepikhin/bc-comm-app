@@ -23,7 +23,7 @@ interface Props {
 }
 
 const ComboBox: React.FC<Props> = ({
-  initialState = undefined,
+  initialState = null,
   name,
   placeholder,
   loading = false,
@@ -35,7 +35,7 @@ const ComboBox: React.FC<Props> = ({
   resetOnChange = false,
   dependencies = [],
 }) => {
-  const [state, setState] = useState<ComboBoxState | undefined>(initialState);
+  const [state, setState] = useState<ComboBoxState | null>(initialState);
 
   const debouncedOnInputChange = useCallback(
     debounce((event: React.ChangeEvent<HTMLInputElement>) => {
@@ -53,7 +53,7 @@ const ComboBox: React.FC<Props> = ({
         setState(value);
         onChange(value ?? null);
         if (resetOnChange) {
-          setState(undefined);
+          setState(null);
         }
       }}
     >
@@ -74,7 +74,7 @@ const ComboBox: React.FC<Props> = ({
             <button
               type="button"
               onClick={() => {
-                setState(undefined);
+                setState(null);
                 onChange(null);
               }}
             >
