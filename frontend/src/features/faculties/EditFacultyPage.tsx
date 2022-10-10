@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useGetFacultyByUuidQuery, useUpdateFacultyMutation } from "../../app/enhancedApi";
 import { Field, FieldProps, Form, Formik } from "formik";
-import TextField from "../../common/uilib/TextField";
+import TextField from "../../common/uilib/legacy/TextField";
 import Button from "../../common/uilib/Button";
 import LinkWithIcon from "../../common/uilib/LinkWithIcon";
 import LoadingSpinner from "../../common/uilib/LoadingSpinner";
@@ -47,7 +47,7 @@ const EditFacultyPage: React.FC = () => {
     <div>
       <LinkWithIcon
         to={`/faculties/${schoolUuid}`}
-        svg={
+        icon={
           <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
             <path
               fillRule="evenodd"

@@ -35,7 +35,7 @@ export default function AddPostPage() {
     <div className="bg-white shadow rounded-md px-4 py-2">
       <div className="flex justify-between items-center w-full flex-wrap">
         <h1 className="text-lg font-bold">Create a Post</h1>
-        <LinkWithIcon to={`/channels/${textId}`} svg={<XMarkIcon className="h-6 w-6" />} />
+        <LinkWithIcon to={`/channels/${textId}`} icon={<XMarkIcon className="h-6 w-6" />} />
       </div>
       <Formik
         initialValues={initialValues}

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Field, FieldProps, Form, Formik } from "formik";
-import TextField from "../../common/uilib/TextField";
+import TextField from "../../common/uilib/legacy/TextField";
 import Button from "../../common/uilib/Button";
 import { useCreateSchoolMutation } from "../../app/enhancedApi";
 import AddSchoolFeedback from "./AddSchoolFeedback";
@@ -42,7 +42,7 @@ const AddSchoolPage: React.FC = () => {
 
   return (
     <div>
-      <LinkWithIcon to="/schools" svg={<ChevronLeftIcon className="h-5 w-5" />}>
+      <LinkWithIcon to="/schools" icon={<ChevronLeftIcon className="h-5 w-5" />}>
         Back to the schools table
       </LinkWithIcon>
       <div className="flex flex-col justify-center items-center mt-2">

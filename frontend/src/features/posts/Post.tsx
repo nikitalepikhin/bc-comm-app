@@ -107,7 +107,7 @@ export default function Post(props: Props) {
           <div className="flex flex-row justify-start items-center gap-2 text-sm flex-wrap">
             <LinkWithIcon
               to={`/channels/${textId ?? channelTextId}/post/${uuid}`}
-              svg={<ChatBubbleBottomCenterTextIcon className="h-4 w-4" />}
+              icon={<ChatBubbleBottomCenterTextIcon className="h-4 w-4" />}
             >
               {`${commentsCount} Comments`}
             </LinkWithIcon>

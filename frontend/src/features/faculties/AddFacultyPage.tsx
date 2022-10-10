@@ -3,7 +3,7 @@ import { Link, useParams } from "react-router-dom";
 import { useCreateFacultyMutation, useCreateSchoolMutation, useGetSchoolByUuidQuery } from "../../app/enhancedApi";
 import { Field, FieldProps, Form, Formik } from "formik";
 import AddSchoolFeedback from "../schools/AddSchoolFeedback";
-import TextField from "../../common/uilib/TextField";
+import TextField from "../../common/uilib/legacy/TextField";
 import Button from "../../common/uilib/Button";
 import LinkWithIcon from "../../common/uilib/LinkWithIcon";
 
@@ -46,7 +46,7 @@ const AddFacultyPage: React.FC = () => {
     <div>
       <LinkWithIcon
         to={`/faculties/${schoolUuid}`}
-        svg={
+        icon={
           <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
             <path
               fillRule="evenodd"

@@ -68,7 +68,7 @@ const FacultiesManagementPage: React.FC = () => {
               <div className="flex flex-row justify-between gap-2 items-center">
                 <LinkWithIcon
                   to="/schools"
-                  svg={
+                  icon={
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                       <path
                         fillRule="evenodd"

@@ -13,6 +13,11 @@ import { Field, FieldProps, Form, Formik } from "formik";
 import * as yup from "yup";
 import Textarea from "../uilib/Textarea";
 import Combobox from "../uilib/Combobox";
+import StyledLink from "../uilib/StyledLink";
+import LinkWithIcon from "../uilib/LinkWithIcon";
+import { ChevronLeftIcon, ChevronRightIcon, XMarkIcon } from "@heroicons/react/20/solid";
+import LoadingSpinner from "../uilib/LoadingSpinner";
+import IconButton from "../uilib/IconButton";
 
 const validationSchema = yup.object({
   age: yup.number().min(40, "Minimum age is 40.").required("This field is required."),
@@ -27,6 +32,32 @@ export default function Sandbox() {
     <PageWrapper>
       <div className="flex flex-col gap-2 w-full">
         <Box>
+          <IconButton onClick={() => console.log("icon clicked")}>
+            <XMarkIcon className="h-8 w-8" />
+          </IconButton>
+        </Box>
+
+        <Box className="flex flex-row justify-start items-center gap-2">
+          <Button onClick={() => setTheme("light")}>Light</Button>
+          <Button onClick={() => setTheme("dark")}>Dark</Button>
+          <Button onClick={() => setTheme("system")}>System</Button>
+        </Box>
+
+        <Box>
+          <LoadingSpinner>Loading content</LoadingSpinner>
+        </Box>
+
+        <Box>
+          <StyledLink to="/">Return to the home page</StyledLink>
+          <LinkWithIcon to="/" icon={<ChevronLeftIcon className="h-5 w-5" />}>
+            Return to the home page
+          </LinkWithIcon>
+          <LinkWithIcon to="/" icon={<ChevronRightIcon className="h-5 w-5" />} position="right">
+            Proceed to the home page
+          </LinkWithIcon>
+        </Box>
+
+        <Box>
           <Combobox
             loading
             name="combo"
@@ -34,26 +65,11 @@ export default function Sandbox() {
             error="Required"
             onChange={(value) => console.log(`value changed to ${value?.text} (${value?.value})`)}
             onInputChange={(value) => console.log(value)}
-            options={[
-              "Lorem",
-              "ipsumsdfgsdfgsdfgsdfgsdfgsdfgsdfgsdfgdsfgsdfgsdfg",
-              "dolor",
-              "sit",
-              "amet",
-              "consectetur",
-              "adipisicing",
-              "elit",
-            ].map((item) => ({
+            options={["Lorem", "ipsum", "dolor", "sit", "amet", "consectetur", "adipisicing", "elit"].map((item) => ({
               value: item.toLowerCase(),
               text: item.slice(0, 1).toUpperCase() + item.slice(1).toLowerCase(),
             }))}
           />
-        </Box>
-
-        <Box className="flex flex-row justify-start items-center gap-2">
-          <Button onClick={() => setTheme("light")}>Light</Button>
-          <Button onClick={() => setTheme("dark")}>Dark</Button>
-          <Button onClick={() => setTheme("system")}>System</Button>
         </Box>
 
         <Formik

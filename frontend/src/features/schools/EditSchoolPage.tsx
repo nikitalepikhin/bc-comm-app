@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Field, FieldProps, Form, Formik } from "formik";
-import TextField from "../../common/uilib/TextField";
+import TextField from "../../common/uilib/legacy/TextField";
 import Button from "../../common/uilib/Button";
 import { useGetSchoolByUuidQuery, useUpdateSchoolMutation } from "../../app/enhancedApi";
 import LinkWithIcon from "../../common/uilib/LinkWithIcon";
@@ -45,7 +45,7 @@ const EditSchoolPage: React.FC = () => {
     </div>
   ) : (
     <div>
-      <LinkWithIcon to="/schools" svg={<ChevronLeftIcon className="h-5 w-5" />}>
+      <LinkWithIcon to="/schools" icon={<ChevronLeftIcon className="h-5 w-5" />}>
         Back to the schools table
       </LinkWithIcon>
       <div className="text-2xl font-bold text-center mx-auto mb-1 mt-4">Edit School</div>

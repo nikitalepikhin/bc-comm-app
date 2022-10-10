@@ -17,7 +17,7 @@ export default function PostPage() {
   return (
     <div className="flex flex-col w-full justify-start items-stretch gap-2">
       <div className="w-full flex justify-end items-center">
-        <LinkWithIcon to={`/channels/${textId}`} svg={<XMarkIcon className="h-5 w-5" />} icon="right">
+        <LinkWithIcon to={`/channels/${textId}`} icon={<XMarkIcon className="h-5 w-5" />} position="right">
           Close
         </LinkWithIcon>
       </div>

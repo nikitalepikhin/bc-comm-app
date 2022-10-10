@@ -45,7 +45,7 @@ export default function PostContextMenu(props: Props) {
           </Button>
         )}
         {isAuthor && (
-          <LinkWithIcon to={`/channels/${textId}/post/${uuid}/edit`} svg={<PencilIcon className="h-4 w-4" />}>
+          <LinkWithIcon to={`/channels/${textId}/post/${uuid}/edit`} icon={<PencilIcon className="h-4 w-4" />}>
             Edit
           </LinkWithIcon>
         )}
