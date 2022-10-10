@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import * as yup from "yup";
 import { Field, FieldProps, Form, Formik } from "formik";
-import ComboBox from "../../common/uilib/ComboBox";
+import Combobox from "../../common/uilib/Combobox";
 import {
   useGetFacultyAutocompleteMutation,
   useGetSchoolAutocompleteMutation,
@@ -215,7 +215,7 @@ const SignupPage: React.FC = () => {
                         {({ field }: FieldProps) => (
                           <div>
                             <label htmlFor={field.name}>School</label>
-                            <ComboBox
+                            <Combobox
                               name={field.name}
                               initialState={values.school ? values.school : undefined}
                               loading={schoolAutocompleteIsLoading}
@@ -235,7 +235,7 @@ const SignupPage: React.FC = () => {
                         {({ field }: FieldProps) => (
                           <div>
                             <label htmlFor={field.name}>Faculty</label>
-                            <ComboBox
+                            <Combobox
                               name={field.name}
                               initialState={values.faculty ? values.faculty : undefined}
                               loading={facultyAutocompleteIsLoading}

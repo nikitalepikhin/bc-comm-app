@@ -12,6 +12,7 @@ import Input from "../uilib/Input";
 import { Field, FieldProps, Form, Formik } from "formik";
 import * as yup from "yup";
 import Textarea from "../uilib/Textarea";
+import Combobox from "../uilib/Combobox";
 
 const validationSchema = yup.object({
   age: yup.number().min(40, "Minimum age is 40.").required("This field is required."),
@@ -25,6 +26,36 @@ export default function Sandbox() {
   return (
     <PageWrapper>
       <div className="flex flex-col gap-2 w-full">
+        <Box>
+          <Combobox
+            loading
+            name="combo"
+            labelValue="Lorem Ipsum"
+            error="Required"
+            onChange={(value) => console.log(`value changed to ${value?.text} (${value?.value})`)}
+            onInputChange={(value) => console.log(value)}
+            options={[
+              "Lorem",
+              "ipsumsdfgsdfgsdfgsdfgsdfgsdfgsdfgsdfgdsfgsdfgsdfg",
+              "dolor",
+              "sit",
+              "amet",
+              "consectetur",
+              "adipisicing",
+              "elit",
+            ].map((item) => ({
+              value: item.toLowerCase(),
+              text: item.slice(0, 1).toUpperCase() + item.slice(1).toLowerCase(),
+            }))}
+          />
+        </Box>
+
+        <Box className="flex flex-row justify-start items-center gap-2">
+          <Button onClick={() => setTheme("light")}>Light</Button>
+          <Button onClick={() => setTheme("dark")}>Dark</Button>
+          <Button onClick={() => setTheme("system")}>System</Button>
+        </Box>
+
         <Formik
           initialValues={{ firstName: "", lastName: "", age: "", description: "" }}
           onSubmit={() => {}}
@@ -70,12 +101,6 @@ export default function Sandbox() {
           </Form>
         </Formik>
 
-        <Box className="flex flex-row justify-start items-center gap-2">
-          <Button onClick={() => setTheme("light")}>Light</Button>
-          <Button onClick={() => setTheme("dark")}>Dark</Button>
-          <Button onClick={() => setTheme("system")}>System</Button>
-        </Box>
-
         <Alert severity="error">An error has occurred.</Alert>
         <Alert severity="warning">Please select at least one value.</Alert>
         <Alert severity="info">Maximum two entries are allowed.</Alert>
@@ -94,7 +119,7 @@ export default function Sandbox() {
             </>
           }
         >
-          Lorem ipsum dolor sit amet, consectetur adipisicing elit. Molestiae, sapiente?
+          Lorem ipsum dolor sit amet, consectetur adipisicing elit. Adipisci aspernatur fuga perferendis.
         </Container>
         <Box className="flex flex-col justify-start items-start gap-2 w-full">
           <div className="flex flex-row gap-2 justify-start">
@@ -164,10 +189,13 @@ export default function Sandbox() {
 
         <Dialog
           show={open}
+          danger
           onConfirm={() => setOpen(false)}
           onCancel={() => setOpen(false)}
-          title="Dialog Title"
-          body="Are you sure you want to do this?"
+          title="Delete Account"
+          body={
+            "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aliquid blanditiis ex magni unde veritatis? At consequatur dignissimos eius necessitatibus officia recusandae rerum."
+          }
         />
 
         <Box>hello world</Box>

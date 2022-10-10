@@ -1,5 +1,5 @@
 import React from "react";
-import ComboBox, { ComboBoxState } from "../../common/uilib/ComboBox";
+import Combobox, { ComboBoxState } from "../../common/uilib/Combobox";
 import { useNavigate } from "react-router-dom";
 import { useSearchChannelsMutation } from "../../app/enhancedApi";
 import { Field, FieldProps, Form, Formik } from "formik";
@@ -33,7 +33,7 @@ const ChannelSearch: React.FC<Props> = ({ onSelected }) => {
         <Form>
           <Field name="channel">
             {({ field, form: { handleSubmit, setFieldValue } }: FieldProps) => (
-              <ComboBox
+              <Combobox
                 name="channel"
                 placeholder="Search channels..."
                 onChange={(value) => {
