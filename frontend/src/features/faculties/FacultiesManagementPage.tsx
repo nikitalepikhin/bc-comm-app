@@ -5,7 +5,7 @@ import { GetFacultiesResponseDto } from "../../app/api";
 import { Field, FieldProps, Form, Formik } from "formik";
 import { Link, useParams } from "react-router-dom";
 import FacultiesTable from "./FacultiesTable";
-import LinkWithIcon from "../../common/ui/LinkWithIcon";
+import LinkWithIcon from "../../common/uilib/LinkWithIcon";
 
 interface FacultiesPagingFormValues {
   page: string;

@@ -1,9 +1,9 @@
 import { ChevronDownIcon, ChevronUpIcon } from "@heroicons/react/20/solid";
 import DeletePostButton from "./DeletePostButton";
-import LinkWithIcon from "../../common/ui/LinkWithIcon";
+import LinkWithIcon from "../../common/uilib/LinkWithIcon";
 import { PencilIcon } from "@heroicons/react/24/outline";
 import classNames from "classnames";
-import Button from "../../common/ui/Button";
+import Button from "../../common/uilib/Button";
 
 interface Props {
   onDelete: () => void;

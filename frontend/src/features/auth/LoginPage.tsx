@@ -2,11 +2,11 @@ import React from "react";
 import { Field, FieldProps, Form, Formik } from "formik";
 import * as yup from "yup";
 import { Link, Navigate } from "react-router-dom";
-import TextField from "../../common/ui/TextField";
+import TextField from "../../common/uilib/TextField";
 import { useLogInMutation } from "../../app/enhancedApi";
 import { useAppSelector } from "../../app/hooks";
-import Button from "../../common/ui/Button";
-import PageWrapper from "../../common/ui/PageWrapper";
+import Button from "../../common/uilib/Button";
+import PageWrapper from "../../common/uilib/PageWrapper";
 
 const initialValues = {
   email: "",

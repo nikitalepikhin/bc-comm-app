@@ -1,21 +1,81 @@
 import classNames from "classnames";
-import Badge from "../ui/Badge";
-import Box from "../ui/Box";
+import Badge from "../uilib/Badge";
+import Box from "../uilib/Box";
 import useTheme from "../hooks/useTheme";
-import Button from "../ui/Button";
-import Container from "../ui/Container";
+import Button from "../uilib/Button";
+import Container from "../uilib/Container";
 import { useState } from "react";
-import Dialog from "../ui/Dialog";
-import PageWrapper from "../ui/PageWrapper";
-import Alert from "../ui/Alert";
+import Dialog from "../uilib/Dialog";
+import PageWrapper from "../uilib/PageWrapper";
+import Alert from "../uilib/Alert";
+import Input from "../uilib/Input";
+import { Field, FieldProps, Form, Formik } from "formik";
+import * as yup from "yup";
+import Textarea from "../uilib/Textarea";
 
-export default function UiSandbox() {
+const validationSchema = yup.object({
+  age: yup.number().min(40, "Minimum age is 40.").required("This field is required."),
+  description: yup.string().required("This field is required."),
+});
+
+export default function Sandbox() {
   const { setTheme } = useTheme();
   const [open, setOpen] = useState(false);
 
   return (
     <PageWrapper>
       <div className="flex flex-col gap-2 w-full">
+        <Formik
+          initialValues={{ firstName: "", lastName: "", age: "", description: "" }}
+          onSubmit={() => {}}
+          validationSchema={validationSchema}
+          validateOnChange
+          validateOnBlur
+        >
+          <Form className="w-full">
+            <Box>
+              <Field name="firstName">
+                {({ field }: FieldProps) => <Input disabled {...field} labelValue="First Name" placeholder="John" />}
+              </Field>
+              <Field name="lastName">
+                {({ field }: FieldProps) => <Input {...field} labelValue="Last Name" placeholder="Doe" fullWidth />}
+              </Field>
+              <Field name="age">
+                {({ field, meta }: FieldProps) => (
+                  <Input
+                    type="number"
+                    {...field}
+                    labelValue="Age"
+                    placeholder="21"
+                    fullWidth
+                    error={meta.touched && meta.error ? meta.error : undefined}
+                  />
+                )}
+              </Field>
+              <Field name="description">
+                {({ field, meta }: FieldProps) => (
+                  <Textarea
+                    {...field}
+                    labelValue="Description"
+                    placeholder="Enter a description here..."
+                    error={meta.touched && meta.error ? meta.error : undefined}
+                    showCharCount
+                    fullWidth
+                    maxLength={300}
+                    disabled
+                  />
+                )}
+              </Field>
+            </Box>
+          </Form>
+        </Formik>
+
+        <Box className="flex flex-row justify-start items-center gap-2">
+          <Button onClick={() => setTheme("light")}>Light</Button>
+          <Button onClick={() => setTheme("dark")}>Dark</Button>
+          <Button onClick={() => setTheme("system")}>System</Button>
+        </Box>
+
         <Alert severity="error">An error has occurred.</Alert>
         <Alert severity="warning">Please select at least one value.</Alert>
         <Alert severity="info">Maximum two entries are allowed.</Alert>

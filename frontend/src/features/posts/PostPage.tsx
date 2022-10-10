@@ -1,8 +1,8 @@
 import { Outlet, useParams } from "react-router-dom";
 import Post from "./Post";
 import { useGetPostByUuidQuery } from "../../app/enhancedApi";
-import LoadingSpinner from "../../common/ui/LoadingSpinner";
-import LinkWithIcon from "../../common/ui/LinkWithIcon";
+import LoadingSpinner from "../../common/uilib/LoadingSpinner";
+import LinkWithIcon from "../../common/uilib/LinkWithIcon";
 import { XMarkIcon } from "@heroicons/react/20/solid";
 import ErrorPage from "../../common/components/ErrorPage";
 

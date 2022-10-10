@@ -1,8 +1,8 @@
 import { Link, Navigate, useNavigate, useParams } from "react-router-dom";
 import { useGetPostByUuidQuery, useUpdatePostMutation } from "../../app/enhancedApi";
-import LoadingSpinner from "../../common/ui/LoadingSpinner";
+import LoadingSpinner from "../../common/uilib/LoadingSpinner";
 import { Field, FieldProps, Form, Formik } from "formik";
-import Button from "../../common/ui/Button";
+import Button from "../../common/uilib/Button";
 import * as yup from "yup";
 import { useEffect, useState } from "react";
 

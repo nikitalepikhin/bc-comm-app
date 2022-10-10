@@ -1,7 +1,7 @@
 import React from "react";
 import useUserData from "../../features/auth/useUserData";
 import VerificationRequestsPage from "../../features/representatives-verification/VerificationRequestsPage";
-import StyledLink from "../ui/StyledLink";
+import StyledLink from "../uilib/StyledLink";
 import FeedPage from "../../feed/FeedPage";
 
 export const IndexPage: React.FC = () => {

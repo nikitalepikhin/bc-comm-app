@@ -12,7 +12,7 @@ export default function Box(props: Props) {
   return (
     <div
       className={classNames(
-        "bg-white dark:bg-gray-800",
+        "bg-white dark:bg-slate-800",
         "p-3 rounded-md",
         "shadow",
         "border border-slate-200 dark:border-slate-700",

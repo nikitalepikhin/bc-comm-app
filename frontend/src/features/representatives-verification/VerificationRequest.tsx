@@ -7,8 +7,8 @@ import {
   useVerifyRepresentativeUserMutation,
   useVerifyTeacherUserMutation,
 } from "../../app/enhancedApi";
-import LoadingSpinner from "../../common/ui/LoadingSpinner";
-import Button from "../../common/ui/Button";
+import LoadingSpinner from "../../common/uilib/LoadingSpinner";
+import Button from "../../common/uilib/Button";
 
 const initialValues = {
   reason: "",

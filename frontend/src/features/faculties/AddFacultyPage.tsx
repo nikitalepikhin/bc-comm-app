@@ -3,9 +3,9 @@ import { Link, useParams } from "react-router-dom";
 import { useCreateFacultyMutation, useCreateSchoolMutation, useGetSchoolByUuidQuery } from "../../app/enhancedApi";
 import { Field, FieldProps, Form, Formik } from "formik";
 import AddSchoolFeedback from "../schools/AddSchoolFeedback";
-import TextField from "../../common/ui/TextField";
-import Button from "../../common/ui/Button";
-import LinkWithIcon from "../../common/ui/LinkWithIcon";
+import TextField from "../../common/uilib/TextField";
+import Button from "../../common/uilib/Button";
+import LinkWithIcon from "../../common/uilib/LinkWithIcon";
 
 interface AddFacultyFormValues {
   name: string;

@@ -1,7 +1,7 @@
 import { ForwardedRef, forwardRef, useEffect } from "react";
 import { useGetUserFeedQuery } from "../app/enhancedApi";
 import { useAppSelector } from "../app/hooks";
-import LoadingSpinner from "../common/ui/LoadingSpinner";
+import LoadingSpinner from "../common/uilib/LoadingSpinner";
 import Post from "../features/posts/Post";
 
 interface Props {

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useCreateChannelMutation } from "../../app/enhancedApi";
 import ChannelForm, { ChannelFormValues } from "./ChannelForm";
-import PageWrapper from "../../common/ui/PageWrapper";
+import PageWrapper from "../../common/uilib/PageWrapper";
 
 const initialValues: ChannelFormValues = {
   textId: "",

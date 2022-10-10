@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { Field, FieldProps, Form, Formik } from "formik";
-import TextField from "../../common/ui/TextField";
-import Button from "../../common/ui/Button";
+import TextField from "../../common/uilib/TextField";
+import Button from "../../common/uilib/Button";
 import { useCreateSchoolMutation } from "../../app/enhancedApi";
 import AddSchoolFeedback from "./AddSchoolFeedback";
-import LinkWithIcon from "../../common/ui/LinkWithIcon";
+import LinkWithIcon from "../../common/uilib/LinkWithIcon";
 import { ChevronLeftIcon } from "@heroicons/react/20/solid";
 
 interface AddSchoolFormValues {

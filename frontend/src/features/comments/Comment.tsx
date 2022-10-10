@@ -1,11 +1,11 @@
 import { PostCommentDto } from "../../app/api";
 import classNames from "classnames";
 import timeAgo from "../../common/util/time";
-import Badge from "../../common/ui/Badge";
-import StyledLink from "../../common/ui/StyledLink";
+import Badge from "../../common/uilib/Badge";
+import StyledLink from "../../common/uilib/StyledLink";
 import { useEffect, useState } from "react";
 import CommentForm from "./CommentForm";
-import Dialog from "../../common/ui/Dialog";
+import Dialog from "../../common/uilib/Dialog";
 import { useDeleteCommentMutation } from "../../app/enhancedApi";
 import { useParams } from "react-router-dom";
 import Votes from "../../common/components/Votes";
@@ -126,6 +126,7 @@ export default function Comment(props: Props) {
       ))}
       <Dialog
         show={isDeleting}
+        size="xs"
         title="Delete Comment"
         body="Are you sure you want to delete your comment?"
         onConfirm={() => deleteComment({ deleteCommentRequestDto: { uuid, postUuid } })}
@@ -133,6 +134,7 @@ export default function Comment(props: Props) {
         confirmText="Delete"
         cancelText="Keep"
         loading={isLoading}
+        danger
       />
     </>
   );

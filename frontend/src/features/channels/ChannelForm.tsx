@@ -1,6 +1,6 @@
 import React, { useCallback } from "react";
 import { Field, FieldProps, Form, Formik, FormikHelpers } from "formik";
-import Button from "../../common/ui/Button";
+import Button from "../../common/uilib/Button";
 import { useLazyCheckChannelIdAvailabilityQuery } from "../../app/enhancedApi";
 import { debounce } from "lodash";
 import * as yup from "yup";

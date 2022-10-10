@@ -2,7 +2,7 @@ import { useParams } from "react-router-dom";
 import { useState } from "react";
 import { GetPostCommentsApiArg } from "../../app/api";
 import PostCommentsSection from "./PostCommentsSection";
-import Button from "../../common/ui/Button";
+import Button from "../../common/uilib/Button";
 import { useGetPostByUuidQuery } from "../../app/enhancedApi";
 import CommentForm from "../comments/CommentForm";
 

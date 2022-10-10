@@ -1,5 +1,5 @@
 import React from "react";
-import ComboBox, { ComboBoxState } from "../../common/ui/ComboBox";
+import ComboBox, { ComboBoxState } from "../../common/uilib/ComboBox";
 import { useNavigate } from "react-router-dom";
 import { useSearchChannelsMutation } from "../../app/enhancedApi";
 import { Field, FieldProps, Form, Formik } from "formik";

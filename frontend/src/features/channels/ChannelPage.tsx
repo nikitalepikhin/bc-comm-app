@@ -2,13 +2,13 @@ import React from "react";
 import { Outlet, useParams } from "react-router-dom";
 import { useGetChannelByTextIdQuery, useToggleMembershipMutation } from "../../app/enhancedApi";
 import { format } from "date-fns";
-import Button from "../../common/ui/Button";
+import Button from "../../common/uilib/Button";
 import { ShareIcon } from "@heroicons/react/24/outline";
 import { useAppSelector } from "../../app/hooks";
-import StyledLink from "../../common/ui/StyledLink";
-import LoadingSpinner from "../../common/ui/LoadingSpinner";
+import StyledLink from "../../common/uilib/StyledLink";
+import LoadingSpinner from "../../common/uilib/LoadingSpinner";
 import ErrorPage from "../../common/components/ErrorPage";
-import PageWrapper from "../../common/ui/PageWrapper";
+import PageWrapper from "../../common/uilib/PageWrapper";
 
 const ChannelPage: React.FC = () => {
   const { textId } = useParams() as { textId: string };

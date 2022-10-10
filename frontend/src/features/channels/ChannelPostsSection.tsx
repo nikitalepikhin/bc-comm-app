@@ -4,7 +4,7 @@ import React, { ForwardedRef, forwardRef, useEffect } from "react";
 import { GetPostCommentsApiArg } from "../../app/api";
 import { useGetPostsForChannelQuery } from "../../app/enhancedApi";
 import { useParams } from "react-router-dom";
-import LoadingSpinner from "../../common/ui/LoadingSpinner";
+import LoadingSpinner from "../../common/uilib/LoadingSpinner";
 import { useAppSelector } from "../../app/hooks";
 
 interface Props {

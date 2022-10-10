@@ -8,7 +8,7 @@ import { Tab } from "@headlessui/react";
 import classNames from "classnames";
 import { useAppSelector } from "../../app/hooks";
 import { skipToken } from "@reduxjs/toolkit/query";
-import Button from "../../common/ui/Button";
+import Button from "../../common/uilib/Button";
 
 const VerificationRequestsPage: React.FC = () => {
   const {

@@ -1,7 +1,7 @@
 import { useParams } from "react-router-dom";
-import Button from "../../common/ui/Button";
+import Button from "../../common/uilib/Button";
 import React, { useEffect, useRef, useState } from "react";
-import StyledLink from "../../common/ui/StyledLink";
+import StyledLink from "../../common/uilib/StyledLink";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { GetPostsForChannelApiArg } from "../../app/api";
 import ChannelPostsSection from "../channels/ChannelPostsSection";

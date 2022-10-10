@@ -1,7 +1,7 @@
 import React from "react";
 import { SchoolResponseDto } from "../../app/api";
 import SchoolsTableRow from "./SchoolsTableRow";
-import LoadingSpinner from "../../common/ui/LoadingSpinner";
+import LoadingSpinner from "../../common/uilib/LoadingSpinner";
 
 interface SchoolsTablePropsType {
   data: SchoolResponseDto[];

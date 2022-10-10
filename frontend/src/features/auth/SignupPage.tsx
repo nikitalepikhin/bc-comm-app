@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import * as yup from "yup";
 import { Field, FieldProps, Form, Formik } from "formik";
-import ComboBox from "../../common/ui/ComboBox";
+import ComboBox from "../../common/uilib/ComboBox";
 import {
   useGetFacultyAutocompleteMutation,
   useGetSchoolAutocompleteMutation,
@@ -10,8 +10,8 @@ import {
   useSignUpRepresentativeMutation,
 } from "../../app/enhancedApi";
 import { Link, useNavigate } from "react-router-dom";
-import Button from "../../common/ui/Button";
-import PageWrapper from "../../common/ui/PageWrapper";
+import Button from "../../common/uilib/Button";
+import PageWrapper from "../../common/uilib/PageWrapper";
 
 export interface ComboBoxInputType {
   value: string;

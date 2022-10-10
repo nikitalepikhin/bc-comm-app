@@ -1,7 +1,7 @@
 import React from "react";
 import { FacultyResponseDto } from "../../app/api";
 import FacultiesTableRow from "./FacultiesTableRow";
-import LoadingSpinner from "../../common/ui/LoadingSpinner";
+import LoadingSpinner from "../../common/uilib/LoadingSpinner";
 
 interface FacultiesTablePropsType {
   data: FacultyResponseDto[];

@@ -1,16 +1,16 @@
 import { Link, useNavigate, useParams } from "react-router-dom";
 import classNames from "classnames";
-import LinkWithIcon from "../../common/ui/LinkWithIcon";
+import LinkWithIcon from "../../common/uilib/LinkWithIcon";
 import { ChatBubbleBottomCenterTextIcon, ShareIcon } from "@heroicons/react/24/outline";
 import timeAgo from "../../common/util/time";
 import PostContextMenu from "./PostContextMenu";
 import Votes from "../../common/components/Votes";
-import Badge from "../../common/ui/Badge";
-import StyledLink from "../../common/ui/StyledLink";
-import Dialog from "../../common/ui/Dialog";
+import Badge from "../../common/uilib/Badge";
+import StyledLink from "../../common/uilib/StyledLink";
+import Dialog from "../../common/uilib/Dialog";
 import { useEffect, useState } from "react";
 import { useDeletePostMutation } from "../../app/enhancedApi";
-import Box from "../../common/ui/Box";
+import Box from "../../common/uilib/Box";
 
 interface Props {
   isFull?: boolean;

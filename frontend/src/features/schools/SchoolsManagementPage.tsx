@@ -5,7 +5,7 @@ import { enhancedApi, useGetAllSchoolsQuery } from "../../app/enhancedApi";
 import { useDispatch } from "react-redux";
 import { GetSchoolsResponseDto } from "../../app/api";
 import { Link } from "react-router-dom";
-import Button from "../../common/ui/Button";
+import Button from "../../common/uilib/Button";
 
 interface SchoolsPagingFormValues {
   page: string;

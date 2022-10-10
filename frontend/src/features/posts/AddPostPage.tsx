@@ -1,9 +1,9 @@
 import { Field, FieldProps, Form, Formik } from "formik";
 import { Navigate, useParams } from "react-router-dom";
-import Button from "../../common/ui/Button";
+import Button from "../../common/uilib/Button";
 import { useCreatePostMutation, useGetChannelByTextIdQuery } from "../../app/enhancedApi";
-import LoadingSpinner from "../../common/ui/LoadingSpinner";
-import LinkWithIcon from "../../common/ui/LinkWithIcon";
+import LoadingSpinner from "../../common/uilib/LoadingSpinner";
+import LinkWithIcon from "../../common/uilib/LinkWithIcon";
 import { XMarkIcon } from "@heroicons/react/20/solid";
 
 interface AddPostFormValues {

@@ -1,7 +1,7 @@
 import { useParams } from "react-router-dom";
-import StyledLink from "../../common/ui/StyledLink";
+import StyledLink from "../../common/uilib/StyledLink";
 import { useGetCommentCommentsQuery } from "../../app/enhancedApi";
-import LoadingSpinner from "../../common/ui/LoadingSpinner";
+import LoadingSpinner from "../../common/uilib/LoadingSpinner";
 import Comment from "./Comment";
 
 export default function CommentThreadPage() {

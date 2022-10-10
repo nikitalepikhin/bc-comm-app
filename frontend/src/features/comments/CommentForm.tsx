@@ -1,5 +1,5 @@
 import { Field, FieldProps, Form, Formik } from "formik";
-import Button from "../../common/ui/Button";
+import Button from "../../common/uilib/Button";
 import * as yup from "yup";
 import { useCreateCommentMutation, useUpdateCommentMutation } from "../../app/enhancedApi";
 import classNames from "classnames";

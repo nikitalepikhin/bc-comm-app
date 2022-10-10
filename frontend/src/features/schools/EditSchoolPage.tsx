@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Field, FieldProps, Form, Formik } from "formik";
-import TextField from "../../common/ui/TextField";
-import Button from "../../common/ui/Button";
+import TextField from "../../common/uilib/TextField";
+import Button from "../../common/uilib/Button";
 import { useGetSchoolByUuidQuery, useUpdateSchoolMutation } from "../../app/enhancedApi";
-import LinkWithIcon from "../../common/ui/LinkWithIcon";
-import LoadingSpinner from "../../common/ui/LoadingSpinner";
+import LinkWithIcon from "../../common/uilib/LinkWithIcon";
+import LoadingSpinner from "../../common/uilib/LoadingSpinner";
 import { ChevronLeftIcon } from "@heroicons/react/20/solid";
 
 interface EditSchoolFormValues {

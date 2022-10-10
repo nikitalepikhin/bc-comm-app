@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useAppSelector } from "../../app/hooks";
 import { useNavigate } from "react-router-dom";
 import { useLazyHelloNoAuthQuery, useLazyHelloQuery, useLogOutMutation } from "../../app/enhancedApi";
-import Button from "../../common/ui/Button";
+import Button from "../../common/uilib/Button";
 
 export const DebugPage: React.FC = () => {
   const { user, accessToken } = useAppSelector((state) => state.auth);

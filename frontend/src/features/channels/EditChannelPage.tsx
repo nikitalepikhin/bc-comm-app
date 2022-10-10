@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useGetChannelByTextIdQuery, useUpdateChannelMutation } from "../../app/enhancedApi";
 import ChannelForm, { ChannelFormValues } from "./ChannelForm";
-import PageWrapper from "../../common/ui/PageWrapper";
+import PageWrapper from "../../common/uilib/PageWrapper";
 
 const EditChannelPage: React.FC = () => {
   const { textId } = useParams();

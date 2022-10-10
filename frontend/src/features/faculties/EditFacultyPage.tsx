@@ -2,10 +2,10 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useGetFacultyByUuidQuery, useUpdateFacultyMutation } from "../../app/enhancedApi";
 import { Field, FieldProps, Form, Formik } from "formik";
-import TextField from "../../common/ui/TextField";
-import Button from "../../common/ui/Button";
-import LinkWithIcon from "../../common/ui/LinkWithIcon";
-import LoadingSpinner from "../../common/ui/LoadingSpinner";
+import TextField from "../../common/uilib/TextField";
+import Button from "../../common/uilib/Button";
+import LinkWithIcon from "../../common/uilib/LinkWithIcon";
+import LoadingSpinner from "../../common/uilib/LoadingSpinner";
 
 interface EditFacultyFormValues {
   uuid: string;
