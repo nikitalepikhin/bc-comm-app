@@ -19,6 +19,7 @@ import { ChevronLeftIcon, ChevronRightIcon, XMarkIcon } from "@heroicons/react/2
 import LoadingSpinner from "../uilib/LoadingSpinner";
 import IconButton from "../uilib/IconButton";
 import ChannelSearch from "../../features/channels/ChannelSearch";
+import RadioGroup from "../uilib/RadioGroup";
 
 const validationSchema = yup.object({
   age: yup.number().min(40, "Minimum age is 40.").required("This field is required."),
@@ -64,10 +65,9 @@ export default function Sandbox() {
 
         <Box>
           <Combobox
-            loading
+            loading={false}
             name="combo"
             labelValue="Lorem Ipsum"
-            error="Required"
             onChange={(value) => console.log(`value changed to ${value?.text} (${value?.value})`)}
             onInputChange={(value) => console.log(value)}
             options={["Lorem", "ipsum", "dolor", "sit", "amet", "consectetur", "adipisicing", "elit"].map((item) => ({
@@ -78,7 +78,7 @@ export default function Sandbox() {
         </Box>
 
         <Formik
-          initialValues={{ firstName: "", lastName: "", age: "", description: "" }}
+          initialValues={{ firstName: "", lastName: "", age: "", description: "", account: "teacher" }}
           onSubmit={() => {}}
           validationSchema={validationSchema}
           validateOnChange
@@ -86,6 +86,22 @@ export default function Sandbox() {
         >
           <Form className="w-full">
             <Box>
+              <Field name="account">
+                {({ field }: FieldProps) => (
+                  <RadioGroup
+                    {...field}
+                    labelValue="Select type of account"
+                    defaultValue={"student"}
+                    options={[
+                      { value: "teacher", label: "Teacher" },
+                      { value: "student", label: "Student" },
+                      { value: "representative", label: "Representative" },
+                      { value: "admin", label: "Admin" },
+                    ]}
+                  />
+                )}
+              </Field>
+
               <Field name="firstName">
                 {({ field }: FieldProps) => <Input disabled {...field} labelValue="First Name" placeholder="John" />}
               </Field>
