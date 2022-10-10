@@ -18,6 +18,7 @@ import LinkWithIcon from "../uilib/LinkWithIcon";
 import { ChevronLeftIcon, ChevronRightIcon, XMarkIcon } from "@heroicons/react/20/solid";
 import LoadingSpinner from "../uilib/LoadingSpinner";
 import IconButton from "../uilib/IconButton";
+import ChannelSearch from "../../features/channels/ChannelSearch";
 
 const validationSchema = yup.object({
   age: yup.number().min(40, "Minimum age is 40.").required("This field is required."),
@@ -31,6 +32,10 @@ export default function Sandbox() {
   return (
     <PageWrapper>
       <div className="flex flex-col gap-2 w-full">
+        <Box>
+          <ChannelSearch onSelected={() => {}} />
+        </Box>
+
         <Box>
           <IconButton onClick={() => console.log("icon clicked")}>
             <XMarkIcon className="h-8 w-8" />

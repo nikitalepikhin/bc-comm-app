@@ -433,6 +433,9 @@ export const enhancedApi = api.enhanceEndpoints({
         }
       },
     },
+    searchChannels: {
+      providesTags: [{ type: TagTypes.CHANNEL_AC }],
+    },
   },
 });
 
@@ -465,7 +468,6 @@ export const {
   useGetFacultyAutocompleteMutation,
   useCreateChannelMutation,
   useLazyCheckChannelIdAvailabilityQuery,
-  useSearchChannelsMutation,
   useGetChannelByTextIdQuery,
   useToggleMembershipMutation,
   useUpdateChannelMutation,
@@ -481,4 +483,5 @@ export const {
   useGetPostCommentsQuery,
   useGetCommentCommentsQuery,
   useGetUserFeedQuery,
+  useLazySearchChannelsQuery,
 } = enhancedApi;

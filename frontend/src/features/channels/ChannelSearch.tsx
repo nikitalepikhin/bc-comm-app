@@ -1,8 +1,10 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Combobox, { ComboBoxState } from "../../common/uilib/Combobox";
 import { useNavigate } from "react-router-dom";
-import { useSearchChannelsMutation } from "../../app/enhancedApi";
+import { enhancedApi, useLazySearchChannelsQuery } from "../../app/enhancedApi";
 import { Field, FieldProps, Form, Formik } from "formik";
+import { TagTypes } from "../../app/emptyApi";
+import { ChannelsSearchSuggestionDto } from "../../app/api";
 
 interface Props {
   onSelected: () => void;
@@ -12,11 +14,22 @@ interface ChannelSearchFormValues {
   channel: ComboBoxState | null;
 }
 
+const invalidateTags = () => enhancedApi.util.invalidateTags([{ type: TagTypes.CHANNEL_AC }]);
+
 const initialValues: ChannelSearchFormValues = { channel: null };
 
-const ChannelSearch: React.FC<Props> = ({ onSelected }) => {
+export default function ChannelSearch(props: Props) {
+  const { onSelected } = props;
   const navigate = useNavigate();
-  const [searchChannels, { data }] = useSearchChannelsMutation();
+  const [searchChannels, { data, isFetching, isUninitialized }] = useLazySearchChannelsQuery();
+
+  const [options, setOptions] = useState<ChannelsSearchSuggestionDto[]>([]);
+
+  useEffect(() => {
+    if (data && data.channels) {
+      setOptions(data.channels);
+    }
+  }, [data]);
 
   return (
     <div>
@@ -36,12 +49,21 @@ const ChannelSearch: React.FC<Props> = ({ onSelected }) => {
               <Combobox
                 name="channel"
                 placeholder="Search channels..."
+                loading={isFetching}
+                isUninitialized={isUninitialized}
                 onChange={(value) => {
                   setFieldValue(field.name, value);
+                  invalidateTags();
+                  setOptions([]);
                   handleSubmit();
                 }}
-                onInputChange={(value) => searchChannels({ getChannelsSearchSuggestionsRequestDto: { value } })}
-                options={data ? data.channels : []}
+                onInputChange={(value) => {
+                  setOptions([]);
+                  if (value.length > 0) {
+                    searchChannels({ value });
+                  }
+                }}
+                options={options}
                 wait={1000}
                 resetOnChange
               />
@@ -51,6 +73,4 @@ const ChannelSearch: React.FC<Props> = ({ onSelected }) => {
       </Formik>
     </div>
   );
-};
-
-export default ChannelSearch;
+}

@@ -17,6 +17,7 @@ interface Props {
   name: string;
   labelValue?: string;
   loading?: boolean;
+  isUninitialized?: boolean;
   onChange: (value: ComboBoxState | null) => void;
   onInputChange: (value: string) => void;
   options: ComboBoxState[];
@@ -35,6 +36,7 @@ export default function Combobox(props: Props) {
     labelValue,
     placeholder,
     loading = false,
+    isUninitialized,
     onChange,
     onInputChange,
     options,
@@ -84,11 +86,7 @@ export default function Combobox(props: Props) {
             id={`combobox-${name}`}
             name={name}
             placeholder={placeholder}
-            onChange={(event) => {
-              if (event.target.value.length > 0) {
-                debouncedOnInputChange(event);
-              }
-            }}
+            onChange={(event) => debouncedOnInputChange(event)}
             displayValue={(state: ComboBoxState) => state?.text}
             className={classNames(
               "w-full border",
@@ -139,33 +137,39 @@ export default function Combobox(props: Props) {
               "border border-slate-200 dark:border-slate-700",
               "max-h-72 overflow-auto w-full",
               "my-2 rounded-md shadow",
-              "absolute top-10 z-50"
+              "absolute top-10 z-50",
+              { hidden: options.length === 0 && loading }
             )}
           >
-            {options.map((option) => (
-              <HeadlessCombobox.Option key={option.value} value={option} as={Fragment}>
-                {({ active }) => (
-                  <div
-                    className={classNames(
-                      "px-3 py-2 truncate",
-                      "border border-transparent border-l-0 border-r-0",
-                      "hover:bg-blue-50 hover:first:border-t-transparent hover:last:border-b-transparent hover:border-t-slate-200 hover:border-b-slate-200",
-                      "hover:dark:bg-blue-600/50 hover:first:border-t-transparent hover:last:border-b-transparent hover:dark:border-t-slate-700 hover:dark:border-b-slate-700",
-                      {
-                        "bg-blue-50 first:border-t-transparent last:border-b-transparent border-t-slate-200 border-b-slate-200":
-                          active,
-                      },
-                      {
-                        "dark:bg-blue-600/50 first:border-t-transparent last:border-b-transparent dark:border-t-slate-700 dark:border-b-slate-700":
-                          active,
-                      }
-                    )}
-                  >
-                    {option.text}
-                  </div>
-                )}
-              </HeadlessCombobox.Option>
-            ))}
+            {options.length > 0 &&
+              !loading &&
+              options.map((option) => (
+                <HeadlessCombobox.Option key={option.value} value={option} as={Fragment}>
+                  {({ active }) => (
+                    <div
+                      className={classNames(
+                        "px-3 py-2 truncate",
+                        "border border-transparent border-l-0 border-r-0",
+                        "hover:bg-blue-50 hover:first:border-t-transparent hover:last:border-b-transparent hover:border-t-slate-200 hover:border-b-slate-200",
+                        "hover:dark:bg-blue-600/50 hover:first:border-t-transparent hover:last:border-b-transparent hover:dark:border-t-slate-700 hover:dark:border-b-slate-700",
+                        {
+                          "bg-blue-50 first:border-t-transparent last:border-b-transparent border-t-slate-200 border-b-slate-200":
+                            active,
+                        },
+                        {
+                          "dark:bg-blue-600/50 first:border-t-transparent last:border-b-transparent dark:border-t-slate-700 dark:border-b-slate-700":
+                            active,
+                        }
+                      )}
+                    >
+                      {option.text}
+                    </div>
+                  )}
+                </HeadlessCombobox.Option>
+              ))}
+            {options.length === 0 && !loading && isUninitialized !== undefined && !isUninitialized && (
+              <div className="px-3 py-2 truncate">Nothing found</div>
+            )}
           </HeadlessCombobox.Options>
         </div>
       </HeadlessCombobox>

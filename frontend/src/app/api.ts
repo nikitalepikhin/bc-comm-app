@@ -102,12 +102,8 @@ const injectedRtkApi = api.injectEndpoints({
     verifyTeacherUser: build.mutation<VerifyTeacherUserApiResponse, VerifyTeacherUserApiArg>({
       query: (queryArg) => ({ url: `/teachers/verify`, method: "POST", body: queryArg.verifyTeacherUserRequestDto }),
     }),
-    searchChannels: build.mutation<SearchChannelsApiResponse, SearchChannelsApiArg>({
-      query: (queryArg) => ({
-        url: `/channels/search`,
-        method: "POST",
-        body: queryArg.getChannelsSearchSuggestionsRequestDto,
-      }),
+    searchChannels: build.query<SearchChannelsApiResponse, SearchChannelsApiArg>({
+      query: (queryArg) => ({ url: `/channels/search`, params: { value: queryArg.value } }),
     }),
     createChannel: build.mutation<CreateChannelApiResponse, CreateChannelApiArg>({
       query: (queryArg) => ({ url: `/channels`, method: "POST", body: queryArg.createChannelRequestDto }),
@@ -277,9 +273,9 @@ export type VerifyTeacherUserApiArg = {
   verifyTeacherUserRequestDto: VerifyTeacherUserRequestDto;
 };
 export type SearchChannelsApiResponse =
-  /** status 200 Channels search suggestions. */ GetChannelsSearchSuggestionsResponseDto;
+  /** status 200 Suggested channels based on the provided value. */ SearchChannelsResponseDto;
 export type SearchChannelsApiArg = {
-  getChannelsSearchSuggestionsRequestDto: GetChannelsSearchSuggestionsRequestDto;
+  value: string;
 };
 export type CreateChannelApiResponse = unknown;
 export type CreateChannelApiArg = {
@@ -539,11 +535,8 @@ export type ChannelsSearchSuggestionDto = {
   text: string;
   value: string;
 };
-export type GetChannelsSearchSuggestionsResponseDto = {
+export type SearchChannelsResponseDto = {
   channels: ChannelsSearchSuggestionDto[];
-};
-export type GetChannelsSearchSuggestionsRequestDto = {
-  value: string;
 };
 export type CreateChannelRequestDto = {
   name: string;
@@ -719,7 +712,6 @@ export const {
   useRequestTeacherVerificationQuery,
   useGetTeacherVerificationRequestsQuery,
   useVerifyTeacherUserMutation,
-  useSearchChannelsMutation,
   useCreateChannelMutation,
   useUpdateChannelMutation,
   useGetChannelByTextIdQuery,

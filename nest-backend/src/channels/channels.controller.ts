@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, Put, Req, UseGuards } from "@nestjs/common";
+import { Body, Controller, Get, Param, Post, Put, Query, Req, UseGuards } from "@nestjs/common";
 import { ApiOkResponse, ApiOperation, ApiParam } from "@nestjs/swagger";
 import { ChannelsService } from "./channels.service";
 import CreateChannelRequestDto from "./dto/create-channel-request.dto";
@@ -8,8 +8,8 @@ import { Permission, RequirePermissions } from "../auth/permission.enum";
 import UserDto from "../auth/dto/user.dto";
 import CheckChannelIdAvailabilityPathParamDto from "./dto/check-channel-id-availability-path-param.dto";
 import CheckChannelIdAvailabilityResponseDto from "./dto/check-channel-id-availability-response.dto";
-import GetChannelsSearchSuggestionsResponseDto from "./dto/get-channels-search-suggestions-response.dto";
-import GetChannelsSearchSuggestionsRequestDto from "./dto/get-channels-search-suggestions-request.dto";
+import SearchChannelsResponseDto from "./dto/search-channels-response.dto";
+import SearchChannelsQueryDto from "./dto/search-channels-query.dto";
 import GetChannelByTextIdResponseDto from "./dto/get-channel-by-text-id-response.dto";
 import GetChannelByTextIdParamsDto from "./dto/get-channel-by-text-id-params.dto";
 import ToggleChannelMembershipRequestDto from "./dto/toggle-channel-membership-request.dto";
@@ -21,21 +21,19 @@ export class ChannelsController {
   constructor(private channelsService: ChannelsService) {}
 
   @ApiOperation({
-    summary: "Get channels search suggestions.",
+    summary: "Search for channels based on their name or text ID.",
   })
   @ApiOkResponse({
-    description: "Channels search suggestions.",
-    type: GetChannelsSearchSuggestionsResponseDto,
+    description: "Suggested channels based on the provided value.",
+    type: SearchChannelsResponseDto,
     content: {},
   })
   @RequirePermissions(Permission.CHANNEL_READ)
   @UseGuards(JwtAuthGuard, RequirePermissionsGuard)
-  @Post("/search")
-  async searchChannels(
-    @Body() getChannelsSearchSuggestions: GetChannelsSearchSuggestionsRequestDto,
-  ): Promise<GetChannelsSearchSuggestionsResponseDto> {
-    if (getChannelsSearchSuggestions.value.length > 0) {
-      return await this.channelsService.searchChannels(getChannelsSearchSuggestions);
+  @Get("/search")
+  async searchChannels(@Query() query: SearchChannelsQueryDto): Promise<SearchChannelsResponseDto> {
+    if (query.value.length > 0) {
+      return await this.channelsService.searchChannels(query.value);
     } else {
       return { channels: [] };
     }
