@@ -5,7 +5,6 @@ import LoadingSpinner from "./LoadingSpinner";
 import classNames from "classnames";
 import IconButton from "./IconButton";
 import { XMarkIcon } from "@heroicons/react/20/solid";
-import { stat } from "fs";
 
 export interface ComboBoxState {
   text: string;
@@ -131,14 +130,18 @@ export default function Combobox(props: Props) {
           )}
 
           <HeadlessCombobox.Options
-            as="div"
+            as="ul"
             className={classNames(
               "bg-white dark:bg-slate-900",
               "border border-slate-200 dark:border-slate-700",
               "max-h-72 overflow-auto w-full",
               "my-2 rounded-md shadow",
-              "absolute top-10 z-50",
-              { hidden: options.length === 0 && loading }
+              "absolute top-10",
+              {
+                hidden:
+                  !(options.length > 0 && !loading) &&
+                  !(options.length === 0 && !loading && isUninitialized !== undefined && !isUninitialized),
+              }
             )}
           >
             {options.length > 0 &&
@@ -146,7 +149,7 @@ export default function Combobox(props: Props) {
               options.map((option) => (
                 <HeadlessCombobox.Option key={option.value} value={option} as={Fragment}>
                   {({ active }) => (
-                    <div
+                    <li
                       className={classNames(
                         "px-3 py-2 truncate",
                         "border border-transparent border-l-0 border-r-0",
@@ -163,7 +166,7 @@ export default function Combobox(props: Props) {
                       )}
                     >
                       {option.text}
-                    </div>
+                    </li>
                   )}
                 </HeadlessCombobox.Option>
               ))}

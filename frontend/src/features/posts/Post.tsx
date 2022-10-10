@@ -62,7 +62,7 @@ export default function Post(props: Props) {
       <Box className="flex flex-row justify-between items-start gap-2">
         <Votes uuid={uuid} currentVote={dir} up={up} down={down} mode="post" />
         <div className="flex flex-col justify-start grow">
-          <div className="flex flex-row justify-between items-center gap-2 relative z-0">
+          <div className="flex flex-row justify-between items-center gap-2 relative">
             <div className="text-sm text-secondary flex flex-row justify-between items-center gap-2 flex-wrap">
               <div className="flex flex-row justify-start items-center gap-1 flex-wrap">
                 {channelTextId !== undefined && (

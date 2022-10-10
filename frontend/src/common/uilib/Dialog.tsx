@@ -60,7 +60,7 @@ export default function Dialog(props: Props) {
             className={classNames(
               "flex justify-center items-center",
               "w-screen h-screen",
-              "fixed top-0 left-0 z-50",
+              "fixed top-0 left-0",
               "bg-slate-900/80 dark:bg-slate-900/90"
             )}
           >
