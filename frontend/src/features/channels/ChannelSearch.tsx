@@ -37,9 +37,9 @@ export default function ChannelSearch(props: Props) {
         initialValues={initialValues}
         onSubmit={({ channel }, { resetForm }) => {
           if (channel && channel.value.length > 0) {
-            navigate(`/channels/${channel.value}`);
             resetForm();
             onSelected();
+            navigate(`/channels/${channel.value}`);
           }
         }}
       >

@@ -135,7 +135,7 @@ export default function Combobox(props: Props) {
               "bg-white dark:bg-slate-900",
               "border border-slate-200 dark:border-slate-700",
               "max-h-72 overflow-auto w-full",
-              "my-2 rounded-md shadow",
+              "my-2 rounded-md drop-shadow",
               "absolute top-10",
               {
                 hidden:

@@ -1,4 +1,4 @@
-import React, { ReactNode } from "react";
+import React, { ForwardedRef, forwardRef, MouseEventHandler, ReactNode } from "react";
 import classNames from "classnames";
 import LoadingSpinner from "./LoadingSpinner";
 
@@ -7,13 +7,14 @@ interface Props {
   loading?: boolean;
   type?: "button" | "submit" | "reset" | undefined;
   size?: "small" | "base";
-  variant?: "default" | "standard" | "danger" | "accent";
+  variant?: "default" | "standard" | "danger" | "default-danger" | "accent";
+  icon?: ReactNode;
   disabled?: boolean;
-  onClick?: React.MouseEventHandler<HTMLButtonElement>;
+  onClick?: MouseEventHandler<HTMLButtonElement>;
   children: ReactNode;
 }
 
-export default function Button(props: Props) {
+function Button(props: Props, ref: ForwardedRef<HTMLButtonElement>) {
   const {
     className,
     type = "submit",
@@ -21,6 +22,7 @@ export default function Button(props: Props) {
     loading = false,
     size = "small",
     disabled = false,
+    icon,
     onClick = () => {},
     children,
   } = props;
@@ -29,6 +31,7 @@ export default function Button(props: Props) {
     case "accent":
       return (
         <button
+          ref={ref}
           type={type}
           disabled={disabled || loading}
           onClick={onClick}
@@ -47,12 +50,14 @@ export default function Button(props: Props) {
           )}
         >
           {children}
+          {icon}
           {loading && <LoadingSpinner size="h-4 w-4" border="border-2" color="border-slate-400 dark:text-slate-400" />}
         </button>
       );
     case "danger":
       return (
         <button
+          ref={ref}
           type={type}
           disabled={disabled || loading}
           onClick={onClick}
@@ -71,6 +76,7 @@ export default function Button(props: Props) {
           )}
         >
           {children}
+          {icon}
           {loading !== undefined && loading && (
             <LoadingSpinner size="h-4 w-4" border="border-2" color="border-slate-400" />
           )}
@@ -79,6 +85,7 @@ export default function Button(props: Props) {
     case "standard":
       return (
         <button
+          ref={ref}
           type={type}
           disabled={disabled || loading}
           onClick={onClick}
@@ -94,6 +101,7 @@ export default function Button(props: Props) {
           )}
         >
           {children}
+          {icon}
           {loading && <LoadingSpinner size="h-4 w-4" border="border-2" color="border-slate-400 dark:text-slate-400" />}
         </button>
       );
@@ -101,6 +109,7 @@ export default function Button(props: Props) {
     default:
       return (
         <button
+          ref={ref}
           type={type}
           disabled={disabled || loading}
           onClick={onClick}
@@ -119,6 +128,7 @@ export default function Button(props: Props) {
           )}
         >
           {children}
+          {icon}
           {loading && (
             <LoadingSpinner size="h-4 w-4" border="border-2" color="border-slate-400 dark:border-slate-500" />
           )}
@@ -126,3 +136,5 @@ export default function Button(props: Props) {
       );
   }
 }
+
+export default forwardRef(Button);
