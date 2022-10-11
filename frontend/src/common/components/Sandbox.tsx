@@ -15,12 +15,13 @@ import Textarea from "../uilib/Textarea";
 import Combobox from "../uilib/Combobox";
 import StyledLink from "../uilib/StyledLink";
 import LinkWithIcon from "../uilib/LinkWithIcon";
-import { ChevronLeftIcon, ChevronRightIcon, XMarkIcon } from "@heroicons/react/20/solid";
+import { ChevronLeftIcon, ChevronRightIcon, ExclamationTriangleIcon, XMarkIcon } from "@heroicons/react/20/solid";
 import LoadingSpinner from "../uilib/LoadingSpinner";
 import IconButton from "../uilib/IconButton";
 import ChannelSearch from "../../features/channels/ChannelSearch";
 import RadioGroup from "../uilib/RadioGroup";
 import Tabs from "../uilib/Tabs";
+import Dropdown from "../uilib/dropdown/Dropdown";
 
 const validationSchema = yup.object({
   age: yup.number().min(40, "Minimum age is 40.").required("This field is required."),
@@ -34,6 +35,43 @@ export default function Sandbox() {
   return (
     <PageWrapper>
       <div className="flex flex-col gap-2 w-full">
+        <Box className="flex flex-row justify-between items-end gap-2">
+          <Dropdown
+            items={[
+              { name: "Demo Channel", type: "link", to: "/channels/demo" },
+              { name: "Second Channel", type: "link", to: "/channels/second" },
+            ]}
+          >
+            <Button variant="accent">OPEN MEEE</Button>
+          </Dropdown>
+          <Dropdown
+            text="Dropdown Menu"
+            items={[
+              {
+                name: "Demo Channel",
+                type: "link",
+                to: "/channels/demo",
+                icon: <ExclamationTriangleIcon className="h-4 w-4" />,
+                danger: true,
+              },
+              { name: "Second Channel", type: "link", to: "/channels/second" },
+              {
+                name: "Button",
+                type: "button",
+                danger: true,
+                icon: <ExclamationTriangleIcon className="h-4 w-4" />,
+                onClick: () => console.log("hello world"),
+              },
+              {
+                name: "Button 2",
+                type: "button",
+                onClick: () => console.log("hello world"),
+              },
+            ]}
+            open="left"
+          />
+        </Box>
+
         <Box>
           <Tabs
             tabItems={[{ name: "Oranges", render: true }, { name: "Apples" }, { name: "Bananas" }, { name: "Peaches" }]}
