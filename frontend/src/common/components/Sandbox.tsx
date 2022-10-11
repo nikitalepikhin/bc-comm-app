@@ -20,6 +20,7 @@ import LoadingSpinner from "../uilib/LoadingSpinner";
 import IconButton from "../uilib/IconButton";
 import ChannelSearch from "../../features/channels/ChannelSearch";
 import RadioGroup from "../uilib/RadioGroup";
+import Tabs from "../uilib/Tabs";
 
 const validationSchema = yup.object({
   age: yup.number().min(40, "Minimum age is 40.").required("This field is required."),
@@ -33,6 +34,23 @@ export default function Sandbox() {
   return (
     <PageWrapper>
       <div className="flex flex-col gap-2 w-full">
+        <Box>
+          <Tabs
+            tabItems={[{ name: "Oranges", render: true }, { name: "Apples" }, { name: "Bananas" }, { name: "Peaches" }]}
+          >
+            <div>oranges</div>
+            <div>apples</div>
+            <div>bananas</div>
+            <div>peaches</div>
+          </Tabs>
+
+          <Tabs tabItems={[{ name: "Oranges", render: true }, { name: "Apples" }, { name: "Bananas" }]}>
+            <div>oranges</div>
+            <div>apples</div>
+            <div>bananas</div>
+          </Tabs>
+        </Box>
+
         <Box>
           <ChannelSearch onSelected={() => {}} />
         </Box>
