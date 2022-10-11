@@ -1,5 +1,4 @@
-import { ChevronDownIcon, ChevronUpIcon } from "@heroicons/react/20/solid";
-import DeletePostButton from "./DeletePostButton";
+import { ChevronDownIcon, ChevronUpIcon, TrashIcon } from "@heroicons/react/20/solid";
 import LinkWithIcon from "../../common/uilib/LinkWithIcon";
 import { PencilIcon } from "@heroicons/react/24/outline";
 import classNames from "classnames";
@@ -40,12 +39,22 @@ export default function PostContextMenu(props: Props) {
         )}
       >
         {isAuthor && isFull && (
-          <Button variant="standard" type="button" onClick={onDelete}>
+          <Button
+            type="button"
+            onClick={onDelete}
+            variant="standard"
+            size="base"
+            icon={<TrashIcon className="h-4 w-4" />}
+          >
             Delete
           </Button>
         )}
         {isAuthor && (
-          <LinkWithIcon to={`/channels/${textId}/post/${uuid}/edit`} icon={<PencilIcon className="h-4 w-4" />}>
+          <LinkWithIcon
+            to={`/channels/${textId}/post/${uuid}/edit`}
+            icon={<PencilIcon className="h-4 w-4" />}
+            position="right"
+          >
             Edit
           </LinkWithIcon>
         )}

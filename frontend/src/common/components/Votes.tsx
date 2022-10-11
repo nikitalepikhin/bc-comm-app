@@ -3,6 +3,7 @@ import classNames from "classnames";
 import { useVoteOnPostMutation } from "../../app/enhancedApi";
 import { useVoteOnCommentMutation } from "../../app/api";
 import { useCallback } from "react";
+import IconButton from "../uilib/IconButton";
 
 interface Props {
   mode: "post" | "comment";
@@ -31,18 +32,32 @@ export default function Votes(props: Props) {
   return (
     <div
       className={classNames(
-        "flex items-center",
-        { "flex-row justify-between gap-1": mode === "comment" },
-        { "flex-col justify-start gap-2": mode === "post" }
+        "flex items-center gap-2",
+        { "flex-row justify-between": mode === "comment" },
+        { "flex-col justify-start": mode === "post" }
       )}
     >
-      <button onClick={() => sendVote(currentVote === 1 ? 0 : 1)}>
-        <ArrowUpIcon className={classNames("h-5 w-5", { "text-accent": currentVote === 1 })} />
-      </button>
+      <IconButton
+        onClick={() => sendVote(currentVote === 1 ? 0 : 1)}
+        className={classNames(
+          "rounded-md p-1",
+          { "bg-slate-100/70": currentVote !== 1 },
+          { "bg-blue-300/40": currentVote === 1 }
+        )}
+      >
+        <ArrowUpIcon className={classNames("h-5 w-5 font-extrabold", { "text-blue-600": currentVote === 1 })} />
+      </IconButton>
       <span>{up - down}</span>
-      <button onClick={() => sendVote(currentVote === -1 ? 0 : -1)}>
-        <ArrowDownIcon className={classNames("h-5 w-5", { "text-accent": currentVote === -1 })} />
-      </button>
+      <IconButton
+        onClick={() => sendVote(currentVote === -1 ? 0 : -1)}
+        className={classNames(
+          "rounded-md p-1",
+          { "bg-slate-100/70": currentVote !== -1 },
+          { "bg-blue-300/40": currentVote === -1 }
+        )}
+      >
+        <ArrowDownIcon className={classNames("h-5 w-5 font-extrabold", { "text-blue-600": currentVote === -1 })} />
+      </IconButton>
     </div>
   );
 }
