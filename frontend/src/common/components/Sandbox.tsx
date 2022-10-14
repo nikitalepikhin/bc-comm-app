@@ -38,8 +38,8 @@ export default function Sandbox() {
         <Box className="flex flex-row justify-between items-end gap-2">
           <Dropdown
             items={[
-              { name: "Demo Channel", type: "link", to: "/channels/demo" },
-              { name: "Second Channel", type: "link", to: "/channels/second" },
+              { name: "Demo Channel", type: "link", to: "/channels/demo", show: true },
+              { name: "Second Channel", type: "link", to: "/channels/second", show: true },
             ]}
           >
             OPEN ME
@@ -52,19 +52,22 @@ export default function Sandbox() {
                 to: "/channels/demo",
                 icon: <ExclamationTriangleIcon className="h-4 w-4" />,
                 danger: true,
+                show: true,
               },
-              { name: "Second Channel", type: "link", to: "/channels/second" },
+              { name: "Second Channel", type: "link", to: "/channels/second", show: true },
               {
                 name: "Button",
                 type: "button",
                 danger: true,
                 icon: <ExclamationTriangleIcon className="h-4 w-4" />,
                 onClick: () => console.log("hello world"),
+                show: true,
               },
               {
                 name: "Button 2",
                 type: "button",
                 onClick: () => console.log("hello world"),
+                show: true,
               },
             ]}
             open="left"

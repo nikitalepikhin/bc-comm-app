@@ -1,16 +1,29 @@
 import { useParams } from "react-router-dom";
 import Button from "../../common/uilib/Button";
-import React, { useEffect, useRef, useState } from "react";
+import React, { ChangeEvent, useEffect, useRef, useState } from "react";
 import StyledLink from "../../common/uilib/StyledLink";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { GetPostsForChannelApiArg } from "../../app/api";
 import ChannelPostsSection from "../channels/ChannelPostsSection";
 import { useInView } from "react-intersection-observer";
 import { resetPostsLoadTime } from "./postsSlice";
+import RadioGroup from "../../common/uilib/RadioGroup";
+import { Field, FieldProps, Form, Formik } from "formik";
+
+interface SortForm {
+  sort: "new" | "top";
+}
+
+const initialValues: SortForm = {
+  sort: "new",
+};
 
 export default function ChannelPosts() {
   const { textId } = useParams() as { textId: string };
-  const { role } = useAppSelector((state) => state.auth.user);
+  const {
+    user: { role },
+    present,
+  } = useAppSelector((state) => state.auth);
   const [order, setOrder] = useState<GetPostsForChannelApiArg["order"]>("new");
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(false);
@@ -32,33 +45,35 @@ export default function ChannelPosts() {
   return (
     <div className="flex flex-col justify-start items-center w-full gap-2">
       <div className="flex flex-row gap-2 w-full justify-between items-center">
-        <div className="flex flex-row gap-2">
-          <Button
-            type="button"
-            onClick={() => {
-              setOrder("new");
-              setPage(1);
-              setHasMore(false);
-            }}
-          >
-            New
-          </Button>
-          <Button
-            type="button"
-            onClick={() => {
-              setOrder("top");
-              setPage(1);
-              setHasMore(false);
-            }}
-          >
-            Top
-          </Button>
-        </div>
-        {role && ["STUDENT", "TEACHER"].includes(role) && (
-          <div className="flex flex-row gap-2">
-            <StyledLink to={`/channels/${textId}/post/new`}>Create Post</StyledLink>
-          </div>
-        )}
+        <Formik
+          initialValues={initialValues}
+          onSubmit={({ sort }) => {
+            setOrder(sort);
+            setPage(1);
+            setHasMore(false);
+          }}
+        >
+          {({ handleSubmit }) => (
+            <Form className="w-full">
+              <Field name="sort">
+                {({ field }: FieldProps) => (
+                  <RadioGroup
+                    {...field}
+                    onChange={(e: ChangeEvent) => {
+                      field.onChange(e);
+                      handleSubmit();
+                    }}
+                    defaultValue="new"
+                    options={[
+                      { value: "new", label: "New" },
+                      { value: "top", label: "Top" },
+                    ]}
+                  />
+                )}
+              </Field>
+            </Form>
+          )}
+        </Formik>
       </div>
       {pages.map((page, index) => (
         <ChannelPostsSection

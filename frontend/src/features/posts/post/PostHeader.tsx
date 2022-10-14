@@ -10,7 +10,7 @@ export default function PostHeader() {
   const { author, created, modified, edited, showExpanded, isAuthor } = useContext(PostContext);
 
   return (
-    <div className="flex flex-row justify-between items-center gap-2 w-full flex-wrap">
+    <div className="flex flex-row justify-between items-center gap-2 flex-wrap w-full">
       <div
         className={classNames(
           "flex flex-row justify-start items-center gap-1 flex-wrap",
@@ -26,11 +26,9 @@ export default function PostHeader() {
           <ClockIcon className="h-3 w-3" />
           <span>{timeAgo.format(new Date(created))}</span>
         </div>
-      </div>
-      <div className="flex flex-row justify-end items-center gap-2">
         {edited && showExpanded && <Badge extra={timeAgo.format(new Date(modified))}>edited</Badge>}
-        {showExpanded && isAuthor && <PostContextMenu />}
       </div>
+      {showExpanded && isAuthor && <PostContextMenu />}
     </div>
   );
 }

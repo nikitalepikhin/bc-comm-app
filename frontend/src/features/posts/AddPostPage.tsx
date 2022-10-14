@@ -9,6 +9,7 @@ import Box from "../../common/uilib/Box";
 import Input from "../../common/uilib/Input";
 import Textarea from "../../common/uilib/Textarea";
 import Dialog from "../../common/uilib/Dialog";
+import Container from "../../common/uilib/Container";
 
 interface AddPostFormValues {
   title: string;
@@ -63,8 +64,20 @@ export default function AddPostPage() {
               Close
             </Button>
           </div>
-          <Box>
-            <h1 className="text-lg font-bold mb-4">New Post</h1>
+          <Container
+            title="New Post"
+            actions={
+              <Button
+                type="button"
+                onClick={() => handleSubmit()}
+                variant="accent"
+                loading={isLoading}
+                disabled={!isValid || !dirty}
+              >
+                Create Post
+              </Button>
+            }
+          >
             <Form className="flex flex-col justify-start items-stretch gap-2">
               <Field name="title">
                 {({ field, meta }: FieldProps) => (
@@ -86,19 +99,8 @@ export default function AddPostPage() {
                   />
                 )}
               </Field>
-              <div className="flex flex-row justify-end items-center w-full">
-                <Button
-                  type="button"
-                  onClick={() => handleSubmit()}
-                  variant="accent"
-                  loading={isLoading}
-                  disabled={!isValid || !dirty}
-                >
-                  Create Post
-                </Button>
-              </div>
             </Form>
-          </Box>
+          </Container>
           <Dialog
             show={isExiting}
             onConfirm={() => navigate(`/channels/${textId}`)}

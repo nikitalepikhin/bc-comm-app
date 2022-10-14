@@ -14,7 +14,8 @@ export default function PostFooter() {
     <div
       className={classNames(
         "flex flex-row justify-start items-center gap-2 w-full flex-wrap",
-        "text-sm text-secondary dark:text-slate-400"
+        "text-sm text-secondary dark:text-slate-400",
+        "mt-2"
       )}
     >
       {showExpanded ? (

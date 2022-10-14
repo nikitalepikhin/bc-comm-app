@@ -7,8 +7,9 @@ import { useDeletePostMutation } from "../../../app/enhancedApi";
 import StyledLink from "../../../common/uilib/StyledLink";
 import Dialog from "../../../common/uilib/Dialog";
 import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import PostFooter from "./PostFooter";
+import { BookOpenIcon } from "@heroicons/react/24/outline";
 
 export interface Props {
   uuid: string;
@@ -43,19 +44,43 @@ export default function Post(props: Props) {
 
   return (
     <PostContext.Provider value={{ ...props, onDelete: () => setDeleteInProgress(true) }}>
-      <Box className={classNames("flex flex-row justify-start items-start gap-2")}>
-        <Votes mode="post" uuid={uuid} currentVote={dir} up={up} down={down} />
-        <div className={classNames("flex flex-col justify-start items-start gap-1 w-full")}>
-          <PostHeader />
-          {showExpanded ? (
-            <div className="text-lg font-bold">{title}</div>
-          ) : (
-            <StyledLink to={`/channels/${textId ?? channelTextId}/post/${uuid}`} className="text-lg font-bold">
-              {title}
-            </StyledLink>
-          )}
-          <div className="text-secondary dark:text-slate-400">{body}</div>
-          <PostFooter />
+      <Box
+        className={classNames("flex flex-col justify-start items-start gap-2", {
+          "pt-2": !showExpanded && channelTextId !== undefined,
+        })}
+      >
+        {!showExpanded && channelTextId !== undefined && (
+          <div className="border-b border-slate-200 dark:border-slate-700 w-full">
+            <Link
+              to={`/channels/${channelTextId}`}
+              className={classNames(
+                "flex flex-row justify-start items-center gap-1",
+                "text-sm text-secondary dark:text-slate-400",
+                "p-1"
+              )}
+            >
+              <span>Posted in</span>
+              <span className="text-primary dark:text-white">{channelTextId}</span>
+            </Link>
+          </div>
+        )}
+        <div className={classNames("flex flex-row justify-start items-start gap-2 w-full")}>
+          <Votes mode="post" uuid={uuid} currentVote={dir} up={up} down={down} />
+          <div className={classNames("flex flex-col justify-start items-start gap-1 w-full")}>
+            <PostHeader />
+            {showExpanded ? (
+              <div className="text-lg font-bold">{title}</div>
+            ) : (
+              <Link
+                to={`/channels/${textId ?? channelTextId}/post/${uuid}`}
+                className="text-lg font-bold hover:underline"
+              >
+                {title}
+              </Link>
+            )}
+            <div>{body}</div>
+            <PostFooter />
+          </div>
         </div>
       </Box>
       <Dialog

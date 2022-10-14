@@ -9,7 +9,7 @@ import DropdownButton from "./DropdownButton";
 interface DropdownItem {
   name: string;
   type: "link" | "button";
-  show?: boolean;
+  show: boolean;
   to?: string;
   icon?: ReactNode;
   iconPosition?: "left" | "right";
@@ -20,7 +20,7 @@ interface DropdownItem {
 interface Props {
   items: DropdownItem[];
   textSmall?: boolean;
-  children?: string;
+  children?: ReactNode;
   className?: string;
   gap?: string;
   open?: "left" | "right";
@@ -59,7 +59,7 @@ export default function Dropdown(props: Props) {
             )}
           >
             {() => {
-              if (!!item.show && item.type === "link") {
+              if (item.show && item.type === "link") {
                 return (
                   <DropdownLink
                     to={item.to ?? "#"}
@@ -71,7 +71,7 @@ export default function Dropdown(props: Props) {
                     {item.name}
                   </DropdownLink>
                 );
-              } else if (!!item.show) {
+              } else if (item.show && item.type === "button") {
                 return (
                   <DropdownButton
                     type="button"

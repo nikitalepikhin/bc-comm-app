@@ -2,7 +2,7 @@ import React from "react";
 import { Route, Routes } from "react-router-dom";
 import AddChannelPage from "./AddChannelPage";
 import ProtectedRoute from "../../common/components/ProtectedRoute";
-import ChannelPage from "./ChannelPage";
+import ChannelPage from "./channel/ChannelPage";
 import EditChannelPage from "./EditChannelPage";
 import AddPostPage from "../posts/AddPostPage";
 import PostPage from "../posts/PostPage";
@@ -44,15 +44,15 @@ export default function ChannelsRoutes() {
             </ProtectedRoute>
           }
         />
+        <Route
+          path="edit"
+          element={
+            <ProtectedRoute allowedRoles={["TEACHER", "STUDENT"]}>
+              <EditChannelPage />
+            </ProtectedRoute>
+          }
+        />
       </Route>
-      <Route
-        path="/:textId/edit"
-        element={
-          <ProtectedRoute allowedRoles={["TEACHER", "STUDENT"]}>
-            <EditChannelPage />
-          </ProtectedRoute>
-        }
-      />
     </Routes>
   );
 }
