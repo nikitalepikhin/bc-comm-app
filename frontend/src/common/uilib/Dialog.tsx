@@ -66,7 +66,7 @@ export default function Dialog(props: Props) {
           >
             <div
               className={classNames(
-                "w-full",
+                "w-full drop-shadow",
                 { "max-w-screen-xs": size === "xs" },
                 { "max-w-screen-sm": size === "sm" },
                 { "max-w-screen-md": size === "md" },
@@ -82,8 +82,8 @@ export default function Dialog(props: Props) {
                   <div
                     className={classNames(
                       "rounded-full p-1.5",
-                      { "bg-red-200/50 dark:bg-red-200/80": danger },
-                      { "bg-blue-200/50 dark:bg-blue-200/80": !danger }
+                      { "bg-red-400/30 dark:bg-red-800/50": danger },
+                      { "bg-blue-400/30 dark:bg-blue-800/50": !danger }
                     )}
                   >
                     {danger && <ExclamationTriangleIcon className="h-8 w-8 text-red-600" />}

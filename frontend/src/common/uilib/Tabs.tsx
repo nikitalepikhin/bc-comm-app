@@ -5,15 +5,15 @@ import classNames from "classnames";
 interface TabItem {
   name: string;
   render?: boolean;
+  element: ReactElement;
 }
 
 interface Props {
   tabItems: TabItem[];
-  children: ReactElement[];
 }
 
 export default function Tabs(props: Props) {
-  const { tabItems, children } = props;
+  const { tabItems } = props;
   return (
     <Tab.Group as={Fragment}>
       <Tab.List
@@ -57,12 +57,12 @@ export default function Tabs(props: Props) {
           ) : null
         )}
       </Tab.List>
-      <Tab.Panels>
-        {children.map((child, index) =>
+      <Tab.Panels as="div" className="mt-2">
+        {tabItems.map((tabItem, index) =>
           (tabItems[index] !== undefined && tabItems[index].render !== undefined && tabItems[index].render) ||
           (tabItems[index] !== undefined && tabItems[index].render === undefined) ? (
             <Tab.Panel key={index} as={Fragment}>
-              {child}
+              {tabItem.element}
             </Tab.Panel>
           ) : null
         )}

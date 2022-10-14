@@ -4,7 +4,7 @@ import { devToolsEnhancer } from "@redux-devtools/extension";
 import authReducer from "../features/auth/authSlice";
 import commentsSlice from "../features/comments/commentsSlice";
 import { api } from "./api";
-import feedSlice from "../feed/feedSlice";
+import feedSlice from "../features/feed/feedSlice";
 import postsSlice from "../features/posts/postsSlice";
 
 export const store = configureStore({

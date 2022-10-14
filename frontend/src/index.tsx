@@ -6,10 +6,10 @@ import "./index.css";
 import "./inter.css";
 import App from "./App";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import LoginPage from "./features/auth/LoginPage";
+import LoginForm from "./features/auth/LoginForm";
 import ErrorPage from "./common/components/ErrorPage";
 import { IndexPage } from "./common/components/IndexPage";
-import SignupPage from "./features/auth/SignupPage";
+import SignupForm from "./features/auth/SignupForm";
 import SchoolsRoutes from "./features/schools/SchoolsRoutes";
 import FacultiesRoutes from "./features/faculties/FacultiesRoutes";
 import ChannelsRoutes from "./features/channels/ChannelsRoutes";
@@ -22,8 +22,6 @@ ReactDOM.render(
         <Routes>
           <Route path="/" element={<App />}>
             <Route index element={<IndexPage />} />
-            <Route path="login" element={<LoginPage />} />
-            <Route path="signup" element={<SignupPage />} />
             <Route path="schools/*" element={<SchoolsRoutes />} />
             <Route path="faculties/*" element={<FacultiesRoutes />} />
             <Route path="channels/*" element={<ChannelsRoutes />} />

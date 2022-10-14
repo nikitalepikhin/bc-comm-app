@@ -51,14 +51,7 @@ export default function RadioGroup(props: Props) {
                 "flex flex-row justify-center items-center gap-1"
               )}
             >
-              <span className={classNames("text-center truncate", { "md:text-sm": option.value !== value })}>
-                {option.label}
-              </span>
-              {option.value === value && (
-                <span className="md:hidden">
-                  <CheckIcon className="h-4 w-4 text-primary dark:text-white" />
-                </span>
-              )}
+              <span className={classNames("text-center truncate")}>{option.label}</span>
             </div>
           </label>
         ))}

@@ -10,7 +10,7 @@ import { useAppSelector } from "../../app/hooks";
 import { skipToken } from "@reduxjs/toolkit/query";
 import Button from "../../common/uilib/Button";
 
-const VerificationRequestsPage: React.FC = () => {
+const RequestsPage: React.FC = () => {
   const {
     user: { role },
   } = useAppSelector((state) => state.auth);
@@ -115,4 +115,4 @@ const VerificationRequestsPage: React.FC = () => {
   );
 };
 
-export default VerificationRequestsPage;
+export default RequestsPage;

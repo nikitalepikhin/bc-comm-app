@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef } from "react";
+import React, { useCallback, useRef } from "react";
 import {
   Bars3Icon,
   ChatBubbleBottomCenterTextIcon,
@@ -20,7 +20,6 @@ const NavBar: React.FC = () => {
   } = useAppSelector((state) => state.auth);
 
   const [logOut] = useLogOutMutation();
-
   const { setTheme } = useTheme(); //todo remove from here ???
 
   const menuRef = useRef(null);

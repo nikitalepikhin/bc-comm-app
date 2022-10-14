@@ -43,7 +43,7 @@ export default function PostContextMenu(props: Props) {
             type="button"
             onClick={onDelete}
             variant="standard"
-            size="base"
+            textSize="base"
             icon={<TrashIcon className="h-4 w-4" />}
           >
             Delete

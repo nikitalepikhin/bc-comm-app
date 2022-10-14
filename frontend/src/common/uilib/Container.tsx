@@ -13,7 +13,7 @@ export default function Container(props: Props) {
       className={classNames(
         "bg-white dark:bg-slate-800",
         "rounded-md",
-        "shadow",
+        "shadow dark:shadow-gray-800",
         "border border-slate-200 dark:border-slate-700",
         "overflow-auto"
       )}

@@ -24,7 +24,7 @@ export default function LoadingSpinner(props: Props) {
           { [`${size}`]: size !== undefined },
           { "border-2": border === undefined },
           { [`${border}`]: border !== undefined },
-          { "border-blue-600 dark:border-blue-500": color === undefined },
+          { "border-primary dark:border-white": color === undefined },
           { [`${color}`]: color !== undefined },
           "border-solid border-t-transparent dark:border-t-transparent rounded-full animate-spin",
           { [`${className}`]: className !== undefined }

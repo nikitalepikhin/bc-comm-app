@@ -74,19 +74,12 @@ export default function Sandbox() {
 
         <Box>
           <Tabs
-            tabItems={[{ name: "Oranges", render: true }, { name: "Apples" }, { name: "Bananas" }, { name: "Peaches" }]}
-          >
-            <div>oranges</div>
-            <div>apples</div>
-            <div>bananas</div>
-            <div>peaches</div>
-          </Tabs>
-
-          <Tabs tabItems={[{ name: "Oranges", render: true }, { name: "Apples" }, { name: "Bananas" }]}>
-            <div>oranges</div>
-            <div>apples</div>
-            <div>bananas</div>
-          </Tabs>
+            tabItems={[
+              { name: "Oranges", render: true, element: <div>oranges</div> },
+              { name: "Apples", element: <div>apples</div> },
+              { name: "Bananas", element: <div>bananas</div> },
+            ]}
+          />
         </Box>
 
         <Box>
@@ -194,16 +187,40 @@ export default function Sandbox() {
           </Form>
         </Formik>
 
-        <Alert severity="error">An error has occurred.</Alert>
-        <Alert severity="warning">Please select at least one value.</Alert>
-        <Alert severity="info">Maximum two entries are allowed.</Alert>
-        <Alert severity="success">You have successfully signed up!</Alert>
+        <Alert show severity="error" fullWidth>
+          An error has occurred.
+        </Alert>
+        <Alert show severity="warning" fullWidth>
+          Please select at least one value.
+        </Alert>
+        <Alert show severity="info" fullWidth>
+          Maximum two entries are allowed.
+        </Alert>
+        <Alert show severity="success" fullWidth>
+          You have successfully signed up!
+        </Alert>
+
+        <Box className="flex flex-col gap-2">
+          <Alert show showTitle title="Error oh no" severity="error" fullWidth>
+            An error has occurred.
+          </Alert>
+          <Alert show severity="warning" fullWidth>
+            Please select at least one value. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Porro,
+            praesentium.
+          </Alert>
+          <Alert show severity="info" fullWidth>
+            Maximum two entries are allowed.
+          </Alert>
+          <Alert show severity="success" fullWidth>
+            You have successfully signed up!
+          </Alert>
+        </Box>
 
         <Container
           title="Container Title"
           actions={
             <>
-              <Button loading>Cancel</Button>
+              <Button>Cancel</Button>
               <Button variant="accent">Cancel</Button>
               <Button variant="standard">Cancel</Button>
               <Button variant="danger" onClick={() => setOpen(true)}>

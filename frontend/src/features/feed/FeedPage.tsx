@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import FeedSection from "./FeedSection";
 import { useInView } from "react-intersection-observer";
-import Button from "../common/uilib/Button";
-import { useAppDispatch } from "../app/hooks";
+import Button from "../../common/uilib/Button";
+import { useAppDispatch } from "../../app/hooks";
 import { resetFeedLoadTime } from "./feedSlice";
-import PageWrapper from "../common/uilib/PageWrapper";
+import PageWrapper from "../../common/uilib/PageWrapper";
 
 export default function FeedPage() {
   const [page, setPage] = useState(1);
