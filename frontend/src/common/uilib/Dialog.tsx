@@ -59,7 +59,7 @@ export default function Dialog(props: Props) {
           <dialog
             className={classNames(
               "flex justify-center items-center",
-              "w-screen h-screen",
+              "w-screen h-screen z-10",
               "fixed top-0 left-0",
               "bg-slate-900/80 dark:bg-slate-900/90"
             )}
@@ -92,7 +92,7 @@ export default function Dialog(props: Props) {
                 </div>
                 <div className="flex flex-col justify-start items-stretch gap-2">
                   <div className={classNames("text-lg font-bold")}>{title}</div>
-                  <div className={classNames("text-base text-secondary")}>{body}</div>
+                  <div className={classNames("text-base text-secondary dark:text-slate-400")}>{body}</div>
                 </div>
                 {onClose && (
                   <div className="ml-auto">

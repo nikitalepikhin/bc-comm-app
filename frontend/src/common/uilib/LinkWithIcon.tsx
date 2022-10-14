@@ -17,7 +17,7 @@ export default function LinkWithIcon(props: Props) {
       to={to}
       className={classNames(
         "text-blue-600 hover:text-blue-800 dark:text-blue-500 dark:hover:text-blue-400",
-        "flex flex-row justify-start items-center gap-0.5"
+        "flex flex-row justify-start items-center gap-1"
       )}
     >
       {position === "left" && icon}

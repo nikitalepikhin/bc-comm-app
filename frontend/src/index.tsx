@@ -14,6 +14,7 @@ import SchoolsRoutes from "./features/schools/SchoolsRoutes";
 import FacultiesRoutes from "./features/faculties/FacultiesRoutes";
 import ChannelsRoutes from "./features/channels/ChannelsRoutes";
 import Sandbox from "./common/components/Sandbox";
+import SandboxTwo from "./common/components/SandboxTwo";
 
 ReactDOM.render(
   <React.StrictMode>
@@ -26,6 +27,7 @@ ReactDOM.render(
             <Route path="faculties/*" element={<FacultiesRoutes />} />
             <Route path="channels/*" element={<ChannelsRoutes />} />
             <Route path="demo" element={<Sandbox />} />
+            <Route path="demo2" element={<SandboxTwo />} />
             <Route path="*" element={<ErrorPage />} />
           </Route>
         </Routes>

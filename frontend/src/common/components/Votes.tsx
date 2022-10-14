@@ -41,22 +41,28 @@ export default function Votes(props: Props) {
         onClick={() => sendVote(currentVote === 1 ? 0 : 1)}
         className={classNames(
           "rounded-md p-1",
-          { "bg-slate-100/70": currentVote !== 1 },
-          { "bg-blue-300/40": currentVote === 1 }
+          { "bg-slate-100 hover:bg-slate-200 dark:bg-slate-900 hover:dark:bg-slate-700": currentVote !== 1 },
+          { "bg-blue-100 hover:bg-blue-200 dark:bg-blue-800/50 hover:dark:bg-blue-700/50": currentVote === 1 }
         )}
       >
-        <ArrowUpIcon className={classNames("h-5 w-5 font-extrabold", { "text-blue-600": currentVote === 1 })} />
+        <ArrowUpIcon
+          className={classNames("h-5 w-5 font-extrabold", {
+            "text-blue-600 dark:text-blue-300": currentVote === 1,
+          })}
+        />
       </IconButton>
-      <span>{up - down}</span>
+      <div>{up - down}</div>
       <IconButton
         onClick={() => sendVote(currentVote === -1 ? 0 : -1)}
         className={classNames(
           "rounded-md p-1",
-          { "bg-slate-100/70": currentVote !== -1 },
-          { "bg-blue-300/40": currentVote === -1 }
+          { "bg-slate-100 hover:bg-slate-200 dark:bg-slate-900 hover:dark:bg-slate-700": currentVote !== -1 },
+          { "bg-blue-100 hover:bg-blue-200 dark:bg-blue-800/50 hover:dark:bg-blue-700/50": currentVote === -1 }
         )}
       >
-        <ArrowDownIcon className={classNames("h-5 w-5 font-extrabold", { "text-blue-600": currentVote === -1 })} />
+        <ArrowDownIcon
+          className={classNames("h-5 w-5 font-extrabold", { "text-blue-600 dark:text-blue-300": currentVote === -1 })}
+        />
       </IconButton>
     </div>
   );

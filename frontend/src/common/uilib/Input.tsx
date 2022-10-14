@@ -56,7 +56,7 @@ function Input(props: Props, ref: ForwardedRef<HTMLInputElement>) {
         className={classNames(
           "w-full border",
           "rounded-md px-3 py-2",
-          "text-primary dark:text-white",
+          "text-primary dark:text-white disabled:text-secondary disabled:dark:text-slate-400",
           { "bg-white dark:bg-slate-900": !disabled },
           { "bg-slate-50 dark:bg-slate-800 placeholder-slate-300 dark:placeholder-slate-700": disabled },
           "focus:ring-2 focus:ring-offset-1 dark:focus:ring-offset-slate-800 focus:outline-none",

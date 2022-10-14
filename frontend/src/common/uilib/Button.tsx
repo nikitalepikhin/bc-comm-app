@@ -37,13 +37,12 @@ function Button(props: Props, ref: ForwardedRef<HTMLButtonElement>) {
           disabled={disabled || loading}
           onClick={onClick}
           className={classNames(
-            "text-sm text-white text-center",
+            "text-white text-center",
             { "bg-blue-600 hover:bg-blue-700": variant === "accent" },
             { "focus:ring-blue-600/50 dark:focus:ring-offset-slate-800": variant === "accent" },
-            { "disabled:bg-blue-900 disabled:hover:bg-blue-900": variant === "accent" },
             { "bg-red-600 hover:bg-red-700": variant === "danger" },
             { "focus:ring-red-600/50 dark:focus:ring-offset-red-800": variant === "danger" },
-            { "disabled:bg-red-900 disabled:hover:bg-red-900": variant === "danger" },
+            "disabled:bg-slate-100 disabled:hover:bg-slate-100 dark:disabled:bg-slate-900 dark:disabled:hover:bg-slate-900",
             "border border-slate-200 dark:border-slate-700",
             "rounded-md",
             "py-2 px-3",
@@ -68,7 +67,7 @@ function Button(props: Props, ref: ForwardedRef<HTMLButtonElement>) {
           disabled={disabled || loading}
           onClick={onClick}
           className={classNames(
-            "text-sm text-center text-slate-900 hover:text-slate-700 dark:text-white dark:hover:text-slate-300",
+            "text-center text-slate-900 hover:text-slate-700 dark:text-white dark:hover:text-slate-300",
             "hover:bg-slate-100 hover:dark:bg-slate-900 border border-transparent hover:border-slate-200 hover:dark:border-slate-700",
             "hover:disabled:bg-transparent hover:disabled:border-transparent hover:disabled:dark:bg-transparent hover:disabled:dark:border-transparent",
             "py-2 px-3 rounded-md",
@@ -95,7 +94,7 @@ function Button(props: Props, ref: ForwardedRef<HTMLButtonElement>) {
           disabled={disabled || loading}
           onClick={onClick}
           className={classNames(
-            "text-sm text-center text-primary dark:text-white",
+            "text-center text-primary dark:text-white",
             "bg-white hover:bg-slate-50 dark:bg-slate-900 dark:hover:bg-slate-800",
             "border border-slate-200 dark:border-slate-700",
             "rounded-md",

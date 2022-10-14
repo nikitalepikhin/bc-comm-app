@@ -1,11 +1,11 @@
 import classNames from "classnames";
-import Post from "../posts/Post";
 import React, { ForwardedRef, forwardRef, useEffect } from "react";
 import { GetPostCommentsApiArg } from "../../app/api";
 import { useGetPostsForChannelQuery } from "../../app/enhancedApi";
 import { useParams } from "react-router-dom";
 import LoadingSpinner from "../../common/uilib/LoadingSpinner";
 import { useAppSelector } from "../../app/hooks";
+import Post from "../posts/post/Post";
 
 interface Props {
   page: number;

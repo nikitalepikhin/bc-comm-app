@@ -42,10 +42,9 @@ export default function Sandbox() {
               { name: "Second Channel", type: "link", to: "/channels/second" },
             ]}
           >
-            <Button variant="accent">OPEN MEEE</Button>
+            OPEN ME
           </Dropdown>
           <Dropdown
-            text="Dropdown Menu"
             items={[
               {
                 name: "Demo Channel",
@@ -69,7 +68,9 @@ export default function Sandbox() {
               },
             ]}
             open="left"
-          />
+          >
+            Menu
+          </Dropdown>
         </Box>
 
         <Box>
@@ -201,7 +202,7 @@ export default function Sandbox() {
         </Alert>
 
         <Box className="flex flex-col gap-2">
-          <Alert show showTitle title="Error oh no" severity="error" fullWidth>
+          <Alert show title="Error oh no" severity="error" fullWidth>
             An error has occurred.
           </Alert>
           <Alert show severity="warning" fullWidth>

@@ -3,7 +3,6 @@ import { Field, FieldProps, Form, Formik } from "formik";
 import * as yup from "yup";
 import { useLogInMutation } from "../../app/enhancedApi";
 import Button from "../../common/uilib/Button";
-import StyledLink from "../../common/uilib/StyledLink";
 import Input from "../../common/uilib/Input";
 
 const initialValues = {

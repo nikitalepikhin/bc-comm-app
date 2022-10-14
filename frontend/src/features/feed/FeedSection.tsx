@@ -2,7 +2,7 @@ import { ForwardedRef, forwardRef, useEffect } from "react";
 import { useGetUserFeedQuery } from "../../app/enhancedApi";
 import { useAppSelector } from "../../app/hooks";
 import LoadingSpinner from "../../common/uilib/LoadingSpinner";
-import Post from "../posts/Post";
+import Post from "../posts/post/Post";
 
 interface Props {
   page: number;
