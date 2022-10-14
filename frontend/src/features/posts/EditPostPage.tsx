@@ -116,6 +116,7 @@ export default function EditPostPage() {
                     fullWidth
                     showCharCount
                     maxLength={40000}
+                    size="sm"
                   />
                 )}
               </Field>

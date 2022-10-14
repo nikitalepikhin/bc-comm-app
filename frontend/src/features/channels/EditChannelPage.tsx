@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useGetChannelByTextIdQuery, useUpdateChannelMutation } from "../../app/enhancedApi";
-import ChannelForm, { ChannelFormValues } from "./ChannelForm";
+import ChannelForm, { FormValues } from "./ChannelForm";
 import PageWrapper from "../../common/uilib/PageWrapper";
 
 const EditChannelPage: React.FC = () => {
@@ -23,32 +23,30 @@ const EditChannelPage: React.FC = () => {
     }
   }, [isSuccess]);
 
-  const initialValues: ChannelFormValues = {
+  const initialValues: FormValues = {
     name: data?.name ?? "",
     textId: data?.textId ?? "",
     description: data?.description ?? "",
   };
 
   return (
-    <PageWrapper>
-      <ChannelForm
-        mode="update"
-        initialValues={initialValues}
-        onSubmit={async (values) => {
-          updateChannel({
-            updateChannelRequestDto: {
-              name: values.name,
-              textId: values.textId,
-              description: values.description ?? null,
-              uuid: data?.uuid!,
-              oldTextId: initialValues.textId,
-            },
-          });
-        }}
-        textIdError={textIdError}
-        setTextIdError={setTextIdError}
-      />
-    </PageWrapper>
+    <ChannelForm
+      mode="update"
+      initialValues={initialValues}
+      onSubmit={async (values) => {
+        updateChannel({
+          updateChannelRequestDto: {
+            name: values.name,
+            textId: values.textId,
+            description: values.description ?? null,
+            uuid: data?.uuid!,
+            oldTextId: initialValues.textId,
+          },
+        });
+      }}
+      textIdError={textIdError}
+      setTextIdError={setTextIdError}
+    />
   );
 };
 

@@ -41,7 +41,7 @@ export default function Votes(props: Props) {
         onClick={() => sendVote(currentVote === 1 ? 0 : 1)}
         className={classNames(
           "rounded-md p-1",
-          { "bg-slate-100 hover:bg-slate-200 dark:bg-slate-900 hover:dark:bg-slate-700": currentVote !== 1 },
+          { "bg-slate-50 hover:bg-slate-100 dark:bg-slate-900 hover:dark:bg-slate-700": currentVote !== 1 },
           { "bg-blue-100 hover:bg-blue-200 dark:bg-blue-800/50 hover:dark:bg-blue-700/50": currentVote === 1 }
         )}
       >
@@ -56,7 +56,7 @@ export default function Votes(props: Props) {
         onClick={() => sendVote(currentVote === -1 ? 0 : -1)}
         className={classNames(
           "rounded-md p-1",
-          { "bg-slate-100 hover:bg-slate-200 dark:bg-slate-900 hover:dark:bg-slate-700": currentVote !== -1 },
+          { "bg-slate-50 hover:bg-slate-100 dark:bg-slate-900 hover:dark:bg-slate-700": currentVote !== -1 },
           { "bg-blue-100 hover:bg-blue-200 dark:bg-blue-800/50 hover:dark:bg-blue-700/50": currentVote === -1 }
         )}
       >

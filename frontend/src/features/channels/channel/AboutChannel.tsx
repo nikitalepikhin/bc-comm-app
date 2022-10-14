@@ -22,25 +22,25 @@ export default function AboutChannel(props: Props) {
 
   return (
     <Container title="About This Channel" className="w-full">
-      <div className="flex flex-col justify-start gap-2 divide-y divide-slate-200 dark:divide-slate-700">
-        <div className="flex flex-col justify-start gap-2 pb-2">
+      <div className="flex flex-col justify-start gap-3 divide-y divide-slate-200 dark:divide-slate-700">
+        <div className="flex flex-col justify-start gap-2">
           <div className="text-secondary dark:text-slate-400">{description}</div>
           <div className="flex flex-row justify-start items-center gap-2">
             <CakeIcon className="h-6 w-6" />
             <span>{`Created on ${format(new Date(created), "MMM d, yyyy", { locale: enIN })}`}</span>
           </div>
         </div>
-        <div className="flex flex-row justify-start items-center gap-2 py-2">
+        <div className="flex flex-row justify-start items-center gap-2 pt-3">
           <AcademicCapIcon className="h-6 w-6" />
           <span>{`Members: ${memberCount}`}</span>
         </div>
         {isOwner && (
-          <div className="flex flex-row justify-start items-center gap-2 py-2">
+          <div className="flex flex-row justify-start items-center gap-2 pt-3">
             <Cog6ToothIcon className="h-6 w-6" />
             <StyledLink to={`/channels/${textId}/edit`}>Manage your channel</StyledLink>
           </div>
         )}
-        <div className="pt-2">
+        <div className="pt-3">
           <Button
             type="button"
             variant="accent"

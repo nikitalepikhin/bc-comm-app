@@ -96,6 +96,7 @@ export default function AddPostPage() {
                     error={meta.error && meta.touched ? meta.error : undefined}
                     labelValue="Body"
                     fullWidth
+                    size="sm"
                   />
                 )}
               </Field>
