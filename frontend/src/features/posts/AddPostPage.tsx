@@ -1,10 +1,14 @@
 import { Field, FieldProps, Form, Formik } from "formik";
-import { Navigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import Button from "../../common/uilib/Button";
 import { useCreatePostMutation, useGetChannelByTextIdQuery } from "../../app/enhancedApi";
 import LoadingSpinner from "../../common/uilib/LoadingSpinner";
-import LinkWithIcon from "../../common/uilib/LinkWithIcon";
 import { XMarkIcon } from "@heroicons/react/20/solid";
+import { useEffect, useState } from "react";
+import Box from "../../common/uilib/Box";
+import Input from "../../common/uilib/Input";
+import Textarea from "../../common/uilib/Textarea";
+import Dialog from "../../common/uilib/Dialog";
 
 interface AddPostFormValues {
   title: string;
@@ -18,59 +22,93 @@ const initialValues: AddPostFormValues = {
 
 export default function AddPostPage() {
   const { textId } = useParams() as { textId: string };
+  const navigate = useNavigate();
   const [createPost, { data: createPostData, isSuccess, isLoading }] = useCreatePostMutation();
   const { data, isFetching: getChannelByTextIdIsFetching } = useGetChannelByTextIdQuery({ textId });
+  const [isExiting, setIsExiting] = useState(false);
 
   if (getChannelByTextIdIsFetching) {
-    return (
-      <div>
-        <LoadingSpinner />
-      </div>
-    );
+    return <LoadingSpinner />;
   }
 
-  return isSuccess ? (
-    <Navigate to={`/channels/${textId}/post/${createPostData!.uuid}`} />
-  ) : (
-    <div className="bg-white shadow rounded-md px-4 py-2">
-      <div className="flex justify-between items-center w-full flex-wrap">
-        <h1 className="text-lg font-bold">Create a Post</h1>
-        <LinkWithIcon to={`/channels/${textId}`} icon={<XMarkIcon className="h-6 w-6" />} />
-      </div>
-      <Formik
-        initialValues={initialValues}
-        onSubmit={async ({ title, body }) => {
-          if (data) {
-            await createPost({ createPostRequestDto: { channelUuid: data.uuid, title, body } });
-          }
-        }}
-      >
-        {({ handleSubmit }) => (
-          <Form>
-            <Field name="title">
-              {({ field }: FieldProps) => (
-                <div>
-                  <label htmlFor="title">Title</label>
-                  <input type="text" id="tile" {...field} />
-                </div>
-              )}
-            </Field>
-            <Field name="body">
-              {({ field }: FieldProps) => (
-                <div>
-                  <label htmlFor="body">Body</label>
-                  <textarea {...field} id="body" />
-                </div>
-              )}
-            </Field>
-            <div>
-              <Button type="button" onClick={() => handleSubmit()}>
-                Create Post
-              </Button>
-            </div>
-          </Form>
-        )}
-      </Formik>
-    </div>
+  useEffect(() => {
+    if (isSuccess) {
+      navigate(`/channels/${textId}/post/${createPostData!.uuid}`);
+    }
+  }, [isSuccess]);
+
+  return (
+    <Formik
+      initialValues={initialValues}
+      onSubmit={async ({ title, body }) => {
+        if (data) {
+          await createPost({ createPostRequestDto: { channelUuid: data.uuid, title, body } });
+        }
+      }}
+    >
+      {({ handleSubmit, isValid, dirty }) => (
+        <div className="flex flex-col justify-start items-stretch w-full gap-2">
+          <div className="flex flex-row justify-end items-center w-full">
+            <Button
+              className="w-full"
+              onClick={() => {
+                if (dirty) {
+                  setIsExiting(true);
+                } else {
+                  navigate(`/channels/${textId}`);
+                }
+              }}
+              icon={<XMarkIcon className="h-5 w-5" />}
+            >
+              Close
+            </Button>
+          </div>
+          <Box>
+            <h1 className="text-lg font-bold mb-4">New Post</h1>
+            <Form className="flex flex-col justify-start items-stretch gap-2">
+              <Field name="title">
+                {({ field, meta }: FieldProps) => (
+                  <Input
+                    {...field}
+                    error={meta.error && meta.touched ? meta.error : undefined}
+                    labelValue="Title"
+                    fullWidth
+                  />
+                )}
+              </Field>
+              <Field name="body">
+                {({ field, meta }: FieldProps) => (
+                  <Textarea
+                    {...field}
+                    error={meta.error && meta.touched ? meta.error : undefined}
+                    labelValue="Body"
+                    fullWidth
+                  />
+                )}
+              </Field>
+              <div className="flex flex-row justify-end items-center w-full">
+                <Button
+                  type="button"
+                  onClick={() => handleSubmit()}
+                  variant="accent"
+                  loading={isLoading}
+                  disabled={!isValid || !dirty}
+                >
+                  Create Post
+                </Button>
+              </div>
+            </Form>
+          </Box>
+          <Dialog
+            show={isExiting}
+            onConfirm={() => navigate(`/channels/${textId}`)}
+            onCancel={() => setIsExiting(false)}
+            title="Discard Changes"
+            body="Are you sure you want to discard your changes? This action cannot be undone."
+            danger
+          />
+        </div>
+      )}
+    </Formik>
   );
 }

@@ -5,8 +5,16 @@ import { Field, FieldProps, Form, Formik } from "formik";
 import Button from "../../common/uilib/Button";
 import * as yup from "yup";
 import { useEffect, useState } from "react";
+import LinkWithIcon from "../../common/uilib/LinkWithIcon";
+import { XMarkIcon } from "@heroicons/react/20/solid";
+import Box from "../../common/uilib/Box";
+import Textarea from "../../common/uilib/Textarea";
+import Input from "../../common/uilib/Input";
+import Alert from "../../common/uilib/Alert";
+import Dialog from "../../common/uilib/Dialog";
 
 interface EditPostFormValues {
+  title: string;
   body: string;
 }
 
@@ -19,12 +27,13 @@ const validationSchema = yup.object({
 
 export default function EditPostPage() {
   const { textId, postUuid } = useParams() as { textId: string; postUuid: string };
-  const { data, isLoading } = useGetPostByUuidQuery({ postUuid });
-  const [updatePost, { isSuccess }] = useUpdatePostMutation();
+  const { data, isFetching } = useGetPostByUuidQuery({ postUuid });
+  const [updatePost, { isSuccess, isLoading }] = useUpdatePostMutation();
   const [isExiting, setIsExiting] = useState(false);
   const navigate = useNavigate();
 
   const initialValues: EditPostFormValues = {
+    title: data ? data.post.title : "",
     body: data ? data.post.body : "",
   };
 
@@ -34,63 +43,92 @@ export default function EditPostPage() {
     }
   }, [isSuccess]);
 
-  if (isLoading) {
-    return (
-      <div>
-        <LoadingSpinner size="h-8 w-8" />
-      </div>
-    );
-  } else {
-    if (data && !data.post.isAuthor) {
-      return <Navigate to={`/channels/${textId}/post/${postUuid}`} replace />;
-    } else {
-      return (
-        <div className="w-full bg-white rounded-md shadow px-4 py-2">
-          <h1 className="text-lg font-bold">Edit Your Post</h1>
-          <Formik
-            initialValues={initialValues}
-            validationSchema={validationSchema}
-            enableReinitialize
-            onSubmit={({ body }) => {
-              updatePost({ updatePostRequestDto: { postUuid, body } });
-            }}
-          >
-            {({ handleSubmit, dirty, isValid, isSubmitting, values }) => (
-              <Form>
-                <Field name="body">
-                  {({ field }: FieldProps) => (
-                    <div>
-                      <textarea {...field} maxLength={40000} className="w-full"></textarea>
-                    </div>
-                  )}
-                </Field>
-                <div className="flex flex-row justify-between items-center w-full flex-wrap-reverse gap-2">
-                  <div className="flex flex-row justify-start items-center gap-2 flex-wrap">
-                    <Button type="submit" onClick={() => handleSubmit()} disabled={!dirty || !isValid}>
-                      Save Changes
-                    </Button>
-                    {!isExiting && dirty && (
-                      <Button type="button" onClick={() => setIsExiting(true)}>
-                        Discard Changes
-                      </Button>
-                    )}
-                    {isExiting && dirty && (
-                      <Link to={`/channels/${textId}/post/${postUuid}`}>Confirm Discard Changes</Link>
-                    )}
-                    {isExiting && dirty && (
-                      <Button type="button" onClick={() => setIsExiting(false)}>
-                        Cancel
-                      </Button>
-                    )}
-                    {!dirty && <Link to={`/channels/${textId}/post/${postUuid}`}>Back to Post</Link>}
-                  </div>
-                  <div className="text-secondary">{values.body.length} / 40000</div>
-                </div>
-              </Form>
-            )}
-          </Formik>
-        </div>
-      );
-    }
+  if (isFetching) {
+    return <LoadingSpinner />;
   }
+
+  if (data && !data.post.isAuthor) {
+    return <Navigate to={`/channels/${textId}/post/${postUuid}`} replace />;
+  }
+
+  return (
+    <Formik
+      initialValues={initialValues}
+      validationSchema={validationSchema}
+      enableReinitialize
+      onSubmit={({ body }) => {
+        updatePost({ updatePostRequestDto: { postUuid, body } });
+      }}
+    >
+      {({ dirty, handleSubmit, isValid }) => (
+        <div className="flex flex-col justify-start items-stretch w-full gap-2">
+          <div className="flex flex-row justify-end items-center w-full">
+            <Button
+              className="w-full"
+              onClick={() => {
+                if (dirty) {
+                  setIsExiting(true);
+                } else {
+                  navigate(`/channels/${textId}/post/${postUuid}`);
+                }
+              }}
+              icon={<XMarkIcon className="h-5 w-5" />}
+            >
+              Close
+            </Button>
+          </div>
+          <Box>
+            <h1 className="text-lg font-bold mb-4">Edit Post</h1>
+            <Form className="flex flex-col justify-start items-stretch gap-2">
+              <Field name="title">
+                {({ field, meta }: FieldProps) => (
+                  <Input
+                    {...field}
+                    error={meta.error && meta.touched ? meta.error : undefined}
+                    labelValue="Title"
+                    fullWidth
+                    disabled
+                  />
+                )}
+              </Field>
+              <Alert fullWidth show severity="info">
+                Editing the post title is not allowed.
+              </Alert>
+              <Field name="body">
+                {({ field, meta }: FieldProps) => (
+                  <Textarea
+                    {...field}
+                    error={meta.error && meta.touched ? meta.error : undefined}
+                    labelValue="Body"
+                    fullWidth
+                    showCharCount
+                    maxLength={40000}
+                  />
+                )}
+              </Field>
+              <div className="flex flex-row justify-end items-center w-full">
+                <Button
+                  type="button"
+                  onClick={() => handleSubmit()}
+                  variant="accent"
+                  loading={isLoading}
+                  disabled={!isValid || !dirty}
+                >
+                  Update Post
+                </Button>
+              </div>
+            </Form>
+          </Box>
+          <Dialog
+            show={isExiting}
+            onConfirm={() => navigate(`/channels/${textId}/post/${postUuid}`)}
+            onCancel={() => setIsExiting(false)}
+            title="Discard Changes"
+            body="Are you sure you want to discard your changes? This action cannot be undone."
+            danger
+          />
+        </div>
+      )}
+    </Formik>
+  );
 }
