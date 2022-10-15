@@ -1,4 +1,4 @@
-import { AcademicCapIcon, CakeIcon, Cog6ToothIcon } from "@heroicons/react/24/outline";
+import { CakeIcon, Cog6ToothIcon, IdentificationIcon, UsersIcon } from "@heroicons/react/24/outline";
 import { format } from "date-fns";
 import React from "react";
 import { GetChannelByTextIdApiResponse } from "../../../app/api";
@@ -13,10 +13,11 @@ interface Props {
   memberCount: GetChannelByTextIdApiResponse["memberCount"];
   created: GetChannelByTextIdApiResponse["created"];
   isOwner: GetChannelByTextIdApiResponse["isOwner"];
+  owner: GetChannelByTextIdApiResponse["owner"];
 }
 
 export default function AboutChannel(props: Props) {
-  const { description, memberCount, created, isOwner } = props;
+  const { description, memberCount, created, isOwner, owner } = props;
   const { textId } = useParams() as { textId: string };
   const navigate = useNavigate();
 
@@ -31,8 +32,15 @@ export default function AboutChannel(props: Props) {
           </div>
         </div>
         <div className="flex flex-row justify-start items-center gap-2 pt-3">
-          <AcademicCapIcon className="h-6 w-6" />
+          <UsersIcon className="h-6 w-6" />
           <span>{`Members: ${memberCount}`}</span>
+        </div>
+        <div className="flex flex-row justify-start items-center gap-2 pt-3">
+          <IdentificationIcon className="h-6 w-6" />
+          {owner.role.toLowerCase() === "student" && <span>Owner: student</span>}
+          {owner.role.toLowerCase() === "teacher" && (
+            <span>{`Owner: teacher ${owner.name ?? ""} (${owner.username})`}</span>
+          )}
         </div>
         {isOwner && (
           <div className="flex flex-row justify-start items-center gap-2 pt-3">

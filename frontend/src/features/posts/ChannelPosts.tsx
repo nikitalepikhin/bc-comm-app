@@ -9,6 +9,7 @@ import { useInView } from "react-intersection-observer";
 import { resetPostsLoadTime } from "./postsSlice";
 import RadioGroup from "../../common/uilib/RadioGroup";
 import { Field, FieldProps, Form, Formik } from "formik";
+import Box from "../../common/uilib/Box";
 
 interface SortForm {
   sort: "new" | "top";

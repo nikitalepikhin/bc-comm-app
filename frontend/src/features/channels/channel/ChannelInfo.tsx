@@ -13,14 +13,21 @@ interface Props {
   memberCount: GetChannelByTextIdApiResponse["memberCount"];
   created: GetChannelByTextIdApiResponse["created"];
   isOwner: GetChannelByTextIdApiResponse["isOwner"];
+  owner: GetChannelByTextIdApiResponse["owner"];
 }
 
 export default function ChannelInfo(props: Props) {
-  const { description, memberCount, created, isOwner } = props;
+  const { description, memberCount, created, isOwner, owner } = props;
 
   return (
     <div className="flex flex-col justify-start items-center gap-2 w-full lg:max-w-sm">
-      <AboutChannel description={description} memberCount={memberCount} created={created} isOwner={isOwner} />
+      <AboutChannel
+        description={description}
+        memberCount={memberCount}
+        created={created}
+        isOwner={isOwner}
+        owner={owner}
+      />
     </div>
   );
 }

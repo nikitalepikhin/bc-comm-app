@@ -50,17 +50,16 @@ export default function Post(props: Props) {
         })}
       >
         {!showExpanded && channelTextId !== undefined && (
-          <div className="border-b border-slate-200 dark:border-slate-700 w-full">
-            <Link
-              to={`/channels/${channelTextId}`}
-              className={classNames(
-                "flex flex-row justify-start items-center gap-1",
-                "text-sm text-secondary dark:text-slate-400",
-                "p-1"
-              )}
-            >
-              <span>Posted in</span>
-              <span className="text-primary dark:text-white">{channelTextId}</span>
+          <div
+            className={classNames(
+              "border-b border-slate-200 dark:border-slate-700 w-full",
+              "flex flex-row justify-start items-center gap-1",
+              "pb-1"
+            )}
+          >
+            <span className="text-sm text-secondary dark:text-slate-400">Posted in</span>
+            <Link to={`/channels/${channelTextId}`} className={classNames("text-primary dark:text-white text-sm")}>
+              {channelTextId}
             </Link>
           </div>
         )}

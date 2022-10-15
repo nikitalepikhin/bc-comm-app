@@ -45,7 +45,7 @@ export default function RadioGroup(props: Props) {
             />
             <div
               className={classNames(
-                { "bg-blue-100 dark:bg-slate-900": option.value === value },
+                { "bg-blue-100 dark:bg-blue-900": option.value === value },
                 { "text-slate-700 dark:text-slate-300": option.value !== value },
                 "px-3 py-2",
                 "flex flex-row justify-center items-center gap-1"

@@ -28,6 +28,7 @@ const ChannelPage: React.FC = () => {
           description={data?.description!}
           isOwner={data?.isOwner!}
           memberCount={data?.memberCount!}
+          owner={data?.owner!}
         />
         <div className="w-full">
           <Outlet />
