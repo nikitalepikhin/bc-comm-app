@@ -2,7 +2,7 @@ import { useParams } from "react-router-dom";
 import StyledLink from "../../common/uilib/StyledLink";
 import { useGetCommentCommentsQuery } from "../../app/enhancedApi";
 import LoadingSpinner from "../../common/uilib/LoadingSpinner";
-import Comment from "./Comment";
+import Comment from "./comment/Comment";
 
 export default function CommentThreadPage() {
   const { textId, postUuid, commentUuid } = useParams() as { textId: string; postUuid: string; commentUuid: string };

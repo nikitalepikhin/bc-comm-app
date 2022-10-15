@@ -7,17 +7,19 @@ interface Props {
   icon: ReactNode;
   position?: "left" | "right";
   children?: string;
+  className?: string;
 }
 
 export default function LinkWithIcon(props: Props) {
-  const { to, position = "left", icon, children } = props;
+  const { to, icon, children, className, position = "left" } = props;
 
   return (
     <Link
       to={to}
       className={classNames(
         "text-blue-600 hover:text-blue-800 dark:text-blue-500 dark:hover:text-blue-400",
-        "flex flex-row justify-start items-center gap-1"
+        "flex flex-row justify-start items-center gap-1",
+        { [`${className}`]: className }
       )}
     >
       {position === "left" && icon}

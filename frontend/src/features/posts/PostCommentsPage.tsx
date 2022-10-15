@@ -1,10 +1,21 @@
 import { useParams } from "react-router-dom";
-import { useState } from "react";
+import { ChangeEvent, useState } from "react";
 import { GetPostCommentsApiArg } from "../../app/api";
 import PostCommentsSection from "./PostCommentsSection";
 import Button from "../../common/uilib/Button";
 import { useGetPostByUuidQuery } from "../../app/enhancedApi";
 import CommentForm from "../comments/CommentForm";
+import Box from "../../common/uilib/Box";
+import { Field, FieldProps, Form, Formik } from "formik";
+import RadioGroup from "../../common/uilib/RadioGroup";
+
+interface FormValues {
+  sort: "new" | "top";
+}
+
+const initialValues: FormValues = {
+  sort: "new",
+};
 
 export default function PostCommentsPage() {
   const { postUuid } = useParams() as { postUuid: string };
@@ -16,36 +27,49 @@ export default function PostCommentsPage() {
 
   return (
     <div>
-      {data && data.post.commentsCount > 0 && (
-        <div className="flex flex-row justify-start items-center gap-2">
-          <Button
-            onClick={() => {
-              setPage(1);
-              setHasMore(false);
-              setOrder("new");
-            }}
-          >
-            New
-          </Button>
-          <Button
-            onClick={() => {
-              setPage(1);
-              setHasMore(false);
-              setOrder("top");
-            }}
-          >
-            Top
-          </Button>
-        </div>
+      {!isLoading && data && data.post.commentsCount > 0 && (
+        <Formik
+          initialValues={initialValues}
+          onSubmit={({ sort }) => {
+            setPage(1);
+            setHasMore(false);
+            setOrder(sort);
+          }}
+        >
+          {({ handleSubmit }) => (
+            <Form className="mb-2">
+              <Field name="sort">
+                {({ field }: FieldProps) => (
+                  <RadioGroup
+                    {...field}
+                    onChange={(e: ChangeEvent) => {
+                      field.onChange(e);
+                      handleSubmit();
+                    }}
+                    defaultValue="new"
+                    options={[
+                      { value: "new", label: "New" },
+                      { value: "top", label: "Top" },
+                    ]}
+                  />
+                )}
+              </Field>
+            </Form>
+          )}
+        </Formik>
+      )}
+      {!isLoading && (
+        <Box className="mb-2">
+          <CommentForm postUuid={postUuid} onClose={() => setOrder("new")} />
+        </Box>
       )}
       {!isLoading && data && data.post.commentsCount === 0 && (
-        <div className="w-full text-center px-4 py-2">
+        <Box className="flex flex-col justify-center items-center text-center w-full py-6">
           It's quite in here... 😴
           <br />
           Be the first to leave a comment.
-        </div>
+        </Box>
       )}
-      {!isLoading && <CommentForm postUuid={postUuid} onClose={() => setOrder("new")} />}
       {pages.map((page, index) => (
         <PostCommentsSection
           key={page}
@@ -58,7 +82,7 @@ export default function PostCommentsPage() {
       {hasMore && (
         <Button
           type="button"
-          variant="standard"
+          variant="default"
           onClick={() => {
             setPage(page + 1);
             setHasMore(false);

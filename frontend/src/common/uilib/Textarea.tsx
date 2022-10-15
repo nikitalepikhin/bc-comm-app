@@ -14,7 +14,7 @@ interface Props {
   fullWidth?: boolean;
   maxLength?: number;
   showCharCount?: boolean;
-  size?: "xs" | "sm" | "md" | "lg" | "xl";
+  size?: "xxs" | "xs" | "sm" | "md" | "lg" | "xl";
   className?: string;
 }
 
@@ -68,6 +68,7 @@ function Textarea(props: Props, ref: ForwardedRef<HTMLTextAreaElement>) {
         disabled={disabled}
         className={classNames(
           "overflow-auto resize-none border w-full",
+          { "h-[70px]": size === "xxs" },
           { "h-[100px]": size === "xs" },
           { "h-[200px]": size === "sm" },
           { "h-[400px]": size === "md" },

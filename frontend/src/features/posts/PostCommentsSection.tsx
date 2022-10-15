@@ -2,7 +2,7 @@ import { useGetPostCommentsQuery } from "../../app/enhancedApi";
 import { useParams } from "react-router-dom";
 import { useEffect } from "react";
 import { GetPostCommentsApiArg } from "../../app/api";
-import Comment from "../comments/Comment";
+import Comment from "../comments/comment/Comment";
 import { useAppSelector } from "../../app/hooks";
 
 interface Props {

@@ -6,6 +6,7 @@ import { useParams } from "react-router-dom";
 import LoadingSpinner from "../../common/uilib/LoadingSpinner";
 import { useAppSelector } from "../../app/hooks";
 import Post from "../posts/post/Post";
+import Box from "../../common/uilib/Box";
 
 interface Props {
   page: number;
@@ -49,6 +50,13 @@ function ChannelPostsSection(props: Props, ref: ForwardedRef<HTMLDivElement>) {
           <Post {...post} />
         </div>
       ))}
+      {!isLoading && page === 1 && data && data.posts.length === 0 && (
+        <Box className="flex flex-col justify-center items-center text-center w-full py-6">
+          It's quite in here... 😴
+          <br />
+          Be the first create a post.
+        </Box>
+      )}
     </>
   );
 }

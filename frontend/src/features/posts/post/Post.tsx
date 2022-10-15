@@ -77,7 +77,7 @@ export default function Post(props: Props) {
                 {title}
               </Link>
             )}
-            <div>{body}</div>
+            <div className={classNames({ "line-clamp-3": !showExpanded })}>{body}</div>
             <PostFooter />
           </div>
         </div>

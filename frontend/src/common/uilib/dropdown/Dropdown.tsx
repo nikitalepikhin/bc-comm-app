@@ -55,7 +55,9 @@ export default function Dropdown(props: Props) {
             className={classNames(
               "hover:bg-slate-100 hover:dark:bg-slate-800",
               "whitespace-nowrap",
-              "border-y border-slate-200 dark:border-slate-700 border-b-0 first:border-t-0"
+              "border-slate-200 dark:border-slate-700",
+              { "border-t-0 border-b-0": items.length === 1 },
+              { "border-y border-b-0 first:border-t-0": items.length > 1 }
             )}
           >
             {() => {
