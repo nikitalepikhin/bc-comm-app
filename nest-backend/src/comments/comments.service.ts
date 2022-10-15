@@ -163,6 +163,14 @@ export class CommentsService {
             },
           },
         });
+        await tx.comment.update({
+          where: { uuid: requestDto.uuid },
+          data: {
+            resVote: {
+              increment,
+            },
+          },
+        });
       }
     });
   }

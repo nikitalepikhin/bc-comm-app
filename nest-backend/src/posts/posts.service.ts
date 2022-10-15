@@ -206,6 +206,14 @@ export class PostsService {
             },
           },
         });
+        await tx.post.update({
+          where: { uuid: requestDto.uuid },
+          data: {
+            resVote: {
+              increment,
+            },
+          },
+        });
       }
     });
   }
