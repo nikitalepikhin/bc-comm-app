@@ -25,7 +25,7 @@ const SchoolsRoutes: React.FC = () => {
         }
       />
       <Route
-        path="/edit/:schoolUuid"
+        path="/:schoolUuid/edit"
         element={
           <ProtectedRoute allowedRoles={["ADMIN"]}>
             <EditSchoolPage />

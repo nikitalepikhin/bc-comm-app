@@ -26,6 +26,9 @@ const injectedRtkApi = api.injectEndpoints({
     refreshUsername: build.query<RefreshUsernameApiResponse, RefreshUsernameApiArg>({
       query: () => ({ url: `/users/refresh` }),
     }),
+    verifyUser: build.mutation<VerifyUserApiResponse, VerifyUserApiArg>({
+      query: (queryArg) => ({ url: `/users/verify`, method: "POST", body: queryArg.verifyUserRequestDto }),
+    }),
     createSchool: build.mutation<CreateSchoolApiResponse, CreateSchoolApiArg>({
       query: (queryArg) => ({ url: `/schools`, method: "POST", body: queryArg.createSchoolDto }),
     }),
@@ -195,6 +198,10 @@ export type LogOutApiResponse = unknown;
 export type LogOutApiArg = void;
 export type RefreshUsernameApiResponse = unknown;
 export type RefreshUsernameApiArg = void;
+export type VerifyUserApiResponse = unknown;
+export type VerifyUserApiArg = {
+  verifyUserRequestDto: VerifyUserRequestDto;
+};
 export type CreateSchoolApiResponse = unknown;
 export type CreateSchoolApiArg = {
   createSchoolDto: CreateSchoolDto;
@@ -391,6 +398,12 @@ export type CreateTeacherUserDto = {
   name: string;
   schoolUuid: string;
   facultyUuid: string;
+};
+export type VerifyUserRequestDto = {
+  approve: boolean;
+  reason: string | null;
+  verifiedUserUuid: string;
+  type: "TEACHER" | "REPRESENTATIVE";
 };
 export type CreateSchoolDto = {
   name: string;
@@ -692,6 +705,7 @@ export const {
   useRefreshTokenMutation,
   useLogOutMutation,
   useRefreshUsernameQuery,
+  useVerifyUserMutation,
   useCreateSchoolMutation,
   useGetAllSchoolsQuery,
   useUpdateSchoolMutation,
@@ -712,6 +726,7 @@ export const {
   useRequestTeacherVerificationQuery,
   useGetTeacherVerificationRequestsQuery,
   useVerifyTeacherUserMutation,
+  useSearchChannelsQuery,
   useCreateChannelMutation,
   useUpdateChannelMutation,
   useGetChannelByTextIdQuery,

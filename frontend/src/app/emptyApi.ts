@@ -58,8 +58,7 @@ const baseQueryWithReauth: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQue
 };
 
 export const TagTypes = {
-  REPR_REQ: "repr_req" as const,
-  TEACHER_REQ: "teacher_req" as const,
+  REQUEST: "request" as const,
   SCHOOL: "school" as const,
   FACULTY: "faculty" as const,
   CHANNEL: "channel" as const,
@@ -79,8 +78,7 @@ export const emptyApi = createApi({
   endpoints: () => ({}),
   keepUnusedDataFor: 60,
   tagTypes: [
-    TagTypes.REPR_REQ,
-    TagTypes.TEACHER_REQ,
+    TagTypes.REQUEST,
     TagTypes.SCHOOL,
     TagTypes.FACULTY,
     TagTypes.CHANNEL,

@@ -1,6 +1,6 @@
 import React from "react";
 import useUserData from "../../features/auth/useUserData";
-import RequestsPage from "../../features/representatives-verification/RequestsPage";
+import RequestsPage from "../../features/requests/RequestsPage";
 import StyledLink from "../uilib/StyledLink";
 import FeedPage from "../../features/feed/FeedPage";
 import AuthPage from "../../features/auth/AuthPage";

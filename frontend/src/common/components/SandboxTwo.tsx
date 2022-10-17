@@ -1,19 +1,19 @@
 import PageWrapper from "../uilib/PageWrapper";
 import Post from "../../features/posts/post/Post";
 import Button from "../uilib/Button";
-import useTheme from "../hooks/useTheme";
+import useColorScheme from "../hooks/useColorScheme";
 import Box from "../uilib/Box";
 
 export default function SandboxTwo() {
-  const { setTheme } = useTheme();
+  const { setScheme } = useColorScheme();
 
   return (
     <PageWrapper className="flex flex-col gap-2">
       <Box className="flex flex-col justify-start items-start gap-2 w-full">
         <div className="flex flex-row gap-2 justify-start">
-          <Button onClick={() => setTheme("light")}>Light</Button>
-          <Button onClick={() => setTheme("dark")}>Dark</Button>
-          <Button onClick={() => setTheme("system")}>System</Button>
+          <Button onClick={() => setScheme("light")}>Light</Button>
+          <Button onClick={() => setScheme("dark")}>Dark</Button>
+          <Button onClick={() => setScheme("system")}>System</Button>
         </div>
       </Box>
 

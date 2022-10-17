@@ -9,10 +9,12 @@ import GetChannelByTextIdResponseDto from "./dto/get-channel-by-text-id-response
 import ToggleChannelMembershipRequestDto from "./dto/toggle-channel-membership-request.dto";
 import UpdateChannelRequestDto from "./dto/update-channel-request.dto";
 import UpdateChannelResponseDto from "./dto/update-channel-response.dto";
+import { UsersService } from "../users/users.service";
+import { Teacher } from "@prisma/client";
 
 @Injectable()
 export class ChannelsService {
-  constructor(private prisma: PrismaService) {}
+  constructor(private prisma: PrismaService, private usersService: UsersService) {}
 
   async createChannel(user: UserDto, createNewChannelRequest: CreateChannelRequestDto) {
     try {
@@ -122,6 +124,10 @@ export class ChannelsService {
           },
         },
       });
+      let teacher: Teacher | undefined;
+      if (channel.createdBy.role === "TEACHER") {
+        teacher = await this.usersService.findTeacherByUuid(channel.createdBy.uuid);
+      }
       return {
         uuid: channel.uuid,
         textId: channel.textId,
@@ -134,6 +140,7 @@ export class ChannelsService {
         owner: {
           role: channel.createdBy.role,
           username: channel.createdBy.username,
+          name: teacher ? teacher.name : undefined,
         },
       };
     } catch (e) {

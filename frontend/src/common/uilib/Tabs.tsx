@@ -57,11 +57,11 @@ export default function Tabs(props: Props) {
           ) : null
         )}
       </Tab.List>
-      <Tab.Panels as="div" className="mt-2">
+      <Tab.Panels as="div" className="mt-2 w-full">
         {tabItems.map((tabItem, index) =>
           (tabItems[index] !== undefined && tabItems[index].render !== undefined && tabItems[index].render) ||
           (tabItems[index] !== undefined && tabItems[index].render === undefined) ? (
-            <Tab.Panel key={index} as={Fragment}>
+            <Tab.Panel key={index} as="div">
               {tabItem.element}
             </Tab.Panel>
           ) : null

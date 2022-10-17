@@ -1,6 +1,6 @@
-import { BadRequestException, Injectable, InternalServerErrorException } from "@nestjs/common";
+import { BadRequestException, Injectable, InternalServerErrorException, UnauthorizedException } from "@nestjs/common";
 import { PrismaService } from "../prisma/prisma.service";
-import { Status, User } from "@prisma/client";
+import { Status, Teacher, User } from "@prisma/client";
 import CreateBaseUserDto from "./dto/create-base-user.dto";
 import * as bcrypt from "bcrypt";
 import * as randomstring from "randomstring";
@@ -10,6 +10,8 @@ import { CreateTeacherUserDto } from "./dto/create-teacher-user.dto";
 import { FacultiesService } from "../faculties/faculties.service";
 import RefreshUsernameResponseDto from "./dto/refresh-username-response.dto";
 import UserDto from "../auth/dto/user.dto";
+import VerifyUserRequestDto from "./dto/verify-user-request.dto";
+import { isNil } from "@nestjs/common/utils/shared.utils";
 
 const usernameParams = {
   length: 8,
@@ -129,5 +131,56 @@ export class UsersService {
       data: { username: UsersService.generateRandomUsername() },
       select: { username: true },
     });
+  }
+
+  async findTeacherByUuid(uuid: string): Promise<Teacher> {
+    return await this.prisma.teacher.findUnique({ where: { userUuid: uuid } });
+  }
+
+  async verifyUser(user: UserDto, requestDto: VerifyUserRequestDto) {
+    if (!requestDto.approve && isNil(requestDto.reason)) {
+      return new BadRequestException("Provide a reason for declining verification request.");
+    }
+    if (requestDto.type === "TEACHER" && (user.role === "ADMIN" || user.role === "REPRESENTATIVE")) {
+      const { verified } = await this.prisma.teacher.findUnique({
+        where: { userUuid: requestDto.verifiedUserUuid },
+        select: { verified: true },
+      });
+      if (verified) {
+        throw new BadRequestException("Teacher is already verified.");
+      } else {
+        await this.prisma.teacher.update({
+          where: { userUuid: requestDto.verifiedUserUuid },
+          data: {
+            verified: requestDto.approve,
+            verificationMessage: requestDto.reason ?? null,
+            requestsVerification: false,
+            verifiedAt: requestDto.approve ? new Date() : undefined,
+            verifiedByUserUuid: requestDto.approve ? user.uuid : undefined,
+          },
+        });
+      }
+    } else if (requestDto.type === "REPRESENTATIVE" && user.role === "ADMIN") {
+      const { verified } = await this.prisma.representative.findUnique({
+        where: { userUuid: requestDto.verifiedUserUuid },
+        select: { verified: true },
+      });
+      if (verified) {
+        throw new BadRequestException("Representative is already verified.");
+      } else {
+        await this.prisma.representative.update({
+          where: { userUuid: requestDto.verifiedUserUuid },
+          data: {
+            verified: requestDto.approve,
+            verificationMessage: requestDto.reason ?? null,
+            requestsVerification: false,
+            verifiedAt: requestDto.approve ? new Date() : undefined,
+            verifiedByUserUuid: requestDto.approve ? user.uuid : undefined,
+          },
+        });
+      }
+    } else {
+      throw new UnauthorizedException();
+    }
   }
 }

@@ -61,7 +61,10 @@ export class ChannelsController {
   @RequirePermissions(Permission.CHANNEL_READ)
   @UseGuards(JwtAuthGuard, RequirePermissionsGuard)
   @Get("/:textId")
-  async getChannelByTextId(@Req() request, @Param() params: GetChannelByTextIdParamsDto) {
+  async getChannelByTextId(
+    @Req() request,
+    @Param() params: GetChannelByTextIdParamsDto,
+  ): Promise<GetChannelByTextIdResponseDto> {
     return await this.channelsService.getChannelByTextId(params.textId, request.user.uuid);
   }
 

@@ -4,6 +4,7 @@ import { useVoteOnPostMutation } from "../../app/enhancedApi";
 import { useVoteOnCommentMutation } from "../../app/api";
 import { useCallback } from "react";
 import IconButton from "../uilib/IconButton";
+import { useAppSelector } from "../../app/hooks";
 
 interface Props {
   mode: "post" | "comment";
@@ -17,6 +18,7 @@ export default function Votes(props: Props) {
   const { mode, uuid, currentVote, up, down } = props;
   const [voteOnPost] = useVoteOnPostMutation();
   const [voteOnComment] = useVoteOnCommentMutation();
+  const { role } = useAppSelector((state) => state.auth.user);
 
   const sendVote = useCallback(
     (dir: number) => {
@@ -38,6 +40,7 @@ export default function Votes(props: Props) {
       )}
     >
       <IconButton
+        disabled={role !== "STUDENT" && role !== "TEACHER"}
         onClick={() => sendVote(currentVote === 1 ? 0 : 1)}
         className={classNames(
           "rounded-md p-1",
@@ -53,6 +56,7 @@ export default function Votes(props: Props) {
       </IconButton>
       <div>{up - down}</div>
       <IconButton
+        disabled={role !== "STUDENT" && role !== "TEACHER"}
         onClick={() => sendVote(currentVote === -1 ? 0 : -1)}
         className={classNames(
           "rounded-md p-1",

@@ -8,19 +8,23 @@ export class RequirePermissionsGuard implements CanActivate {
   constructor(private reflector: Reflector, private authoritiesService: AuthoritiesService) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
-    const requiredPermission = this.reflector.getAllAndOverride<Permission>(PERMISSIONS_KEY, [
+    const permissions = this.reflector.getAllAndOverride<Permission[]>(PERMISSIONS_KEY, [
       context.getHandler(),
       context.getClass(),
     ]);
-    if (requiredPermission === null) {
+    if (permissions === null || permissions.length === 0) {
       return true;
     } else {
-      const { user } = context.switchToHttp().getRequest();
-      const authority = await this.authoritiesService.getAuthorityByName(Permission[requiredPermission]);
-      if (!authority) {
-        throw new UnauthorizedException();
+      let result = true;
+      for (const perm of permissions) {
+        const { user } = context.switchToHttp().getRequest();
+        const authority = await this.authoritiesService.getAuthorityByName(Permission[perm]);
+        if (!authority) {
+          throw new UnauthorizedException();
+        }
+        result = authority.roles.includes(user.role);
       }
-      return authority.roles.includes(user.role);
+      return result;
     }
   }
 }

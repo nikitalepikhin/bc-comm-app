@@ -29,17 +29,6 @@ export class RepresentativesController {
   @UseGuards(JwtAuthGuard, RequirePermissionsGuard)
   @Get("/verify")
   async getRepresentativeVerificationRequests(): Promise<GetRepresentativeRequestsDto> {
-    return await this.representativesService.getRepresentativeVerificationRequests();
-  }
-
-  @ApiOperation({ summary: "Verify representative or decline verification request." })
-  @RequirePermissions(Permission.REP_REQ_UPDATE)
-  @UseGuards(JwtAuthGuard, RequirePermissionsGuard)
-  @Post("/verify")
-  async verifyRepresentativeUser(
-    @Req() request,
-    @Body() verifyRepresentativeUserRequest: VerifyRepresentativeUserRequestDto,
-  ) {
-    await this.representativesService.verifyRepresentativeUser(request.user, verifyRepresentativeUserRequest);
+    return await this.representativesService.getVerificationRequests();
   }
 }

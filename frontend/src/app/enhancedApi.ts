@@ -14,28 +14,23 @@ export const enhancedApi = api.enhanceEndpoints({
       providesTags: (result) =>
         result
           ? [
-              ...result.requests.map((request) => ({ type: TagTypes.REPR_REQ, id: request.user.uuid })),
-              { type: TagTypes.REPR_REQ, id: IdTypes.ALL },
+              ...result.requests.map((request) => ({ type: TagTypes.REQUEST, id: request.user.uuid })),
+              { type: TagTypes.REQUEST, id: IdTypes.ALL },
             ]
-          : [{ type: TagTypes.REPR_REQ, id: IdTypes.ALL }],
-    },
-    verifyRepresentativeUser: {
-      invalidatesTags: (result, error, arg) => [
-        { type: TagTypes.REPR_REQ, id: arg.verifyRepresentativeUserRequestDto.verifiedUserUuid },
-      ],
+          : [{ type: TagTypes.REQUEST, id: IdTypes.ALL }],
     },
     getTeacherVerificationRequests: {
       providesTags: (result) =>
         result
           ? [
-              ...result.requests.map((request) => ({ type: TagTypes.TEACHER_REQ, id: request.user.uuid })),
-              { type: TagTypes.TEACHER_REQ, id: IdTypes.ALL },
+              ...result.requests.map((request) => ({ type: TagTypes.REQUEST, id: request.user.uuid })),
+              { type: TagTypes.REQUEST, id: IdTypes.ALL },
             ]
-          : [{ type: TagTypes.TEACHER_REQ, id: IdTypes.ALL }],
+          : [{ type: TagTypes.REQUEST, id: IdTypes.ALL }],
     },
-    verifyTeacherUser: {
+    verifyUser: {
       invalidatesTags: (result, error, arg) => [
-        { type: TagTypes.TEACHER_REQ, id: arg.verifyTeacherUserRequestDto.verifiedUserUuid },
+        { type: TagTypes.REQUEST, id: arg.verifyUserRequestDto.verifiedUserUuid },
       ],
     },
     deleteSchool: {
@@ -449,11 +444,10 @@ export const {
   useLazyHelloNoAuthQuery,
   useRefreshTokenMutation,
   useGetRepresentativeVerificationRequestsQuery,
-  useVerifyRepresentativeUserMutation,
   useRequestRepresentativeVerificationQuery,
   useGetTeacherVerificationRequestsQuery,
-  useVerifyTeacherUserMutation,
   useRequestTeacherVerificationQuery,
+  useVerifyUserMutation,
   useGetAllSchoolsQuery,
   useGetSchoolByUuidQuery,
   useCreateSchoolMutation,

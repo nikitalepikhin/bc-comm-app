@@ -1,7 +1,7 @@
 import classNames from "classnames";
 import Badge from "../uilib/Badge";
 import Box from "../uilib/Box";
-import useTheme from "../hooks/useTheme";
+import useColorScheme from "../hooks/useColorScheme";
 import Button from "../uilib/Button";
 import Container from "../uilib/Container";
 import { useState } from "react";
@@ -29,7 +29,7 @@ const validationSchema = yup.object({
 });
 
 export default function Sandbox() {
-  const { setTheme } = useTheme();
+  const { setScheme } = useColorScheme();
   const [open, setOpen] = useState(false);
 
   return (
@@ -97,9 +97,9 @@ export default function Sandbox() {
         </Box>
 
         <Box className="flex flex-row justify-start items-center gap-2">
-          <Button onClick={() => setTheme("light")}>Light</Button>
-          <Button onClick={() => setTheme("dark")}>Dark</Button>
-          <Button onClick={() => setTheme("system")}>System</Button>
+          <Button onClick={() => setScheme("light")}>Light</Button>
+          <Button onClick={() => setScheme("dark")}>Dark</Button>
+          <Button onClick={() => setScheme("system")}>System</Button>
         </Box>
 
         <Box>
@@ -237,9 +237,9 @@ export default function Sandbox() {
         </Container>
         <Box className="flex flex-col justify-start items-start gap-2 w-full">
           <div className="flex flex-row gap-2 justify-start">
-            <Button onClick={() => setTheme("light")}>Light</Button>
-            <Button onClick={() => setTheme("dark")}>Dark</Button>
-            <Button onClick={() => setTheme("system")}>System</Button>
+            <Button onClick={() => setScheme("light")}>Light</Button>
+            <Button onClick={() => setScheme("dark")}>Dark</Button>
+            <Button onClick={() => setScheme("system")}>System</Button>
           </div>
 
           <Badge>edited</Badge>

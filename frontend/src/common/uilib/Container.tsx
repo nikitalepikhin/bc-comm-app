@@ -27,7 +27,7 @@ export default function Container(props: Props) {
             "text-lg font-bold",
             "border border-b-slate-200 dark:border-b-slate-700 border-x-0 border-t-0",
             "align-middle",
-            "overflow-auto",
+            "overflow-auto w-full",
             "bg-slate-100 dark:bg-slate-900"
           )}
         >
