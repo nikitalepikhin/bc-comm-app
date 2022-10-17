@@ -1,7 +1,5 @@
 import { Menu } from "@headlessui/react";
-import Button from "../Button";
 import { Fragment, MouseEventHandler, ReactNode } from "react";
-import { ChevronDownIcon, ChevronUpIcon } from "@heroicons/react/24/outline";
 import classNames from "classnames";
 import DropdownLink from "./DropdownLink";
 import DropdownButton from "./DropdownButton";
@@ -20,19 +18,32 @@ interface DropdownItem {
 interface Props {
   items: DropdownItem[];
   textSmall?: boolean;
-  children?: ReactNode;
-  className?: string;
+  children: ReactNode;
+  buttonClassName?: string;
+  menuClassName?: string;
   gap?: string;
   open?: "left" | "right";
+  onClick?: () => void;
 }
 
 export default function Dropdown(props: Props) {
-  const { children, items, className, open = "right", gap = "top-10", textSmall = false } = props;
+  const {
+    children,
+    items,
+    buttonClassName,
+    menuClassName,
+    open = "right",
+    gap = "top-10",
+    textSmall = false,
+    onClick,
+  } = props;
 
   return (
-    <Menu as="div" className={classNames("relative")}>
-      <Menu.Button as="button" className={className}>
-        {children ?? "Menu"}
+    <Menu as="div" className={classNames("relative", menuClassName)}>
+      <Menu.Button as={Fragment}>
+        <button onClick={onClick} className={buttonClassName}>
+          {children}
+        </button>
       </Menu.Button>
       <Menu.Items
         unmount
@@ -56,11 +67,14 @@ export default function Dropdown(props: Props) {
               "hover:bg-slate-100 hover:dark:bg-slate-800",
               "whitespace-nowrap",
               "border-slate-200 dark:border-slate-700",
-              { "border-t-0 border-b-0": items.length === 1 },
-              { "border-y border-b-0 first:border-t-0": items.length > 1 }
+              "border-b last:border-b-0",
+              { hidden: item.show === undefined || !item.show }
             )}
           >
             {() => {
+              if (item.show === undefined || !item.show) {
+                return null;
+              }
               if (item.show && item.type === "link") {
                 return (
                   <DropdownLink
@@ -86,8 +100,6 @@ export default function Dropdown(props: Props) {
                     {item.name}
                   </DropdownButton>
                 );
-              } else {
-                return null;
               }
             }}
           </Menu.Item>

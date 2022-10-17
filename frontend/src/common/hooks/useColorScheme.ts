@@ -1,16 +1,16 @@
 import { useCallback, useEffect, useState } from "react";
 
 const KEY = "theme";
-type ColorTheme = "light" | "dark" | "system";
+type ColorScheme = "light" | "dark" | "system";
 
 interface Theme {
-  theme: ColorTheme;
-  setTheme: (value: ColorTheme) => void;
+  scheme: ColorScheme;
+  setScheme: (value: ColorScheme) => void;
 }
 
-export default function useTheme(): Theme {
+export default function useColorScheme(): Theme {
   const query = window.matchMedia ? window.matchMedia("(prefers-color-scheme: dark)") : undefined;
-  const [current, setCurrent] = useState<ColorTheme>(() => {
+  const [current, setCurrent] = useState<ColorScheme>(() => {
     const item = localStorage.getItem(KEY);
     return item ? (item === "dark" ? "dark" : "light") : query ? "system" : "light";
   });
@@ -46,7 +46,7 @@ export default function useTheme(): Theme {
     if (query && current === "system") {
       query.addEventListener("change", listener);
     }
-    // if system value is no longer usedm then remove the onChange listener
+    // if system value is no longer used then remove the onChange listener
     if (query && current !== "system") {
       query.removeEventListener("change", listener);
     }
@@ -59,8 +59,8 @@ export default function useTheme(): Theme {
   }, [current]);
 
   return {
-    theme: current,
-    setTheme: (value: ColorTheme) => {
+    scheme: current,
+    setScheme: (value: ColorScheme) => {
       if (value === "system") {
         setCurrent("system");
         localStorage.removeItem(KEY);

@@ -26,6 +26,7 @@ interface Props {
   dependencies?: any[];
   placeholder?: string;
   resetOnChange?: boolean;
+  gap?: string;
 }
 
 export default function Combobox(props: Props) {
@@ -44,6 +45,7 @@ export default function Combobox(props: Props) {
     disabled = false,
     resetOnChange = false,
     dependencies = [],
+    gap,
   } = props;
 
   const [state, setState] = useState<ComboBoxState | null>(initialState);
@@ -135,8 +137,10 @@ export default function Combobox(props: Props) {
               "bg-white dark:bg-slate-900",
               "border border-slate-200 dark:border-slate-700",
               "max-h-72 overflow-auto w-full",
-              "my-2 rounded-md drop-shadow",
-              "absolute top-10 z-10",
+              "rounded-md drop-shadow",
+              "absolute z-10",
+              { [`${gap}`]: gap },
+              { "top-10": !gap },
               {
                 hidden:
                   !(options.length > 0 && !loading) &&

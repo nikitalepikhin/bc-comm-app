@@ -19,7 +19,7 @@ export default function DropdownButton(props: Props) {
       onClick={onClick}
       className={classNames(
         "cursor-pointer w-full",
-        "flex flex-row justify-start items-center gap-1",
+        "flex flex-row justify-start items-center gap-1.5",
         {
           "text-red-600": danger,
         },

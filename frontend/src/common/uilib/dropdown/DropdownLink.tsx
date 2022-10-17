@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import classNames from "classnames";
 import { ReactNode } from "react";
 
@@ -13,13 +13,14 @@ interface Props {
 
 export default function DropdownLink(props: Props) {
   const { children, to, icon, iconPosition = "left", danger = false, textSmall } = props;
+  const navigate = useNavigate();
 
   return (
-    <Link to={to}>
+    <button onClick={() => navigate(to)}>
       <div
         className={classNames(
           "cursor-pointer w-full",
-          "flex flex-row justify-start items-center gap-1",
+          "flex flex-row justify-start items-center gap-1.5",
           {
             "text-red-600": danger,
           },
@@ -31,6 +32,6 @@ export default function DropdownLink(props: Props) {
         <div>{children}</div>
         {icon && iconPosition === "right" && <div className="my-auto">{icon}</div>}
       </div>
-    </Link>
+    </button>
   );
 }

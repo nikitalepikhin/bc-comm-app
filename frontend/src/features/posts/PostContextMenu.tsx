@@ -30,7 +30,7 @@ export default function PostContextMenu() {
           show: isAuthor,
         },
       ]}
-      className={classNames(
+      buttonClassName={classNames(
         "text-sm text-center text-primary dark:text-white",
         "bg-white hover:bg-slate-50 dark:bg-slate-900 dark:hover:bg-slate-800",
         "border border-slate-200 dark:border-slate-700",

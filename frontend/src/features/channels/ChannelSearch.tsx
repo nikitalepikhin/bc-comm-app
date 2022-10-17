@@ -32,45 +32,45 @@ export default function ChannelSearch(props: Props) {
   }, [data]);
 
   return (
-    <div>
-      <Formik
-        initialValues={initialValues}
-        onSubmit={({ channel }, { resetForm }) => {
-          if (channel && channel.value.length > 0) {
-            resetForm();
-            onSelected();
-            navigate(`/channels/${channel.value}`);
-          }
-        }}
-      >
-        <Form>
-          <Field name="channel">
-            {({ field, form: { handleSubmit, setFieldValue } }: FieldProps) => (
-              <Combobox
-                name="channel"
-                placeholder="Search channels..."
-                loading={isFetching}
-                isUninitialized={isUninitialized}
-                onChange={(value) => {
-                  setFieldValue(field.name, value);
-                  invalidateTags();
-                  setOptions([]);
-                  handleSubmit();
-                }}
-                onInputChange={(value) => {
-                  setOptions([]);
-                  if (value.length > 0) {
-                    searchChannels({ value });
-                  }
-                }}
-                options={options}
-                wait={1000}
-                resetOnChange
-              />
-            )}
-          </Field>
-        </Form>
-      </Formik>
-    </div>
+    <Formik
+      initialValues={initialValues}
+      onSubmit={({ channel }, { resetForm }) => {
+        if (channel && channel.value.length > 0) {
+          resetForm();
+          onSelected();
+          navigate(`/channels/${channel.value}`);
+        }
+      }}
+    >
+      <Form className="w-full">
+        <Field name="channel">
+          {({ field, form: { handleSubmit, setFieldValue } }: FieldProps) => (
+            <Combobox
+              name="channel"
+              placeholder="Search channels..."
+              loading={isFetching}
+              isUninitialized={isUninitialized}
+              onChange={(value) => {
+                setFieldValue(field.name, value);
+                invalidateTags();
+                setOptions([]);
+                handleSubmit();
+              }}
+              onInputChange={(value) => {
+                onSelected();
+                setOptions([]);
+                if (value.length > 0) {
+                  searchChannels({ value });
+                }
+              }}
+              options={options}
+              wait={1000}
+              resetOnChange
+              gap="top-12"
+            />
+          )}
+        </Field>
+      </Form>
+    </Formik>
   );
 }

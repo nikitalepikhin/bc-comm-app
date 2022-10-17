@@ -7,6 +7,7 @@ import { enIN } from "date-fns/locale";
 import Button from "../../../common/uilib/Button";
 import StyledLink from "../../../common/uilib/StyledLink";
 import { useNavigate, useParams } from "react-router-dom";
+import { useAppSelector } from "../../../app/hooks";
 
 interface Props {
   description: GetChannelByTextIdApiResponse["description"];
@@ -19,6 +20,7 @@ interface Props {
 export default function AboutChannel(props: Props) {
   const { description, memberCount, created, isOwner, owner } = props;
   const { textId } = useParams() as { textId: string };
+  const { role } = useAppSelector((state) => state.auth.user);
   const navigate = useNavigate();
 
   return (
@@ -27,37 +29,47 @@ export default function AboutChannel(props: Props) {
         <div className="flex flex-col justify-start gap-2">
           <div className="text-secondary dark:text-slate-400">{description}</div>
           <div className="flex flex-row justify-start items-center gap-2">
-            <CakeIcon className="h-6 w-6" />
+            <div>
+              <CakeIcon className="h-6 w-6" />
+            </div>
             <span>{`Created on ${format(new Date(created), "MMM d, yyyy", { locale: enIN })}`}</span>
           </div>
         </div>
         <div className="flex flex-row justify-start items-center gap-2 pt-3">
-          <UsersIcon className="h-6 w-6" />
+          <div>
+            <UsersIcon className="h-6 w-6" />
+          </div>
           <span>{`Members: ${memberCount}`}</span>
         </div>
-        <div className="flex flex-row justify-start items-center gap-2 pt-3">
-          <IdentificationIcon className="h-6 w-6" />
-          {owner.role.toLowerCase() === "student" && <span>Owner: student</span>}
+        <div className="flex flex-row justify-start items-center gap-2 pt-3 w-full">
+          <div>
+            <IdentificationIcon className="h-6 w-6" />
+          </div>
+          {owner.role.toLowerCase() === "student" && <span className="grow">Owner: student</span>}
           {owner.role.toLowerCase() === "teacher" && (
-            <span>{`Owner: teacher ${owner.name ?? ""} (${owner.username})`}</span>
+            <span className="grow break-words shrink">{`Owner: teacher ${owner.name ?? ""} (${owner.username})`}</span>
           )}
         </div>
         {isOwner && (
           <div className="flex flex-row justify-start items-center gap-2 pt-3">
-            <Cog6ToothIcon className="h-6 w-6" />
+            <div>
+              <Cog6ToothIcon className="h-6 w-6" />
+            </div>
             <StyledLink to={`/channels/${textId}/edit`}>Manage your channel</StyledLink>
           </div>
         )}
-        <div className="pt-3">
-          <Button
-            type="button"
-            variant="accent"
-            onClick={() => navigate(`/channels/${textId}/post/new`)}
-            className="w-full"
-          >
-            Create Post
-          </Button>
-        </div>
+        {(role === "TEACHER" || role === "STUDENT") && (
+          <div className="pt-3">
+            <Button
+              type="button"
+              variant="accent"
+              onClick={() => navigate(`/channels/${textId}/post/new`)}
+              className="w-full"
+            >
+              Create Post
+            </Button>
+          </div>
+        )}
       </div>
     </Container>
   );
