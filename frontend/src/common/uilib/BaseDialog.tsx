@@ -38,7 +38,7 @@ export default function BaseDialog(props: Props) {
             className={classNames(
               "w-screen h-screen z-10",
               "fixed top-0 left-0",
-              "bg-slate-900/80 dark:bg-slate-900/90",
+              "bg-gray-900/60",
               "flex justify-center items-center"
             )}
           >

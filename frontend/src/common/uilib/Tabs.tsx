@@ -45,8 +45,10 @@ export default function Tabs(props: Props) {
                       "md:border-y-0 md:first:border-l-0 md:border-r-0 md:last:border-r-0 border-x-0 first:border-t-0 border-b-0 last:border-b-0 md:border-x":
                         tabItems.length > 3,
                     },
-                    { "bg-blue-100 dark:bg-slate-900": selected },
-                    { "text-slate-700 dark:text-slate-300 hover:bg-slate-100 hover:dark:bg-slate-700": !selected },
+                    { "bg-blue-100 dark:bg-blue-900": selected },
+                    {
+                      "text-slate-700 dark:text-slate-300 hover:bg-slate-100 hover:dark:bg-slate-700": !selected,
+                    },
                     "active:outline-none selected:outline-none focus-visible:outline-none cursor-pointer"
                   )}
                 >

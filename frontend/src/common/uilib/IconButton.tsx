@@ -16,6 +16,7 @@ export default function IconButton(props: Props) {
       onClick={onClick}
       disabled={disabled}
       className={classNames(
+        "rounded-md",
         "focus:ring-2 focus:ring-blue-600/50 focus:ring-offset-1 dark:focus:ring-offset-slate-800 focus:outline-none",
         { [`${className}`]: className !== undefined }
       )}
