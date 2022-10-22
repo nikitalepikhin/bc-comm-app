@@ -3,15 +3,24 @@ import { Field, FieldProps, Form, Formik } from "formik";
 import Input from "../../common/uilib/Input";
 import classNames from "classnames";
 import Button from "../../common/uilib/Button";
-import { useCreateSchoolMutation, useGetSchoolByUuidQuery, useUpdateSchoolMutation } from "../../app/enhancedApi";
+import {
+  useCreateFacultyMutation,
+  useCreateSchoolMutation,
+  useGetFacultyByUuidQuery,
+  useGetSchoolByUuidQuery,
+  useUpdateFacultyMutation,
+  useUpdateSchoolMutation,
+} from "../../app/enhancedApi";
 import { useEffect, useState, FocusEvent } from "react";
 import Alert from "../../common/uilib/Alert";
 import * as yup from "yup";
 import LoadingSpinner from "../../common/uilib/LoadingSpinner";
+import { useParams } from "react-router-dom";
 
 interface Props {
   show: boolean;
   onClose: () => void;
+  type: "school" | "faculty";
   uuid?: string;
 }
 
@@ -62,44 +71,88 @@ const initialState: FormValues = {
   postalCode: "",
 };
 
-export default function SchoolFormDialog(props: Props) {
-  const { show, onClose, uuid } = props;
-  const [createSchool, createResult] = useCreateSchoolMutation();
-  const [updateSchool, updateResult] = useUpdateSchoolMutation();
-  const { data, isSuccess, isError, isFetching } = useGetSchoolByUuidQuery(
-    { uuid: uuid! },
-    { skip: uuid === undefined }
-  );
+export default function SchoolFacultyFormDialog(props: Props) {
+  const { show, onClose, uuid, type } = props;
+  const { schoolUuid } = useParams();
+  const [createSchool, createSchoolResult] = useCreateSchoolMutation();
+  const [updateSchool, updateSchoolResult] = useUpdateSchoolMutation();
+  const [createFaculty, createFacultyResult] = useCreateFacultyMutation();
+  const [updateFaculty, updateFacultyResult] = useUpdateFacultyMutation();
+  const {
+    data: school,
+    isSuccess: schoolSuccess,
+    isError: schoolError,
+    isFetching: schoolFetching,
+  } = useGetSchoolByUuidQuery({ uuid: uuid! }, { skip: uuid === undefined || type === "faculty" });
+  const {
+    data: faculty,
+    isSuccess: facultySuccess,
+    isError: facultyError,
+    isFetching: facultyFetching,
+  } = useGetFacultyByUuidQuery({ uuid: uuid! }, { skip: uuid === undefined || type === "school" });
 
   useEffect(() => {
-    if (createResult.isSuccess) {
+    if (createSchoolResult.isSuccess) {
       setInitialValues(initialValues);
       onClose();
     }
-    if (updateResult.isSuccess) {
+    if (updateSchoolResult.isSuccess) {
       setInitialValues(initialValues);
       onClose();
     }
-  }, [createResult.isSuccess, updateResult.isSuccess]);
+  }, [createSchoolResult.isSuccess, updateSchoolResult.isSuccess]);
+
+  useEffect(() => {
+    if (createFacultyResult.isSuccess) {
+      setInitialValues(initialValues);
+      onClose();
+    }
+    if (updateFacultyResult.isSuccess) {
+      setInitialValues(initialValues);
+      onClose();
+    }
+  }, [createFacultyResult.isSuccess, updateFacultyResult.isSuccess]);
 
   const [initialValues, setInitialValues] = useState<FormValues>(initialState);
 
   useEffect(() => {
     setInitialValues(initialState);
-    if (isSuccess) {
+    if (type === "school" && schoolSuccess && school) {
       setInitialValues({
-        name: data.name ?? "",
-        countryCode: data.countryCode ?? "",
-        city: data.city ?? "",
-        addressLineOne: data.addressLineOne ?? "",
-        addressLineTwo: data.addressLineTwo ?? "",
-        postalCode: data.postalCode ?? "",
+        name: school.name ?? "",
+        countryCode: school.countryCode ?? "",
+        city: school.city ?? "",
+        addressLineOne: school.addressLineOne ?? "",
+        addressLineTwo: school.addressLineTwo ?? "",
+        postalCode: school.postalCode ?? "",
       });
     }
-  }, [isSuccess, isFetching]);
+    if (type === "faculty" && facultySuccess && faculty) {
+      setInitialValues({
+        name: faculty.name ?? "",
+        countryCode: faculty.countryCode ?? "",
+        city: faculty.city ?? "",
+        addressLineOne: faculty.addressLineOne ?? "",
+        addressLineTwo: faculty.addressLineTwo ?? "",
+        postalCode: faculty.postalCode ?? "",
+      });
+    }
+  }, [schoolSuccess, schoolFetching, facultySuccess, facultyFetching]);
 
   return (
-    <BaseDialog show={show} title={uuid ? "Edit School" : "Add School"} onClose={onClose}>
+    <BaseDialog
+      show={show}
+      title={
+        uuid && type === "school"
+          ? "Edit School"
+          : type === "school"
+          ? "Add School"
+          : uuid && type === "faculty"
+          ? "Edit Faculty"
+          : "Add Faculty"
+      }
+      onClose={onClose}
+    >
       <Formik
         validateOnChange
         validateOnBlur
@@ -107,24 +160,31 @@ export default function SchoolFormDialog(props: Props) {
         initialValues={initialValues}
         validationSchema={validationSchema}
         onSubmit={(values) => {
-          if (uuid) {
+          if (uuid && type === "school") {
             updateSchool({ updateSchoolRequestDto: { ...values, uuid } });
-          } else {
+          } else if (type === "school") {
             createSchool({ createSchoolDto: { ...values } });
+          } else if (uuid && type === "faculty") {
+            updateFaculty({ updateFacultyRequestDto: { ...values, uuid } });
+          } else if (type === "faculty" && schoolUuid) {
+            createFaculty({ createFacultyDto: { ...values, schoolUuid } });
           }
         }}
       >
         {({ handleReset, handleSubmit, isValid, dirty }) => (
           <Form>
             <div className={classNames("w-full px-3 mb-2", "flex flex-col justify-start gap-2")}>
-              {uuid && isFetching && <LoadingSpinner />}
-              {(uuid === undefined || (uuid && !isError)) && (
+              {uuid && (schoolFetching || facultyFetching) && <LoadingSpinner />}
+              {(uuid === undefined ||
+                (uuid && ((type === "school" && !schoolError) || (type === "faculty" && !facultyError)))) && (
                 <>
                   <Field name="name">
                     {({ field, meta }: FieldProps) => (
                       <Input
                         {...field}
-                        disabled={uuid !== undefined && (isFetching || isError)}
+                        disabled={
+                          uuid !== undefined && (schoolFetching || schoolError || facultyFetching || facultyError)
+                        }
                         fullWidth
                         labelValue="Name"
                         error={meta.error && meta.touched && field.value !== meta.initialValue ? meta.error : undefined}
@@ -135,7 +195,9 @@ export default function SchoolFormDialog(props: Props) {
                     {({ field, meta }: FieldProps) => (
                       <Input
                         {...field}
-                        disabled={uuid !== undefined && (isFetching || isError)}
+                        disabled={
+                          uuid !== undefined && (schoolFetching || schoolError || facultyFetching || facultyError)
+                        }
                         fullWidth
                         labelValue="Country Code"
                         error={meta.error && meta.touched && field.value !== meta.initialValue ? meta.error : undefined}
@@ -146,7 +208,9 @@ export default function SchoolFormDialog(props: Props) {
                     {({ field, meta }: FieldProps) => (
                       <Input
                         {...field}
-                        disabled={uuid !== undefined && (isFetching || isError)}
+                        disabled={
+                          uuid !== undefined && (schoolFetching || schoolError || facultyFetching || facultyError)
+                        }
                         fullWidth
                         labelValue="City"
                         error={meta.error && meta.touched && field.value !== meta.initialValue ? meta.error : undefined}
@@ -157,7 +221,9 @@ export default function SchoolFormDialog(props: Props) {
                     {({ field, meta }: FieldProps) => (
                       <Input
                         {...field}
-                        disabled={uuid !== undefined && (isFetching || isError)}
+                        disabled={
+                          uuid !== undefined && (schoolFetching || schoolError || facultyFetching || facultyError)
+                        }
                         fullWidth
                         labelValue="Address Line 1"
                         error={meta.error && meta.touched && field.value !== meta.initialValue ? meta.error : undefined}
@@ -168,7 +234,9 @@ export default function SchoolFormDialog(props: Props) {
                     {({ field, meta }: FieldProps) => (
                       <Input
                         {...field}
-                        disabled={uuid !== undefined && (isFetching || isError)}
+                        disabled={
+                          uuid !== undefined && (schoolFetching || schoolError || facultyFetching || facultyError)
+                        }
                         fullWidth
                         labelValue="Address Line 2"
                         error={meta.error && meta.touched && field.value !== meta.initialValue ? meta.error : undefined}
@@ -179,7 +247,9 @@ export default function SchoolFormDialog(props: Props) {
                     {({ field, meta, form: { setFieldValue } }: FieldProps) => (
                       <Input
                         {...field}
-                        disabled={uuid !== undefined && (isFetching || isError)}
+                        disabled={
+                          uuid !== undefined && (schoolFetching || schoolError || facultyFetching || facultyError)
+                        }
                         onBlur={(e: FocusEvent) => {
                           setFieldValue(field.name, field.value.toUpperCase());
                           field.onBlur(e);
@@ -193,18 +263,30 @@ export default function SchoolFormDialog(props: Props) {
                 </>
               )}
               {uuid === undefined && (
-                <Alert show={createResult.isError} fullWidth>
-                  An error occurred while adding a school. Reload or try again later.
+                <Alert
+                  show={
+                    (type === "school" && createSchoolResult.isError) ||
+                    (type === "faculty" && createFacultyResult.isError)
+                  }
+                  fullWidth
+                >
+                  {`An error occurred while adding a ${type}. Reload or try again later.`}
                 </Alert>
               )}
               {uuid && (
-                <Alert show={updateResult.isError} fullWidth>
-                  An error occurred while updating a school. Reload or try again later.
+                <Alert
+                  show={
+                    (type === "school" && updateSchoolResult.isError) ||
+                    (type === "faculty" && updateFacultyResult.isError)
+                  }
+                  fullWidth
+                >
+                  {`An error occurred while updating a ${type}. Reload or try again later.`}
                 </Alert>
               )}
-              {uuid && isError && (
-                <Alert show={isError} fullWidth>
-                  An error occurred while loading current data for school. Reload or try again later.
+              {uuid && ((type === "school" && schoolError) || (type === "faculty" && facultyError)) && (
+                <Alert show={schoolError} fullWidth>
+                  {`An error occurred while loading current data for ${type}. Reload or try again later.`}
                 </Alert>
               )}
             </div>
@@ -218,19 +300,25 @@ export default function SchoolFormDialog(props: Props) {
             >
               <Button
                 type="button"
-                disabled={createResult.isLoading || updateResult.isLoading}
+                disabled={
+                  (type === "school" && (createSchoolResult.isLoading || updateSchoolResult.isLoading)) ||
+                  (type === "faculty" && (createFacultyResult.isLoading || updateFacultyResult.isLoading))
+                }
                 onClick={() => handleReset()}
               >
                 Reset Form
               </Button>
               <Button
                 type="button"
-                loading={createResult.isLoading || updateResult.isLoading}
+                loading={
+                  (type === "school" && (createSchoolResult.isLoading || updateSchoolResult.isLoading)) ||
+                  (type === "faculty" && (createFacultyResult.isLoading || updateFacultyResult.isLoading))
+                }
                 disabled={!isValid || !dirty}
                 variant="accent"
                 onClick={() => handleSubmit()}
               >
-                {uuid ? "Update School" : "Add School"}
+                {uuid ? "Update" : "Add"}
               </Button>
             </div>
           </Form>

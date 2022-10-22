@@ -1,9 +1,9 @@
 import { ApiProperty } from "@nestjs/swagger";
 
 export default class GetFacultiesQueryParamsDto {
-  @ApiProperty()
-  page: string | undefined;
+  @ApiProperty({ required: false, type: "number" })
+  page?: string;
 
-  @ApiProperty()
-  count: string | undefined;
+  @ApiProperty({ required: false, type: "number" })
+  count?: string;
 }

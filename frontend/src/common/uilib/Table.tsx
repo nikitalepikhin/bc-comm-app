@@ -1,5 +1,4 @@
 import { ReactNode } from "react";
-import Alert from "./Alert";
 import classNames from "classnames";
 
 interface Props {
@@ -41,10 +40,8 @@ export default function Table(props: Props) {
             ))}
           {rows.length === 0 && (
             <tr>
-              <td colSpan={100}>
-                <Alert show severity="warning" fullWidth>
-                  No data is available at the moment.
-                </Alert>
+              <td colSpan={100} className="text-center p-6">
+                Table has no entries.
               </td>
             </tr>
           )}

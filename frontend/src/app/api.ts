@@ -234,8 +234,8 @@ export type DeleteFacultyApiArg = {
 export type GetAllFacultiesApiResponse =
   /** status 200 Specified number of faculties on a specified page. */ GetFacultiesResponseDto;
 export type GetAllFacultiesApiArg = {
-  page: string;
-  count: string;
+  page?: number;
+  count?: number;
   schoolUuid: string;
 };
 export type GetFacultyByUuidApiResponse = /** status 200 Faculty by UUID. */ FacultyResponseDto;

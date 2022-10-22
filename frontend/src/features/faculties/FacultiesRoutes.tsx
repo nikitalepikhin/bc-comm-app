@@ -1,7 +1,7 @@
 import React from "react";
 import { Route, Routes } from "react-router-dom";
 import ProtectedRoute from "../../common/components/ProtectedRoute";
-import FacultiesManagementPage from "./FacultiesManagementPage";
+import FacultiesPage from "./FacultiesPage";
 import AddFacultyPage from "./AddFacultyPage";
 import EditFacultyPage from "./EditFacultyPage";
 
@@ -12,7 +12,7 @@ const FacultiesRoutes: React.FC = () => {
         path="/:schoolUuid"
         element={
           <ProtectedRoute allowedRoles={["ADMIN", "REPRESENTATIVE"]}>
-            <FacultiesManagementPage />
+            <FacultiesPage />
           </ProtectedRoute>
         }
       />

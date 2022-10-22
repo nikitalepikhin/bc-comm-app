@@ -1,16 +1,16 @@
-import PageWrapper from "../../common/uilib/PageWrapper";
-import Button from "../../common/uilib/Button";
 import { useEffect, useState } from "react";
-import SchoolFacultyFormDialog from "./SchoolFacultyFormDialog";
-import Table from "../../common/uilib/Table";
-import { useDeleteSchoolMutation, useLazyGetAllSchoolsQuery } from "../../app/enhancedApi";
-import LoadingSpinner from "../../common/uilib/LoadingSpinner";
-import Dialog from "../../common/uilib/dialog/Dialog";
+import { useDeleteFacultyMutation, useGetSchoolByUuidQuery, useLazyGetAllFacultiesQuery } from "../../app/enhancedApi";
 import Select, { SelectOption } from "../../common/uilib/Select";
+import { useNavigate, useParams } from "react-router-dom";
+import PageWrapper from "../../common/uilib/PageWrapper";
 import classNames from "classnames";
+import Button from "../../common/uilib/Button";
+import LoadingSpinner from "../../common/uilib/LoadingSpinner";
+import Table from "../../common/uilib/Table";
 import IconButton from "../../common/uilib/IconButton";
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/solid";
-import { useNavigate } from "react-router-dom";
+import Dialog from "../../common/uilib/dialog/Dialog";
+import SchoolFacultyFormDialog from "../schools/SchoolFacultyFormDialog";
 
 const countOptions: SelectOption[] = [
   { value: 10, text: "10" },
@@ -18,9 +18,11 @@ const countOptions: SelectOption[] = [
   { value: 30, text: "30" },
 ];
 
-export default function SchoolsPage() {
+export default function FacultiesPage() {
+  const { schoolUuid } = useParams() as { schoolUuid: string };
   const [showDialog, setShowDialog] = useState(false);
-  const [getSchools, { data, isLoading, isFetching, isSuccess }] = useLazyGetAllSchoolsQuery();
+  const [getFaculties, { data, isLoading, isFetching, isSuccess }] = useLazyGetAllFacultiesQuery();
+  const { data: school } = useGetSchoolByUuidQuery({ uuid: schoolUuid });
   const [uuid, setUuid] = useState<string | undefined>(undefined);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [page, setPage] = useState(1);
@@ -28,17 +30,17 @@ export default function SchoolsPage() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    getSchools({ page, count: typeof count === "string" ? parseInt(count) : count });
+    getFaculties({ page, count: typeof count === "string" ? parseInt(count) : count, schoolUuid });
   }, [page, count]);
 
-  const [deleteSchool, { isLoading: deleteSchoolLoading, isError: deleteSchoolError, isSuccess: deleteSchoolSuccess }] =
-    useDeleteSchoolMutation();
+  const [deleteFaculty, { isLoading: deleteLoading, isError: deleteError, isSuccess: deleteSuccess }] =
+    useDeleteFacultyMutation();
 
   useEffect(() => {
-    if (deleteSchoolSuccess) {
+    if (deleteSuccess) {
       setShowDeleteDialog(false);
     }
-  }, [deleteSchoolLoading, deleteSchoolSuccess]);
+  }, [deleteLoading, deleteSuccess]);
 
   const [pageOptions, setPageOptions] = useState<SelectOption[]>([]);
 
@@ -54,12 +56,12 @@ export default function SchoolsPage() {
       <PageWrapper className="flex flex-col justify-start gap-2">
         <div
           className={classNames(
-            "flex flex-row items-center gap-2 flex-wrap",
-            { "justify-end": data && data?.schools.length === 0 },
-            { "justify-between": data && data?.schools.length > 0 }
+            "flex flex-col-reverse md:flex-row items-start md:items-center gap-2 flex-wrap",
+            { "justify-end": data && data?.faculties.length === 0 },
+            { "justify-between": data && data?.faculties.length > 0 }
           )}
         >
-          {data && data?.schools.length > 0 && (
+          {data && data?.faculties.length > 0 && (
             <div className={classNames("flex flex-row justify-start items-center gap-2 flex-wrap")}>
               <div className="w-32">
                 <Select
@@ -95,16 +97,19 @@ export default function SchoolsPage() {
               )}
             </div>
           )}
-          <Button type="button" onClick={() => setShowDialog(true)}>
-            Add School
-          </Button>
+          <div className="flex flex-row justify-between items-center gap-2 flex-wrap">
+            {school && <div className="font-bold">{school.name}</div>}
+            <Button type="button" onClick={() => setShowDialog(true)}>
+              Add Faculty
+            </Button>
+          </div>
         </div>
         {isLoading ? (
           <LoadingSpinner />
         ) : (
           <Table
             columns={[
-              "School UUID",
+              "Faculty UUID",
               "Name",
               "Country Code",
               "City",
@@ -115,22 +120,19 @@ export default function SchoolsPage() {
             ]}
             rows={
               data
-                ? data.schools.map((school) => [
-                    school.uuid,
-                    school.name,
-                    school.countryCode,
-                    school.city,
-                    school.addressLineOne,
-                    school.addressLineTwo,
-                    school.postalCode,
+                ? data.faculties.map((faculty) => [
+                    faculty.uuid,
+                    faculty.name,
+                    faculty.countryCode,
+                    faculty.city,
+                    faculty.addressLineOne,
+                    faculty.addressLineTwo,
+                    faculty.postalCode,
                     <div className="flex flex-col md:flex-row justify-between items-center gap-2">
-                      <Button type="button" onClick={() => navigate(`/faculties/school/${school.uuid}`)}>
-                        Faculties
-                      </Button>
                       <Button
                         type="button"
                         onClick={() => {
-                          setUuid(school.uuid);
+                          setUuid(faculty.uuid);
                           setShowDialog(true);
                         }}
                       >
@@ -140,7 +142,7 @@ export default function SchoolsPage() {
                         type="button"
                         variant="default-danger"
                         onClick={() => {
-                          setUuid(school.uuid);
+                          setUuid(faculty.uuid);
                           setShowDeleteDialog(true);
                         }}
                       >
@@ -186,7 +188,7 @@ export default function SchoolsPage() {
       </PageWrapper>
       <SchoolFacultyFormDialog
         show={showDialog}
-        type="school"
+        type="faculty"
         onClose={() => {
           setUuid(undefined);
           setShowDialog(false);
@@ -195,21 +197,21 @@ export default function SchoolsPage() {
       />
       <Dialog
         show={showDeleteDialog}
-        loading={deleteSchoolLoading}
+        loading={deleteLoading}
         onConfirm={() => {
-          deleteSchool({ deleteSchoolDto: { uuid: uuid! } });
+          deleteFaculty({ deleteFacultyDto: { uuid: uuid! } });
           setUuid(undefined);
         }}
         onCancel={() => {
           setUuid(undefined);
           setShowDeleteDialog(false);
         }}
-        title="Delete School"
+        title="Delete Faculty"
         body="This action cannot be undone. Are you sure you want to proceed?"
         danger
         cancelText="Keep"
         confirmText="Delete"
-        error={deleteSchoolError ? "An error occurred while deleting this school." : undefined}
+        error={deleteError ? "An error occurred while deleting this faculty." : undefined}
       />
     </>
   );

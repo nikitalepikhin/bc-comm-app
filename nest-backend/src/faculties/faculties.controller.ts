@@ -42,11 +42,7 @@ export class FacultiesController {
     @Query() query: GetFacultiesQueryParamsDto,
     @Param() { schoolUuid },
   ): Promise<GetFacultiesResponseDto> {
-    return await this.facultiesService.getFaculties(
-      query.page ? parseInt(query.page) : 1,
-      query.count ? parseInt(query.count) : 10,
-      schoolUuid,
-    );
+    return await this.facultiesService.getFaculties(parseInt(query.page) ?? 1, parseInt(query.count) ?? 10, schoolUuid);
   }
 
   @ApiOperation({
