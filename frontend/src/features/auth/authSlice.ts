@@ -8,6 +8,7 @@ export interface User {
   username: string | undefined;
   role: RoleType | undefined;
   uuid: string | undefined;
+  schoolUuid: string | undefined;
 }
 
 interface AuthState {
@@ -17,9 +18,19 @@ interface AuthState {
 }
 
 const initialState: AuthState = {
-  user: { email: undefined, username: undefined, role: undefined, uuid: undefined },
+  user: { email: undefined, username: undefined, role: undefined, uuid: undefined, schoolUuid: undefined },
   accessToken: undefined,
   present: false,
+};
+
+const populateUser = (state: any, action: any) => {
+  state.user.schoolUuid = action.payload.schoolUuid;
+  state.user.email = action.payload.email;
+  state.user.username = action.payload.username;
+  state.user.role = action.payload.role as RoleType;
+  state.user.uuid = action.payload.uuid;
+  state.accessToken = action.payload.accessToken;
+  state.present = true;
 };
 
 const authSlice = createSlice({
@@ -28,12 +39,10 @@ const authSlice = createSlice({
   reducers: {
     refreshToken(state, action) {
       state.accessToken = action.payload.accessToken;
-      state.user = {
-        email: action.payload.email,
-        username: action.payload.username,
-        role: action.payload.role,
-        uuid: action.payload.uuid,
-      };
+      state.user.email = action.payload.email;
+      state.user.username = action.payload.username;
+      state.user.role = action.payload.role;
+      state.user.uuid = action.payload.uuid;
       state.present = true;
     },
     logOut(state) {
@@ -43,26 +52,8 @@ const authSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    builder.addMatcher(enhancedApi.endpoints.logIn.matchFulfilled, (state, action) => {
-      state.user = {
-        email: action.payload.email,
-        username: action.payload.username,
-        role: action.payload.role as RoleType,
-        uuid: action.payload.uuid,
-      };
-      state.accessToken = action.payload.accessToken;
-      state.present = true;
-    });
-    builder.addMatcher(enhancedApi.endpoints.refreshToken.matchFulfilled, (state, action) => {
-      state.user = {
-        email: action.payload.email,
-        username: action.payload.username,
-        role: action.payload.role as RoleType,
-        uuid: action.payload.uuid,
-      };
-      state.accessToken = action.payload.accessToken;
-      state.present = true;
-    });
+    builder.addMatcher(enhancedApi.endpoints.logIn.matchFulfilled, populateUser);
+    builder.addMatcher(enhancedApi.endpoints.refreshToken.matchFulfilled, populateUser);
     builder.addMatcher(enhancedApi.endpoints.logOut.matchFulfilled, (state) => {
       state.user = initialState.user;
       state.accessToken = initialState.accessToken;

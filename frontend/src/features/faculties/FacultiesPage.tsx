@@ -11,6 +11,7 @@ import IconButton from "../../common/uilib/IconButton";
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/solid";
 import Dialog from "../../common/uilib/dialog/Dialog";
 import SchoolFacultyFormDialog from "../schools/SchoolFacultyFormDialog";
+import { useAppSelector } from "../../app/hooks";
 
 const countOptions: SelectOption[] = [
   { value: 10, text: "10" },
@@ -20,14 +21,15 @@ const countOptions: SelectOption[] = [
 
 export default function FacultiesPage() {
   const { schoolUuid } = useParams() as { schoolUuid: string };
+  const { role } = useAppSelector((state) => state.auth.user);
   const [showDialog, setShowDialog] = useState(false);
+  const [showSchoolDialog, setShowSchoolDialog] = useState(false);
   const [getFaculties, { data, isLoading, isFetching, isSuccess }] = useLazyGetAllFacultiesQuery();
   const { data: school } = useGetSchoolByUuidQuery({ uuid: schoolUuid });
   const [uuid, setUuid] = useState<string | undefined>(undefined);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [page, setPage] = useState(1);
   const [count, setCount] = useState(countOptions[0].value);
-  const navigate = useNavigate();
 
   useEffect(() => {
     getFaculties({ page, count: typeof count === "string" ? parseInt(count) : count, schoolUuid });
@@ -99,9 +101,22 @@ export default function FacultiesPage() {
           )}
           <div className="flex flex-row justify-between items-center gap-2 flex-wrap">
             {school && <div className="font-bold">{school.name}</div>}
-            <Button type="button" onClick={() => setShowDialog(true)}>
-              Add Faculty
-            </Button>
+            <div className="flex flex-row justify-between items-center gap-2">
+              {role === "REPRESENTATIVE" && (
+                <Button
+                  type="button"
+                  onClick={() => {
+                    setUuid(schoolUuid);
+                    setShowSchoolDialog(true);
+                  }}
+                >
+                  Edit School
+                </Button>
+              )}
+              <Button type="button" onClick={() => setShowDialog(true)}>
+                Add Faculty
+              </Button>
+            </div>
           </div>
         </div>
         {isLoading ? (
@@ -194,6 +209,15 @@ export default function FacultiesPage() {
           setShowDialog(false);
         }}
         uuid={uuid}
+      />
+      <SchoolFacultyFormDialog
+        show={showSchoolDialog}
+        onClose={() => {
+          setUuid(undefined);
+          setShowSchoolDialog(false);
+        }}
+        uuid={uuid}
+        type="school"
       />
       <Dialog
         show={showDeleteDialog}

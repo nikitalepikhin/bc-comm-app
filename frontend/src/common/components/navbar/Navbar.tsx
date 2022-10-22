@@ -22,7 +22,7 @@ export default function Navbar() {
   const navigate = useNavigate();
   const {
     present,
-    user: { role },
+    user: { role, schoolUuid },
   } = useAppSelector((state) => state.auth);
   const [open, setOpen] = useState(false);
   const [logOut] = useLogOutMutation();
@@ -51,7 +51,7 @@ export default function Navbar() {
             </NavbarButton>
           )}
           {role === "REPRESENTATIVE" && (
-            <NavbarButton onClick={() => navigate("/schools/schoolUuid/facultyUuid")} className="hidden md:flex">
+            <NavbarButton onClick={() => navigate(`/faculties/school/${schoolUuid}`)} className="hidden md:flex">
               <BuildingLibraryIcon className="h-6 w-6" />
               <span className="hidden md:inline">Faculties</span>
             </NavbarButton>
@@ -90,13 +90,7 @@ export default function Navbar() {
             </NavbarItem>
           )}
           {role === "REPRESENTATIVE" && (
-            <NavbarItem closeMenu={() => setOpen(false)} type="link" to="/schools/schoolUuid/edit">
-              <PencilSquareIcon className="h-5 w-5" />
-              <span>Edit School</span>
-            </NavbarItem>
-          )}
-          {role === "REPRESENTATIVE" && (
-            <NavbarItem closeMenu={() => setOpen(false)} type="link" to="/faculties">
+            <NavbarItem closeMenu={() => setOpen(false)} type="link" to={`/faculties/school/${schoolUuid}`}>
               <BuildingLibraryIcon className="h-5 w-5" />
               <span>Faculties</span>
             </NavbarItem>

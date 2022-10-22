@@ -9,6 +9,7 @@ import { RefreshTokensService } from "../refresh-tokens/refresh-tokens.service";
 import UserRefreshDto from "./dto/user-refresh.dto";
 import CreateRepresentativeUserDto from "../users/dto/create-representative-user.dto";
 import { CreateTeacherUserDto } from "../users/dto/create-teacher-user.dto";
+import { use } from "passport";
 
 @Injectable()
 export class AuthService {
@@ -35,16 +36,25 @@ export class AuthService {
     await this.usersService.createRepresentativeUser(createRepresentativeUserDto);
   }
 
-  async logInUser(userDto: ValidateUserDto) {
+  async logInUser(user: ValidateUserDto) {
+    let schoolUuid: string | undefined;
+    if (user.role === "REPRESENTATIVE") {
+      schoolUuid = await this.usersService.getRepresentativeSchoolUuid(user.uuid);
+    }
     return {
-      accessToken: this.createSignedAccessToken(userDto),
-      refreshToken: await this.createRefreshTokenForNewFamily(userDto),
+      accessToken: this.createSignedAccessToken(user),
+      refreshToken: await this.createRefreshTokenForNewFamily(user),
+      schoolUuid: schoolUuid ? schoolUuid : undefined,
     };
   }
 
   async refreshToken(user: UserRefreshDto, authCookie: string) {
     const refreshToken = await this.refreshTokensService.setRefreshTokenToUsedByValue(authCookie);
     const username = (await this.usersService.findByUuid(user.uuid)).username;
+    let schoolUuid: string | undefined;
+    if (user.role === "REPRESENTATIVE") {
+      schoolUuid = await this.usersService.getRepresentativeSchoolUuid(user.uuid);
+    }
     return {
       accessToken: this.createSignedAccessToken({
         email: user.email,
@@ -54,6 +64,7 @@ export class AuthService {
       }),
       refreshToken: await this.createRefreshTokenForExistingFamily(user, refreshToken.tokenFamily),
       username,
+      schoolUuid,
     };
   }
 

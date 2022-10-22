@@ -43,13 +43,6 @@ export default function ProfileMenu(props: Props) {
         },
         {
           type: "link",
-          to: `/schools/schoolUuid/edit`,
-          name: "Edit School",
-          icon: <BuildingLibraryIcon className="h-5 w-5" />,
-          show: role === "REPRESENTATIVE",
-        },
-        {
-          type: "link",
           to: `/channels/new`,
           name: "Create Channel",
           icon: <SquaresPlusIcon className="h-5 w-5" />,

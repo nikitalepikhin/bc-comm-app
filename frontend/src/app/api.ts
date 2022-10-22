@@ -356,6 +356,7 @@ export type UserDataResponseDto = {
   role: string;
   accessToken: string;
   uuid: string;
+  schoolUuid?: string;
 };
 export type LogInUserRequestDto = {
   email: string;

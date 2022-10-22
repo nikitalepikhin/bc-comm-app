@@ -24,9 +24,9 @@ export class AuthController {
   @UseGuards(LocalAuthGuard)
   @Post("login")
   async logIn(@Req() request, @Res({ passthrough: true }) response: Response): Promise<UserDataResponseDto> {
-    const { accessToken, refreshToken } = await this.authService.logInUser(request.user);
+    const { accessToken, refreshToken, schoolUuid } = await this.authService.logInUser(request.user);
     response.cookie("auth", refreshToken, this.cookieService.generateAuthCookieOptions());
-    return { accessToken, ...request.user } as UserDataResponseDto;
+    return { accessToken, schoolUuid, ...request.user } as UserDataResponseDto;
   }
 
   @ApiOperation({ summary: "Sign up a base user." })
@@ -35,13 +35,13 @@ export class AuthController {
     return await this.authService.signUpBaseUser(createBaseUserDto);
   }
 
-  @ApiOperation({ summary: "Sign up a representative user." })
+  @ApiOperation({ summary: "Sign up a representative." })
   @Post("signup/representative")
   async signUpRepresentative(@Body() createRepresentativeUserDto: CreateRepresentativeUserDto) {
     return await this.authService.signUpRepresentativeUser(createRepresentativeUserDto);
   }
 
-  @ApiOperation({ summary: "Sign up a teacher user." })
+  @ApiOperation({ summary: "Sign up a teacher." })
   @Post("signup/teacher")
   async signUpTeacher(@Body() createTeacherUserDto: CreateTeacherUserDto) {
     return await this.authService.signUpTeacherUser(createTeacherUserDto);
@@ -53,7 +53,10 @@ export class AuthController {
   @Post("refresh")
   async refreshToken(@Req() request, @Res({ passthrough: true }) response: Response): Promise<UserDataResponseDto> {
     const authCookie = request.cookies.auth; // guaranteed to be valid and not used by the JwtRefreshAuthGuard
-    const { accessToken, refreshToken, username } = await this.authService.refreshToken(request.user, authCookie);
+    const { accessToken, refreshToken, username, schoolUuid } = await this.authService.refreshToken(
+      request.user,
+      authCookie,
+    );
     response.cookie("auth", refreshToken, this.cookieService.generateAuthCookieOptions());
     return {
       accessToken,
@@ -61,17 +64,15 @@ export class AuthController {
       email: request.user.email,
       username,
       role: request.user.role,
+      schoolUuid,
     };
   }
 
   @ApiOperation({ summary: "Log the user out." })
   @UseGuards(JwtAuthGuard)
-  // @UseGuards(JwtRefreshAuthGuard)
   @Post("logout")
   async logOut(@Req() request, @Res({ passthrough: true }) response: Response) {
     await this.authService.logOutUser(request.user.family);
     response.cookie("auth", null, this.cookieService.generateInvalidAuthCookieOptions());
   }
-
-  // todo - register teacher
 }

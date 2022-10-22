@@ -183,4 +183,12 @@ export class UsersService {
       throw new UnauthorizedException();
     }
   }
+
+  async getRepresentativeSchoolUuid(userUuid: string): Promise<string> {
+    const { schoolUuid } = await this.prisma.representative.findUnique({
+      where: { userUuid },
+      select: { schoolUuid: true },
+    });
+    return schoolUuid;
+  }
 }

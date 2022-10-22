@@ -59,7 +59,7 @@ const validationSchema = yup.object({
     .string()
     .required("Required.")
     .test("length test", "Value is too long.", (value) => (value ? value.length <= 10 : false))
-    .test("value test", "Invalid format.", (value) => (value ? /^[a-zA-Z0-9\-]{3,10}$/.test(value) : false)),
+    .test("value test", "Invalid format.", (value) => (value ? /^[a-zA-Z0-9\- ]{3,10}$/.test(value) : false)),
 });
 
 const initialState: FormValues = {
