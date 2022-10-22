@@ -87,6 +87,7 @@ export default function ChannelForm(props: Props) {
             actions={
               <Button
                 onClick={() => handleSubmit()}
+                variant="accent"
                 type="button"
                 disabled={!isValid || textIdError !== undefined || !dirty}
               >

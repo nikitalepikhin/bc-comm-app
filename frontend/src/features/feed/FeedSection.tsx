@@ -39,10 +39,19 @@ function FeedSection(props: Props, ref: ForwardedRef<HTMLDivElement>) {
           <Post {...post} />
         </div>
       ))}
-      {!isLoading && isLastPage && (
-        <Alert show severity="success" fullWidth>
-          You are all caught up.
-        </Alert>
+      {!isLoading && isLastPage && page === 1 && data && data.posts.length === 0 && (
+        <div className="w-full text-center p-2">
+          Your feed is currently empty
+          <br />
+          Join some channels to get started 👋
+        </div>
+      )}
+      {!isLoading && isLastPage && data && data.posts.length > 0 && (
+        <div className="w-full text-center p-2">
+          You have reached the end of the feed
+          <br />
+          Good job 👍
+        </div>
       )}
     </>
   );

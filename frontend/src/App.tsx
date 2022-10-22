@@ -7,14 +7,16 @@ import Navbar from "./common/components/navbar/Navbar";
 export default function App() {
   const { isLoading, isUninitialized } = useAuthentication();
 
-  return isLoading || isUninitialized ? (
-    <LoadingPage />
-  ) : (
+  return (
     <>
       <Navbar />
-      <div className="2xl:max-w-screen-2xl mx-3 2xl:mx-auto">
-        <Outlet />
-      </div>
+      {isLoading || isUninitialized ? (
+        <LoadingPage />
+      ) : (
+        <div className="2xl:max-w-screen-2xl mx-3 2xl:mx-auto">
+          <Outlet />
+        </div>
+      )}
     </>
   );
 }
