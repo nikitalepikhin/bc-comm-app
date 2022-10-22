@@ -34,22 +34,28 @@ export const enhancedApi = api.enhanceEndpoints({
       ],
     },
     deleteSchool: {
-      invalidatesTags: [{ type: TagTypes.SCHOOL, id: IdTypes.ALL }],
+      invalidatesTags: (result, error, arg) => [{ type: TagTypes.SCHOOL, id: arg.deleteSchoolDto.uuid }],
     },
     getAllSchools: {
-      providesTags: [{ type: TagTypes.SCHOOL, id: IdTypes.ALL }],
+      providesTags: (result, error, arg) => {
+        if (result) {
+          return [
+            { type: TagTypes.SCHOOL, id: IdTypes.PARTIAL_LIST },
+            ...result.schools.map((school) => ({ type: TagTypes.SCHOOL, id: school.uuid })),
+          ];
+        } else {
+          return [{ type: TagTypes.SCHOOL, id: IdTypes.PARTIAL_LIST }];
+        }
+      },
     },
     getSchoolByUuid: {
       providesTags: (result, error, arg) => [{ type: TagTypes.SCHOOL, id: arg.uuid }],
     },
     createSchool: {
-      invalidatesTags: [{ type: TagTypes.SCHOOL, id: IdTypes.ALL }],
+      invalidatesTags: [{ type: TagTypes.SCHOOL }],
     },
     updateSchool: {
-      invalidatesTags: (result, error, arg) => [
-        { type: TagTypes.SCHOOL, id: arg.updateSchoolRequestDto.uuid },
-        { type: TagTypes.SCHOOL, id: IdTypes.ALL },
-      ],
+      invalidatesTags: (result, error, arg) => [{ type: TagTypes.SCHOOL, id: arg.updateSchoolRequestDto.uuid }],
     },
     deleteFaculty: {
       invalidatesTags: [{ type: TagTypes.FACULTY, id: IdTypes.ALL }],
@@ -448,7 +454,7 @@ export const {
   useGetTeacherVerificationRequestsQuery,
   useRequestTeacherVerificationQuery,
   useVerifyUserMutation,
-  useGetAllSchoolsQuery,
+  useLazyGetAllSchoolsQuery,
   useGetSchoolByUuidQuery,
   useCreateSchoolMutation,
   useUpdateSchoolMutation,

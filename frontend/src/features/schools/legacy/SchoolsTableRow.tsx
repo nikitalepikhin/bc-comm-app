@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import { SchoolResponseDto } from "../../app/api";
-import { useDeleteSchoolMutation } from "../../app/enhancedApi";
+import { SchoolResponseDto } from "../../../app/api";
+import { useDeleteSchoolMutation } from "../../../app/enhancedApi";
 import { Link } from "react-router-dom";
-import Button from "../../common/uilib/Button";
+import Button from "../../../common/uilib/Button";
 
 interface SchoolsTableRowPropsType {
   school: SchoolResponseDto;

@@ -5,7 +5,7 @@ import PostHeader from "./PostHeader";
 import PostContext from "./PostContext";
 import { useDeletePostMutation } from "../../../app/enhancedApi";
 import StyledLink from "../../../common/uilib/StyledLink";
-import Dialog from "../../../common/uilib/Dialog";
+import Dialog from "../../../common/uilib/dialog/Dialog";
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import PostFooter from "./PostFooter";

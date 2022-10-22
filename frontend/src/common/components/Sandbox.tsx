@@ -5,7 +5,7 @@ import useColorScheme from "../hooks/useColorScheme";
 import Button from "../uilib/Button";
 import Container from "../uilib/Container";
 import { useState } from "react";
-import Dialog from "../uilib/Dialog";
+import Dialog from "../uilib/dialog/Dialog";
 import PageWrapper from "../uilib/PageWrapper";
 import Alert from "../uilib/Alert";
 import Input from "../uilib/Input";

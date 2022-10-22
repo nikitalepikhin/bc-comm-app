@@ -10,7 +10,7 @@ import Input from "../../common/uilib/Input";
 import Textarea from "../../common/uilib/Textarea";
 import classNames from "classnames";
 import { useNavigate, useParams } from "react-router-dom";
-import Dialog from "../../common/uilib/Dialog";
+import Dialog from "../../common/uilib/dialog/Dialog";
 
 export interface FormValues {
   textId: string;

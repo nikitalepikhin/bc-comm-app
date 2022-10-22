@@ -4,7 +4,7 @@ import * as yup from "yup";
 import { useCreateCommentMutation, useUpdateCommentMutation } from "../../app/enhancedApi";
 import classNames from "classnames";
 import Textarea from "../../common/uilib/Textarea";
-import Dialog from "../../common/uilib/Dialog";
+import Dialog from "../../common/uilib/dialog/Dialog";
 import React from "react";
 
 interface Props {

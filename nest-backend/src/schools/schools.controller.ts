@@ -1,4 +1,16 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, Query, Req, UseGuards } from "@nestjs/common";
+import {
+  BadRequestException,
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Put,
+  Query,
+  Req,
+  UseGuards,
+} from "@nestjs/common";
 import { SchoolsService } from "./schools.service";
 import { ApiOkResponse, ApiOperation } from "@nestjs/swagger";
 import { JwtAuthGuard } from "../auth/jwt-auth.guard";
@@ -38,10 +50,7 @@ export class SchoolsController {
   @UseGuards(JwtAuthGuard, RequirePermissionsGuard)
   @Get("/")
   async getAllSchools(@Query() query: GetSchoolsQueryParamsDto): Promise<GetSchoolsResponseDto> {
-    return await this.schoolService.getSchools(
-      query.page ? parseInt(query.page) : 1,
-      query.count ? parseInt(query.count) : 10,
-    );
+    return await this.schoolService.getSchools(parseInt(query.page) ?? 1, parseInt(query.count) ?? 10);
   }
 
   @ApiOperation({

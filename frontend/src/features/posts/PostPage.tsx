@@ -26,7 +26,7 @@ export default function PostPage() {
           Close
         </Button>
       </div>
-      {isLoading && <LoadingSpinner size="h-8 w-8" />}
+      {isLoading && <LoadingSpinner />}
       {data && data.post && <Post {...data.post} showExpanded />}
       <Outlet />
     </div>

@@ -86,13 +86,6 @@ const injectedRtkApi = api.injectEndpoints({
     >({
       query: () => ({ url: `/representatives/verify` }),
     }),
-    verifyRepresentativeUser: build.mutation<VerifyRepresentativeUserApiResponse, VerifyRepresentativeUserApiArg>({
-      query: (queryArg) => ({
-        url: `/representatives/verify`,
-        method: "POST",
-        body: queryArg.verifyRepresentativeUserRequestDto,
-      }),
-    }),
     requestTeacherVerification: build.query<RequestTeacherVerificationApiResponse, RequestTeacherVerificationApiArg>({
       query: () => ({ url: `/teachers/request` }),
     }),
@@ -101,9 +94,6 @@ const injectedRtkApi = api.injectEndpoints({
       GetTeacherVerificationRequestsApiArg
     >({
       query: () => ({ url: `/teachers/verify` }),
-    }),
-    verifyTeacherUser: build.mutation<VerifyTeacherUserApiResponse, VerifyTeacherUserApiArg>({
-      query: (queryArg) => ({ url: `/teachers/verify`, method: "POST", body: queryArg.verifyTeacherUserRequestDto }),
     }),
     searchChannels: build.query<SearchChannelsApiResponse, SearchChannelsApiArg>({
       query: (queryArg) => ({ url: `/channels/search`, params: { value: queryArg.value } }),
@@ -209,8 +199,8 @@ export type CreateSchoolApiArg = {
 export type GetAllSchoolsApiResponse =
   /** status 200 Specified number of schools on a specified page. */ GetSchoolsResponseDto;
 export type GetAllSchoolsApiArg = {
-  page: string;
-  count: string;
+  page?: number;
+  count?: number;
 };
 export type UpdateSchoolApiResponse = unknown;
 export type UpdateSchoolApiArg = {
@@ -266,19 +256,11 @@ export type RequestRepresentativeVerificationApiArg = void;
 export type GetRepresentativeVerificationRequestsApiResponse =
   /** status 200 Representative verification requests. */ GetRepresentativeRequestsDto;
 export type GetRepresentativeVerificationRequestsApiArg = void;
-export type VerifyRepresentativeUserApiResponse = unknown;
-export type VerifyRepresentativeUserApiArg = {
-  verifyRepresentativeUserRequestDto: VerifyRepresentativeUserRequestDto;
-};
 export type RequestTeacherVerificationApiResponse = unknown;
 export type RequestTeacherVerificationApiArg = void;
 export type GetTeacherVerificationRequestsApiResponse =
   /** status 200 Teacher verification requests. */ GetTeacherRequestsDto;
 export type GetTeacherVerificationRequestsApiArg = void;
-export type VerifyTeacherUserApiResponse = unknown;
-export type VerifyTeacherUserApiArg = {
-  verifyTeacherUserRequestDto: VerifyTeacherUserRequestDto;
-};
 export type SearchChannelsApiResponse =
   /** status 200 Suggested channels based on the provided value. */ SearchChannelsResponseDto;
 export type SearchChannelsApiArg = {
@@ -511,11 +493,6 @@ export type RepresentativeRequestDto = {
 export type GetRepresentativeRequestsDto = {
   requests: RepresentativeRequestDto[];
 };
-export type VerifyRepresentativeUserRequestDto = {
-  approve: boolean;
-  reason: string;
-  verifiedUserUuid: string;
-};
 export type TeacherRequestSchoolFieldDto = {
   name: string;
   uuid: string;
@@ -538,11 +515,6 @@ export type TeacherRequestDto = {
 };
 export type GetTeacherRequestsDto = {
   requests: TeacherRequestDto[];
-};
-export type VerifyTeacherUserRequestDto = {
-  approve: boolean;
-  reason: string;
-  verifiedUserUuid: string;
 };
 export type ChannelsSearchSuggestionDto = {
   text: string;
@@ -722,10 +694,8 @@ export const {
   useHelloNoAuthQuery,
   useRequestRepresentativeVerificationQuery,
   useGetRepresentativeVerificationRequestsQuery,
-  useVerifyRepresentativeUserMutation,
   useRequestTeacherVerificationQuery,
   useGetTeacherVerificationRequestsQuery,
-  useVerifyTeacherUserMutation,
   useSearchChannelsQuery,
   useCreateChannelMutation,
   useUpdateChannelMutation,

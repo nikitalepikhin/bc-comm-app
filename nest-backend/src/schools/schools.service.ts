@@ -23,10 +23,10 @@ export class SchoolsService {
   }
 
   async getSchools(page: number, count: number): Promise<GetSchoolsResponseDto> {
-    const allSchools = await this.prisma.school.findMany();
+    const schoolCount = await this.prisma.school.count();
     const schools = await this.prisma.school.findMany({ skip: (page - 1) * count, take: count });
     return {
-      pages: Math.ceil(allSchools.length / count),
+      pages: Math.ceil(schoolCount / count),
       schools: schools.map(({ uuid, name, countryCode, city, addressLineOne, addressLineTwo, postalCode }) => ({
         uuid,
         name,

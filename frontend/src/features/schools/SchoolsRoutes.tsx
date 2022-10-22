@@ -1,9 +1,8 @@
 import React from "react";
 import { Route, Routes } from "react-router-dom";
 import ProtectedRoute from "../../common/components/ProtectedRoute";
-import SchoolsManagementPage from "./SchoolsManagementPage";
-import AddSchoolPage from "./AddSchoolPage";
-import EditSchoolPage from "./EditSchoolPage";
+import EditSchoolPage from "./legacy/EditSchoolPage";
+import SchoolsPage from "./SchoolsPage";
 
 const SchoolsRoutes: React.FC = () => {
   return (
@@ -12,15 +11,7 @@ const SchoolsRoutes: React.FC = () => {
         path="/"
         element={
           <ProtectedRoute allowedRoles={["ADMIN"]}>
-            <SchoolsManagementPage />
-          </ProtectedRoute>
-        }
-      ></Route>
-      <Route
-        path="/new"
-        element={
-          <ProtectedRoute allowedRoles={["ADMIN"]}>
-            <AddSchoolPage />
+            <SchoolsPage />
           </ProtectedRoute>
         }
       />

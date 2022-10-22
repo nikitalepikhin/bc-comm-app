@@ -1,20 +1,21 @@
-import Button from "./Button";
+import Button from "../Button";
 import classNames from "classnames";
 import { ExclamationTriangleIcon, QuestionMarkCircleIcon } from "@heroicons/react/24/solid";
 import BaseDialog from "./BaseDialog";
+import Alert from "../Alert";
 
 interface Props {
   show: boolean;
+  onConfirm: () => void;
+  onCancel: () => void;
+  loading?: boolean;
   title?: string;
   body?: string;
-
-  onConfirm: () => void;
   confirmText?: string;
+  cancelText?: string;
   danger?: boolean;
   onClose?: () => void;
-  onCancel: () => void;
-  cancelText?: string;
-  loading?: boolean;
+  error?: string;
 }
 
 export default function Dialog(props: Props) {
@@ -29,6 +30,7 @@ export default function Dialog(props: Props) {
     confirmText,
     danger = false,
     loading = false,
+    error,
   } = props;
 
   return (
@@ -47,9 +49,14 @@ export default function Dialog(props: Props) {
               {!danger && <QuestionMarkCircleIcon className="h-8 w-8 text-blue-600" />}
             </div>
           </div>
-          <div className="flex flex-col justify-start items-stretch gap-2">
+          <div className="flex flex-col justify-start items-stretch gap-2 w-full">
             <div className={classNames("text-lg font-bold")}>{title}</div>
             <div className={classNames("text-base text-secondary dark:text-slate-400")}>{body}</div>
+            {error !== undefined && (
+              <Alert show fullWidth>
+                {error}
+              </Alert>
+            )}
           </div>
         </div>
         <div

@@ -1,7 +1,7 @@
 import { ReactNode, useLayoutEffect } from "react";
 import { createPortal } from "react-dom";
 import classNames from "classnames";
-import IconButton from "./IconButton";
+import IconButton from "../IconButton";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 
 interface Props {

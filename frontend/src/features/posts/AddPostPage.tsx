@@ -8,7 +8,7 @@ import { useEffect, useState } from "react";
 import Box from "../../common/uilib/Box";
 import Input from "../../common/uilib/Input";
 import Textarea from "../../common/uilib/Textarea";
-import Dialog from "../../common/uilib/Dialog";
+import Dialog from "../../common/uilib/dialog/Dialog";
 import Container from "../../common/uilib/Container";
 
 interface AddPostFormValues {

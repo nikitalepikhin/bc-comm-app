@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { useCreateFacultyMutation, useCreateSchoolMutation, useGetSchoolByUuidQuery } from "../../app/enhancedApi";
 import { Field, FieldProps, Form, Formik } from "formik";
-import AddSchoolFeedback from "../schools/AddSchoolFeedback";
+import AddSchoolFeedback from "../schools/legacy/AddSchoolFeedback";
 import TextField from "../../common/uilib/legacy/TextField";
 import Button from "../../common/uilib/Button";
 import LinkWithIcon from "../../common/uilib/LinkWithIcon";

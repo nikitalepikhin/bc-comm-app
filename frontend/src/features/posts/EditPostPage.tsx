@@ -11,7 +11,7 @@ import Box from "../../common/uilib/Box";
 import Textarea from "../../common/uilib/Textarea";
 import Input from "../../common/uilib/Input";
 import Alert from "../../common/uilib/Alert";
-import Dialog from "../../common/uilib/Dialog";
+import Dialog from "../../common/uilib/dialog/Dialog";
 import Container from "../../common/uilib/Container";
 
 interface EditPostFormValues {

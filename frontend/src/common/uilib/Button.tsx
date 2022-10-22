@@ -38,9 +38,9 @@ function Button(props: Props, ref: ForwardedRef<HTMLButtonElement>) {
           onClick={onClick}
           className={classNames(
             "text-white text-center",
-            { "bg-blue-600 hover:bg-blue-700": variant === "accent" },
+            { "bg-blue-600 hover:bg-blue-700 dark:bg-blue-800 hover:dark:bg-blue-700": variant === "accent" },
             { "focus:ring-blue-600/50 dark:focus:ring-offset-slate-800": variant === "accent" },
-            { "bg-red-600 hover:bg-red-700": variant === "danger" },
+            { "bg-red-600 hover:bg-red-700 dark:bg-red-800 hover:dark:bg-red-700": variant === "danger" },
             { "focus:ring-red-600/50 dark:focus:ring-offset-red-800": variant === "danger" },
             "disabled:bg-slate-100 disabled:hover:bg-slate-100 dark:disabled:bg-slate-900 dark:disabled:hover:bg-slate-900",
             "border border-slate-200 dark:border-slate-700",
@@ -83,6 +83,34 @@ function Button(props: Props, ref: ForwardedRef<HTMLButtonElement>) {
           {children}
           {icon}
           {loading && <LoadingSpinner size="h-4 w-4" border="border-2" color="border-slate-400 dark:text-slate-400" />}
+        </button>
+      );
+    case "default-danger":
+      return (
+        <button
+          ref={ref}
+          type={type}
+          disabled={disabled || loading}
+          onClick={onClick}
+          className={classNames(
+            "text-center text-white",
+            "bg-red-600 hover:bg-red-700 dark:bg-red-800 hover:dark:bg-red-700",
+            "border border-slate-200 dark:border-slate-700",
+            "rounded-md",
+            "py-2 px-3",
+            "focus:ring-2 focus:ring-red-600/50 focus:ring-offset-1 dark:focus:ring-offset-red-800 focus:outline-none",
+            { "text-sm": textSize === "small" },
+            { "text-base": textSize === "base" },
+            "flex justify-center items-center gap-1.5",
+            "disabled:text-slate-400 disabled:hover:bg-white disabled:dark:text-slate-500 disabled:hover:dark:bg-slate-900",
+            { [`${className}`]: className !== undefined }
+          )}
+        >
+          {children}
+          {icon}
+          {loading && (
+            <LoadingSpinner size="h-4 w-4" border="border-2" color="border-slate-400 dark:border-slate-500" />
+          )}
         </button>
       );
     case "default":

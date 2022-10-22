@@ -1,20 +1,19 @@
-import React from "react";
+import React, { ReactNode } from "react";
 import { RoleType } from "../../features/auth/authSlice";
 import { useAppSelector } from "../../app/hooks";
 import { Navigate } from "react-router-dom";
 
-interface ProtectedRoutePropsType {
+interface Props {
   allowedRoles: RoleType[];
-  children: React.ReactNode;
+  children: ReactNode;
 }
 
-const ProtectedRoute: React.FC<ProtectedRoutePropsType> = ({ allowedRoles, children }) => {
+export default function ProtectedRoute(props: Props) {
+  const { allowedRoles, children } = props;
   const {
     present,
     user: { role },
   } = useAppSelector((state) => state.auth);
 
   return !present || role === undefined || !allowedRoles.includes(role) ? <Navigate to="/" replace /> : <>{children}</>;
-};
-
-export default ProtectedRoute;
+}

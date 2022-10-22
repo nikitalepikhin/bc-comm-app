@@ -6,7 +6,7 @@ import { format, parseISO } from "date-fns";
 import classNames from "classnames";
 import { Field, FieldProps, Form, Formik } from "formik";
 import Button from "../../common/uilib/Button";
-import BaseDialog from "../../common/uilib/BaseDialog";
+import BaseDialog from "../../common/uilib/dialog/BaseDialog";
 import Textarea from "../../common/uilib/Textarea";
 import Alert from "../../common/uilib/Alert";
 

@@ -5,7 +5,7 @@ import Badge from "../../../common/uilib/Badge";
 import StyledLink from "../../../common/uilib/StyledLink";
 import { useEffect, useState } from "react";
 import CommentForm from "../CommentForm";
-import Dialog from "../../../common/uilib/Dialog";
+import Dialog from "../../../common/uilib/dialog/Dialog";
 import { useDeleteCommentMutation } from "../../../app/enhancedApi";
 import { useParams } from "react-router-dom";
 import Votes from "../../../common/components/Votes";

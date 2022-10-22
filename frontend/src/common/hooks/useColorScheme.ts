@@ -21,7 +21,7 @@ export default function useColorScheme(): Theme {
   };
   const setLightMode = () => {
     document.querySelector("body")!.classList.remove("dark");
-    document.querySelector('meta[name="theme-color"]')!.setAttribute("content", "#f1f5f9");
+    document.querySelector('meta[name="theme-color"]')!.setAttribute("content", "#f8fafc");
   };
 
   // detect the color theme on mount

@@ -3,6 +3,7 @@ import { useGetUserFeedQuery } from "../../app/enhancedApi";
 import { useAppSelector } from "../../app/hooks";
 import LoadingSpinner from "../../common/uilib/LoadingSpinner";
 import Post from "../posts/post/Post";
+import Alert from "../../common/uilib/Alert";
 
 interface Props {
   page: number;
@@ -38,6 +39,11 @@ function FeedSection(props: Props, ref: ForwardedRef<HTMLDivElement>) {
           <Post {...post} />
         </div>
       ))}
+      {!isLoading && isLastPage && (
+        <Alert show severity="success" fullWidth>
+          You are all caught up.
+        </Alert>
+      )}
     </>
   );
 }

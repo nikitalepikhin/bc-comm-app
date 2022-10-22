@@ -15,25 +15,27 @@ const ChannelPage: React.FC = () => {
     return <ErrorPage code={String(error.status)} message="This channel does not exist." />;
   }
 
-  if (isLoading) {
-    return <LoadingSpinner />;
-  }
-
   return (
     <PageWrapper className="flex flex-col justify-start gap-2">
-      <ChannelHeader name={data?.name!} uuid={data?.uuid!} isMember={data?.isMember!} />
-      <div className="w-full flex flex-col lg:flex-row-reverse justify-start gap-2">
-        <ChannelInfo
-          created={data?.created!}
-          description={data?.description!}
-          isOwner={data?.isOwner!}
-          memberCount={data?.memberCount!}
-          owner={data?.owner!}
-        />
-        <div className="w-full">
-          <Outlet />
-        </div>
-      </div>
+      {isLoading ? (
+        <LoadingSpinner />
+      ) : (
+        <>
+          <ChannelHeader name={data?.name!} uuid={data?.uuid!} isMember={data?.isMember!} />
+          <div className="w-full flex flex-col lg:flex-row-reverse justify-start gap-2">
+            <ChannelInfo
+              created={data?.created!}
+              description={data?.description!}
+              isOwner={data?.isOwner!}
+              memberCount={data?.memberCount!}
+              owner={data?.owner!}
+            />
+            <div className="w-full">
+              <Outlet />
+            </div>
+          </div>
+        </>
+      )}
     </PageWrapper>
   );
 };
