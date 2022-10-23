@@ -30,7 +30,7 @@ export default function Alert(props: Props) {
             severity === "warning",
         },
         {
-          "border-slate-200 dark:border-slate-700 dark:border-slate-700 bg-slate-100 dark:bg-slate-800/50 text-slate-900 dark:text-slate-300":
+          "border-slate-200 dark:border-slate-700 dark:border-slate-700 bg-slate-100 dark:bg-slate-700/50 text-slate-900 dark:text-slate-300":
             severity === "info",
         },
         {

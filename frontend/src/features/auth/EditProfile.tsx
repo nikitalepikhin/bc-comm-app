@@ -22,7 +22,7 @@ export default function EditProfile() {
 
   const {
     data,
-    isFetching: profileFetching,
+    isLoading: profileLoading,
     isError: profileError,
     isSuccess: profileSuccess,
     refetch,
@@ -36,7 +36,11 @@ export default function EditProfile() {
 
   return (
     <Container title="Edit Profile" className="w-full">
-      {profileFetching && <LoadingSpinner />}
+      {profileLoading && (
+        <div className="pt-2">
+          <LoadingSpinner />
+        </div>
+      )}
       <Alert show={profileError} fullWidth onClose={() => refetch()}>
         Error loading current profile data. Close this alert to refetch.
       </Alert>

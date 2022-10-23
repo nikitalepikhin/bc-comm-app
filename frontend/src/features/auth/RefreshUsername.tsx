@@ -39,6 +39,10 @@ export default function RefreshUsername() {
       <Alert show={isSuccess} fullWidth severity="success" onClose={() => reset()}>
         Username has been successfully refreshed.
       </Alert>
+      <Alert show fullWidth severity="info">
+        Refreshing the username will ensure all newly created posts and comments are marked with your new username.
+        Previously created posts and comments will not be updated.
+      </Alert>
     </div>
   );
 }

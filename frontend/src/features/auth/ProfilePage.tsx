@@ -3,6 +3,7 @@ import classNames from "classnames";
 import { useAppSelector } from "../../app/hooks";
 import EditAccount from "./EditAccount";
 import EditProfile from "./EditProfile";
+import DeleteAccount from "./DeleteAccount";
 
 export default function ProfilePage() {
   const { role } = useAppSelector((state) => state.auth.user);
@@ -14,7 +15,10 @@ export default function ProfilePage() {
       )}
     >
       <EditAccount />
-      {(role === "REPRESENTATIVE" || role === "TEACHER") && <EditProfile />}
+      <div className="flex flex-col justify-start items-center gap-2 w-full">
+        {(role === "REPRESENTATIVE" || role === "TEACHER") && <EditProfile />}
+        <DeleteAccount />
+      </div>
     </PageWrapper>
   );
 }
