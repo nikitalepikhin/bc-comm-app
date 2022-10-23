@@ -10,14 +10,6 @@ import GetTeacherRequestsDto from "./dto/get-teacher-requests.dto";
 export class TeachersController {
   constructor(private teachersService: TeachersService) {}
 
-  @ApiOperation({ summary: "Request verification." })
-  @RequirePermissions(Permission.TEACHER_REQ_VERIFY)
-  @UseGuards(JwtAuthGuard, RequirePermissionsGuard)
-  @Get("/request")
-  async requestTeacherVerification(@Req() request) {
-    await this.teachersService.requestVerification(request.user);
-  }
-
   @ApiOperation({ summary: "Get teacher verification requests." })
   @ApiOkResponse({
     description: "Teacher verification requests.",

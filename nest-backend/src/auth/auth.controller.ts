@@ -24,9 +24,9 @@ export class AuthController {
   @UseGuards(LocalAuthGuard)
   @Post("login")
   async logIn(@Req() request, @Res({ passthrough: true }) response: Response): Promise<UserDataResponseDto> {
-    const { accessToken, refreshToken, schoolUuid } = await this.authService.logInUser(request.user);
+    const { accessToken, refreshToken, schoolUuid, verified } = await this.authService.logInUser(request.user);
     response.cookie("auth", refreshToken, this.cookieService.generateAuthCookieOptions());
-    return { accessToken, schoolUuid, ...request.user } as UserDataResponseDto;
+    return { accessToken, schoolUuid, verified, ...request.user } as UserDataResponseDto;
   }
 
   @ApiOperation({ summary: "Sign up a base user." })
@@ -53,7 +53,7 @@ export class AuthController {
   @Post("refresh")
   async refreshToken(@Req() request, @Res({ passthrough: true }) response: Response): Promise<UserDataResponseDto> {
     const authCookie = request.cookies.auth; // guaranteed to be valid and not used by the JwtRefreshAuthGuard
-    const { accessToken, refreshToken, username, schoolUuid } = await this.authService.refreshToken(
+    const { accessToken, refreshToken, username, schoolUuid, verified } = await this.authService.refreshToken(
       request.user,
       authCookie,
     );
@@ -65,6 +65,7 @@ export class AuthController {
       username,
       role: request.user.role,
       schoolUuid,
+      verified,
     };
   }
 

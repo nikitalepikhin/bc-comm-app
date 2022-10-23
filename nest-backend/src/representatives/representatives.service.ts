@@ -6,10 +6,6 @@ import GetRepresentativeRequestsDto from "./dto/get-representative-requests.dto"
 export class RepresentativesService {
   constructor(private prisma: PrismaService) {}
 
-  async requestVerification(user) {
-    await this.prisma.representative.update({ where: { userUuid: user.uuid }, data: { requestsVerification: true } });
-  }
-
   async getVerificationRequests(): Promise<GetRepresentativeRequestsDto> {
     const reps = await this.prisma.representative.findMany({
       where: { verified: false, requestsVerification: true },

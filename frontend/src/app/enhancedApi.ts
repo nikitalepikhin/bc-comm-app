@@ -2,6 +2,7 @@ import { api, PostCommentDto } from "./api";
 import { IdTypes, TagTypes } from "./emptyApi";
 import { PatchCollection } from "@reduxjs/toolkit/dist/query/core/buildThunks";
 import { calculateVotes } from "./apiUtil";
+import { isDraft } from "@reduxjs/toolkit";
 
 export const enhancedApi = api.enhanceEndpoints({
   endpoints: {
@@ -437,6 +438,24 @@ export const enhancedApi = api.enhanceEndpoints({
     searchChannels: {
       providesTags: [{ type: TagTypes.CHANNEL_AC }],
     },
+    getUserProfile: {
+      providesTags: [{ type: TagTypes.USER }],
+    },
+    updateUserProfile: {
+      invalidatesTags: [{ type: TagTypes.USER }],
+      onQueryStarted: async ({ updateUserProfileRequestDto: { name, bio } }, { dispatch, queryFulfilled }) => {
+        const patch = dispatch(
+          enhancedApi.util.updateQueryData("getUserProfile", undefined, (draft) => {
+            Object.assign(draft, { ...draft, name, bio });
+          })
+        );
+        try {
+          await queryFulfilled;
+        } catch {
+          patch.undo();
+        }
+      },
+    },
   },
 });
 
@@ -448,9 +467,7 @@ export const {
   useSignUpRepresentativeMutation,
   useRefreshTokenMutation,
   useGetRepresentativeVerificationRequestsQuery,
-  useRequestRepresentativeVerificationQuery,
   useGetTeacherVerificationRequestsQuery,
-  useRequestTeacherVerificationQuery,
   useVerifyUserMutation,
   useLazyGetAllSchoolsQuery,
   useGetSchoolByUuidQuery,
@@ -482,4 +499,6 @@ export const {
   useGetCommentCommentsQuery,
   useGetUserFeedQuery,
   useLazySearchChannelsQuery,
+  useGetUserProfileQuery,
+  useUpdateUserProfileMutation,
 } = enhancedApi;

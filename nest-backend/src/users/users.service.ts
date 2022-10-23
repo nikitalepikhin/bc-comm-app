@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable, InternalServerErrorException, UnauthorizedException } from "@nestjs/common";
 import { PrismaService } from "../prisma/prisma.service";
-import { Status, Teacher, User } from "@prisma/client";
+import { Representative, Status, Teacher, User } from "@prisma/client";
 import CreateBaseUserDto from "./dto/create-base-user.dto";
 import * as bcrypt from "bcrypt";
 import * as randomstring from "randomstring";
@@ -12,6 +12,8 @@ import RefreshUsernameResponseDto from "./dto/refresh-username-response.dto";
 import UserDto from "../auth/dto/user.dto";
 import VerifyUserRequestDto from "./dto/verify-user-request.dto";
 import { isNil } from "@nestjs/common/utils/shared.utils";
+import GetUserProfileResponseDto from "./dto/get-user-profile-response.dto";
+import UpdateUserProfileRequestDto from "./dto/update-user-profile-request.dto";
 
 const usernameParams = {
   length: 8,
@@ -184,11 +186,61 @@ export class UsersService {
     }
   }
 
-  async getRepresentativeSchoolUuid(userUuid: string): Promise<string> {
-    const { schoolUuid } = await this.prisma.representative.findUnique({
+  async getRepresentativeByUuid(userUuid: string): Promise<Representative> {
+    return await this.prisma.representative.findUnique({
       where: { userUuid },
-      select: { schoolUuid: true },
     });
-    return schoolUuid;
+  }
+
+  async getTeacherByUuid(userUuid: string): Promise<Teacher> {
+    return await this.prisma.teacher.findUnique({ where: { userUuid } });
+  }
+
+  async requestVerification(user: UserDto) {
+    if (user.role === "REPRESENTATIVE") {
+      await this.prisma.representative.update({ where: { userUuid: user.uuid }, data: { requestsVerification: true } });
+    } else if (user.role === "TEACHER") {
+      await this.prisma.teacher.update({ where: { userUuid: user.uuid }, data: { requestsVerification: true } });
+    }
+  }
+
+  async getUserProfile(user: UserDto): Promise<GetUserProfileResponseDto> {
+    if (user.role === "ADMIN" || user.role === "STUDENT") {
+      return {
+        name: undefined,
+        bio: undefined,
+      };
+    } else if (user.role === "TEACHER") {
+      const { name, bio } = await this.prisma.teacher.findUnique({
+        where: { userUuid: user.uuid },
+        select: { name: true, bio: true },
+      });
+      return { name: name ?? undefined, bio: bio ?? undefined };
+    } else if (user.role === "REPRESENTATIVE") {
+      const { name } = await this.prisma.representative.findUnique({
+        where: { userUuid: user.uuid },
+        select: { name: true },
+      });
+      return { name: name ?? undefined, bio: undefined };
+    }
+  }
+
+  async updateUserProfile(user: UserDto, requestDto: UpdateUserProfileRequestDto) {
+    if (user.role === "TEACHER") {
+      await this.prisma.teacher.update({
+        where: { userUuid: user.uuid },
+        data: {
+          name: requestDto.name,
+          bio: requestDto.bio,
+        },
+      });
+    } else if (user.role === "REPRESENTATIVE") {
+      await this.prisma.representative.update({
+        where: { userUuid: user.uuid },
+        data: {
+          name: requestDto.name,
+        },
+      });
+    }
   }
 }

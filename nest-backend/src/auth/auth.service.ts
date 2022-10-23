@@ -10,6 +10,7 @@ import UserRefreshDto from "./dto/user-refresh.dto";
 import CreateRepresentativeUserDto from "../users/dto/create-representative-user.dto";
 import { CreateTeacherUserDto } from "../users/dto/create-teacher-user.dto";
 import { use } from "passport";
+import UserDto from "./dto/user.dto";
 
 @Injectable()
 export class AuthService {
@@ -37,24 +38,19 @@ export class AuthService {
   }
 
   async logInUser(user: ValidateUserDto) {
-    let schoolUuid: string | undefined;
-    if (user.role === "REPRESENTATIVE") {
-      schoolUuid = await this.usersService.getRepresentativeSchoolUuid(user.uuid);
-    }
+    const { schoolUuid, verified } = await this.getAdditionalUserData(user);
     return {
       accessToken: this.createSignedAccessToken(user),
       refreshToken: await this.createRefreshTokenForNewFamily(user),
       schoolUuid: schoolUuid ? schoolUuid : undefined,
+      verified,
     };
   }
 
   async refreshToken(user: UserRefreshDto, authCookie: string) {
     const refreshToken = await this.refreshTokensService.setRefreshTokenToUsedByValue(authCookie);
-    const username = (await this.usersService.findByUuid(user.uuid)).username;
-    let schoolUuid: string | undefined;
-    if (user.role === "REPRESENTATIVE") {
-      schoolUuid = await this.usersService.getRepresentativeSchoolUuid(user.uuid);
-    }
+    const { username } = await this.usersService.findByUuid(user.uuid);
+    const { schoolUuid, verified } = await this.getAdditionalUserData(user);
     return {
       accessToken: this.createSignedAccessToken({
         email: user.email,
@@ -65,6 +61,7 @@ export class AuthService {
       refreshToken: await this.createRefreshTokenForExistingFamily(user, refreshToken.tokenFamily),
       username,
       schoolUuid,
+      verified,
     };
   }
 
@@ -111,5 +108,20 @@ export class AuthService {
 
   async signUpTeacherUser(createTeacherUserDto: CreateTeacherUserDto) {
     return await this.usersService.createTeacherUser(createTeacherUserDto);
+  }
+
+  private async getAdditionalUserData(user: UserDto) {
+    let schoolUuid: string | undefined;
+    let verified: boolean | undefined;
+    if (user.role === "REPRESENTATIVE") {
+      const representative = await this.usersService.getRepresentativeByUuid(user.uuid);
+      schoolUuid = representative.schoolUuid;
+      verified = representative.verified;
+    }
+    if (user.role === "TEACHER") {
+      const teacher = await this.usersService.getTeacherByUuid(user.uuid);
+      verified = teacher.verified;
+    }
+    return { schoolUuid, verified };
   }
 }

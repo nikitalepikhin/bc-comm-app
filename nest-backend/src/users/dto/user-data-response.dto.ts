@@ -19,4 +19,7 @@ export default class UserDataResponseDto {
 
   @ApiProperty({ required: false })
   schoolUuid?: string;
+
+  @ApiProperty()
+  verified: boolean;
 }

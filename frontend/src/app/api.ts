@@ -29,6 +29,15 @@ const injectedRtkApi = api.injectEndpoints({
     verifyUser: build.mutation<VerifyUserApiResponse, VerifyUserApiArg>({
       query: (queryArg) => ({ url: `/users/verify`, method: "POST", body: queryArg.verifyUserRequestDto }),
     }),
+    requestVerification: build.query<RequestVerificationApiResponse, RequestVerificationApiArg>({
+      query: () => ({ url: `/users/request` }),
+    }),
+    getUserProfile: build.query<GetUserProfileApiResponse, GetUserProfileApiArg>({
+      query: () => ({ url: `/users` }),
+    }),
+    updateUserProfile: build.mutation<UpdateUserProfileApiResponse, UpdateUserProfileApiArg>({
+      query: (queryArg) => ({ url: `/users`, method: "POST", body: queryArg.updateUserProfileRequestDto }),
+    }),
     createSchool: build.mutation<CreateSchoolApiResponse, CreateSchoolApiArg>({
       query: (queryArg) => ({ url: `/schools`, method: "POST", body: queryArg.createSchoolDto }),
     }),
@@ -74,20 +83,11 @@ const injectedRtkApi = api.injectEndpoints({
     helloNoAuth: build.query<HelloNoAuthApiResponse, HelloNoAuthApiArg>({
       query: () => ({ url: `/test/guest` }),
     }),
-    requestRepresentativeVerification: build.query<
-      RequestRepresentativeVerificationApiResponse,
-      RequestRepresentativeVerificationApiArg
-    >({
-      query: () => ({ url: `/representatives/request` }),
-    }),
     getRepresentativeVerificationRequests: build.query<
       GetRepresentativeVerificationRequestsApiResponse,
       GetRepresentativeVerificationRequestsApiArg
     >({
       query: () => ({ url: `/representatives/verify` }),
-    }),
-    requestTeacherVerification: build.query<RequestTeacherVerificationApiResponse, RequestTeacherVerificationApiArg>({
-      query: () => ({ url: `/teachers/request` }),
     }),
     getTeacherVerificationRequests: build.query<
       GetTeacherVerificationRequestsApiResponse,
@@ -192,6 +192,14 @@ export type VerifyUserApiResponse = unknown;
 export type VerifyUserApiArg = {
   verifyUserRequestDto: VerifyUserRequestDto;
 };
+export type RequestVerificationApiResponse = unknown;
+export type RequestVerificationApiArg = void;
+export type GetUserProfileApiResponse = /** status 200  */ GetUserProfileResponseDto;
+export type GetUserProfileApiArg = void;
+export type UpdateUserProfileApiResponse = unknown;
+export type UpdateUserProfileApiArg = {
+  updateUserProfileRequestDto: UpdateUserProfileRequestDto;
+};
 export type CreateSchoolApiResponse = unknown;
 export type CreateSchoolApiArg = {
   createSchoolDto: CreateSchoolDto;
@@ -251,13 +259,9 @@ export type HelloApiResponse = unknown;
 export type HelloApiArg = void;
 export type HelloNoAuthApiResponse = unknown;
 export type HelloNoAuthApiArg = void;
-export type RequestRepresentativeVerificationApiResponse = unknown;
-export type RequestRepresentativeVerificationApiArg = void;
 export type GetRepresentativeVerificationRequestsApiResponse =
   /** status 200 Representative verification requests. */ GetRepresentativeRequestsDto;
 export type GetRepresentativeVerificationRequestsApiArg = void;
-export type RequestTeacherVerificationApiResponse = unknown;
-export type RequestTeacherVerificationApiArg = void;
 export type GetTeacherVerificationRequestsApiResponse =
   /** status 200 Teacher verification requests. */ GetTeacherRequestsDto;
 export type GetTeacherVerificationRequestsApiArg = void;
@@ -357,6 +361,7 @@ export type UserDataResponseDto = {
   accessToken: string;
   uuid: string;
   schoolUuid?: string;
+  verified: boolean;
 };
 export type LogInUserRequestDto = {
   email: string;
@@ -387,6 +392,14 @@ export type VerifyUserRequestDto = {
   reason: string | null;
   verifiedUserUuid: string;
   type: "TEACHER" | "REPRESENTATIVE";
+};
+export type GetUserProfileResponseDto = {
+  name?: string;
+  bio?: string;
+};
+export type UpdateUserProfileRequestDto = {
+  name?: string;
+  bio?: string;
 };
 export type CreateSchoolDto = {
   name: string;
@@ -679,6 +692,9 @@ export const {
   useLogOutMutation,
   useRefreshUsernameQuery,
   useVerifyUserMutation,
+  useRequestVerificationQuery,
+  useGetUserProfileQuery,
+  useUpdateUserProfileMutation,
   useCreateSchoolMutation,
   useGetAllSchoolsQuery,
   useUpdateSchoolMutation,
@@ -693,9 +709,7 @@ export const {
   useGetFacultyAutocompleteMutation,
   useHelloQuery,
   useHelloNoAuthQuery,
-  useRequestRepresentativeVerificationQuery,
   useGetRepresentativeVerificationRequestsQuery,
-  useRequestTeacherVerificationQuery,
   useGetTeacherVerificationRequestsQuery,
   useSearchChannelsQuery,
   useCreateChannelMutation,

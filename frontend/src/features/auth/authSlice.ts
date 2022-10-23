@@ -9,6 +9,7 @@ export interface User {
   role: RoleType | undefined;
   uuid: string | undefined;
   schoolUuid: string | undefined;
+  verified: boolean | undefined;
 }
 
 interface AuthState {
@@ -18,7 +19,14 @@ interface AuthState {
 }
 
 const initialState: AuthState = {
-  user: { email: undefined, username: undefined, role: undefined, uuid: undefined, schoolUuid: undefined },
+  user: {
+    email: undefined,
+    username: undefined,
+    role: undefined,
+    uuid: undefined,
+    schoolUuid: undefined,
+    verified: undefined,
+  },
   accessToken: undefined,
   present: false,
 };
@@ -30,6 +38,7 @@ const populateUser = (state: any, action: any) => {
   state.user.role = action.payload.role as RoleType;
   state.user.uuid = action.payload.uuid;
   state.accessToken = action.payload.accessToken;
+  state.verified = action.payload.verified;
   state.present = true;
 };
 

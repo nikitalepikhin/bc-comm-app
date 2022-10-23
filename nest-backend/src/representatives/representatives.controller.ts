@@ -1,23 +1,14 @@
-import { Body, Controller, Get, Post, Req, UseGuards } from "@nestjs/common";
-import { ApiOkResponse, ApiOperation, ApiResponse } from "@nestjs/swagger";
+import { Controller, Get, UseGuards } from "@nestjs/common";
+import { ApiOkResponse, ApiOperation } from "@nestjs/swagger";
 import { Permission, RequirePermissions } from "../auth/permission.enum";
 import { JwtAuthGuard } from "../auth/jwt-auth.guard";
 import { RequirePermissionsGuard } from "../auth/require-permissions.guard";
 import { RepresentativesService } from "./representatives.service";
-import VerifyRepresentativeUserRequestDto from "./dto/verify-representative-user-request.dto";
 import GetRepresentativeRequestsDto from "./dto/get-representative-requests.dto";
 
 @Controller("representatives")
 export class RepresentativesController {
   constructor(private representativesService: RepresentativesService) {}
-
-  @ApiOperation({ summary: "Request verification." })
-  @RequirePermissions(Permission.REP_REQ_VERIFY)
-  @UseGuards(JwtAuthGuard, RequirePermissionsGuard)
-  @Get("/request")
-  async requestRepresentativeVerification(@Req() request) {
-    await this.representativesService.requestVerification(request.user);
-  }
 
   @ApiOperation({ summary: "Get representative verification requests." })
   @ApiOkResponse({

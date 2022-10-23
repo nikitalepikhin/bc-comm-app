@@ -1,15 +1,9 @@
-import { BadRequestException, Injectable } from "@nestjs/common";
+import { Injectable } from "@nestjs/common";
 import { PrismaService } from "../prisma/prisma.service";
-import VerifyTeacherUserRequestDto from "./dto/verify-teacher-user-request.dto";
-import UserDto from "../auth/dto/user.dto";
 
 @Injectable()
 export class TeachersService {
   constructor(private prisma: PrismaService) {}
-
-  async requestVerification(user) {
-    await this.prisma.representative.update({ where: { userUuid: user.uuid }, data: { requestsVerification: true } });
-  }
 
   async getVerificationRequests() {
     const teachers = await this.prisma.teacher.findMany({

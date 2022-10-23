@@ -65,6 +65,7 @@ export const TagTypes = {
   POST: "post" as const,
   COMMENT: "comment" as const,
   CHANNEL_AC: "channel_ac" as const,
+  USER: "user" as const,
 };
 
 export const IdTypes = {
@@ -85,5 +86,6 @@ export const emptyApi = createApi({
     TagTypes.POST,
     TagTypes.COMMENT,
     TagTypes.CHANNEL_AC,
+    TagTypes.USER,
   ],
 });
