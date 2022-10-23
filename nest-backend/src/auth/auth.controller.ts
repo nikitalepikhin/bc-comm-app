@@ -29,11 +29,11 @@ export class AuthController {
   @UseGuards(LocalAuthGuard)
   @Post("login")
   async logIn(@Req() request, @Res({ passthrough: true }) response: Response): Promise<UserDataResponseDto> {
-    const { accessToken, refreshToken, schoolUuid, verified } = await this.authService.logInUser(
+    const { accessToken, refreshToken, schoolUuid, verified, username } = await this.authService.logInUser(
       request.user as UserDto,
     );
     response.cookie("auth", refreshToken, this.cookieService.generateAuthCookieOptions());
-    return { accessToken, schoolUuid, verified, ...request.user } as UserDataResponseDto;
+    return { accessToken, schoolUuid, verified, username, ...request.user } as UserDataResponseDto;
   }
 
   @ApiOperation({ summary: "Sign up a base user." })

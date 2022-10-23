@@ -1,11 +1,12 @@
 import classNames from "classnames";
 import { useAppSelector } from "../../app/hooks";
 import Button from "../../common/uilib/Button";
-import { useLazyRefreshUsernameQuery } from "../../app/enhancedApi";
+import { useRefreshUsernameMutation } from "../../app/enhancedApi";
+import Alert from "../../common/uilib/Alert";
 
 export default function RefreshUsername() {
   const { username } = useAppSelector((state) => state.auth.user);
-  const [refreshUsername, { isFetching }] = useLazyRefreshUsernameQuery();
+  const [refreshUsername, { isLoading, isSuccess, isError, reset }] = useRefreshUsernameMutation();
 
   return (
     <div
@@ -16,15 +17,15 @@ export default function RefreshUsername() {
       )}
     >
       <div className="text-lg font-bold">Refresh Username</div>
-      <div className="flex flex-row justify-between items-start gap-2 flex-wrap w-full">
-        <div>
-          Current Username:
-          <span className="text-secondary dark:text-slate-400 ml-1">{isFetching ? "Loading... " : username}</span>
+      <div className="flex flex-row justify-between items-center gap-2 flex-wrap w-full">
+        <div className="flex flex-col justify-start items-start gap-1 flex-wrap">
+          <div>Current Username:</div>
+          <div className="text-secondary dark:text-slate-400">{isLoading ? "Loading... " : username}</div>
         </div>
         <Button
           variant="accent"
           type="button"
-          loading={isFetching}
+          loading={isLoading}
           onClick={() => {
             refreshUsername();
           }}
@@ -32,6 +33,12 @@ export default function RefreshUsername() {
           Refresh
         </Button>
       </div>
+      <Alert show={isError} fullWidth onClose={() => reset()}>
+        Error refreshing the username. Please try again.
+      </Alert>
+      <Alert show={isSuccess} fullWidth severity="success" onClose={() => reset()}>
+        Username has been successfully refreshed.
+      </Alert>
     </div>
   );
 }

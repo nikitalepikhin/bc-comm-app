@@ -9,6 +9,7 @@ import { useGetUserProfileQuery, useUpdateUserProfileMutation } from "../../app/
 import DisplayField from "../../common/uilib/DisplayField";
 import { useAppSelector } from "../../app/hooks";
 import LoadingSpinner from "../../common/uilib/LoadingSpinner";
+import Alert from "../../common/uilib/Alert";
 
 interface FormValues {
   name: string | undefined;
@@ -19,8 +20,14 @@ export default function EditProfile() {
   const { role } = useAppSelector((state) => state.auth.user);
   const [editing, setEditing] = useState(false);
 
-  const { data, isLoading: getProfileLoading, isSuccess: getProfileSuccess } = useGetUserProfileQuery();
-  const [updateProfile, { isLoading: updateProfileLoading }] = useUpdateUserProfileMutation();
+  const {
+    data,
+    isFetching: profileFetching,
+    isError: profileError,
+    isSuccess: profileSuccess,
+    refetch,
+  } = useGetUserProfileQuery();
+  const [updateProfile, { isError: updateError, reset }] = useUpdateUserProfileMutation();
 
   const initialValues: FormValues = {
     name: data?.name,
@@ -29,9 +36,11 @@ export default function EditProfile() {
 
   return (
     <Container title="Edit Profile" className="w-full">
-      {getProfileLoading ? (
-        <LoadingSpinner />
-      ) : (
+      {profileFetching && <LoadingSpinner />}
+      <Alert show={profileError} fullWidth onClose={() => refetch()}>
+        Error loading current profile data. Close this alert to refetch.
+      </Alert>
+      {profileSuccess && (
         <Formik
           enableReinitialize
           initialValues={initialValues}
@@ -71,6 +80,9 @@ export default function EditProfile() {
               ) : (
                 <DisplayField data={data?.bio} labelValue="Bio" />
               )}
+              <Alert show={updateError} fullWidth onClose={() => reset()}>
+                Error updating the profile. Please try again.
+              </Alert>
               {editing && (
                 <div className="flex flex-row justify-end items-center gap-2">
                   <Button type="button" onClick={() => setEditing(false)}>

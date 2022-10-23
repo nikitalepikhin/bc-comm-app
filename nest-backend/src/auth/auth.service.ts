@@ -39,11 +39,13 @@ export class AuthService {
 
   async logInUser(user: UserDto) {
     const { schoolUuid, verified } = await this.getAdditionalUserData(user);
+    const { username } = await this.usersService.findByUuid(user.uuid);
     return {
       accessToken: this.createSignedAccessToken(user),
       refreshToken: await this.createRefreshTokenForNewFamily(user),
       schoolUuid: schoolUuid ? schoolUuid : undefined,
       verified,
+      username,
     };
   }
 
