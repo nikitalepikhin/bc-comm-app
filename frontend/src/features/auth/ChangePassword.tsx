@@ -15,13 +15,7 @@ const initialValues: FormValues = {
 
 export default function ChangePassword() {
   return (
-    <div
-      className={classNames(
-        "flex flex-col justify-start items-start gap-2",
-        "border-b border-slate-200 dark:border-slate-700",
-        "py-2"
-      )}
-    >
+    <div className={classNames("flex flex-col justify-start items-start gap-2", "pt-2")}>
       <div className="text-lg font-bold">Change Password</div>
       <Formik
         initialValues={initialValues}

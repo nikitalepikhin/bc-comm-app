@@ -2,15 +2,15 @@ import { Injectable } from "@nestjs/common";
 import { UsersService } from "../users/users.service";
 import CreateBaseUserDto from "../users/dto/create-base-user.dto";
 import * as bcrypt from "bcrypt";
-import ValidateUserDto from "../users/dto/validate-user.dto";
 import { JwtService } from "@nestjs/jwt";
 import { v4 as uuidv4 } from "uuid";
 import { RefreshTokensService } from "../refresh-tokens/refresh-tokens.service";
 import UserRefreshDto from "./dto/user-refresh.dto";
 import CreateRepresentativeUserDto from "../users/dto/create-representative-user.dto";
 import { CreateTeacherUserDto } from "../users/dto/create-teacher-user.dto";
-import { use } from "passport";
 import UserDto from "./dto/user.dto";
+import UpdateUserEmailRequestDto from "./dto/update-user-email-request.dto";
+import UpdateUserPasswordRequestDto from "./dto/update-user-password-request.dto";
 
 @Injectable()
 export class AuthService {
@@ -20,11 +20,11 @@ export class AuthService {
     private refreshTokensService: RefreshTokensService,
   ) {}
 
-  async validateUser(email: string, password: string): Promise<ValidateUserDto> {
+  async validateUser(email: string, password: string): Promise<UserDto> {
     const user = await this.usersService.findByEmail(email);
     if (user && (await bcrypt.compare(password, user.password))) {
-      const { uuid, role, username, email } = user;
-      return { uuid, role, username, email };
+      const { uuid, role, email } = user;
+      return { uuid, role, email };
     }
     return null;
   }
@@ -37,7 +37,7 @@ export class AuthService {
     await this.usersService.createRepresentativeUser(createRepresentativeUserDto);
   }
 
-  async logInUser(user: ValidateUserDto) {
+  async logInUser(user: UserDto) {
     const { schoolUuid, verified } = await this.getAdditionalUserData(user);
     return {
       accessToken: this.createSignedAccessToken(user),
@@ -56,7 +56,6 @@ export class AuthService {
         email: user.email,
         role: user.role,
         uuid: user.uuid,
-        username,
       }),
       refreshToken: await this.createRefreshTokenForExistingFamily(user, refreshToken.tokenFamily),
       username,
@@ -69,7 +68,26 @@ export class AuthService {
     await this.refreshTokensService.invalidateRefreshTokenFamilyByFamily(tokenFamily);
   }
 
-  private createSignedAccessToken(user: ValidateUserDto) {
+  async signUpTeacherUser(createTeacherUserDto: CreateTeacherUserDto) {
+    return await this.usersService.createTeacherUser(createTeacherUserDto);
+  }
+
+  async updateUserEmail(
+    user: UserRefreshDto,
+    requestDto: UpdateUserEmailRequestDto,
+    authCookie: string,
+  ): Promise<{ accessToken: string; refreshToken: string }> {
+    // 1. update the actual email in the database
+    await this.usersService.updateUserEmail(user.uuid, requestDto.email);
+    // 2. issue a new access-token
+    const accessToken = this.createSignedAccessToken(user);
+    // 3. issue a new refresh-token for an existing family
+    const { tokenFamily } = await this.refreshTokensService.setRefreshTokenToUsedByValue(authCookie);
+    const refreshToken = await this.createRefreshTokenForExistingFamily(user, tokenFamily);
+    return { accessToken, refreshToken };
+  }
+
+  private createSignedAccessToken(user: UserDto) {
     const payload = {
       id: user.uuid,
       email: user.email,
@@ -79,11 +97,11 @@ export class AuthService {
     return this.jwtService.sign(payload);
   }
 
-  private async createRefreshTokenForNewFamily(validateUserDto: ValidateUserDto): Promise<string> {
+  private async createRefreshTokenForNewFamily(userDto: UserDto): Promise<string> {
     const payload = {
-      uuid: validateUserDto.uuid,
-      email: validateUserDto.email,
-      role: validateUserDto.role,
+      uuid: userDto.uuid,
+      email: userDto.email,
+      role: userDto.role,
       family: uuidv4(),
       exp: Math.floor(Date.now() / 1000) + parseInt(process.env.RT_MAX_AGE_SEC),
     };
@@ -106,10 +124,6 @@ export class AuthService {
     return refreshToken;
   }
 
-  async signUpTeacherUser(createTeacherUserDto: CreateTeacherUserDto) {
-    return await this.usersService.createTeacherUser(createTeacherUserDto);
-  }
-
   private async getAdditionalUserData(user: UserDto) {
     let schoolUuid: string | undefined;
     let verified: boolean | undefined;
@@ -123,5 +137,9 @@ export class AuthService {
       verified = teacher.verified;
     }
     return { schoolUuid, verified };
+  }
+
+  async updateUserPassword(user: UserDto, requestDto: UpdateUserPasswordRequestDto) {
+    await this.usersService.updateUserPassword(user.uuid, requestDto.password);
   }
 }

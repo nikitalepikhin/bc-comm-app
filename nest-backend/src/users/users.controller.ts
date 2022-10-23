@@ -15,6 +15,7 @@ export class UsersController {
   constructor(private usersService: UsersService) {}
 
   @ApiOperation({ summary: "Refresh username for a specified user." })
+  @ApiOkResponse({ type: RefreshUsernameResponseDto })
   @UseGuards(JwtAuthGuard)
   @Get("/refresh")
   async refreshUsername(@Req() request): Promise<RefreshUsernameResponseDto> {

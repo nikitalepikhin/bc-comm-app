@@ -68,6 +68,13 @@ const authSlice = createSlice({
       state.accessToken = initialState.accessToken;
       state.present = false;
     });
+    builder.addMatcher(enhancedApi.endpoints.refreshUsername.matchFulfilled, (state, action) => {
+      state.user.username = action.payload.username;
+    });
+    builder.addMatcher(enhancedApi.endpoints.updateEmail.matchFulfilled, (state, action) => {
+      state.user.email = action.payload.email;
+      state.accessToken = action.payload.accessToken;
+    });
   },
 });
 

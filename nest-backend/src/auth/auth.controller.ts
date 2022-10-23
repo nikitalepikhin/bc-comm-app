@@ -1,7 +1,7 @@
-import { Body, Controller, Post, Req, Res, UseGuards } from "@nestjs/common";
+import { Body, Controller, Post, Put, Req, Res, UseGuards } from "@nestjs/common";
 import { AuthService } from "./auth.service";
 import CreateBaseUserDto from "../users/dto/create-base-user.dto";
-import { ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
+import { ApiOkResponse, ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
 import { LocalAuthGuard } from "./local-auth.guard";
 import { Response } from "express";
 import { CookieService } from "../cookie/cookie.service";
@@ -12,6 +12,11 @@ import LogInUserRequestDto from "../users/dto/log-in-user-request.dto";
 import UserDataResponseDto from "../users/dto/user-data-response.dto";
 import CreateRepresentativeUserDto from "../users/dto/create-representative-user.dto";
 import { CreateTeacherUserDto } from "../users/dto/create-teacher-user.dto";
+import UpdateUserEmailResponseDto from "./dto/update-user-email-response.dto";
+import UserDto from "./dto/user.dto";
+import UserRefreshDto from "./dto/user-refresh.dto";
+import UpdateUserEmailRequestDto from "./dto/update-user-email-request.dto";
+import UpdateUserPasswordRequestDto from "./dto/update-user-password-request.dto";
 
 @ApiTags("auth")
 @Controller("auth")
@@ -24,7 +29,9 @@ export class AuthController {
   @UseGuards(LocalAuthGuard)
   @Post("login")
   async logIn(@Req() request, @Res({ passthrough: true }) response: Response): Promise<UserDataResponseDto> {
-    const { accessToken, refreshToken, schoolUuid, verified } = await this.authService.logInUser(request.user);
+    const { accessToken, refreshToken, schoolUuid, verified } = await this.authService.logInUser(
+      request.user as UserDto,
+    );
     response.cookie("auth", refreshToken, this.cookieService.generateAuthCookieOptions());
     return { accessToken, schoolUuid, verified, ...request.user } as UserDataResponseDto;
   }
@@ -52,7 +59,7 @@ export class AuthController {
   @UseGuards(JwtRefreshAuthGuard)
   @Post("refresh")
   async refreshToken(@Req() request, @Res({ passthrough: true }) response: Response): Promise<UserDataResponseDto> {
-    const authCookie = request.cookies.auth; // guaranteed to be valid and not used by the JwtRefreshAuthGuard
+    const authCookie = request.cookies.auth as string; // guaranteed to be valid and not used by the JwtRefreshAuthGuard
     const { accessToken, refreshToken, username, schoolUuid, verified } = await this.authService.refreshToken(
       request.user,
       authCookie,
@@ -75,5 +82,31 @@ export class AuthController {
   async logOut(@Req() request, @Res({ passthrough: true }) response: Response) {
     await this.authService.logOutUser(request.user.family);
     response.cookie("auth", null, this.cookieService.generateInvalidAuthCookieOptions());
+  }
+
+  @ApiOperation({ summary: "Update user's email." })
+  @ApiOkResponse({ type: UpdateUserEmailResponseDto })
+  @UseGuards(JwtRefreshAuthGuard)
+  @Put("/update/email")
+  async updateEmail(
+    @Req() request,
+    @Body() requestDto: UpdateUserEmailRequestDto,
+    @Res({ passthrough: true }) response: Response,
+  ): Promise<UpdateUserEmailResponseDto> {
+    const authCookie = request.cookies.auth as string; // guaranteed to be valid and not used by the JwtRefreshAuthGuard
+    const { accessToken, refreshToken } = await this.authService.updateUserEmail(
+      request.user as UserRefreshDto,
+      requestDto,
+      authCookie,
+    );
+    response.cookie("auth", refreshToken, this.cookieService.generateAuthCookieOptions());
+    return { accessToken, email: requestDto.email };
+  }
+
+  @ApiOperation({ summary: "Update user's password." })
+  @UseGuards(JwtAuthGuard)
+  @Put("/update/password")
+  async updatePassword(@Req() request, @Body() requestDto: UpdateUserPasswordRequestDto) {
+    await this.authService.updateUserPassword(request.user as UserDto, requestDto);
   }
 }

@@ -501,4 +501,6 @@ export const {
   useLazySearchChannelsQuery,
   useGetUserProfileQuery,
   useUpdateUserProfileMutation,
+  useUpdateEmailMutation,
+  useLazyRefreshUsernameQuery,
 } = enhancedApi;

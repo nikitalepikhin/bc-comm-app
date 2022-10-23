@@ -1,4 +1,5 @@
 import { Injectable } from "@nestjs/common";
+import { RefreshToken } from "@prisma/client";
 import { PrismaService } from "../prisma/prisma.service";
 
 @Injectable()
@@ -13,15 +14,15 @@ export class RefreshTokensService {
     });
   }
 
-  async getRefreshTokenByValue(refreshToken: string) {
+  async getRefreshTokenByValue(refreshToken: string): Promise<RefreshToken> {
     return await this.prisma.refreshToken.findUnique({ where: { refreshToken } });
   }
 
-  async setRefreshTokenToUsedByValue(refreshToken: string) {
+  async setRefreshTokenToUsedByValue(refreshToken: string): Promise<RefreshToken> {
     return await this.prisma.refreshToken.update({ data: { used: true }, where: { refreshToken } });
   }
 
-  async invalidateRefreshTokenFamilyByFamily(tokenFamily: string) {
+  async invalidateRefreshTokenFamilyByFamily(tokenFamily: string): Promise<void> {
     await this.prisma.refreshToken.deleteMany({ where: { tokenFamily } });
   }
 }

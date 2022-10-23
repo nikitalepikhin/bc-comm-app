@@ -28,6 +28,15 @@ export class UsersService {
     private facultiesService: FacultiesService,
   ) {}
 
+  private static async hashPassword(password: string): Promise<string> {
+    const salt = await bcrypt.genSalt();
+    return await bcrypt.hash(password, salt);
+  }
+
+  private static generateRandomUsername(): string {
+    return randomstring.generate(usernameParams).toLowerCase();
+  }
+
   async createBaseUser(userDto: CreateBaseUserDto): Promise<User> {
     const { email, password, role } = userDto;
     const existingUser = await this.prisma.user.findUnique({ where: { email } });
@@ -116,15 +125,6 @@ export class UsersService {
         },
       },
     });
-  }
-
-  private static async hashPassword(password: string): Promise<string> {
-    const salt = await bcrypt.genSalt();
-    return await bcrypt.hash(password, salt);
-  }
-
-  private static generateRandomUsername(): string {
-    return randomstring.generate(usernameParams).toLowerCase();
   }
 
   async refreshUsername(user: UserDto): Promise<RefreshUsernameResponseDto> {
@@ -232,6 +232,8 @@ export class UsersService {
         data: {
           name: requestDto.name,
           bio: requestDto.bio,
+          nameModified: new Date(),
+          bioModified: new Date(),
         },
       });
     } else if (user.role === "REPRESENTATIVE") {
@@ -242,5 +244,20 @@ export class UsersService {
         },
       });
     }
+  }
+
+  async updateUserEmail(userUuid: string, email: string) {
+    await this.prisma.user.update({ where: { uuid: userUuid }, data: { email } });
+  }
+
+  async updateUserPassword(uuid: string, password: string) {
+    const hashedPassword = await UsersService.hashPassword(password);
+    await this.prisma.user.update({
+      where: { uuid },
+      data: {
+        password: hashedPassword,
+        passwordModified: new Date(),
+      },
+    });
   }
 }

@@ -23,6 +23,9 @@ const injectedRtkApi = api.injectEndpoints({
     logOut: build.mutation<LogOutApiResponse, LogOutApiArg>({
       query: () => ({ url: `/auth/logout`, method: "POST" }),
     }),
+    updateEmail: build.mutation<UpdateEmailApiResponse, UpdateEmailApiArg>({
+      query: (queryArg) => ({ url: `/auth/update/email`, method: "PUT", body: queryArg.updateUserEmailRequestDto }),
+    }),
     refreshUsername: build.query<RefreshUsernameApiResponse, RefreshUsernameApiArg>({
       query: () => ({ url: `/users/refresh` }),
     }),
@@ -186,7 +189,11 @@ export type RefreshTokenApiResponse = /** status 201 Authenticated user data */ 
 export type RefreshTokenApiArg = void;
 export type LogOutApiResponse = unknown;
 export type LogOutApiArg = void;
-export type RefreshUsernameApiResponse = unknown;
+export type UpdateEmailApiResponse = /** status 200  */ UpdateUserEmailResponseDto;
+export type UpdateEmailApiArg = {
+  updateUserEmailRequestDto: UpdateUserEmailRequestDto;
+};
+export type RefreshUsernameApiResponse = /** status 200  */ RefreshUsernameResponseDto;
 export type RefreshUsernameApiArg = void;
 export type VerifyUserApiResponse = unknown;
 export type VerifyUserApiArg = {
@@ -386,6 +393,16 @@ export type CreateTeacherUserDto = {
   name: string;
   schoolUuid: string;
   facultyUuid: string;
+};
+export type UpdateUserEmailResponseDto = {
+  email: string;
+  accessToken: string;
+};
+export type UpdateUserEmailRequestDto = {
+  email: string;
+};
+export type RefreshUsernameResponseDto = {
+  username: string;
 };
 export type VerifyUserRequestDto = {
   approve: boolean;
@@ -690,6 +707,7 @@ export const {
   useSignUpTeacherMutation,
   useRefreshTokenMutation,
   useLogOutMutation,
+  useUpdateEmailMutation,
   useRefreshUsernameQuery,
   useVerifyUserMutation,
   useRequestVerificationQuery,
