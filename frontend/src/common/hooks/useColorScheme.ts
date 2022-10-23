@@ -17,7 +17,7 @@ export default function useColorScheme(): Theme {
 
   const setDarkMode = () => {
     document.querySelector("body")!.classList.add("dark");
-    document.querySelector('meta[name="theme-color"]')!.setAttribute("content", "#0f172a");
+    document.querySelector('meta[name="theme-color"]')!.setAttribute("content", "rgba(15, 23, 42, 0.9)");
   };
   const setLightMode = () => {
     document.querySelector("body")!.classList.remove("dark");

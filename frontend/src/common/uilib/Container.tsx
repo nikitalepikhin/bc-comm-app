@@ -23,7 +23,7 @@ export default function Container(props: Props) {
       {title && (
         <div
           className={classNames(
-            "px-3 py-3 mb-2",
+            "px-3 py-3",
             "text-lg font-bold",
             "border border-b-slate-200 dark:border-b-slate-700 border-x-0 border-t-0",
             "align-middle",

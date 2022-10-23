@@ -47,7 +47,8 @@ export default function Tabs(props: Props) {
                     },
                     { "bg-blue-100 dark:bg-blue-900": selected },
                     {
-                      "text-slate-700 dark:text-slate-300 hover:bg-slate-100 hover:dark:bg-slate-700": !selected,
+                      "text-slate-700 dark:text-slate-300 hover:bg-slate-100 hover:dark:bg-slate-700 bg-transparent":
+                        !selected,
                     },
                     "active:outline-none selected:outline-none focus-visible:outline-none cursor-pointer"
                   )}

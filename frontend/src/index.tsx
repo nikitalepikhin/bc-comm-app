@@ -11,6 +11,8 @@ import { IndexPage } from "./common/components/IndexPage";
 import SchoolsRoutes from "./features/schools/SchoolsRoutes";
 import FacultiesRoutes from "./features/faculties/FacultiesRoutes";
 import ChannelsRoutes from "./features/channels/ChannelsRoutes";
+import ProfilePage from "./features/auth/ProfilePage";
+import ProtectedRoute from "./common/components/ProtectedRoute";
 
 ReactDOM.render(
   <React.StrictMode>
@@ -19,6 +21,14 @@ ReactDOM.render(
         <Routes>
           <Route path="/" element={<App />}>
             <Route index element={<IndexPage />} />
+            <Route
+              path="profile"
+              element={
+                <ProtectedRoute allowedRoles={["ADMIN", "REPRESENTATIVE", "TEACHER", "STUDENT"]}>
+                  <ProfilePage />
+                </ProtectedRoute>
+              }
+            />
             <Route path="schools/*" element={<SchoolsRoutes />} />
             <Route path="faculties/school/*" element={<FacultiesRoutes />} />
             <Route path="channels/*" element={<ChannelsRoutes />} />
