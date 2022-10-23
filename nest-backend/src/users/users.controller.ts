@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Req, UseGuards } from "@nestjs/common";
+import { Body, Controller, Get, Post, Put, Req, UseGuards } from "@nestjs/common";
 import { ApiOkResponse, ApiOperation } from "@nestjs/swagger";
 import { JwtAuthGuard } from "../auth/jwt-auth.guard";
 import { UsersService } from "./users.service";
@@ -17,7 +17,7 @@ export class UsersController {
   @ApiOperation({ summary: "Refresh username for a specified user." })
   @ApiOkResponse({ type: RefreshUsernameResponseDto })
   @UseGuards(JwtAuthGuard)
-  @Get("/refresh")
+  @Put("/refresh")
   async refreshUsername(@Req() request): Promise<RefreshUsernameResponseDto> {
     return await this.usersService.refreshUsername(request.user as UserDto);
   }
@@ -50,7 +50,7 @@ export class UsersController {
   @ApiOperation({ summary: "Update user profile." })
   @RequirePermissions(Permission.USER_UPDATE)
   @UseGuards(JwtAuthGuard, RequirePermissionsGuard)
-  @Post("/")
+  @Put("/")
   async updateUserProfile(@Req() request, @Body() requestDto: UpdateUserProfileRequestDto) {
     await this.usersService.updateUserProfile(request.user as UserDto, requestDto);
   }

@@ -502,5 +502,6 @@ export const {
   useGetUserProfileQuery,
   useUpdateUserProfileMutation,
   useUpdateEmailMutation,
-  useLazyRefreshUsernameQuery,
+  useRefreshUsernameMutation,
+  useUpdatePasswordMutation,
 } = enhancedApi;

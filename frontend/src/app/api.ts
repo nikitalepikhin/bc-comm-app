@@ -26,8 +26,15 @@ const injectedRtkApi = api.injectEndpoints({
     updateEmail: build.mutation<UpdateEmailApiResponse, UpdateEmailApiArg>({
       query: (queryArg) => ({ url: `/auth/update/email`, method: "PUT", body: queryArg.updateUserEmailRequestDto }),
     }),
-    refreshUsername: build.query<RefreshUsernameApiResponse, RefreshUsernameApiArg>({
-      query: () => ({ url: `/users/refresh` }),
+    updatePassword: build.mutation<UpdatePasswordApiResponse, UpdatePasswordApiArg>({
+      query: (queryArg) => ({
+        url: `/auth/update/password`,
+        method: "PUT",
+        body: queryArg.updateUserPasswordRequestDto,
+      }),
+    }),
+    refreshUsername: build.mutation<RefreshUsernameApiResponse, RefreshUsernameApiArg>({
+      query: () => ({ url: `/users/refresh`, method: "PUT" }),
     }),
     verifyUser: build.mutation<VerifyUserApiResponse, VerifyUserApiArg>({
       query: (queryArg) => ({ url: `/users/verify`, method: "POST", body: queryArg.verifyUserRequestDto }),
@@ -39,7 +46,7 @@ const injectedRtkApi = api.injectEndpoints({
       query: () => ({ url: `/users` }),
     }),
     updateUserProfile: build.mutation<UpdateUserProfileApiResponse, UpdateUserProfileApiArg>({
-      query: (queryArg) => ({ url: `/users`, method: "POST", body: queryArg.updateUserProfileRequestDto }),
+      query: (queryArg) => ({ url: `/users`, method: "PUT", body: queryArg.updateUserProfileRequestDto }),
     }),
     createSchool: build.mutation<CreateSchoolApiResponse, CreateSchoolApiArg>({
       query: (queryArg) => ({ url: `/schools`, method: "POST", body: queryArg.createSchoolDto }),
@@ -192,6 +199,10 @@ export type LogOutApiArg = void;
 export type UpdateEmailApiResponse = /** status 200  */ UpdateUserEmailResponseDto;
 export type UpdateEmailApiArg = {
   updateUserEmailRequestDto: UpdateUserEmailRequestDto;
+};
+export type UpdatePasswordApiResponse = unknown;
+export type UpdatePasswordApiArg = {
+  updateUserPasswordRequestDto: UpdateUserPasswordRequestDto;
 };
 export type RefreshUsernameApiResponse = /** status 200  */ RefreshUsernameResponseDto;
 export type RefreshUsernameApiArg = void;
@@ -400,6 +411,9 @@ export type UpdateUserEmailResponseDto = {
 };
 export type UpdateUserEmailRequestDto = {
   email: string;
+};
+export type UpdateUserPasswordRequestDto = {
+  password: string;
 };
 export type RefreshUsernameResponseDto = {
   username: string;
@@ -708,7 +722,8 @@ export const {
   useRefreshTokenMutation,
   useLogOutMutation,
   useUpdateEmailMutation,
-  useRefreshUsernameQuery,
+  useUpdatePasswordMutation,
+  useRefreshUsernameMutation,
   useVerifyUserMutation,
   useRequestVerificationQuery,
   useGetUserProfileQuery,

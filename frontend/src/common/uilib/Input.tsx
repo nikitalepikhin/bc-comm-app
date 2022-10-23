@@ -11,7 +11,7 @@ interface Props {
   disabled?: boolean;
   labelValue?: string;
   placeholder?: string;
-  type?: "text" | "password" | "tel" | "number";
+  type?: "text" | "password" | "tel" | "number" | "email";
   fullWidth?: boolean;
   className?: string;
 }
