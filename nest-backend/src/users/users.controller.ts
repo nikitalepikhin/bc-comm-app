@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Put, Req, UseGuards } from "@nestjs/common";
+import { Body, Controller, forwardRef, Get, Inject, Post, Put, Req, UseGuards } from "@nestjs/common";
 import { ApiOkResponse, ApiOperation } from "@nestjs/swagger";
 import { JwtAuthGuard } from "../auth/jwt-auth.guard";
 import { UsersService } from "./users.service";

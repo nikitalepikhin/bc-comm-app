@@ -1,4 +1,4 @@
-import { forwardRef, Module } from "@nestjs/common";
+import { Module } from "@nestjs/common";
 import { AuthService } from "./auth.service";
 import { AuthController } from "./auth.controller";
 import { UsersModule } from "../users/users.module";
@@ -17,7 +17,7 @@ import { RequirePermissionsGuard } from "./require-permissions.guard";
 
 @Module({
   imports: [
-    forwardRef(() => UsersModule),
+    UsersModule,
     PassportModule,
     RefreshTokensModule,
     JwtModule.register({ secret: process.env.JWT_SECRET }),
@@ -35,6 +35,5 @@ import { RequirePermissionsGuard } from "./require-permissions.guard";
     RequirePermissionsGuard,
   ],
   controllers: [AuthController],
-  // exports: [LocalAuthGuard, JwtAuthGuard, JwtRefreshAuthGuard, RequirePermissionsGuard],
 })
 export class AuthModule {}

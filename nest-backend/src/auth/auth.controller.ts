@@ -1,4 +1,4 @@
-import { Body, Controller, Post, Put, Req, Res, UseGuards } from "@nestjs/common";
+import { Body, Controller, Delete, Post, Put, Req, Res, UseGuards } from "@nestjs/common";
 import { AuthService } from "./auth.service";
 import CreateBaseUserDto from "../users/dto/create-base-user.dto";
 import { ApiOkResponse, ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
@@ -108,5 +108,12 @@ export class AuthController {
   @Put("/update/password")
   async updatePassword(@Req() request, @Body() requestDto: UpdateUserPasswordRequestDto) {
     await this.authService.updateUserPassword(request.user as UserDto, requestDto);
+  }
+
+  @ApiOperation({ summary: "Delete user's account." })
+  @UseGuards(JwtAuthGuard)
+  @Delete("/")
+  async deleteAccount(@Req() request) {
+    await this.authService.deleteAccount(request.user as UserDto);
   }
 }

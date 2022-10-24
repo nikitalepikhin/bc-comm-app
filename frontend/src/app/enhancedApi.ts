@@ -504,4 +504,5 @@ export const {
   useUpdateEmailMutation,
   useRefreshUsernameMutation,
   useUpdatePasswordMutation,
+  useDeleteAccountMutation,
 } = enhancedApi;

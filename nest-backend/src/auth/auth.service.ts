@@ -144,4 +144,8 @@ export class AuthService {
   async updateUserPassword(user: UserDto, requestDto: UpdateUserPasswordRequestDto) {
     await this.usersService.updateUserPassword(user.uuid, requestDto.password);
   }
+
+  async deleteAccount(user: UserDto) {
+    await this.usersService.deleteAccount(user.uuid);
+  }
 }

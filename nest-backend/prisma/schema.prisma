@@ -179,8 +179,8 @@ model Post {
   uuid           String          @id @default(uuid()) @db.Uuid
   channelUuid    String          @db.Uuid
   channel        Channel         @relation(fields: [channelUuid], references: [uuid], onDelete: Cascade)
-  authorUuid     String          @db.Uuid
-  author         User            @relation(fields: [authorUuid], references: [uuid])
+  authorUuid     String?         @db.Uuid
+  author         User?           @relation(fields: [authorUuid], references: [uuid], onDelete: SetNull)
   authorUsername String          @db.VarChar(32)
   title          String          @db.VarChar(300)
   body           String?         @db.VarChar(40000)
@@ -205,8 +205,8 @@ model Comment {
   uuid           String             @id @default(uuid()) @db.Uuid
   postUuid       String             @db.Uuid
   post           Post               @relation(fields: [postUuid], references: [uuid], onDelete: Cascade)
-  authorUuid     String             @db.Uuid
-  author         User               @relation(fields: [authorUuid], references: [uuid])
+  authorUuid     String?            @db.Uuid
+  author         User?              @relation(fields: [authorUuid], references: [uuid], onDelete: SetNull)
   authorUsername String             @db.VarChar(32)
   body           String             @db.VarChar(10000)
   parentUuid     String?            @db.Uuid

@@ -3,9 +3,11 @@ import Container from "../../common/uilib/Container";
 import Button from "../../common/uilib/Button";
 import { useState } from "react";
 import Dialog from "../../common/uilib/dialog/Dialog";
+import { useDeleteAccountMutation } from "../../app/enhancedApi";
 
 export default function DeleteAccount() {
   const [showDialog, setShowDialog] = useState(false);
+  const [deleteAccount, { isLoading, isError }] = useDeleteAccountMutation();
 
   return (
     <Container title="Delete Account" danger className={classNames("w-full", "flex flex-col justify-start gap-2")}>
@@ -31,15 +33,15 @@ export default function DeleteAccount() {
         </Button>
       </div>
       <Dialog
-        title="Delete Account"
-        body="This is the final warning. Deleting your account cannot be undone. Please make sure you really want to delete all your data."
-        show={showDialog}
         danger
-        onConfirm={() => {
-          // todo
-        }}
+        title="Delete Account"
+        body="Deleting your account cannot be undone. Are you sure you want to delete all your data?"
+        show={showDialog}
+        loading={isLoading}
+        error={isError ? "Error deleting the account. Please try again." : undefined}
+        onConfirm={() => deleteAccount()}
         onCancel={() => setShowDialog(false)}
-        confirmText="I understand, delete the account"
+        confirmText="Yes, delete the account"
         cancelText="Keep the account and return"
       />
     </Container>

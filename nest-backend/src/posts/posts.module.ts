@@ -1,4 +1,4 @@
-import { Module } from "@nestjs/common";
+import { forwardRef, Module } from "@nestjs/common";
 import { PostsController } from "./posts.controller";
 import { PostsService } from "./posts.service";
 import { AuthoritiesModule } from "../authorities/authorities.module";
@@ -8,6 +8,7 @@ import { UsersModule } from "../users/users.module";
 @Module({
   controllers: [PostsController],
   providers: [PostsService],
-  imports: [AuthoritiesModule, PrismaModule, UsersModule],
+  imports: [AuthoritiesModule, PrismaModule, forwardRef(() => UsersModule)],
+  exports: [PostsService],
 })
 export class PostsModule {}

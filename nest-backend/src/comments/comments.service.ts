@@ -1,4 +1,4 @@
-import { Injectable, UnauthorizedException } from "@nestjs/common";
+import { forwardRef, Inject, Injectable, UnauthorizedException } from "@nestjs/common";
 import { CommentsOrder } from "./dto/comments-order.enum";
 import UserDto from "../auth/dto/user.dto";
 import GetCommentsUnderPostResponseDto from "./dto/get-comments-under-post-response.dto";
@@ -17,7 +17,12 @@ import VoteOnCommentRequestDto from "./dto/vote-on-comment-request.dto";
 
 @Injectable()
 export class CommentsService {
-  constructor(private prisma: PrismaService, private usersService: UsersService) {}
+  constructor(
+    private prisma: PrismaService,
+
+    @Inject(forwardRef(() => UsersService))
+    private usersService: UsersService,
+  ) {}
 
   private static sortCommentsByDateCreated(first: OutPostCommentDto, second: OutPostCommentDto) {
     if (first.created.getTime() < second.created.getTime()) return 1;
@@ -176,7 +181,8 @@ export class CommentsService {
   }
 
   private async getRootCommentUuid(commentUuid: string) {
-    const query = Prisma.sql`select uuid from get_comment_root(${commentUuid}::uuid)`;
+    const query = Prisma.sql`select uuid
+                             from get_comment_root(${commentUuid}::uuid)`;
     const [{ uuid }] = await this.prisma.$queryRaw<[{ uuid: string }]>(query);
     return uuid;
   }

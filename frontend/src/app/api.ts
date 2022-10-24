@@ -33,6 +33,9 @@ const injectedRtkApi = api.injectEndpoints({
         body: queryArg.updateUserPasswordRequestDto,
       }),
     }),
+    deleteAccount: build.mutation<DeleteAccountApiResponse, DeleteAccountApiArg>({
+      query: () => ({ url: `/auth`, method: "DELETE" }),
+    }),
     refreshUsername: build.mutation<RefreshUsernameApiResponse, RefreshUsernameApiArg>({
       query: () => ({ url: `/users/refresh`, method: "PUT" }),
     }),
@@ -86,24 +89,6 @@ const injectedRtkApi = api.injectEndpoints({
     }),
     getFacultyAutocomplete: build.mutation<GetFacultyAutocompleteApiResponse, GetFacultyAutocompleteApiArg>({
       query: (queryArg) => ({ url: `/faculties/ac`, method: "POST", body: queryArg.getFacultyAutocompleteRequestDto }),
-    }),
-    hello: build.query<HelloApiResponse, HelloApiArg>({
-      query: () => ({ url: `/test/hello` }),
-    }),
-    helloNoAuth: build.query<HelloNoAuthApiResponse, HelloNoAuthApiArg>({
-      query: () => ({ url: `/test/guest` }),
-    }),
-    getRepresentativeVerificationRequests: build.query<
-      GetRepresentativeVerificationRequestsApiResponse,
-      GetRepresentativeVerificationRequestsApiArg
-    >({
-      query: () => ({ url: `/representatives/verify` }),
-    }),
-    getTeacherVerificationRequests: build.query<
-      GetTeacherVerificationRequestsApiResponse,
-      GetTeacherVerificationRequestsApiArg
-    >({
-      query: () => ({ url: `/teachers/verify` }),
     }),
     searchChannels: build.query<SearchChannelsApiResponse, SearchChannelsApiArg>({
       query: (queryArg) => ({ url: `/channels/search`, params: { value: queryArg.value } }),
@@ -169,6 +154,24 @@ const injectedRtkApi = api.injectEndpoints({
     voteOnComment: build.mutation<VoteOnCommentApiResponse, VoteOnCommentApiArg>({
       query: (queryArg) => ({ url: `/comments/vote`, method: "POST", body: queryArg.voteOnCommentRequestDto }),
     }),
+    hello: build.query<HelloApiResponse, HelloApiArg>({
+      query: () => ({ url: `/test/hello` }),
+    }),
+    helloNoAuth: build.query<HelloNoAuthApiResponse, HelloNoAuthApiArg>({
+      query: () => ({ url: `/test/guest` }),
+    }),
+    getRepresentativeVerificationRequests: build.query<
+      GetRepresentativeVerificationRequestsApiResponse,
+      GetRepresentativeVerificationRequestsApiArg
+    >({
+      query: () => ({ url: `/representatives/verify` }),
+    }),
+    getTeacherVerificationRequests: build.query<
+      GetTeacherVerificationRequestsApiResponse,
+      GetTeacherVerificationRequestsApiArg
+    >({
+      query: () => ({ url: `/teachers/verify` }),
+    }),
     getUserFeed: build.query<GetUserFeedApiResponse, GetUserFeedApiArg>({
       query: (queryArg) => ({ url: `/feed`, params: { page: queryArg.page, after: queryArg.after } }),
     }),
@@ -204,6 +207,8 @@ export type UpdatePasswordApiResponse = unknown;
 export type UpdatePasswordApiArg = {
   updateUserPasswordRequestDto: UpdateUserPasswordRequestDto;
 };
+export type DeleteAccountApiResponse = unknown;
+export type DeleteAccountApiArg = void;
 export type RefreshUsernameApiResponse = /** status 200  */ RefreshUsernameResponseDto;
 export type RefreshUsernameApiArg = void;
 export type VerifyUserApiResponse = unknown;
@@ -273,16 +278,6 @@ export type GetFacultyAutocompleteApiResponse =
 export type GetFacultyAutocompleteApiArg = {
   getFacultyAutocompleteRequestDto: GetFacultyAutocompleteRequestDto;
 };
-export type HelloApiResponse = unknown;
-export type HelloApiArg = void;
-export type HelloNoAuthApiResponse = unknown;
-export type HelloNoAuthApiArg = void;
-export type GetRepresentativeVerificationRequestsApiResponse =
-  /** status 200 Representative verification requests. */ GetRepresentativeRequestsDto;
-export type GetRepresentativeVerificationRequestsApiArg = void;
-export type GetTeacherVerificationRequestsApiResponse =
-  /** status 200 Teacher verification requests. */ GetTeacherRequestsDto;
-export type GetTeacherVerificationRequestsApiArg = void;
 export type SearchChannelsApiResponse =
   /** status 200 Suggested channels based on the provided value. */ SearchChannelsResponseDto;
 export type SearchChannelsApiArg = {
@@ -366,6 +361,16 @@ export type VoteOnCommentApiResponse = unknown;
 export type VoteOnCommentApiArg = {
   voteOnCommentRequestDto: VoteOnCommentRequestDto;
 };
+export type HelloApiResponse = unknown;
+export type HelloApiArg = void;
+export type HelloNoAuthApiResponse = unknown;
+export type HelloNoAuthApiArg = void;
+export type GetRepresentativeVerificationRequestsApiResponse =
+  /** status 200 Representative verification requests. */ GetRepresentativeRequestsDto;
+export type GetRepresentativeVerificationRequestsApiArg = void;
+export type GetTeacherVerificationRequestsApiResponse =
+  /** status 200 Teacher verification requests. */ GetTeacherRequestsDto;
+export type GetTeacherVerificationRequestsApiArg = void;
 export type GetUserFeedApiResponse =
   /** status 200 Posts from channel that user is subscribed to. */ GetUserFeedResponseDto;
 export type GetUserFeedApiArg = {
@@ -520,47 +525,6 @@ export type GetFacultyAutocompleteRequestDto = {
   value: string;
   schoolUuid: string;
 };
-export type RepresentativeRequestSchoolFieldDto = {
-  name: string;
-  uuid: string;
-};
-export type RepresentativeRequestUserFieldDto = {
-  email: string;
-  username: string;
-  created: string;
-  uuid: string;
-  name: string;
-};
-export type RepresentativeRequestDto = {
-  school: RepresentativeRequestSchoolFieldDto;
-  user: RepresentativeRequestUserFieldDto;
-};
-export type GetRepresentativeRequestsDto = {
-  requests: RepresentativeRequestDto[];
-};
-export type TeacherRequestSchoolFieldDto = {
-  name: string;
-  uuid: string;
-};
-export type TeacherRequestFacultyFieldDto = {
-  name: string;
-  uuid: string;
-};
-export type TeacherRequestUserFieldDto = {
-  email: string;
-  username: string;
-  created: string;
-  uuid: string;
-  name: string;
-};
-export type TeacherRequestDto = {
-  school: TeacherRequestSchoolFieldDto;
-  faculty: TeacherRequestFacultyFieldDto;
-  user: TeacherRequestUserFieldDto;
-};
-export type GetTeacherRequestsDto = {
-  requests: TeacherRequestDto[];
-};
 export type ChannelsSearchSuggestionDto = {
   text: string;
   value: string;
@@ -694,6 +658,47 @@ export type VoteOnCommentRequestDto = {
   uuid: string;
   dir: number;
 };
+export type RepresentativeRequestSchoolFieldDto = {
+  name: string;
+  uuid: string;
+};
+export type RepresentativeRequestUserFieldDto = {
+  email: string;
+  username: string;
+  created: string;
+  uuid: string;
+  name: string;
+};
+export type RepresentativeRequestDto = {
+  school: RepresentativeRequestSchoolFieldDto;
+  user: RepresentativeRequestUserFieldDto;
+};
+export type GetRepresentativeRequestsDto = {
+  requests: RepresentativeRequestDto[];
+};
+export type TeacherRequestSchoolFieldDto = {
+  name: string;
+  uuid: string;
+};
+export type TeacherRequestFacultyFieldDto = {
+  name: string;
+  uuid: string;
+};
+export type TeacherRequestUserFieldDto = {
+  email: string;
+  username: string;
+  created: string;
+  uuid: string;
+  name: string;
+};
+export type TeacherRequestDto = {
+  school: TeacherRequestSchoolFieldDto;
+  faculty: TeacherRequestFacultyFieldDto;
+  user: TeacherRequestUserFieldDto;
+};
+export type GetTeacherRequestsDto = {
+  requests: TeacherRequestDto[];
+};
 export type FeedPostDto = {
   uuid: string;
   channelTextId: string;
@@ -723,6 +728,7 @@ export const {
   useLogOutMutation,
   useUpdateEmailMutation,
   useUpdatePasswordMutation,
+  useDeleteAccountMutation,
   useRefreshUsernameMutation,
   useVerifyUserMutation,
   useRequestVerificationQuery,
@@ -740,10 +746,6 @@ export const {
   useGetAllFacultiesQuery,
   useGetFacultyByUuidQuery,
   useGetFacultyAutocompleteMutation,
-  useHelloQuery,
-  useHelloNoAuthQuery,
-  useGetRepresentativeVerificationRequestsQuery,
-  useGetTeacherVerificationRequestsQuery,
   useSearchChannelsQuery,
   useCreateChannelMutation,
   useUpdateChannelMutation,
@@ -762,5 +764,9 @@ export const {
   useGetPostCommentsQuery,
   useGetCommentCommentsQuery,
   useVoteOnCommentMutation,
+  useHelloQuery,
+  useHelloNoAuthQuery,
+  useGetRepresentativeVerificationRequestsQuery,
+  useGetTeacherVerificationRequestsQuery,
   useGetUserFeedQuery,
 } = injectedRtkApi;

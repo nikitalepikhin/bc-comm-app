@@ -70,6 +70,7 @@ export default function EditProfile() {
                   Edit
                 </Button>
               )}
+              <DisplayField data={role} labelValue="Role" />
               {editing ? (
                 <Field name="name">
                   {({ field, meta }: FieldProps) => <Input {...field} labelValue="Name" fullWidth />}

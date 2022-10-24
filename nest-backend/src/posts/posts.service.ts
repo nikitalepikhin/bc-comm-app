@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException, UnauthorizedException } from "@nestjs/common";
+import { forwardRef, Inject, Injectable, NotFoundException, UnauthorizedException } from "@nestjs/common";
 import { PrismaService } from "../prisma/prisma.service";
 import CreatePostRequestDto from "./dto/create-post-request.dto";
 import UserDto from "../auth/dto/user.dto";
@@ -13,7 +13,12 @@ import { PostsOrder } from "./dto/posts-order.enum";
 
 @Injectable()
 export class PostsService {
-  constructor(private prisma: PrismaService, private usersService: UsersService) {}
+  constructor(
+    private prisma: PrismaService,
+
+    @Inject(forwardRef(() => UsersService))
+    private usersService: UsersService,
+  ) {}
 
   async createPost(user: UserDto, requestDto: CreatePostRequestDto): Promise<CreatePostResponseDto> {
     const { username } = await this.usersService.findByUuid(user.uuid);

@@ -1,9 +1,15 @@
-import { BadRequestException, Injectable, NotFoundException, UnauthorizedException } from "@nestjs/common";
+import {
+  BadRequestException,
+  forwardRef,
+  Inject,
+  Injectable,
+  NotFoundException,
+  UnauthorizedException,
+} from "@nestjs/common";
 import { PrismaService } from "../prisma/prisma.service";
 import CreateChannelRequestDto from "./dto/create-channel-request.dto";
 import UserDto from "../auth/dto/user.dto";
 import CheckChannelIdAvailabilityResponseDto from "./dto/check-channel-id-availability-response.dto";
-import SearchChannelsQueryDto from "./dto/search-channels-query.dto";
 import SearchChannelsResponseDto from "./dto/search-channels-response.dto";
 import GetChannelByTextIdResponseDto from "./dto/get-channel-by-text-id-response.dto";
 import ToggleChannelMembershipRequestDto from "./dto/toggle-channel-membership-request.dto";
@@ -14,7 +20,12 @@ import { Teacher } from "@prisma/client";
 
 @Injectable()
 export class ChannelsService {
-  constructor(private prisma: PrismaService, private usersService: UsersService) {}
+  constructor(
+    private prisma: PrismaService,
+
+    @Inject(forwardRef(() => UsersService))
+    private usersService: UsersService,
+  ) {}
 
   async createChannel(user: UserDto, createNewChannelRequest: CreateChannelRequestDto) {
     try {

@@ -42,6 +42,12 @@ const populateUser = (state: any, action: any) => {
   state.present = true;
 };
 
+const resetUser = (state: any) => {
+  state.user = initialState.user;
+  state.accessToken = initialState.accessToken;
+  state.present = false;
+};
+
 const authSlice = createSlice({
   name: "auth",
   initialState,
@@ -63,11 +69,8 @@ const authSlice = createSlice({
   extraReducers: (builder) => {
     builder.addMatcher(enhancedApi.endpoints.logIn.matchFulfilled, populateUser);
     builder.addMatcher(enhancedApi.endpoints.refreshToken.matchFulfilled, populateUser);
-    builder.addMatcher(enhancedApi.endpoints.logOut.matchFulfilled, (state) => {
-      state.user = initialState.user;
-      state.accessToken = initialState.accessToken;
-      state.present = false;
-    });
+    builder.addMatcher(enhancedApi.endpoints.logOut.matchFulfilled, resetUser);
+    builder.addMatcher(enhancedApi.endpoints.deleteAccount.matchFulfilled, resetUser);
     builder.addMatcher(enhancedApi.endpoints.refreshUsername.matchFulfilled, (state, action) => {
       state.user.username = action.payload.username;
     });

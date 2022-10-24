@@ -1,4 +1,11 @@
-import { BadRequestException, Injectable, InternalServerErrorException, UnauthorizedException } from "@nestjs/common";
+import {
+  BadRequestException,
+  forwardRef,
+  Inject,
+  Injectable,
+  InternalServerErrorException,
+  UnauthorizedException,
+} from "@nestjs/common";
 import { PrismaService } from "../prisma/prisma.service";
 import { Representative, Status, Teacher, User } from "@prisma/client";
 import CreateBaseUserDto from "./dto/create-base-user.dto";
@@ -14,6 +21,9 @@ import VerifyUserRequestDto from "./dto/verify-user-request.dto";
 import { isNil } from "@nestjs/common/utils/shared.utils";
 import GetUserProfileResponseDto from "./dto/get-user-profile-response.dto";
 import UpdateUserProfileRequestDto from "./dto/update-user-profile-request.dto";
+import { ChannelsService } from "../channels/channels.service";
+import { PostsService } from "../posts/posts.service";
+import { CommentsService } from "../comments/comments.service";
 
 const usernameParams = {
   length: 8,
@@ -26,6 +36,15 @@ export class UsersService {
     private prisma: PrismaService,
     private schoolsService: SchoolsService,
     private facultiesService: FacultiesService,
+
+    @Inject(forwardRef(() => ChannelsService))
+    private channelsService: ChannelsService,
+
+    @Inject(forwardRef(() => PostsService))
+    private postsService: PostsService,
+
+    @Inject(forwardRef(() => CommentsService))
+    private commentsService: CommentsService,
   ) {}
 
   private static async hashPassword(password: string): Promise<string> {
@@ -258,6 +277,19 @@ export class UsersService {
         password: hashedPassword,
         passwordModified: new Date(),
       },
+    });
+  }
+
+  async deleteAccount(uuid: string) {
+    await this.prisma.$transaction(async (tx) => {
+      // 1. delete all user created channels
+      await tx.channel.deleteMany({ where: { createdByUuid: uuid } });
+      // 2. mark all user's posts with username deleted
+      await tx.post.updateMany({ where: { authorUuid: uuid }, data: { authorUsername: "deleted" } });
+      // 3. mark all user's comments with username deleted
+      await tx.comment.updateMany({ where: { authorUuid: uuid }, data: { authorUsername: "deleted" } });
+      // 4. finally delete the account
+      await tx.user.delete({ where: { uuid } });
     });
   }
 }
