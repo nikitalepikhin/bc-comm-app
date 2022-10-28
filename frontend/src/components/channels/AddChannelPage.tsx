@@ -10,7 +10,7 @@ const initialValues: FormValues = {
 };
 
 export default function AddChannelPage() {
-  const [createChannel, { data, isLoading, isError, error }] = useCreateChannelMutation();
+  const [createChannel, { isLoading, isError }] = useCreateChannelMutation();
   const [textIdError, setTextIdError] = useState<string | undefined>(undefined);
 
   return (
@@ -35,6 +35,8 @@ export default function AddChannelPage() {
           }}
           textIdError={textIdError}
           setTextIdError={setTextIdError}
+          isError={isError}
+          isLoading={isLoading}
         />
       </div>
     </PageWrapper>

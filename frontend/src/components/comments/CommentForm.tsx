@@ -5,7 +5,8 @@ import { useCreateCommentMutation, useUpdateCommentMutation } from "../../app/en
 import classNames from "classnames";
 import Textarea from "../uilib/Textarea";
 import Dialog from "../uilib/dialog/Dialog";
-import React from "react";
+import React, { useEffect } from "react";
+import Alert from "../uilib/Alert";
 
 interface Props {
   postUuid: string;
@@ -26,14 +27,17 @@ const validationSchema = yup.object({
 
 export default function CommentForm(props: Props) {
   const { uuid, body, postUuid, parentUuid, onClose, setInitialDatetime } = props;
-  const [createComment] = useCreateCommentMutation();
-  const [updateComment] = useUpdateCommentMutation();
+  const [createComment, { isLoading: createLoading, isError: createError }] = useCreateCommentMutation();
+  const [updateComment, { isLoading: updateLoading, isError: updateError }] = useUpdateCommentMutation();
   const initialValues: FormValues = {
     body: body ?? "",
   };
 
   const isCreating = parentUuid === undefined && uuid === undefined;
   const isEditing = uuid !== undefined;
+
+  const isLoading = createLoading || updateLoading;
+  const isError = createError || updateError;
 
   return (
     <>
@@ -44,11 +48,11 @@ export default function CommentForm(props: Props) {
         validateOnBlur
         validateOnMount
         validateOnChange
-        onSubmit={(values, { resetForm }) => {
+        onSubmit={async (values, { resetForm }) => {
           if (body !== undefined && uuid !== undefined) {
             updateComment({ updateCommentRequestDto: { body: values.body, uuid, postUuid } });
           } else {
-            createComment({ createCommentRequestDto: { postUuid, parentUuid, body: values.body } });
+            await createComment({ createCommentRequestDto: { postUuid, parentUuid, body: values.body } });
           }
           if (onClose !== undefined) {
             onClose();
@@ -70,6 +74,9 @@ export default function CommentForm(props: Props) {
                   />
                 )}
               </Field>
+              <Alert show={isError} fullWidth>{`Error ${
+                isEditing ? "updating the" : "creating a"
+              } comment. Please try again.`}</Alert>
               <div className="flex flex-row justify-end items-center gap-2 w-full">
                 {!isCreating && (
                   <Button key="cancel" onClick={onClose} type="button">
@@ -81,6 +88,7 @@ export default function CommentForm(props: Props) {
                   type="button"
                   variant="accent"
                   disabled={!dirty || !isValid}
+                  loading={isLoading}
                   onClick={() => {
                     if (setInitialDatetime !== undefined) {
                       const date = new Date();

@@ -1,14 +1,14 @@
-import React, { useEffect, useState } from "react";
+import classNames from "classnames";
+import { format, parseISO } from "date-fns";
+import { Field, FieldProps, Form, Formik } from "formik";
+import { useEffect, useState } from "react";
 import { RepresentativeRequestDto, TeacherRequestDto } from "../../app/api";
 import { useVerifyUserMutation } from "../../app/enhancedApi";
-import Container from "../uilib/Container";
-import { format, parseISO } from "date-fns";
-import classNames from "classnames";
-import { Field, FieldProps, Form, Formik } from "formik";
+import Alert from "../uilib/Alert";
 import Button from "../uilib/Button";
+import Container from "../uilib/Container";
 import BaseDialog from "../uilib/dialog/BaseDialog";
 import Textarea from "../uilib/Textarea";
-import Alert from "../uilib/Alert";
 
 const initialValues = {
   reason: "",
@@ -63,7 +63,7 @@ export default function Request(props: Props) {
                   type="button"
                   variant="accent"
                   onClick={() => handleSubmit()}
-                  loading={isLoading && values.reason.length > 0}
+                  loading={isLoading && values.reason.length === 0}
                 >
                   Approve
                 </Button>,

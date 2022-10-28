@@ -1,15 +1,15 @@
-import { Field, FieldProps, Form, Formik } from "formik";
-import { useNavigate, useParams } from "react-router-dom";
-import Button from "../uilib/Button";
-import { useCreatePostMutation, useGetChannelByTextIdQuery } from "../../app/enhancedApi";
-import LoadingSpinner from "../uilib/LoadingSpinner";
 import { XMarkIcon } from "@heroicons/react/20/solid";
+import { Field, FieldProps, Form, Formik } from "formik";
 import { useEffect, useState } from "react";
-import Box from "../uilib/Box";
-import Input from "../uilib/Input";
-import Textarea from "../uilib/Textarea";
-import Dialog from "../uilib/dialog/Dialog";
+import { useNavigate, useParams } from "react-router-dom";
+import { useCreatePostMutation, useGetChannelByTextIdQuery } from "../../app/enhancedApi";
+import Alert from "../uilib/Alert";
+import Button from "../uilib/Button";
 import Container from "../uilib/Container";
+import Dialog from "../uilib/dialog/Dialog";
+import Input from "../uilib/Input";
+import LoadingSpinner from "../uilib/LoadingSpinner";
+import Textarea from "../uilib/Textarea";
 
 interface AddPostFormValues {
   title: string;
@@ -24,8 +24,13 @@ const initialValues: AddPostFormValues = {
 export default function AddPostPage() {
   const { textId } = useParams() as { textId: string };
   const navigate = useNavigate();
-  const [createPost, { data: createPostData, isSuccess, isLoading }] = useCreatePostMutation();
-  const { data, isFetching: getChannelByTextIdIsFetching } = useGetChannelByTextIdQuery({ textId });
+  const [createPost, { data: createPostData, isSuccess, isLoading, isError, reset }] = useCreatePostMutation();
+  const {
+    data,
+    isFetching: getChannelByTextIdIsFetching,
+    isError: getChannelError,
+    refetch: getChannel,
+  } = useGetChannelByTextIdQuery({ textId });
   const [isExiting, setIsExiting] = useState(false);
 
   if (getChannelByTextIdIsFetching) {
@@ -64,6 +69,9 @@ export default function AddPostPage() {
               Close
             </Button>
           </div>
+          <Alert show={getChannelError} fullWidth onClose={() => getChannel()}>
+            Error loading the channel.
+          </Alert>
           <Container
             title="New Post"
             actions={
@@ -79,6 +87,9 @@ export default function AddPostPage() {
             }
           >
             <Form className="flex flex-col justify-start items-stretch gap-2">
+              <Alert show={isError} fullWidth onClose={() => reset()}>
+                Error creating a post. Please try again.
+              </Alert>
               <Field name="title">
                 {({ field, meta }: FieldProps) => (
                   <Input

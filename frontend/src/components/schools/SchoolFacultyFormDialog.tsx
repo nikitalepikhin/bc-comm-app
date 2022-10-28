@@ -270,7 +270,7 @@ export default function SchoolFacultyFormDialog(props: Props) {
                   }
                   fullWidth
                 >
-                  {`An error occurred while adding a ${type}. Reload or try again later.`}
+                  {`Error creating a ${type}. Reload or try again later.`}
                 </Alert>
               )}
               {uuid && (
@@ -281,12 +281,12 @@ export default function SchoolFacultyFormDialog(props: Props) {
                   }
                   fullWidth
                 >
-                  {`An error occurred while updating a ${type}. Reload or try again later.`}
+                  {`Error updating the ${type}. Reload or try again later.`}
                 </Alert>
               )}
               {uuid && ((type === "school" && schoolError) || (type === "faculty" && facultyError)) && (
                 <Alert show={schoolError} fullWidth>
-                  {`An error occurred while loading current data for ${type}. Reload or try again later.`}
+                  {`Error loading the ${type}. Reload or try again later.`}
                 </Alert>
               )}
             </div>

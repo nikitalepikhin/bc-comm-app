@@ -1,14 +1,11 @@
-import { useAppSelector } from "../../app/redux/hooks";
-import { Field, FieldProps, Form, Formik } from "formik";
-import Input from "../uilib/Input";
-import Button from "../uilib/Button";
 import classNames from "classnames";
-import { useUpdateEmailMutation } from "../../app/enhancedApi";
-import Dialog from "../uilib/dialog/Dialog";
-import { useState } from "react";
+import { Field, FieldProps, Form, Formik } from "formik";
 import { useDispatch } from "react-redux";
-import { logOut } from "../../app/redux/slice/authSlice";
+import { useUpdateEmailMutation } from "../../app/enhancedApi";
+import { useAppSelector } from "../../app/redux/hooks";
 import Alert from "../uilib/Alert";
+import Button from "../uilib/Button";
+import Input from "../uilib/Input";
 
 interface FormValues {
   email: string;

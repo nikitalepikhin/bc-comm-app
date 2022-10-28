@@ -1,14 +1,14 @@
-import { Body, Controller, forwardRef, Get, Inject, Post, Put, Req, UseGuards } from "@nestjs/common";
+import { Body, Controller, Get, Post, Put, Req, UseGuards } from "@nestjs/common";
 import { ApiOkResponse, ApiOperation } from "@nestjs/swagger";
-import { JwtAuthGuard } from "../auth/jwt-auth.guard";
-import { UsersService } from "./users.service";
 import UserDto from "../auth/dto/user.dto";
-import RefreshUsernameResponseDto from "./dto/refresh-username-response.dto";
-import { RequirePermissionsGuard } from "../auth/require-permissions.guard";
+import { JwtAuthGuard } from "../auth/jwt-auth.guard";
 import { Permission, RequirePermissions } from "../auth/permission.enum";
-import VerifyUserRequestDto from "./dto/verify-user-request.dto";
+import { RequirePermissionsGuard } from "../auth/require-permissions.guard";
 import GetUserProfileResponseDto from "./dto/get-user-profile-response.dto";
+import RefreshUsernameResponseDto from "./dto/refresh-username-response.dto";
 import UpdateUserProfileRequestDto from "./dto/update-user-profile-request.dto";
+import VerifyUserRequestDto from "./dto/verify-user-request.dto";
+import { UsersService } from "./users.service";
 
 @Controller("users")
 export class UsersController {

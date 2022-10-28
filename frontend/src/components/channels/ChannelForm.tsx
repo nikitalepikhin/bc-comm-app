@@ -11,6 +11,7 @@ import Textarea from "../uilib/Textarea";
 import classNames from "classnames";
 import { useNavigate, useParams } from "react-router-dom";
 import Dialog from "../uilib/dialog/Dialog";
+import Alert from "../uilib/Alert";
 
 export interface FormValues {
   textId: string;
@@ -24,6 +25,10 @@ interface Props {
   onSubmit: (values: FormValues, formikHelpers: FormikHelpers<FormValues>) => Promise<void>;
   textIdError: string | undefined;
   setTextIdError: (value: string | undefined) => void;
+  isError: boolean;
+  isLoading: boolean;
+  channelError?: boolean;
+  getChannel?: () => void;
 }
 
 const validationSchema = yup.object({
@@ -33,7 +38,8 @@ const validationSchema = yup.object({
 });
 
 export default function ChannelForm(props: Props) {
-  const { initialValues, onSubmit, textIdError, setTextIdError, mode } = props;
+  const { initialValues, onSubmit, textIdError, setTextIdError, mode, isError, isLoading, channelError, getChannel } =
+    props;
   const { textId } = useParams() as { textId: string };
   const [checkChannelIdAvailability] = useLazyCheckChannelIdAvailabilityQuery();
   const [isExiting, setIsExiting] = useState(false);
@@ -82,11 +88,17 @@ export default function ChannelForm(props: Props) {
               </Button>
             </div>
           )}
+          {channelError && getChannel && (
+            <Alert show={channelError} fullWidth onClose={() => getChannel()}>
+              Error loading the channel. Please try again.
+            </Alert>
+          )}
           <Container
             title={mode === "create" ? "Create New Channel" : "Update Your Channel"}
             actions={
               <Button
                 onClick={() => handleSubmit()}
+                loading={isLoading}
                 variant="accent"
                 type="button"
                 disabled={!isValid || textIdError !== undefined || !dirty}
@@ -133,6 +145,9 @@ export default function ChannelForm(props: Props) {
                   />
                 )}
               </Field>
+              <Alert show={isError} fullWidth>{`Error ${
+                mode === "create" ? "creating a" : "updating the"
+              } channel.`}</Alert>
             </Form>
           </Container>
           <Dialog

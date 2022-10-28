@@ -6,8 +6,8 @@ import ChannelForm, { FormValues } from "./ChannelForm";
 export default function EditChannelPage() {
   const { textId } = useParams();
   const navigate = useNavigate();
-  const { data, isFetching } = useGetChannelByTextIdQuery({ textId: textId! });
-  const [updateChannel, { data: updatedChannelData, isSuccess }] = useUpdateChannelMutation();
+  const { data, isFetching, isError: channelError, refetch } = useGetChannelByTextIdQuery({ textId: textId! });
+  const [updateChannel, { data: updatedChannelData, isSuccess, isError, isLoading }] = useUpdateChannelMutation();
   const [textIdError, setTextIdError] = useState<string | undefined>(undefined);
 
   useEffect(() => {
@@ -45,6 +45,10 @@ export default function EditChannelPage() {
       }}
       textIdError={textIdError}
       setTextIdError={setTextIdError}
+      isError={isError}
+      isLoading={isLoading}
+      getChannel={() => refetch()}
+      channelError={channelError}
     />
   );
 }

@@ -7,7 +7,7 @@ import "./inter.css";
 import App from "./App";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import ErrorPage from "./components/common/ErrorPage";
-import { IndexPage } from "./components/common/IndexPage";
+import IndexPage from "./components/common/IndexPage";
 import SchoolsRoutes from "./app/routes/SchoolsRoutes";
 import FacultiesRoutes from "./app/routes/FacultiesRoutes";
 import ChannelsRoutes from "./app/routes/ChannelsRoutes";

@@ -1,19 +1,19 @@
-import React, { useEffect } from "react";
-import * as yup from "yup";
 import { Field, FieldProps, Form, Formik } from "formik";
-import Combobox from "../uilib/Combobox";
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import * as yup from "yup";
 import {
   useGetFacultyAutocompleteMutation,
   useGetSchoolAutocompleteMutation,
   useSignUpBaseMutation,
-  useSignUpTeacherMutation,
   useSignUpRepresentativeMutation,
+  useSignUpTeacherMutation,
 } from "../../app/enhancedApi";
-import { Link, useNavigate } from "react-router-dom";
+import Alert from "../uilib/Alert";
 import Button from "../uilib/Button";
-import PageWrapper from "../uilib/PageWrapper";
-import RadioGroup from "../uilib/RadioGroup";
+import Combobox from "../uilib/Combobox";
 import Input from "../uilib/Input";
+import RadioGroup from "../uilib/RadioGroup";
 
 export interface ComboBoxInputType {
   value: string;
@@ -72,33 +72,34 @@ export default function SignupForm() {
   const [getFacultyAutocomplete, { data: facultySuggestions, isLoading: facultyAutocompleteIsLoading }] =
     useGetFacultyAutocompleteMutation();
   const [
-    signUpBaseUser,
-    { isLoading: signUpBaseUserIsLoading, isSuccess: signUpBaseUserIsSuccess, isError: signUpBaseUserIsError },
+    signUpBase,
+    { isLoading: signUpBaseLoading, isSuccess: signUpBaseSuccess, isError: signUpBaseError, reset: signUpBaseReset },
   ] = useSignUpBaseMutation();
   const [
-    signUpTeacherUser,
-    { isLoading: signUpTeacherUserIsLoading, isSuccess: signUpTeacherUserIsSuccess, isError: signUpTeacherUserIsError },
+    signUpTeacher,
+    {
+      isLoading: signUpTeacherLoading,
+      isSuccess: signUpTeacherSuccess,
+      isError: signUpTeacherError,
+      reset: signUpTeacherReset,
+    },
   ] = useSignUpTeacherMutation();
   const [
-    signUpRepresentativeUser,
-    {
-      isLoading: signUpRepresentativeUserIsLoading,
-      isSuccess: signUpRepresentativeUserIsSuccess,
-      isError: signUpRepresentativeUserIsError,
-    },
+    signUpRepr,
+    { isLoading: signUpReprLoading, isSuccess: signUpReprSuccess, isError: signUpReprError, reset: signUpReprReset },
   ] = useSignUpRepresentativeMutation();
-  const signUpIsLoading = signUpBaseUserIsLoading || signUpTeacherUserIsLoading || signUpRepresentativeUserIsLoading;
-  const signUpIsError = signUpBaseUserIsError || signUpTeacherUserIsError || signUpRepresentativeUserIsError;
+  const signUpLoading = signUpBaseLoading || signUpTeacherLoading || signUpReprLoading;
+  const signUpError = signUpBaseError || signUpTeacherError || signUpReprError;
+  const signUpSuccess = signUpBaseSuccess || signUpTeacherSuccess || signUpReprSuccess;
 
   useEffect(() => {
-    if (signUpBaseUserIsSuccess || signUpRepresentativeUserIsSuccess || signUpTeacherUserIsSuccess) {
+    if (signUpBaseSuccess || signUpReprSuccess || signUpTeacherSuccess) {
       navigate("/");
     }
-  }, [signUpBaseUserIsSuccess, signUpRepresentativeUserIsSuccess, signUpTeacherUserIsSuccess]);
+  }, [signUpBaseSuccess, signUpReprSuccess, signUpTeacherSuccess]);
 
   return (
     <div className="w-full flex flex-col justify-start items-stretch gap-2">
-      {/*<h1 className="text-xl font-bold text-center">Sign Up</h1>*/}
       <Formik
         initialValues={initialValues}
         validationSchema={validationSchema}
@@ -108,13 +109,13 @@ export default function SignupForm() {
         onSubmit={(values) => {
           switch (values.type) {
             case "student": {
-              signUpBaseUser({
+              signUpBase({
                 createBaseUserDto: { email: values.email, password: values.password, role: "STUDENT" },
               });
               break;
             }
             case "teacher": {
-              signUpTeacherUser({
+              signUpTeacher({
                 createTeacherUserDto: {
                   email: values.email,
                   password: values.password,
@@ -127,7 +128,7 @@ export default function SignupForm() {
               break;
             }
             case "representative": {
-              signUpRepresentativeUser({
+              signUpRepr({
                 createRepresentativeUserDto: {
                   email: values.email,
                   password: values.password,
@@ -141,8 +142,11 @@ export default function SignupForm() {
           }
         }}
       >
-        {({ values, errors, setFieldValue, handleSubmit, isValid, dirty }) => (
+        {({ values, setFieldValue, handleSubmit, isValid, dirty, resetForm }) => (
           <Form className="flex flex-col justify-start items-center gap-2">
+            <Alert show={signUpError} fullWidth>
+              Unfortunately we could not sign you up. Please try again.
+            </Alert>
             <Field name="type">
               {({ field }: FieldProps) => (
                 <RadioGroup
@@ -167,6 +171,7 @@ export default function SignupForm() {
                     labelValue="Name"
                     {...field}
                     error={meta.error && meta.touched ? meta.error : undefined}
+                    disabled={signUpSuccess}
                   />
                 )}
               </Field>
@@ -180,6 +185,7 @@ export default function SignupForm() {
                   labelValue="Email"
                   {...field}
                   error={meta.error && meta.touched ? meta.error : undefined}
+                  disabled={signUpSuccess}
                 />
               )}
             </Field>
@@ -192,6 +198,7 @@ export default function SignupForm() {
                   labelValue="Password"
                   {...field}
                   error={meta.error && meta.touched ? meta.error : undefined}
+                  disabled={signUpSuccess}
                 />
               )}
             </Field>
@@ -208,6 +215,7 @@ export default function SignupForm() {
                     wait={1000}
                     options={schoolSuggestions ? schoolSuggestions.schools : []}
                     error={meta.error && meta.touched ? meta.error : undefined}
+                    disabled={signUpSuccess}
                   />
                 )}
               </Field>
@@ -220,7 +228,7 @@ export default function SignupForm() {
                     name={field.name}
                     initialState={values.faculty ? values.faculty : undefined}
                     loading={facultyAutocompleteIsLoading}
-                    disabled={values.school === null}
+                    disabled={values.school === null || signUpSuccess}
                     onChange={(value) => setFieldValue(field.name, value)}
                     onInputChange={(value) =>
                       getFacultyAutocomplete({
@@ -238,13 +246,26 @@ export default function SignupForm() {
             <Button
               className="w-full"
               onClick={() => handleSubmit()}
-              loading={signUpIsLoading}
-              disabled={!isValid || !dirty}
+              loading={signUpLoading}
+              disabled={!isValid || !dirty || signUpSuccess}
               type="button"
               variant="accent"
             >
               Create Account
             </Button>
+            <Alert
+              show={signUpSuccess}
+              fullWidth
+              severity="success"
+              onClose={() => {
+                signUpBaseReset();
+                signUpTeacherReset();
+                signUpReprReset();
+                resetForm();
+              }}
+            >
+              You have successfully signed up. You can now log in.
+            </Alert>
           </Form>
         )}
       </Formik>
