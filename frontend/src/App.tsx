@@ -1,8 +1,8 @@
 import React from "react";
 import { Outlet } from "react-router-dom";
-import useAuthentication from "./features/auth/useAuthentication";
-import LoadingPage from "./common/components/LoadingPage";
-import Navbar from "./common/components/navbar/Navbar";
+import useAuthentication from "./hooks/useAuthentication";
+import LoadingPage from "./components/common/LoadingPage";
+import Navbar from "./components/common/navbar/Navbar";
 
 export default function App() {
   const { isLoading, isUninitialized } = useAuthentication();

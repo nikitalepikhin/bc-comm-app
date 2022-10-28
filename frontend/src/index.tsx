@@ -1,18 +1,18 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import { Provider } from "react-redux";
-import { store } from "./app/store";
+import { store } from "./app/redux/store";
 import "./index.css";
 import "./inter.css";
 import App from "./App";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import ErrorPage from "./common/components/ErrorPage";
-import { IndexPage } from "./common/components/IndexPage";
-import SchoolsRoutes from "./features/schools/SchoolsRoutes";
-import FacultiesRoutes from "./features/faculties/FacultiesRoutes";
-import ChannelsRoutes from "./features/channels/ChannelsRoutes";
-import ProfilePage from "./features/auth/ProfilePage";
-import ProtectedRoute from "./common/components/ProtectedRoute";
+import ErrorPage from "./components/common/ErrorPage";
+import { IndexPage } from "./components/common/IndexPage";
+import SchoolsRoutes from "./app/routes/SchoolsRoutes";
+import FacultiesRoutes from "./app/routes/FacultiesRoutes";
+import ChannelsRoutes from "./app/routes/ChannelsRoutes";
+import ProfilePage from "./components/auth/ProfilePage";
+import ProtectedRoute from "./components/common/ProtectedRoute";
 
 ReactDOM.render(
   <React.StrictMode>
