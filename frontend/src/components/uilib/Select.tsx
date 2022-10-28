@@ -1,5 +1,5 @@
-import {FormikHandlers} from "formik";
-import {ForwardedRef, forwardRef} from "react";
+import { FormikHandlers } from "formik";
+import { ForwardedRef, forwardRef } from "react";
 import classNames from "classnames";
 
 export interface SelectOption {
@@ -18,14 +18,14 @@ interface Props {
 }
 
 function Select(props: Props, ref: ForwardedRef<HTMLSelectElement>) {
-  const {name, value, onChange, onBlur, options, labelValue, display} = props;
+  const { name, value, onChange, onBlur, options, labelValue, display } = props;
 
   return (
     <div
       className={classNames(
         "flex gap-2 w-full",
-        {"flex-col justify-start items-start": display === undefined || display === "col"},
-        {"flex-row justify-between items-center": display !== undefined || display === "row"}
+        { "flex-col justify-start items-start": display === undefined || display === "col" },
+        { "flex-row justify-between items-center": display !== undefined || display === "row" }
       )}
     >
       {labelValue && <label htmlFor={`select-${name}`}>{labelValue}</label>}

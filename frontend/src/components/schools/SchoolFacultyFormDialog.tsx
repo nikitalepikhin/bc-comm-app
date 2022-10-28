@@ -16,6 +16,8 @@ import Alert from "../uilib/Alert";
 import * as yup from "yup";
 import LoadingSpinner from "../uilib/LoadingSpinner";
 import { useParams } from "react-router-dom";
+import Select from "../uilib/Select";
+import { countries } from "../../util/countries";
 
 interface Props {
   show: boolean;
@@ -64,7 +66,7 @@ const validationSchema = yup.object({
 
 const initialState: FormValues = {
   name: "",
-  countryCode: "",
+  countryCode: "CZE",
   city: "",
   addressLineOne: "",
   addressLineTwo: "",
@@ -192,17 +194,7 @@ export default function SchoolFacultyFormDialog(props: Props) {
                     )}
                   </Field>
                   <Field name="countryCode">
-                    {({ field, meta }: FieldProps) => (
-                      <Input
-                        {...field}
-                        disabled={
-                          uuid !== undefined && (schoolFetching || schoolError || facultyFetching || facultyError)
-                        }
-                        fullWidth
-                        labelValue="Country Code"
-                        error={meta.error && meta.touched && field.value !== meta.initialValue ? meta.error : undefined}
-                      />
-                    )}
+                    {({ field, meta }: FieldProps) => <Select {...field} options={countries} labelValue="Country" />}
                   </Field>
                   <Field name="city">
                     {({ field, meta }: FieldProps) => (
