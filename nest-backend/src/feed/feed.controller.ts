@@ -1,8 +1,8 @@
 import { Controller, Get, Query, Req, UseGuards } from "@nestjs/common";
 import { ApiOkResponse, ApiOperation } from "@nestjs/swagger";
-import { Permission, RequirePermissions } from "../auth/permission.enum";
-import { JwtAuthGuard } from "../auth/jwt-auth.guard";
-import { RequirePermissionsGuard } from "../auth/require-permissions.guard";
+import { Permission, RequirePermissions } from "../auth/require-permissions/permission.enum";
+import { JwtAuthGuard } from "../auth/jwt/jwt-auth.guard";
+import { RequirePermissionsGuard } from "../auth/require-permissions/require-permissions.guard";
 import GetUserFeedQueryDto from "./dto/get-user-feed-query.dto";
 import GetUserFeedResponseDto from "./dto/get-user-feed-response.dto";
 import { FeedService } from "./feed.service";

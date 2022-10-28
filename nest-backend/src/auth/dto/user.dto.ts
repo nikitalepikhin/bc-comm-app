@@ -4,4 +4,5 @@ export default class UserDto {
   uuid: string;
   email: string;
   role: Role;
+  isVerified?: boolean;
 }

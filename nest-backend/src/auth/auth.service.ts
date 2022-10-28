@@ -11,6 +11,7 @@ import { CreateTeacherUserDto } from "../users/dto/create-teacher-user.dto";
 import UserDto from "./dto/user.dto";
 import UpdateUserEmailRequestDto from "./dto/update-user-email-request.dto";
 import UpdateUserPasswordRequestDto from "./dto/update-user-password-request.dto";
+import { PrismaService } from "src/prisma/prisma.service";
 
 @Injectable()
 export class AuthService {
@@ -41,7 +42,7 @@ export class AuthService {
     const { schoolUuid, verified } = await this.getAdditionalUserData(user);
     const { username } = await this.usersService.findByUuid(user.uuid);
     return {
-      accessToken: this.createSignedAccessToken(user),
+      accessToken: await this.createSignedAccessToken(user),
       refreshToken: await this.createRefreshTokenForNewFamily(user),
       schoolUuid: schoolUuid ? schoolUuid : undefined,
       verified,
@@ -54,7 +55,7 @@ export class AuthService {
     const { username } = await this.usersService.findByUuid(user.uuid);
     const { schoolUuid, verified } = await this.getAdditionalUserData(user);
     return {
-      accessToken: this.createSignedAccessToken({
+      accessToken: await this.createSignedAccessToken({
         email: user.email,
         role: user.role,
         uuid: user.uuid,
@@ -82,18 +83,20 @@ export class AuthService {
     // 1. update the actual email in the database
     await this.usersService.updateUserEmail(user.uuid, requestDto.email);
     // 2. issue a new access-token
-    const accessToken = this.createSignedAccessToken(user);
+    const accessToken = await this.createSignedAccessToken(user);
     // 3. issue a new refresh-token for an existing family
     const { tokenFamily } = await this.refreshTokensService.setRefreshTokenToUsedByValue(authCookie);
     const refreshToken = await this.createRefreshTokenForExistingFamily(user, tokenFamily);
     return { accessToken, refreshToken };
   }
 
-  private createSignedAccessToken(user: UserDto) {
+  private async createSignedAccessToken(user: UserDto) {
+    const isVerified = await this.usersService.checkUserVerification(user);
     const payload = {
       id: user.uuid,
       email: user.email,
       role: user.role,
+      isVerified, // user's verification status will update on the next access-token refresh
       exp: Math.floor(Date.now() / 1000) + parseInt(process.env.AT_MAX_AGE_SEC),
     };
     return this.jwtService.sign(payload);

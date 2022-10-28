@@ -1,9 +1,11 @@
 import { Body, Controller, Get, Post, Put, Req, UseGuards } from "@nestjs/common";
 import { ApiOkResponse, ApiOperation } from "@nestjs/swagger";
+import { IsNotVerifiedGuard } from "src/auth/verification/is-not-verified.guard";
+import { IsVerifiedGuard } from "src/auth/verification/is-verified.guard";
 import UserDto from "../auth/dto/user.dto";
-import { JwtAuthGuard } from "../auth/jwt-auth.guard";
-import { Permission, RequirePermissions } from "../auth/permission.enum";
-import { RequirePermissionsGuard } from "../auth/require-permissions.guard";
+import { JwtAuthGuard } from "../auth/jwt/jwt-auth.guard";
+import { Permission, RequirePermissions } from "../auth/require-permissions/permission.enum";
+import { RequirePermissionsGuard } from "../auth/require-permissions/require-permissions.guard";
 import GetUserProfileResponseDto from "./dto/get-user-profile-response.dto";
 import RefreshUsernameResponseDto from "./dto/refresh-username-response.dto";
 import UpdateUserProfileRequestDto from "./dto/update-user-profile-request.dto";
@@ -23,7 +25,7 @@ export class UsersController {
   }
 
   @ApiOperation({ summary: "Verify a user." })
-  @UseGuards(JwtAuthGuard, RequirePermissionsGuard)
+  @UseGuards(JwtAuthGuard, RequirePermissionsGuard, IsVerifiedGuard)
   @RequirePermissions(Permission.TEACHER_REQ_VERIFY, Permission.REP_REQ_VERIFY)
   @Post("/verify")
   async verifyUser(@Req() request, @Body() requestDto: VerifyUserRequestDto) {
@@ -32,7 +34,7 @@ export class UsersController {
 
   @ApiOperation({ summary: "Request verification for teachers and representatives." })
   @RequirePermissions(Permission.TEACHER_REQ_VERIFY, Permission.REP_REQ_VERIFY)
-  @UseGuards(JwtAuthGuard, RequirePermissionsGuard)
+  @UseGuards(JwtAuthGuard, RequirePermissionsGuard, IsNotVerifiedGuard)
   @Get("/request")
   async requestVerification(@Req() request) {
     await this.usersService.requestVerification(request.user as UserDto);

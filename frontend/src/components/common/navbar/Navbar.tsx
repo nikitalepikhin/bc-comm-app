@@ -1,28 +1,27 @@
-import classNames from "classnames";
 import {
   Bars3Icon,
   BuildingLibraryIcon,
   HomeIcon,
   LockClosedIcon,
-  PencilSquareIcon,
   SquaresPlusIcon,
   UserIcon,
 } from "@heroicons/react/24/outline";
-import ChannelSearch from "../../channels/ChannelSearch";
-import ThemeSelector from "./ThemeSelector";
-import NavbarButton from "./NavbarButton";
-import { useNavigate } from "react-router-dom";
+import classNames from "classnames";
 import { useState } from "react";
-import ProfileMenu from "./ProfileMenu";
+import { useNavigate } from "react-router-dom";
 import { useLogOutMutation } from "../../../app/enhancedApi";
-import NavbarItem from "./NavbarItem";
 import { useAppSelector } from "../../../app/redux/hooks";
+import ChannelSearch from "../../channels/ChannelSearch";
+import NavbarButton from "./NavbarButton";
+import NavbarItem from "./NavbarItem";
+import ProfileMenu from "./ProfileMenu";
+import ThemeSelector from "./ThemeSelector";
 
 export default function Navbar() {
   const navigate = useNavigate();
   const {
     present,
-    user: { role, schoolUuid },
+    user: { role, schoolUuid, verified },
   } = useAppSelector((state) => state.auth);
   const [open, setOpen] = useState(false);
   const [logOut] = useLogOutMutation();
@@ -68,6 +67,22 @@ export default function Navbar() {
           <ProfileMenu closeMenu={() => setOpen(false)} />
         </div>
       </nav>
+      {(role === "REPRESENTATIVE" || role === "TEACHER") && !verified && (
+        <div
+          className={classNames(
+            "bg-orange-400 dark:bg-orange-800 shadow dark:shadow-gray-800",
+            "py-2 px-3 w-full z-10",
+            "text-center dark:text-white"
+          )}
+        >
+          <div className="font-bold">{`Account verification is required ${
+            role === "REPRESENTATIVE" ? "to manage your school" : "to communicate with others"
+          }.`}</div>
+          <div className="text-sm">{`Wait to be verified by ${
+            role === "REPRESENTATIVE" ? "an admin" : "your school's representative or an admin"
+          }.`}</div>
+        </div>
+      )}
       {open && (
         <div
           className={classNames(

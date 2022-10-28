@@ -2,11 +2,11 @@ import { Body, Controller, Delete, Post, Put, Req, Res, UseGuards } from "@nestj
 import { AuthService } from "./auth.service";
 import CreateBaseUserDto from "../users/dto/create-base-user.dto";
 import { ApiOkResponse, ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
-import { LocalAuthGuard } from "./local-auth.guard";
+import { LocalAuthGuard } from "./local/local-auth.guard";
 import { Response } from "express";
 import { CookieService } from "../cookie/cookie.service";
-import { JwtRefreshAuthGuard } from "./jwt-refresh-auth.guard";
-import { JwtAuthGuard } from "./jwt-auth.guard";
+import { JwtRefreshAuthGuard } from "./jwt-refresh/jwt-refresh-auth.guard";
+import { JwtAuthGuard } from "./jwt/jwt-auth.guard";
 import { ApiImplicitBody } from "@nestjs/swagger/dist/decorators/api-implicit-body.decorator";
 import LogInUserRequestDto from "../users/dto/log-in-user-request.dto";
 import UserDataResponseDto from "../users/dto/user-data-response.dto";

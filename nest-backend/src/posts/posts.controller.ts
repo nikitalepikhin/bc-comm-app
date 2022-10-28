@@ -1,9 +1,9 @@
 import { Body, Controller, Delete, Get, Param, Post, Put, Query, Req, UseGuards } from "@nestjs/common";
 import CreatePostRequestDto from "./dto/create-post-request.dto";
 import { ApiOkResponse, ApiOperation } from "@nestjs/swagger";
-import { JwtAuthGuard } from "../auth/jwt-auth.guard";
-import { RequirePermissionsGuard } from "../auth/require-permissions.guard";
-import { Permission, RequirePermissions } from "../auth/permission.enum";
+import { JwtAuthGuard } from "../auth/jwt/jwt-auth.guard";
+import { RequirePermissionsGuard } from "../auth/require-permissions/require-permissions.guard";
+import { Permission, RequirePermissions } from "../auth/require-permissions/permission.enum";
 import { PostsService } from "./posts.service";
 import UserDto from "../auth/dto/user.dto";
 import GetPostsForChannelParamsDto from "./dto/get-posts-for-channel-params.dto";
@@ -15,6 +15,7 @@ import CreatePostResponseDto from "./dto/create-post-response.dto";
 import GetPostByUuidParamsDto from "./dto/get-post-by-uuid-params.dto";
 import GetPostByUuidResponseDto from "./dto/get-post-by-uuid-response.dto";
 import GetPostsForChannelQueryDto from "./dto/get-posts-for-channel-query.dto";
+import { IsVerifiedGuard } from "src/auth/verification/is-verified.guard";
 
 @Controller("posts")
 export class PostsController {
@@ -23,7 +24,7 @@ export class PostsController {
   @ApiOperation({ summary: "Create a post in a specified channel." })
   @ApiOkResponse({ description: "Uuid of the newly created post.", type: CreatePostResponseDto })
   @RequirePermissions(Permission.POST_CREATE)
-  @UseGuards(JwtAuthGuard, RequirePermissionsGuard)
+  @UseGuards(JwtAuthGuard, RequirePermissionsGuard, IsVerifiedGuard)
   @Post("/")
   async createPost(@Req() request, @Body() requestDto: CreatePostRequestDto): Promise<CreatePostResponseDto> {
     return await this.postsService.createPost(request.user as UserDto, requestDto);
@@ -59,7 +60,7 @@ export class PostsController {
 
   @ApiOperation({ summary: "Update a post with specified uuid." })
   @RequirePermissions(Permission.POST_UPDATE)
-  @UseGuards(JwtAuthGuard, RequirePermissionsGuard)
+  @UseGuards(JwtAuthGuard, RequirePermissionsGuard, IsVerifiedGuard)
   @Put("/")
   async updatePost(@Req() request, @Body() requestDto: UpdatePostRequestDto) {
     return await this.postsService.updatePost(request.user as UserDto, requestDto);
@@ -67,7 +68,7 @@ export class PostsController {
 
   @ApiOperation({ summary: "Vote on a post" })
   @RequirePermissions(Permission.POST_VOTE)
-  @UseGuards(JwtAuthGuard, RequirePermissionsGuard)
+  @UseGuards(JwtAuthGuard, RequirePermissionsGuard, IsVerifiedGuard)
   @Post("/vote")
   async voteOnPost(@Req() request, @Body() requestDto: VoteOnPostRequestDto) {
     await this.postsService.voteOnPost(request.user as UserDto, requestDto);
@@ -75,7 +76,7 @@ export class PostsController {
 
   @ApiOperation({ summary: "Delete a post with specified uuid." })
   @RequirePermissions(Permission.POST_DELETE)
-  @UseGuards(JwtAuthGuard, RequirePermissionsGuard)
+  @UseGuards(JwtAuthGuard, RequirePermissionsGuard, IsVerifiedGuard)
   @Delete("/")
   async deletePost(@Req() request, @Body() requestDto: DeletePostRequestDto) {
     await this.postsService.deletePost(request.user as UserDto, requestDto);

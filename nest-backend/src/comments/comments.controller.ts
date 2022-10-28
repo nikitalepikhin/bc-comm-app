@@ -1,9 +1,9 @@
 import { Body, Controller, Delete, Get, Param, Post, Put, Query, Req, UseGuards } from "@nestjs/common";
 import { CommentsService } from "./comments.service";
 import { ApiOkResponse, ApiOperation } from "@nestjs/swagger";
-import { Permission, RequirePermissions } from "../auth/permission.enum";
-import { JwtAuthGuard } from "../auth/jwt-auth.guard";
-import { RequirePermissionsGuard } from "../auth/require-permissions.guard";
+import { Permission, RequirePermissions } from "../auth/require-permissions/permission.enum";
+import { JwtAuthGuard } from "../auth/jwt/jwt-auth.guard";
+import { RequirePermissionsGuard } from "../auth/require-permissions/require-permissions.guard";
 import UserDto from "../auth/dto/user.dto";
 import GetPostCommentsResponseDto from "./dto/get-comments-under-post-response.dto";
 import GetPostCommentsParamsDto from "./dto/get-comments-under-post-params.dto";
@@ -15,6 +15,7 @@ import GetCommentCommentsParamsDto from "./dto/get-comment-comments-params.dto";
 import UpdateCommentRequestDto from "./dto/update-comment-request.dto";
 import DeleteCommentRequestDto from "./dto/delete-comment-request.dto";
 import VoteOnCommentRequestDto from "./dto/vote-on-comment-request.dto";
+import { IsVerifiedGuard } from "src/auth/verification/is-verified.guard";
 
 @Controller("comments")
 export class CommentsController {
@@ -23,7 +24,7 @@ export class CommentsController {
   @ApiOperation({ summary: "Create a comment under a post." })
   @ApiOkResponse({ description: "UUID of the newly created comment.", type: CreateCommentResponseDto })
   @RequirePermissions(Permission.COMMENT_CREATE)
-  @UseGuards(JwtAuthGuard, RequirePermissionsGuard)
+  @UseGuards(JwtAuthGuard, RequirePermissionsGuard, IsVerifiedGuard)
   @Post("/")
   async createComment(@Req() request, @Body() requestDto: CreateCommentRequestDto): Promise<CreateCommentResponseDto> {
     return await this.commentsService.createComment(request.user as UserDto, requestDto);
@@ -59,7 +60,7 @@ export class CommentsController {
 
   @ApiOperation({ summary: "Update a comment." })
   @RequirePermissions(Permission.COMMENT_UPDATE)
-  @UseGuards(JwtAuthGuard, RequirePermissionsGuard)
+  @UseGuards(JwtAuthGuard, RequirePermissionsGuard, IsVerifiedGuard)
   @Put("/")
   async updateComment(@Req() request, @Body() requestDto: UpdateCommentRequestDto) {
     await this.commentsService.updateComment(request.user as UserDto, requestDto);
@@ -67,7 +68,7 @@ export class CommentsController {
 
   @ApiOperation({ summary: "Delete a comment." })
   @RequirePermissions(Permission.COMMENT_DELETE)
-  @UseGuards(JwtAuthGuard, RequirePermissionsGuard)
+  @UseGuards(JwtAuthGuard, RequirePermissionsGuard, IsVerifiedGuard)
   @Delete("/")
   async deleteComment(@Req() request, @Body() requestDto: DeleteCommentRequestDto) {
     await this.commentsService.deleteComment(request.user as UserDto, requestDto);
@@ -75,7 +76,7 @@ export class CommentsController {
 
   @ApiOperation({ summary: "Vote on a comment" })
   @RequirePermissions(Permission.COMMENT_VOTE)
-  @UseGuards(JwtAuthGuard, RequirePermissionsGuard)
+  @UseGuards(JwtAuthGuard, RequirePermissionsGuard, IsVerifiedGuard)
   @Post("/vote")
   async voteOnComment(@Req() request, @Body() requestDto: VoteOnCommentRequestDto) {
     await this.commentsService.voteOnComment(request.user as UserDto, requestDto);

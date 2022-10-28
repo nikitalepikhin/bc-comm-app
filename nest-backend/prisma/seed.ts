@@ -1,5 +1,5 @@
 import { PrismaClient, Role } from "@prisma/client";
-import { Permission } from "../src/auth/permission.enum";
+import { Permission } from "../src/auth/require-permissions/permission.enum";
 import { v4 as uuidv4 } from "uuid";
 
 const prisma = new PrismaClient();

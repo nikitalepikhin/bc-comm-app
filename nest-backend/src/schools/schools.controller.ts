@@ -13,10 +13,10 @@ import {
 } from "@nestjs/common";
 import { SchoolsService } from "./schools.service";
 import { ApiOkResponse, ApiOperation } from "@nestjs/swagger";
-import { JwtAuthGuard } from "../auth/jwt-auth.guard";
+import { JwtAuthGuard } from "../auth/jwt/jwt-auth.guard";
 import CreateSchoolDto from "./dto/create-school.dto";
-import { Permission, RequirePermissions } from "../auth/permission.enum";
-import { RequirePermissionsGuard } from "../auth/require-permissions.guard";
+import { Permission, RequirePermissions } from "../auth/require-permissions/permission.enum";
+import { RequirePermissionsGuard } from "../auth/require-permissions/require-permissions.guard";
 import GetSchoolsQueryParamsDto from "./dto/get-schools-query-params.dto";
 import SchoolResponseDto from "./dto/school-response.dto";
 import GetSchoolsResponseDto from "./dto/get-schools-response.dto";
@@ -25,6 +25,7 @@ import UpdateSchoolRequestDto from "./dto/update-school-request.dto";
 import DeleteSchoolDto from "./dto/delete-school.dto";
 import GetSchoolAutocompleteRequestDto from "./dto/get-school-autocomplete-request.dto";
 import GetSchoolAutocompleteResponseDto from "./dto/get-school-autocomplete-response.dto";
+import { IsVerifiedGuard } from "src/auth/verification/is-verified.guard";
 
 @Controller("schools")
 export class SchoolsController {
@@ -32,7 +33,7 @@ export class SchoolsController {
 
   @ApiOperation({ summary: "Create a school." })
   @RequirePermissions(Permission.SCHOOL_CREATE)
-  @UseGuards(JwtAuthGuard, RequirePermissionsGuard)
+  @UseGuards(JwtAuthGuard, RequirePermissionsGuard, IsVerifiedGuard)
   @Post("/")
   async createSchool(@Req() request, @Body() createSchoolDto: CreateSchoolDto) {
     await this.schoolService.createSchool(createSchoolDto, request.user);
@@ -91,7 +92,7 @@ export class SchoolsController {
     summary: "Update a school based on the provided UUID.",
   })
   @RequirePermissions(Permission.SCHOOL_UPDATE)
-  @UseGuards(JwtAuthGuard, RequirePermissionsGuard)
+  @UseGuards(JwtAuthGuard, RequirePermissionsGuard, IsVerifiedGuard)
   @Put("/")
   async updateSchool(@Body() updateSchoolRequestDto: UpdateSchoolRequestDto) {
     return await this.schoolService.updateSchool(updateSchoolRequestDto);
@@ -101,7 +102,7 @@ export class SchoolsController {
     summary: "Delete a school based on the provided UUID.",
   })
   @RequirePermissions(Permission.SCHOOL_DELETE)
-  @UseGuards(JwtAuthGuard, RequirePermissionsGuard)
+  @UseGuards(JwtAuthGuard, RequirePermissionsGuard, IsVerifiedGuard)
   @Delete("/")
   async deleteSchool(@Body() deleteSchoolDto: DeleteSchoolDto) {
     return await this.schoolService.deleteSchool(deleteSchoolDto);

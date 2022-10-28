@@ -292,4 +292,22 @@ export class UsersService {
       await tx.user.delete({ where: { uuid } });
     });
   }
+
+  async checkUserVerification(user: UserDto): Promise<boolean> {
+    if (user.role === "REPRESENTATIVE") {
+      const { verified } = await this.prisma.representative.findUnique({
+        where: { userUuid: user.uuid },
+        select: { verified: true },
+      });
+      return verified;
+    } else if (user.role === "TEACHER") {
+      const { verified } = await this.prisma.teacher.findUnique({
+        where: { userUuid: user.uuid },
+        select: { verified: true },
+      });
+      return verified;
+    } else {
+      return true;
+    }
+  }
 }
