@@ -20,6 +20,7 @@ const validationSchema = yup.object({
   password: yup
     .string()
     .required("Required")
+    .test("length", "Value is too long", (value) => (value ? value.length <= 50 : true))
     .test("match", "Passwords do not match.", (value, { parent }) => {
       if (parent.repeat === undefined || parent.repeat.length === 0) {
         return true;
@@ -30,6 +31,7 @@ const validationSchema = yup.object({
   repeat: yup
     .string()
     .required("Required")
+    .test("length", "Value is too long", (value) => (value ? value.length <= 50 : true))
     .test("match", "Passwords do not match.", (value, { parent }) => {
       if (parent.password === undefined || parent.password.length === 0) {
         return true;

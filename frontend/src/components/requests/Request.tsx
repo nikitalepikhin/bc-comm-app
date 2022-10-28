@@ -9,6 +9,7 @@ import Button from "../uilib/Button";
 import Container from "../uilib/Container";
 import BaseDialog from "../uilib/dialog/BaseDialog";
 import Textarea from "../uilib/Textarea";
+import * as yup from "yup";
 
 const initialValues = {
   reason: "",
@@ -18,6 +19,13 @@ interface Props {
   request: RepresentativeRequestDto | TeacherRequestDto;
   type: "TEACHER" | "REPRESENTATIVE";
 }
+
+const validationSchema = yup.object({
+  reason: yup
+    .string()
+    .required("Required")
+    .test((value) => (value ? value.length <= 300 : true)),
+});
 
 export default function Request(props: Props) {
   const { request, type } = props;
@@ -37,6 +45,9 @@ export default function Request(props: Props) {
 
   return (
     <Formik
+      validateOnChange
+      validateOnBlur
+      validationSchema={validationSchema}
       initialValues={initialValues}
       onSubmit={({ reason }) => {
         verifyUser({

@@ -22,7 +22,10 @@ interface FormValues {
 }
 
 const validationSchema = yup.object({
-  body: yup.string().required("Required").max(10000),
+  body: yup
+    .string()
+    .required("Required")
+    .test("length", "Value is too long", (value) => (value ? value.length <= 10000 : true)),
 });
 
 export default function CommentForm(props: Props) {

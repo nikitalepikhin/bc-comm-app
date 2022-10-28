@@ -43,12 +43,19 @@ const validationSchema = yup.object({
   email: yup
     .string()
     .matches(/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/, "Invalid format")
+    .test("length", "Value is too long.", (value) => (value ? value.length <= 255 : true))
     .required("Required"),
-  password: yup.string().required("Required"),
-  name: yup.string().when("type", {
-    is: (type: FormValuesType["type"]) => type === "teacher" || type === "representative",
-    then: (schema) => schema.required("Required"),
-  }),
+  password: yup
+    .string()
+    .test("length", "Value is too long", (value) => (value ? value.length <= 50 : true))
+    .required("Required"),
+  name: yup
+    .string()
+    .test("length", "Value is too long", (value) => (value ? value.length <= 128 : true))
+    .when("type", {
+      is: (type: FormValuesType["type"]) => type === "teacher" || type === "representative",
+      then: (schema) => schema.required("Required"),
+    }),
   school: yup
     .object()
     .nullable()

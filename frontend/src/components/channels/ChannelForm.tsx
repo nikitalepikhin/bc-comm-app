@@ -32,14 +32,33 @@ interface Props {
 }
 
 const validationSchema = yup.object({
-  textId: yup.string().required("Required"), // todo - check that the textId does not contain spaces and is otherwise valid
-  name: yup.string().required("Required"),
-  description: yup.string().nullable(),
+  textId: yup
+    .string()
+    .test("format", "Must only contain numbers and letters.", (value) => (value ? /^[a-z0-9]$/.test(value) : true))
+    .test("length", "Value is too long", (value) => (value ? value.length <= 20 : true))
+    .required("Required"),
+  name: yup
+    .string()
+    .test("length", "Value is too long", (value) => (value ? value.length <= 255 : true))
+    .required("Required"),
+  description: yup
+    .string()
+    .test("length", "Value is too long", (value) => (value ? value.length <= 4000 : true))
+    .nullable(),
 });
 
 export default function ChannelForm(props: Props) {
-  const { initialValues, onSubmit, textIdError, setTextIdError, mode, isError, isLoading, channelError, getChannel } =
-    props;
+  const {
+    initialValues,
+    onSubmit,
+    textIdError: channelIdError,
+    setTextIdError,
+    mode,
+    isError,
+    isLoading,
+    channelError,
+    getChannel,
+  } = props;
   const { textId } = useParams() as { textId: string };
   const [checkChannelIdAvailability] = useLazyCheckChannelIdAvailabilityQuery();
   const [isExiting, setIsExiting] = useState(false);
@@ -50,7 +69,7 @@ export default function ChannelForm(props: Props) {
       if (value.length > 0) {
         const data = await checkChannelIdAvailability({ value }, true).unwrap();
         if (data.exists) {
-          setTextIdError("Specified text ID is already taken");
+          setTextIdError("Channel ID is already taken");
         } else {
           setTextIdError(undefined);
         }
@@ -101,7 +120,7 @@ export default function ChannelForm(props: Props) {
                 loading={isLoading}
                 variant="accent"
                 type="button"
-                disabled={!isValid || textIdError !== undefined || !dirty}
+                disabled={!isValid || channelIdError !== undefined || !dirty}
               >
                 {`${mode === "create" ? "Create" : "Update"} Channel`}
               </Button>
@@ -117,8 +136,8 @@ export default function ChannelForm(props: Props) {
                       debouncedCheckChannelIdAvailability(e.target.value);
                     }}
                     fullWidth
-                    labelValue="Text ID"
-                    error={meta.error && meta.touched ? meta.error : undefined}
+                    labelValue="Channel ID"
+                    error={channelIdError ? channelIdError : meta.error && meta.touched ? meta.error : undefined}
                   />
                 )}
               </Field>

@@ -6,6 +6,7 @@ import { useAppSelector } from "../../app/redux/hooks";
 import Alert from "../uilib/Alert";
 import Button from "../uilib/Button";
 import Input from "../uilib/Input";
+import * as yup from "yup";
 
 interface FormValues {
   email: string;
@@ -14,6 +15,14 @@ interface FormValues {
 const initialValues: FormValues = {
   email: "",
 };
+
+const validationSchema = yup.object({
+  email: yup
+    .string()
+    .matches(/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/, "Invalid format")
+    .test("length", "Value is too long.", (value) => (value ? value.length <= 255 : true))
+    .required("Required"),
+});
 
 export default function EditEmail() {
   const { email } = useAppSelector((state) => state.auth.user);
@@ -34,6 +43,9 @@ export default function EditEmail() {
         <div className="text-secondary dark:text-slate-400">{isLoading ? "Loading..." : email}</div>
       </div>
       <Formik
+        validateOnChange
+        validateOnBlur
+        validationSchema={validationSchema}
         initialValues={initialValues}
         onSubmit={({ email }, { resetForm }) => {
           updateEmail({ updateUserEmailRequestDto: { email } });

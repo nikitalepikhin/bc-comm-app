@@ -38,30 +38,30 @@ interface FormValues {
 const validationSchema = yup.object({
   name: yup
     .string()
-    .required("Required.")
-    .test("length test", "Value is too long.", (value) => (value ? value.length <= 256 : false)),
+    .required("Required")
+    .test("length", "Value is too long", (value) => (value ? value.length <= 256 : true)),
   countryCode: yup
     .string()
-    .required("Required.")
-    .test("length test", "Value is too long.", (value) => (value ? value.length <= 3 : false))
-    .test("value test", "Must be a 3 letter code.", (value) => (value ? /^[a-zA-Z]{3}$/.test(value) : false)),
+    .required("Required")
+    .test("length", "Value is too long", (value) => (value ? value.length <= 3 : true))
+    .test("value", "Must be a 3 letter code", (value) => (value ? /^[a-zA-Z]{3}$/.test(value) : true)),
   city: yup
     .string()
-    .required("Required.")
-    .test("length test", "Value is too long.", (value) => (value ? value.length <= 128 : false)),
+    .required("Required")
+    .test("length", "Value is too long", (value) => (value ? value.length <= 128 : true)),
   addressLineOne: yup
     .string()
-    .required("Required.")
-    .test("length test", "Value is too long.", (value) => (value ? value.length <= 256 : false)),
+    .required("Required")
+    .test("length", "Value is too long", (value) => (value ? value.length <= 256 : true)),
   addressLineTwo: yup
     .string()
     .nullable()
-    .test("length test", "Value is too long.", (value) => (value ? value.length <= 256 : true)),
+    .test("length", "Value is too long", (value) => (value ? value.length <= 256 : true)),
   postalCode: yup
     .string()
-    .required("Required.")
-    .test("length test", "Value is too long.", (value) => (value ? value.length <= 10 : false))
-    .test("value test", "Invalid format.", (value) => (value ? /^[a-zA-Z0-9\- ]{3,10}$/.test(value) : false)),
+    .required("Required")
+    .test("length", "Value is too long", (value) => (value ? value.length <= 10 : true))
+    .test("value", "Invalid format", (value) => (value ? /^[a-zA-Z0-9\- ]{3,10}$/.test(value) : true)),
 });
 
 const initialState: FormValues = {

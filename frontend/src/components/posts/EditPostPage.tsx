@@ -22,7 +22,7 @@ interface EditPostFormValues {
 const validationSchema = yup.object({
   body: yup
     .string()
-    .test("You have reached a limit of 40000 characters.", (value) => (value ? value.length <= 40000 : false))
+    .test("Body is too long", (value) => (value ? value.length <= 40000 : true))
     .required("Required"),
 });
 
@@ -54,6 +54,8 @@ export default function EditPostPage() {
 
   return (
     <Formik
+      validateOnChange
+      validateOnBlur
       initialValues={initialValues}
       validationSchema={validationSchema}
       enableReinitialize
@@ -117,6 +119,7 @@ export default function EditPostPage() {
                     showCharCount
                     maxLength={40000}
                     size="sm"
+                    resize
                   />
                 )}
               </Field>

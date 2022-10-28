@@ -10,11 +10,20 @@ import DisplayField from "../uilib/DisplayField";
 import { useAppSelector } from "../../app/redux/hooks";
 import LoadingSpinner from "../uilib/LoadingSpinner";
 import Alert from "../uilib/Alert";
+import * as yup from "yup";
 
 interface FormValues {
   name: string | undefined;
   bio: string | undefined;
 }
+
+const validationSchema = yup.object({
+  name: yup
+    .string()
+    .required("Required")
+    .test("length", "Value is too long", (value) => (value ? value.length <= 128 : true)),
+  bio: yup.string().test("length", "Value is too long", (value) => (value ? value.length <= 1024 : true)),
+});
 
 export default function EditProfile() {
   const { role } = useAppSelector((state) => state.auth.user);
@@ -46,6 +55,9 @@ export default function EditProfile() {
       </Alert>
       {profileSuccess && (
         <Formik
+          validateOnChange
+          validateOnBlur
+          validationSchema={validationSchema}
           enableReinitialize
           initialValues={initialValues}
           onSubmit={(values) => {
