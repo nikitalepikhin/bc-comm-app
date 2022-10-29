@@ -20,7 +20,7 @@ interface Props {
 export default function AboutChannel(props: Props) {
   const { description, memberCount, created, isOwner, owner } = props;
   const { textId } = useParams() as { textId: string };
-  const { role } = useAppSelector((state) => state.auth.user);
+  const { role, verified } = useAppSelector((state) => state.auth.user);
   const navigate = useNavigate();
 
   return (
@@ -63,6 +63,7 @@ export default function AboutChannel(props: Props) {
             <Button
               type="button"
               variant="accent"
+              disabled={!verified}
               onClick={() => navigate(`/channels/${textId}/post/new`)}
               className="w-full"
             >

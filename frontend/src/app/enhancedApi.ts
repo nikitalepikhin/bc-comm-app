@@ -469,6 +469,7 @@ export const {
   useGetRepresentativeVerificationRequestsQuery,
   useGetTeacherVerificationRequestsQuery,
   useVerifyUserMutation,
+  useLazyRequestVerificationQuery,
   useLazyGetAllSchoolsQuery,
   useGetSchoolByUuidQuery,
   useCreateSchoolMutation,

@@ -16,6 +16,7 @@ import NavbarButton from "./NavbarButton";
 import NavbarItem from "./NavbarItem";
 import ProfileMenu from "./ProfileMenu";
 import ThemeSelector from "./ThemeSelector";
+import VerificationWarning from "./VerificationWarning";
 
 export default function Navbar() {
   const navigate = useNavigate();
@@ -67,22 +68,7 @@ export default function Navbar() {
           <ProfileMenu closeMenu={() => setOpen(false)} />
         </div>
       </nav>
-      {(role === "REPRESENTATIVE" || role === "TEACHER") && !verified && (
-        <div
-          className={classNames(
-            "bg-orange-400 dark:bg-orange-800 shadow dark:shadow-gray-800",
-            "py-2 px-3 w-full z-10",
-            "text-center dark:text-white"
-          )}
-        >
-          <div className="font-bold">{`Account verification is required ${
-            role === "REPRESENTATIVE" ? "to manage your school" : "to communicate with others"
-          }.`}</div>
-          <div className="text-sm">{`Wait to be verified by ${
-            role === "REPRESENTATIVE" ? "an admin" : "your school's representative or an admin"
-          }.`}</div>
-        </div>
-      )}
+      {(role === "REPRESENTATIVE" || role === "TEACHER") && !!!verified && <VerificationWarning />}
       {open && (
         <div
           className={classNames(

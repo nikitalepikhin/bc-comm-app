@@ -22,4 +22,10 @@ export default class UserDataResponseDto {
 
   @ApiProperty()
   verified: boolean;
+
+  @ApiProperty()
+  requestsVerification: boolean;
+
+  @ApiProperty({ required: false })
+  verificationMessage?: string;
 }

@@ -154,12 +154,6 @@ const injectedRtkApi = api.injectEndpoints({
     voteOnComment: build.mutation<VoteOnCommentApiResponse, VoteOnCommentApiArg>({
       query: (queryArg) => ({ url: `/comments/vote`, method: "POST", body: queryArg.voteOnCommentRequestDto }),
     }),
-    hello: build.query<HelloApiResponse, HelloApiArg>({
-      query: () => ({ url: `/test/hello` }),
-    }),
-    helloNoAuth: build.query<HelloNoAuthApiResponse, HelloNoAuthApiArg>({
-      query: () => ({ url: `/test/guest` }),
-    }),
     getRepresentativeVerificationRequests: build.query<
       GetRepresentativeVerificationRequestsApiResponse,
       GetRepresentativeVerificationRequestsApiArg
@@ -361,10 +355,6 @@ export type VoteOnCommentApiResponse = unknown;
 export type VoteOnCommentApiArg = {
   voteOnCommentRequestDto: VoteOnCommentRequestDto;
 };
-export type HelloApiResponse = unknown;
-export type HelloApiArg = void;
-export type HelloNoAuthApiResponse = unknown;
-export type HelloNoAuthApiArg = void;
 export type GetRepresentativeVerificationRequestsApiResponse =
   /** status 200 Representative verification requests. */ GetRepresentativeRequestsDto;
 export type GetRepresentativeVerificationRequestsApiArg = void;
@@ -385,6 +375,8 @@ export type UserDataResponseDto = {
   uuid: string;
   schoolUuid?: string;
   verified: boolean;
+  requestsVerification: boolean;
+  verificationMessage?: string;
 };
 export type LogInUserRequestDto = {
   email: string;
@@ -764,8 +756,6 @@ export const {
   useGetPostCommentsQuery,
   useGetCommentCommentsQuery,
   useVoteOnCommentMutation,
-  useHelloQuery,
-  useHelloNoAuthQuery,
   useGetRepresentativeVerificationRequestsQuery,
   useGetTeacherVerificationRequestsQuery,
   useGetUserFeedQuery,

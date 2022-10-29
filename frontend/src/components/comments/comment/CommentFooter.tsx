@@ -1,6 +1,7 @@
+import { useParams } from "react-router-dom";
+import { useAppSelector } from "../../../app/redux/hooks";
 import Votes from "../../common/Votes";
 import Button from "../../uilib/Button";
-import { useParams } from "react-router-dom";
 
 interface Props {
   uuid: string;
@@ -20,16 +21,24 @@ export const onCommentShare = (textId: string, postUuid: string, uuid: string) =
 export default function CommentFooter(props: Props) {
   const { uuid, postUuid, isAuthor, dir, up, down, setIsEditing, setIsReplying, setIsDeleting } = props;
   const { textId } = useParams() as { textId: string };
+  const { verified } = useAppSelector((state) => state.auth.user);
 
   return (
     <div className="w-full flex flex-row justify-start items-center flex-wrap gap-1">
       <Votes uuid={uuid} currentVote={dir} up={up} down={down} mode="comment" />
-      <Button type="button" variant="standard" onClick={() => setIsReplying(true)} className="py-1 px-2 ml-2">
+      <Button
+        type="button"
+        disabled={!verified}
+        variant="standard"
+        onClick={() => setIsReplying(true)}
+        className="py-1 px-2 ml-2"
+      >
         Reply
       </Button>
       {isAuthor && (
         <Button
           type="button"
+          disabled={!verified}
           variant="standard"
           onClick={() => setIsEditing(true)}
           className="py-1 px-2 hidden md:block"
@@ -48,6 +57,7 @@ export default function CommentFooter(props: Props) {
       {isAuthor && (
         <Button
           type="button"
+          disabled={!verified}
           variant="standard"
           onClick={() => setIsDeleting(true)}
           className="py-1 px-2 hidden md:block"

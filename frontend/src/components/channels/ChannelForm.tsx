@@ -12,6 +12,7 @@ import classNames from "classnames";
 import { useNavigate, useParams } from "react-router-dom";
 import Dialog from "../uilib/dialog/Dialog";
 import Alert from "../uilib/Alert";
+import { useAppSelector } from "../../app/redux/hooks";
 
 export interface FormValues {
   textId: string;
@@ -34,8 +35,20 @@ interface Props {
 const validationSchema = yup.object({
   textId: yup
     .string()
-    .test("format", "Must only contain numbers and letters.", (value) => (value ? /^[a-z0-9]$/.test(value) : true))
-    .test("length", "Value is too long", (value) => (value ? value.length <= 20 : true))
+    .test("format", "Must only contain numbers and letters.", (value) => {
+      if (value) {
+        console.log(value, /^[a-z0-9]{2,}$/.test(value));
+        return /^[a-z0-9]{2,}$/.test(value);
+      }
+      return true;
+    })
+    .test("length", "Must be between 2 and 20 characters", (value) => {
+      if (value) {
+        return value.length <= 20 && value.length >= 2;
+      } else {
+        return true;
+      }
+    })
     .required("Required"),
   name: yup
     .string()
@@ -63,6 +76,7 @@ export default function ChannelForm(props: Props) {
   const [checkChannelIdAvailability] = useLazyCheckChannelIdAvailabilityQuery();
   const [isExiting, setIsExiting] = useState(false);
   const navigate = useNavigate();
+  const { verified } = useAppSelector((state) => state.auth.user);
 
   const debouncedCheckChannelIdAvailability = useCallback(
     debounce(async (value: string) => {
@@ -120,7 +134,7 @@ export default function ChannelForm(props: Props) {
                 loading={isLoading}
                 variant="accent"
                 type="button"
-                disabled={!isValid || channelIdError !== undefined || !dirty}
+                disabled={!isValid || channelIdError !== undefined || !dirty || !verified}
               >
                 {`${mode === "create" ? "Create" : "Update"} Channel`}
               </Button>
@@ -131,6 +145,7 @@ export default function ChannelForm(props: Props) {
                 {({ field, meta }: FieldProps) => (
                   <Input
                     {...field}
+                    disabled={!verified}
                     onChange={(e: ChangeEvent<HTMLInputElement>) => {
                       field.onChange(e);
                       debouncedCheckChannelIdAvailability(e.target.value);
@@ -144,6 +159,7 @@ export default function ChannelForm(props: Props) {
               <Field name="name">
                 {({ field, meta }: FieldProps) => (
                   <Input
+                    disabled={!verified}
                     {...field}
                     fullWidth
                     labelValue="Name"
@@ -155,6 +171,7 @@ export default function ChannelForm(props: Props) {
                 {({ field, meta }: FieldProps) => (
                   <Textarea
                     {...field}
+                    disabled={!verified}
                     error={meta.error && meta.touched ? meta.error : undefined}
                     labelValue="Description"
                     fullWidth

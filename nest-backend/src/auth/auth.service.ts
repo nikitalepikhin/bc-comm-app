@@ -39,21 +39,23 @@ export class AuthService {
   }
 
   async logInUser(user: UserDto) {
-    const { schoolUuid, verified } = await this.getAdditionalUserData(user);
+    const { schoolUuid, verified, requestsVerification, verificationMessage } = await this.getAdditionalUserData(user);
     const { username } = await this.usersService.findByUuid(user.uuid);
     return {
       accessToken: await this.createSignedAccessToken(user),
       refreshToken: await this.createRefreshTokenForNewFamily(user),
-      schoolUuid: schoolUuid ? schoolUuid : undefined,
+      schoolUuid: schoolUuid ?? undefined,
       verified,
       username,
+      requestsVerification,
+      verificationMessage,
     };
   }
 
   async refreshToken(user: UserRefreshDto, authCookie: string) {
     const refreshToken = await this.refreshTokensService.setRefreshTokenToUsedByValue(authCookie);
     const { username } = await this.usersService.findByUuid(user.uuid);
-    const { schoolUuid, verified } = await this.getAdditionalUserData(user);
+    const { schoolUuid, verified, requestsVerification, verificationMessage } = await this.getAdditionalUserData(user);
     return {
       accessToken: await this.createSignedAccessToken({
         email: user.email,
@@ -64,6 +66,8 @@ export class AuthService {
       username,
       schoolUuid,
       verified,
+      requestsVerification,
+      verificationMessage,
     };
   }
 
@@ -129,19 +133,35 @@ export class AuthService {
     return refreshToken;
   }
 
-  private async getAdditionalUserData(user: UserDto) {
-    let schoolUuid: string | undefined;
-    let verified: boolean | undefined;
+  private async getAdditionalUserData(user: UserDto): Promise<{
+    schoolUuid?: string;
+    verified: boolean;
+    requestsVerification: boolean;
+    verificationMessage?: string;
+  }> {
+    let schoolUuid: string;
+    let verified: boolean;
+    let requestsVerification: boolean;
+    let verificationMessage: string;
     if (user.role === "REPRESENTATIVE") {
       const representative = await this.usersService.getRepresentativeByUuid(user.uuid);
       schoolUuid = representative.schoolUuid;
       verified = representative.verified;
+      requestsVerification = representative.requestsVerification;
+      verificationMessage = representative.verificationMessage;
     }
     if (user.role === "TEACHER") {
       const teacher = await this.usersService.getTeacherByUuid(user.uuid);
       verified = teacher.verified;
+      requestsVerification = teacher.requestsVerification;
+      verificationMessage = teacher.verificationMessage;
     }
-    return { schoolUuid, verified };
+    return {
+      schoolUuid: schoolUuid ?? undefined,
+      verified: verified ?? true,
+      requestsVerification: requestsVerification ?? false,
+      verificationMessage: verificationMessage ?? undefined,
+    };
   }
 
   async updateUserPassword(user: UserDto, requestDto: UpdateUserPasswordRequestDto) {

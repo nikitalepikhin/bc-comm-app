@@ -11,6 +11,7 @@ import Input from "../uilib/Input";
 import LoadingSpinner from "../uilib/LoadingSpinner";
 import Textarea from "../uilib/Textarea";
 import * as yup from "yup";
+import { useAppSelector } from "../../app/redux/hooks";
 
 interface AddPostFormValues {
   title: string;
@@ -44,6 +45,7 @@ export default function AddPostPage() {
     refetch: getChannel,
   } = useGetChannelByTextIdQuery({ textId });
   const [isExiting, setIsExiting] = useState(false);
+  const { verified } = useAppSelector((state) => state.auth.user);
 
   if (getChannelByTextIdIsFetching) {
     return <LoadingSpinner />;
@@ -96,7 +98,7 @@ export default function AddPostPage() {
                   onClick={() => handleSubmit()}
                   variant="accent"
                   loading={isLoading}
-                  disabled={!isValid || !dirty}
+                  disabled={!isValid || !dirty || !verified}
                 >
                   Create Post
                 </Button>
@@ -110,6 +112,7 @@ export default function AddPostPage() {
                   {({ field, meta }: FieldProps) => (
                     <Input
                       {...field}
+                      disabled={!verified}
                       error={meta.error && meta.touched ? meta.error : undefined}
                       labelValue="Title"
                       fullWidth
@@ -120,6 +123,7 @@ export default function AddPostPage() {
                   {({ field, meta }: FieldProps) => (
                     <Textarea
                       {...field}
+                      disabled={!verified}
                       error={meta.error && meta.touched ? meta.error : undefined}
                       labelValue="Body"
                       fullWidth

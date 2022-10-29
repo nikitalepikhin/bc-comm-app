@@ -29,11 +29,18 @@ export class AuthController {
   @UseGuards(LocalAuthGuard)
   @Post("login")
   async logIn(@Req() request, @Res({ passthrough: true }) response: Response): Promise<UserDataResponseDto> {
-    const { accessToken, refreshToken, schoolUuid, verified, username } = await this.authService.logInUser(
-      request.user as UserDto,
-    );
+    const { accessToken, refreshToken, schoolUuid, verified, username, requestsVerification, verificationMessage } =
+      await this.authService.logInUser(request.user as UserDto);
     response.cookie("auth", refreshToken, this.cookieService.generateAuthCookieOptions());
-    return { accessToken, schoolUuid, verified, username, ...request.user } as UserDataResponseDto;
+    return {
+      accessToken,
+      schoolUuid,
+      verified,
+      username,
+      requestsVerification,
+      verificationMessage,
+      ...request.user,
+    } as UserDataResponseDto;
   }
 
   @ApiOperation({ summary: "Sign up a base user." })
@@ -60,10 +67,8 @@ export class AuthController {
   @Post("refresh")
   async refreshToken(@Req() request, @Res({ passthrough: true }) response: Response): Promise<UserDataResponseDto> {
     const authCookie = request.cookies.auth as string; // guaranteed to be valid and not used by the JwtRefreshAuthGuard
-    const { accessToken, refreshToken, username, schoolUuid, verified } = await this.authService.refreshToken(
-      request.user,
-      authCookie,
-    );
+    const { accessToken, refreshToken, username, schoolUuid, verified, requestsVerification, verificationMessage } =
+      await this.authService.refreshToken(request.user, authCookie);
     response.cookie("auth", refreshToken, this.cookieService.generateAuthCookieOptions());
     return {
       accessToken,
@@ -73,6 +78,8 @@ export class AuthController {
       role: request.user.role,
       schoolUuid,
       verified,
+      requestsVerification,
+      verificationMessage,
     };
   }
 

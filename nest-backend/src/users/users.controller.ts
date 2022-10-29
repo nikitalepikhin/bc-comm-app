@@ -33,8 +33,7 @@ export class UsersController {
   }
 
   @ApiOperation({ summary: "Request verification for teachers and representatives." })
-  @RequirePermissions(Permission.TEACHER_REQ_VERIFY, Permission.REP_REQ_VERIFY)
-  @UseGuards(JwtAuthGuard, RequirePermissionsGuard, IsNotVerifiedGuard)
+  @UseGuards(JwtAuthGuard, IsNotVerifiedGuard)
   @Get("/request")
   async requestVerification(@Req() request) {
     await this.usersService.requestVerification(request.user as UserDto);

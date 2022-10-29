@@ -15,7 +15,7 @@ interface Props {
 export default function ChannelHeader(props: Props) {
   const { name, uuid, isMember } = props;
   const { textId } = useParams() as { textId: string };
-  const { role } = useAppSelector((state) => state.auth.user);
+  const { role, verified } = useAppSelector((state) => state.auth.user);
   const [toggleMembership] = useToggleMembershipMutation();
 
   return (
@@ -38,6 +38,7 @@ export default function ChannelHeader(props: Props) {
         <div className="flex gap-2">
           <Button
             variant="accent"
+            disabled={!verified}
             onClick={() => {
               if (uuid) {
                 toggleMembership({

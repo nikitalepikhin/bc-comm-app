@@ -7,6 +7,7 @@ import Textarea from "../uilib/Textarea";
 import Dialog from "../uilib/dialog/Dialog";
 import React, { useEffect } from "react";
 import Alert from "../uilib/Alert";
+import { useAppSelector } from "../../app/redux/hooks";
 
 interface Props {
   postUuid: string;
@@ -35,6 +36,7 @@ export default function CommentForm(props: Props) {
   const initialValues: FormValues = {
     body: body ?? "",
   };
+  const { verified } = useAppSelector((state) => state.auth.user);
 
   const isCreating = parentUuid === undefined && uuid === undefined;
   const isEditing = uuid !== undefined;
@@ -70,6 +72,7 @@ export default function CommentForm(props: Props) {
                 {({ field, meta }: FieldProps) => (
                   <Textarea
                     {...field}
+                    disabled={!verified}
                     fullWidth
                     size={isEditing ? "xxs" : "xs"}
                     error={!isCreating && meta.touched && meta.error ? meta.error : undefined}
@@ -90,7 +93,7 @@ export default function CommentForm(props: Props) {
                   key="comment"
                   type="button"
                   variant="accent"
-                  disabled={!dirty || !isValid}
+                  disabled={!dirty || !isValid || !verified}
                   loading={isLoading}
                   onClick={() => {
                     if (setInitialDatetime !== undefined) {

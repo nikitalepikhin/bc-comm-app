@@ -17,7 +17,7 @@ export default function ProfilePage() {
       <EditAccount />
       <div className="flex flex-col justify-start items-center gap-2 w-full">
         {(role === "REPRESENTATIVE" || role === "TEACHER") && <EditProfile />}
-        <DeleteAccount />
+        {(role === "STUDENT" || role === "TEACHER") && <DeleteAccount />}
       </div>
     </PageWrapper>
   );

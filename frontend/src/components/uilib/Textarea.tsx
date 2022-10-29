@@ -93,12 +93,14 @@ function Textarea(props: Props, ref: ForwardedRef<HTMLTextAreaElement>) {
           }
         )}
       />
-      {showCharCount && value && (
-        <div className="self-end text-sm text-secondary">{`${value?.length}${maxLength ? " / " : ""}${
-          maxLength ? maxLength : ""
-        }`}</div>
-      )}
-      {error && <div className={classNames("text-sm text-red-600")}>{error}</div>}
+      <div className="flex flex-row justify-between items-start gap-2 flex-wrap w-full">
+        {error && <div className={classNames("text-sm text-red-600")}>{error}</div>}
+        {showCharCount && value && (
+          <div className="self-end text-sm text-secondary">{`${value?.length}${maxLength ? " / " : ""}${
+            maxLength ? maxLength : ""
+          }`}</div>
+        )}
+      </div>
     </div>
   );
 }

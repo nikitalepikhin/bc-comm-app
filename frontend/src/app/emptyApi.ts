@@ -2,6 +2,7 @@ import { BaseQueryFn, createApi, FetchArgs, fetchBaseQuery, FetchBaseQueryError 
 import { RootState, store } from "./redux/store";
 import { Mutex } from "async-mutex";
 import { logOut, refreshToken } from "./redux/slice/authSlice";
+import { RefreshTokenApiResponse, UserDataResponseDto } from "./api";
 
 const mutex = new Mutex();
 
@@ -39,7 +40,7 @@ const baseQueryWithReauth: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQue
         const refreshResult = await baseQuery({ url: "/auth/refresh", method: "POST" }, api, extraOptions);
         if (refreshResult.data) {
           console.log("successful token refresh");
-          api.dispatch(refreshToken(refreshResult.data));
+          api.dispatch(refreshToken(refreshResult.data as UserDataResponseDto));
           console.log(`retrying the initial request to ${api.endpoint}`);
           result = await baseQuery(args, api, extraOptions);
         } else {

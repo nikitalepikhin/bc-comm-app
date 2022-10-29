@@ -11,7 +11,13 @@ import BaseDialog from "../uilib/dialog/BaseDialog";
 import Textarea from "../uilib/Textarea";
 import * as yup from "yup";
 
-const initialValues = {
+interface FormValues {
+  approve: boolean;
+  reason: string;
+}
+
+const initialValues: FormValues = {
+  approve: true,
   reason: "",
 };
 
@@ -23,8 +29,20 @@ interface Props {
 const validationSchema = yup.object({
   reason: yup
     .string()
-    .required("Required")
-    .test((value) => (value ? value.length <= 300 : true)),
+    .test("length", "Value is too long", (value, { parent }) => {
+      if (parent.approve) {
+        return true;
+      } else {
+        return value ? value.length <= 300 : true;
+      }
+    })
+    .test("required", "Required", (value, { parent }) => {
+      if (parent.approve) {
+        return true;
+      } else {
+        return value !== undefined && value.length > 0;
+      }
+    }),
 });
 
 export default function Request(props: Props) {
@@ -60,13 +78,22 @@ export default function Request(props: Props) {
         });
       }}
     >
-      {({ handleSubmit, values }) => (
+      {({ handleSubmit, values, setFieldValue }) => (
         <>
+          {console.log(values)}
           <Form>
             <Container
               title={type === "TEACHER" ? "Teacher Request" : "Representative Request"}
               actions={[
-                <Button key="decline" type="button" variant="danger" onClick={() => setShowDialog(true)}>
+                <Button
+                  key="decline"
+                  type="button"
+                  variant="danger"
+                  onClick={() => {
+                    setShowDialog(true);
+                    setFieldValue("approve", false);
+                  }}
+                >
                   Decline
                 </Button>,
                 <Button
@@ -126,34 +153,41 @@ export default function Request(props: Props) {
                 </Alert>
               </div>
             </Container>
+            <BaseDialog
+              show={showDialog}
+              onClose={() => {
+                setShowDialog(false);
+                setFieldValue("approve", true);
+              }}
+              title="Decline Request"
+            >
+              <div className={classNames("flex flex-col justify-start items-center gap-2", "p-3 pt-0")}>
+                <Field name="reason">
+                  {({ field, meta }: FieldProps) => (
+                    <Textarea
+                      {...field}
+                      fullWidth
+                      labelValue="Reason"
+                      error={meta.touched && meta.error ? meta.error : undefined}
+                      placeholder="Please provide a reason for declining verification here..."
+                      showCharCount
+                      maxLength={300}
+                    />
+                  )}
+                </Field>
+                <Button
+                  type="button"
+                  variant="danger"
+                  loading={isLoading}
+                  onClick={() => handleSubmit()}
+                  disabled={values.reason.length === 0}
+                  className="ml-auto"
+                >
+                  Decline
+                </Button>
+              </div>
+            </BaseDialog>
           </Form>
-          <BaseDialog show={showDialog} onClose={() => setShowDialog(false)} title="Decline Request">
-            <div className={classNames("flex flex-col justify-start items-center gap-2", "p-3 pt-0")}>
-              <Field name="reason">
-                {({ field, meta }: FieldProps) => (
-                  <Textarea
-                    {...field}
-                    fullWidth
-                    labelValue="Reason"
-                    error={meta.touched && meta.error ? meta.error : undefined}
-                    placeholder="Please provide a reason for declining verification here..."
-                    showCharCount
-                    maxLength={300}
-                  />
-                )}
-              </Field>
-              <Button
-                type="button"
-                variant="danger"
-                loading={isLoading}
-                onClick={() => handleSubmit()}
-                disabled={values.reason.length === 0}
-                className="ml-auto"
-              >
-                Decline
-              </Button>
-            </div>
-          </BaseDialog>
         </>
       )}
     </Formik>

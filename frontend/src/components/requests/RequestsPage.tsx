@@ -1,11 +1,10 @@
-import React from "react";
 import { useAppSelector } from "../../app/redux/hooks";
-import Tabs from "../uilib/Tabs";
-import TeacherRequests from "./TeacherRequests";
-import RepresentativeRequests from "./RepresentativeRequests";
 import PageWrapper from "../uilib/PageWrapper";
+import Tabs from "../uilib/Tabs";
+import RepresentativeRequests from "./RepresentativeRequests";
+import TeacherRequests from "./TeacherRequests";
 
-export default function RequestsPage(){
+export default function RequestsPage() {
   const { role } = useAppSelector((state) => state.auth.user);
 
   return (
@@ -18,4 +17,4 @@ export default function RequestsPage(){
       />
     </PageWrapper>
   );
-};
+}

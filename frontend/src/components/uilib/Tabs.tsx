@@ -6,6 +6,7 @@ interface TabItem {
   name: string;
   render?: boolean;
   element: ReactElement;
+  onClick?: () => void;
 }
 
 interface Props {
@@ -64,7 +65,7 @@ export default function Tabs(props: Props) {
         {tabItems.map((tabItem, index) =>
           (tabItems[index] !== undefined && tabItems[index].render !== undefined && tabItems[index].render) ||
           (tabItems[index] !== undefined && tabItems[index].render === undefined) ? (
-            <Tab.Panel key={index} as="div">
+            <Tab.Panel key={index} as="div" onClick={tabItem.onClick}>
               {tabItem.element}
             </Tab.Panel>
           ) : null
