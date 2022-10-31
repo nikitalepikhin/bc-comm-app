@@ -8,6 +8,7 @@ import Dialog from "../../uilib/dialog/Dialog";
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import PostFooter from "./PostFooter";
+import StyledLink from "../../uilib/StyledLink";
 
 export interface Props {
   uuid: string;
@@ -56,10 +57,10 @@ export default function Post(props: Props) {
               "pb-1"
             )}
           >
-            <span className="text-sm text-secondary dark:text-slate-400">Posted in</span>
-            <Link to={`/channels/${channelTextId}`} className={classNames("text-primary dark:text-white text-sm")}>
+            <span className="text-sm">Posted in</span>
+            <StyledLink to={`/channels/${channelTextId}`} className="text-sm">
               {channelTextId}
-            </Link>
+            </StyledLink>
           </div>
         )}
         <div className={classNames("flex flex-row justify-start items-start gap-2 w-full")}>

@@ -32,7 +32,7 @@ export default function TeacherProfilePage() {
           <div className="text-secondary dark:text-slate-400 text-sm">{data.username}</div>
           <div className="flex flex-col justify-start items-center w-full border-t border-slate-200 dark:border-slate-700 mt-2">
             <div className="mt-2">School & Faculty</div>
-            <div className="text-secondary dark:text-slate-400">{`${data.school} - ${data.faculty}`}</div>
+            <div className="text-secondary dark:text-slate-400 text-center">{`${data.school} - ${data.faculty}`}</div>
           </div>
           <div className="mt-4 pt-4 border-t border-slate-200 dark:border-slate-700 w-full">
             <div className="w-full text-center">Bio</div>
