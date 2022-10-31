@@ -1,4 +1,4 @@
-import { forwardRef, Inject, Injectable, UnauthorizedException } from "@nestjs/common";
+import { forwardRef, Inject, Injectable, NotFoundException, UnauthorizedException } from "@nestjs/common";
 import { CommentsOrder } from "./dto/comments-order.enum";
 import UserDto from "../auth/dto/user.dto";
 import GetCommentsUnderPostResponseDto from "./dto/get-comments-under-post-response.dto";
@@ -23,18 +23,6 @@ export class CommentsService {
     @Inject(forwardRef(() => UsersService))
     private usersService: UsersService,
   ) {}
-
-  private static sortCommentsByDateCreated(first: OutPostCommentDto, second: OutPostCommentDto) {
-    if (first.created.getTime() < second.created.getTime()) return 1;
-    else if (first.created.getTime() > second.created.getTime()) return -1;
-    else return 0;
-  }
-
-  private static sortCommentsByResVote(first: OutPostCommentDto, second: OutPostCommentDto) {
-    if (first.resVote < second.resVote) return 1;
-    else if (first.resVote > second.resVote) return -1;
-    else return 0;
-  }
 
   async createComment(user: UserDto, requestDto: CreateCommentRequestDto): Promise<CreateCommentResponseDto> {
     const { username } = await this.usersService.findByUuid(user.uuid);
@@ -75,15 +63,27 @@ export class CommentsService {
   }
 
   async getCommentComments(user: UserDto, commentUuid: string): Promise<GetCommentCommentsResponseDto> {
-    const levels = 7; // retrieve one more level than needed to establish the hasMore property
-    const query = Prisma.sql`select *
+    try {
+      await this.prisma.comment.findUniqueOrThrow({ where: { uuid: commentUuid } });
+      const levels = 7; // retrieve one more level than needed to establish the hasMore property
+      const query = Prisma.sql`select *
                              from get_comment_comments(${commentUuid}::uuid, ${user.uuid}::uuid, ${levels}::int)`;
-    const comments = await this.prisma.$queryRaw<PostComment[]>(query);
-    const tree = this.constructCommentsTree(comments);
-    const rootUuid = await this.getRootCommentUuid(tree[0].uuid);
-    return {
-      comments: tree.slice(0, 10).map((comment) => this.mapOutCommentToDtoComment(user.uuid, comment, rootUuid)),
-    };
+      const comments = await this.prisma.$queryRaw<PostComment[]>(query);
+      const tree = this.constructCommentsTree(comments);
+      const rootUuid = await this.getRootCommentUuid(tree[0].uuid);
+      return {
+        comments: tree.slice(0, 10).map((comment) => this.mapOutCommentToDtoComment(user.uuid, comment, rootUuid)),
+      };
+    } catch (e) {
+      if (
+        (e.code === "P2010" && e.meta.code === "22P02") ||
+        e.name.toString().toLowerCase().includes("notfounderror")
+      ) {
+        throw new NotFoundException();
+      } else {
+        throw e;
+      }
+    }
   }
 
   async updateComment(user: UserDto, requestDto: UpdateCommentRequestDto) {

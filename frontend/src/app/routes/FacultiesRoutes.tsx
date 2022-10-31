@@ -1,6 +1,7 @@
 import { Route, Routes } from "react-router-dom";
 import ProtectedRoute from "../../components/common/ProtectedRoute";
 import FacultiesPage from "../../components/faculties/FacultiesPage";
+import ErrorPage from "../../components/common/ErrorPage";
 
 export default function FacultiesRoutes() {
   return (
@@ -13,6 +14,7 @@ export default function FacultiesRoutes() {
           </ProtectedRoute>
         }
       />
+      <Route path="*" element={<ErrorPage />} />
     </Routes>
   );
 }

@@ -12,6 +12,7 @@ import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/solid";
 import Dialog from "../uilib/dialog/Dialog";
 import SchoolFacultyFormDialog from "../schools/SchoolFacultyFormDialog";
 import { useAppSelector } from "../../app/redux/hooks";
+import ErrorPage from "../common/ErrorPage";
 
 const countOptions: SelectOption[] = [
   { value: 10, text: "10" },
@@ -24,7 +25,7 @@ export default function FacultiesPage() {
   const { role } = useAppSelector((state) => state.auth.user);
   const [showDialog, setShowDialog] = useState(false);
   const [showSchoolDialog, setShowSchoolDialog] = useState(false);
-  const [getFaculties, { data, isLoading, isFetching, isSuccess }] = useLazyGetAllFacultiesQuery();
+  const [getFaculties, { data, isLoading, isFetching, isSuccess, isError, error }] = useLazyGetAllFacultiesQuery();
   const { data: school } = useGetSchoolByUuidQuery({ uuid: schoolUuid });
   const [uuid, setUuid] = useState<string | undefined>(undefined);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
@@ -52,6 +53,10 @@ export default function FacultiesPage() {
       setPageOptions(pages.map((page) => ({ value: page, text: String(page) })));
     }
   }, [isFetching, isSuccess]);
+
+  if (isError && error && "status" in error && error.status === 404) {
+    return <ErrorPage message="This school does not exist." />;
+  }
 
   return (
     <>

@@ -3,10 +3,15 @@ import StyledLink from "../uilib/StyledLink";
 import { useGetCommentCommentsQuery } from "../../app/enhancedApi";
 import LoadingSpinner from "../uilib/LoadingSpinner";
 import Comment from "./comment/Comment";
+import ErrorPage from "../common/ErrorPage";
 
 export default function CommentThreadPage() {
   const { textId, postUuid, commentUuid } = useParams() as { textId: string; postUuid: string; commentUuid: string };
-  const { data, isLoading } = useGetCommentCommentsQuery({ commentUuid });
+  const { data, isLoading, isError, error } = useGetCommentCommentsQuery({ commentUuid });
+
+  if (isError && error && "status" in error && error.status === 404) {
+    return <ErrorPage message="This comment does not exist." />;
+  }
 
   return (
     <div className="flex flex-col justify-start items-center w-full gap-2">

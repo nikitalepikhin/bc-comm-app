@@ -81,7 +81,7 @@ export class PostsService {
         },
       };
     } catch (e) {
-      if (e.name.toString().toLowerCase().includes("notfounderror")) {
+      if (e.name.toString().toLowerCase().includes("notfounderror") || e.code === "P2023") {
         throw new NotFoundException();
       } else {
         throw e;

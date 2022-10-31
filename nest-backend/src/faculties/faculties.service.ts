@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, NotFoundException } from "@nestjs/common";
 import { PrismaService } from "../prisma/prisma.service";
 import CreateFacultyDto from "./dto/create-faculty.dto";
 import UserDto from "../auth/dto/user.dto";
@@ -6,7 +6,6 @@ import GetFacultiesResponseDto from "./dto/get-faculties-response.dto";
 import DeleteFacultyDto from "./dto/delete-faculty.dto";
 import UpdateFacultyRequestDto from "./dto/update-faculty-request.dto";
 import GetFacultyAutocompleteRequestDto from "./dto/get-faculty-autocomplete-request.dto";
-import FacultyAutocompleteDto from "./dto/faculty-autocomplete.dto";
 import GetFacultyAutocompleteResponseDto from "./dto/get-faculty-autocomplete-response.dto";
 
 @Injectable()
@@ -30,24 +29,33 @@ export class FacultiesService {
   }
 
   async getFaculties(page: number, count: number, schoolUuid: string): Promise<GetFacultiesResponseDto> {
-    const allFaculties = await this.prisma.faculty.findMany({ where: { schoolUuid } });
-    const faculties = await this.prisma.faculty.findMany({
-      where: { schoolUuid },
-      skip: (page - 1) * count,
-      take: count,
-    });
-    return {
-      pages: Math.ceil(allFaculties.length / count),
-      faculties: faculties.map(({ uuid, name, countryCode, city, addressLineOne, addressLineTwo, postalCode }) => ({
-        uuid,
-        name,
-        countryCode,
-        city,
-        addressLineOne,
-        addressLineTwo,
-        postalCode,
-      })),
-    };
+    try {
+      await this.prisma.school.findUniqueOrThrow({ where: { uuid: schoolUuid } });
+      const allFaculties = await this.prisma.faculty.findMany({ where: { schoolUuid } });
+      const faculties = await this.prisma.faculty.findMany({
+        where: { schoolUuid },
+        skip: (page - 1) * count,
+        take: count,
+      });
+      return {
+        pages: Math.ceil(allFaculties.length / count),
+        faculties: faculties.map(({ uuid, name, countryCode, city, addressLineOne, addressLineTwo, postalCode }) => ({
+          uuid,
+          name,
+          countryCode,
+          city,
+          addressLineOne,
+          addressLineTwo,
+          postalCode,
+        })),
+      };
+    } catch (e) {
+      if (e.code === "P2023" || e.name.toString().toLowerCase().includes("notfounderror")) {
+        throw new NotFoundException();
+      } else {
+        throw e;
+      }
+    }
   }
 
   async deleteFaculty(deleteFacultyDto: DeleteFacultyDto) {
@@ -69,7 +77,11 @@ export class FacultiesService {
   }
 
   async getFacultyByUuid(uuid: string) {
-    return await this.prisma.faculty.findUnique({ where: { uuid } });
+    try {
+      return await this.prisma.faculty.findUniqueOrThrow({ where: { uuid } });
+    } catch (e) {
+      console.log(">>>", e);
+    }
   }
 
   async getFacultyAutocomplete(

@@ -10,6 +10,7 @@ import ChannelPosts from "../../components/posts/ChannelPosts";
 import EditPostPage from "../../components/posts/EditPostPage";
 import CommentThreadPage from "../../components/comments/CommentThreadPage";
 import PostCommentsPage from "../../components/posts/PostCommentsPage";
+import ErrorPage from "../../components/common/ErrorPage";
 
 export default function ChannelsRoutes() {
   return (
@@ -53,6 +54,7 @@ export default function ChannelsRoutes() {
           }
         />
       </Route>
+      <Route path="*" element={<ErrorPage />} />
     </Routes>
   );
 }
