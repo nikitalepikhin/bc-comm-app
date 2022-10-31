@@ -26,6 +26,9 @@ export default class FeedPostDto {
   isAuthor: boolean;
 
   @ApiProperty()
+  authorIsTeacher: boolean;
+
+  @ApiProperty()
   edited: boolean;
 
   @ApiProperty()

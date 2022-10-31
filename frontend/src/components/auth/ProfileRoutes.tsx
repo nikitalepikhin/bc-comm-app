@@ -2,12 +2,13 @@ import { Route, Routes } from "react-router-dom";
 import ProfilePage from "./ProfilePage";
 import ProtectedRoute from "../common/ProtectedRoute";
 import TeacherProfilePage from "./TeacherProfilePage";
+import ErrorPage from "../common/ErrorPage";
 
 export default function ProfileRoutes() {
   return (
     <Routes>
       <Route
-        path="/"
+        index
         element={
           <ProtectedRoute allowedRoles={["ADMIN", "REPRESENTATIVE", "TEACHER", "STUDENT"]}>
             <ProfilePage />
@@ -22,6 +23,7 @@ export default function ProfileRoutes() {
           </ProtectedRoute>
         }
       />
+      <Route path="*" element={<ErrorPage />} />
     </Routes>
   );
 }

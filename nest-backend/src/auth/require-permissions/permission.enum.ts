@@ -34,6 +34,7 @@ export enum Permission {
   USER_READ,
   USER_UPDATE,
   TEACHER_READ,
+  USERNAME_REFRESH,
 }
 
 export const PERMISSIONS_KEY = "permissions";

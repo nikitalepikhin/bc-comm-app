@@ -11,7 +11,7 @@ export default function PostPage() {
   const { data, isLoading, isError, error } = useGetPostByUuidQuery({ postUuid });
   const navigate = useNavigate();
 
-  if (isError && error !== undefined && "status" in error) {
+  if (isError && error !== undefined && "status" in error && error.status === 404) {
     return <ErrorPage message="This post does not exist." />;
   }
 

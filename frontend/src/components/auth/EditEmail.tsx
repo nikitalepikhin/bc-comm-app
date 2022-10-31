@@ -1,6 +1,5 @@
 import classNames from "classnames";
 import { Field, FieldProps, Form, Formik } from "formik";
-import { useDispatch } from "react-redux";
 import { useUpdateEmailMutation } from "../../app/enhancedApi";
 import { useAppSelector } from "../../app/redux/hooks";
 import Alert from "../uilib/Alert";
@@ -25,8 +24,7 @@ const validationSchema = yup.object({
 });
 
 export default function EditEmail() {
-  const { email } = useAppSelector((state) => state.auth.user);
-  const dispatch = useDispatch();
+  const { email, role } = useAppSelector((state) => state.auth.user);
   const [updateEmail, { isLoading, isSuccess, isError, reset }] = useUpdateEmailMutation();
 
   return (
@@ -34,7 +32,7 @@ export default function EditEmail() {
       className={classNames(
         "flex flex-col justify-start items-start gap-2",
         "border-b border-slate-200 dark:border-slate-700",
-        "py-2"
+        { "py-2": role !== "STUDENT" }
       )}
     >
       <div className="text-lg font-bold">Change Email</div>

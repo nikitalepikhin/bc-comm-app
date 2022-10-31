@@ -1,6 +1,5 @@
 import { createContext } from "react";
 import { Props as PostProps } from "./Post";
-import { DeletePostApiArg } from "../../../app/api";
 
 interface PostContextType extends PostProps {
   onDelete: () => void;
@@ -14,6 +13,7 @@ const PostContext = createContext<PostContextType>({
   modified: "modified",
   author: "author",
   isAuthor: false,
+  authorIsTeacher: false,
   edited: false,
   up: 0,
   down: 0,

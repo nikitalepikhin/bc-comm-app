@@ -5,10 +5,10 @@ import { useRefreshUsernameMutation } from "../../app/enhancedApi";
 import Alert from "../uilib/Alert";
 
 export default function RefreshUsername() {
-  const { username } = useAppSelector((state) => state.auth.user);
+  const { username, role } = useAppSelector((state) => state.auth.user);
   const [refreshUsername, { isLoading, isSuccess, isError, reset }] = useRefreshUsernameMutation();
 
-  return (
+  return role === "STUDENT" ? (
     <div
       className={classNames(
         "flex flex-col justify-start items-start gap-2",
@@ -44,5 +44,5 @@ export default function RefreshUsername() {
         Previously created posts and comments will not be updated.
       </Alert>
     </div>
-  );
+  ) : null;
 }

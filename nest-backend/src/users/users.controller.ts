@@ -18,7 +18,8 @@ export class UsersController {
 
   @ApiOperation({ summary: "Refresh username for a specified user." })
   @ApiOkResponse({ type: RefreshUsernameResponseDto })
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, RequirePermissionsGuard)
+  @RequirePermissions(Permission.USERNAME_REFRESH)
   @Put("/refresh")
   async refreshUsername(@Req() request): Promise<RefreshUsernameResponseDto> {
     return await this.usersService.refreshUsername(request.user as UserDto);

@@ -23,6 +23,9 @@ export default class ChannelPostDto {
   isAuthor: boolean;
 
   @ApiProperty()
+  authorIsTeacher: boolean;
+
+  @ApiProperty()
   edited: boolean;
 
   @ApiProperty()

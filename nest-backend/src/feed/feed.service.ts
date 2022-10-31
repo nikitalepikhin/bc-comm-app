@@ -34,6 +34,7 @@ export class FeedService {
             textId: true,
           },
         },
+        author: true,
       },
       orderBy: {
         created: "desc",
@@ -73,6 +74,7 @@ export class FeedService {
             authorUuid,
             channel: { textId },
             authorUsername,
+            author: { role },
             votes,
             _count,
           }) => {
@@ -86,6 +88,7 @@ export class FeedService {
               modified,
               author: authorUsername,
               isAuthor: authorUuid === user.uuid,
+              authorIsTeacher: role === "TEACHER",
               edited: created.getTime() !== modified.getTime(),
               up: votes.filter((vote) => vote.dir === 1).length,
               down: votes.filter((vote) => vote.dir === -1).length,

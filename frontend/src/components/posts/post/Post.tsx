@@ -4,12 +4,10 @@ import Votes from "../../common/Votes";
 import PostHeader from "./PostHeader";
 import PostContext from "./PostContext";
 import { useDeletePostMutation } from "../../../app/enhancedApi";
-import StyledLink from "../../uilib/StyledLink";
 import Dialog from "../../uilib/dialog/Dialog";
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import PostFooter from "./PostFooter";
-import { BookOpenIcon } from "@heroicons/react/24/outline";
 
 export interface Props {
   uuid: string;
@@ -19,6 +17,7 @@ export interface Props {
   modified: string;
   author: string;
   isAuthor: boolean;
+  authorIsTeacher: boolean;
   edited: boolean;
   up: number;
   down: number;

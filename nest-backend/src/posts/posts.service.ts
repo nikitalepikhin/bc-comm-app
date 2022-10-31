@@ -49,7 +49,11 @@ export class PostsService {
     try {
       const post = await this.prisma.post.findUniqueOrThrow({
         where: { uuid: postUuid },
-        include: { votes: true, _count: { select: { comments: true } } },
+        include: {
+          votes: true,
+          author: true,
+          _count: { select: { comments: true } },
+        },
       });
       const vote = await this.prisma.userPostVotes.findUnique({
         where: {
@@ -68,6 +72,7 @@ export class PostsService {
           modified: post.modified,
           author: post.authorUsername,
           isAuthor: post.authorUuid === user.uuid,
+          authorIsTeacher: post.author.role === "TEACHER",
           edited: post.created.getTime() !== post.modified.getTime(),
           up: post.votes.filter((vote) => vote.dir === 1).length,
           down: post.votes.filter((vote) => vote.dir === -1).length,
@@ -106,6 +111,7 @@ export class PostsService {
         _count: {
           select: { comments: true },
         },
+        author: true,
       },
       orderBy: {
         created: order === "new" ? "desc" : undefined,
@@ -118,23 +124,26 @@ export class PostsService {
       hasMore: posts.length > pageSize,
       posts: posts
         .slice(0, 10)
-        .map(({ uuid, title, body, created, modified, votes, authorUsername, authorUuid, _count }) => {
-          const vote = votes.find((vote) => vote.userUuid === user.uuid);
-          return {
-            uuid,
-            title,
-            body,
-            created,
-            modified,
-            author: authorUsername,
-            isAuthor: authorUuid === user.uuid,
-            edited: created.getTime() !== modified.getTime(),
-            up: votes.filter((vote) => vote.dir === 1).length,
-            down: votes.filter((vote) => vote.dir === -1).length,
-            dir: vote ? vote.dir : 0,
-            commentsCount: _count.comments,
-          };
-        }),
+        .map(
+          ({ uuid, title, body, created, modified, votes, authorUsername, authorUuid, author: { role }, _count }) => {
+            const vote = votes.find((vote) => vote.userUuid === user.uuid);
+            return {
+              uuid,
+              title,
+              body,
+              created,
+              modified,
+              author: authorUsername,
+              isAuthor: authorUuid === user.uuid,
+              authorIsTeacher: role === "TEACHER",
+              edited: created.getTime() !== modified.getTime(),
+              up: votes.filter((vote) => vote.dir === 1).length,
+              down: votes.filter((vote) => vote.dir === -1).length,
+              dir: vote ? vote.dir : 0,
+              commentsCount: _count.comments,
+            };
+          },
+        ),
     };
   }
 

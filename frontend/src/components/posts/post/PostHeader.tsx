@@ -5,9 +5,10 @@ import Badge from "../../uilib/Badge";
 import PostContextMenu from "../PostContextMenu";
 import { useContext } from "react";
 import PostContext from "./PostContext";
+import StyledLink from "../../uilib/StyledLink";
 
 export default function PostHeader() {
-  const { author, created, modified, edited, showExpanded, isAuthor } = useContext(PostContext);
+  const { author, created, modified, edited, showExpanded, isAuthor, authorIsTeacher } = useContext(PostContext);
 
   return (
     <div className="flex flex-row justify-between items-center gap-2 flex-wrap w-full">
@@ -19,7 +20,8 @@ export default function PostHeader() {
       >
         <div className="flex flex-row justify-center items-center gap-1">
           <UserIcon className="h-3 w-3" />
-          <span>{author}</span>
+          {!authorIsTeacher && <span>{author}</span>}
+          {authorIsTeacher && <StyledLink to={`/profile/teacher/${author}`}>{author}</StyledLink>}
         </div>
         <div>·</div>
         <div className="flex flex-row justify-center items-center gap-1">

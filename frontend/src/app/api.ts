@@ -594,6 +594,7 @@ export type ChannelPostDto = {
   modified: string;
   author: string;
   isAuthor: boolean;
+  authorIsTeacher: boolean;
   edited: boolean;
   up: number;
   down: number;
@@ -714,6 +715,7 @@ export type FeedPostDto = {
   modified: string;
   author: string;
   isAuthor: boolean;
+  authorIsTeacher: boolean;
   edited: boolean;
   up: number;
   down: number;
