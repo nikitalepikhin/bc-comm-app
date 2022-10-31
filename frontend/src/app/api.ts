@@ -166,6 +166,9 @@ const injectedRtkApi = api.injectEndpoints({
     >({
       query: () => ({ url: `/teachers/verify` }),
     }),
+    getTeacherByUsername: build.query<GetTeacherByUsernameApiResponse, GetTeacherByUsernameApiArg>({
+      query: (queryArg) => ({ url: `/teachers/${queryArg.username}` }),
+    }),
     getUserFeed: build.query<GetUserFeedApiResponse, GetUserFeedApiArg>({
       query: (queryArg) => ({ url: `/feed`, params: { page: queryArg.page, after: queryArg.after } }),
     }),
@@ -361,6 +364,10 @@ export type GetRepresentativeVerificationRequestsApiArg = void;
 export type GetTeacherVerificationRequestsApiResponse =
   /** status 200 Teacher verification requests. */ GetTeacherRequestsDto;
 export type GetTeacherVerificationRequestsApiArg = void;
+export type GetTeacherByUsernameApiResponse = /** status 200 Teacher profile data. */ GetTeacherByUsernameResponseDto;
+export type GetTeacherByUsernameApiArg = {
+  username: string;
+};
 export type GetUserFeedApiResponse =
   /** status 200 Posts from channel that user is subscribed to. */ GetUserFeedResponseDto;
 export type GetUserFeedApiArg = {
@@ -691,6 +698,13 @@ export type TeacherRequestDto = {
 export type GetTeacherRequestsDto = {
   requests: TeacherRequestDto[];
 };
+export type GetTeacherByUsernameResponseDto = {
+  name: string;
+  username: string;
+  bio: string;
+  school: string;
+  faculty: string;
+};
 export type FeedPostDto = {
   uuid: string;
   channelTextId: string;
@@ -758,5 +772,6 @@ export const {
   useVoteOnCommentMutation,
   useGetRepresentativeVerificationRequestsQuery,
   useGetTeacherVerificationRequestsQuery,
+  useGetTeacherByUsernameQuery,
   useGetUserFeedQuery,
 } = injectedRtkApi;

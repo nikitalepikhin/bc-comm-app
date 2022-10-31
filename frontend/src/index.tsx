@@ -11,8 +11,8 @@ import IndexPage from "./components/common/IndexPage";
 import SchoolsRoutes from "./app/routes/SchoolsRoutes";
 import FacultiesRoutes from "./app/routes/FacultiesRoutes";
 import ChannelsRoutes from "./app/routes/ChannelsRoutes";
-import ProfilePage from "./components/auth/ProfilePage";
-import ProtectedRoute from "./components/common/ProtectedRoute";
+import LogoutPage from "./components/auth/LogoutPage";
+import ProfileRoutes from "./components/auth/ProfileRoutes";
 
 ReactDOM.render(
   <React.StrictMode>
@@ -21,17 +21,11 @@ ReactDOM.render(
         <Routes>
           <Route path="/" element={<App />}>
             <Route index element={<IndexPage />} />
-            <Route
-              path="profile"
-              element={
-                <ProtectedRoute allowedRoles={["ADMIN", "REPRESENTATIVE", "TEACHER", "STUDENT"]}>
-                  <ProfilePage />
-                </ProtectedRoute>
-              }
-            />
+            <Route path="profile/*" element={<ProfileRoutes />} />
             <Route path="schools/*" element={<SchoolsRoutes />} />
             <Route path="faculties/school/*" element={<FacultiesRoutes />} />
             <Route path="channels/*" element={<ChannelsRoutes />} />
+            <Route path="logout" element={<LogoutPage />} />
             <Route path="*" element={<ErrorPage />} />
           </Route>
         </Routes>

@@ -2,7 +2,6 @@ import { api, PostCommentDto } from "./api";
 import { IdTypes, TagTypes } from "./emptyApi";
 import { PatchCollection } from "@reduxjs/toolkit/dist/query/core/buildThunks";
 import { calculateVotes } from "./apiUtil";
-import { isDraft } from "@reduxjs/toolkit";
 
 export const enhancedApi = api.enhanceEndpoints({
   endpoints: {
@@ -506,4 +505,5 @@ export const {
   useRefreshUsernameMutation,
   useUpdatePasswordMutation,
   useDeleteAccountMutation,
+  useGetTeacherByUsernameQuery,
 } = enhancedApi;

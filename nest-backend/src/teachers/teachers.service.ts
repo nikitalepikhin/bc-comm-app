@@ -1,5 +1,7 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, NotFoundException } from "@nestjs/common";
 import { PrismaService } from "../prisma/prisma.service";
+import GetTeacherByUsernameRequestDto from "./dto/get-teacher-by-username-request.dto";
+import GetTeacherByUsernameResponseDto from "./dto/get-teacher-by-username-response.dto";
 
 @Injectable()
 export class TeachersService {
@@ -38,6 +40,23 @@ export class TeachersService {
         faculty: { ...teacher.faculty },
         user: { ...teacher.user, name: teacher.name },
       })),
+    };
+  }
+
+  async getTeacherByUsername(username: string): Promise<GetTeacherByUsernameResponseDto> {
+    const teacher = await this.prisma.teacher.findFirst({
+      where: { user: { username } },
+      include: { user: true, school: true, faculty: true },
+    });
+    if (teacher === null || !teacher.verified) {
+      throw new NotFoundException();
+    }
+    return {
+      name: teacher.name,
+      username: teacher.user.username,
+      school: teacher.school.name,
+      faculty: teacher.faculty.name,
+      bio: teacher.bio,
     };
   }
 }

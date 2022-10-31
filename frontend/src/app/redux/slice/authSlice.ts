@@ -36,7 +36,7 @@ const initialState: AuthState = {
   present: false,
 };
 
-const resetUser = (state: any) => {
+const resetUser = (state: AuthState) => {
   state.user = initialState.user;
   state.accessToken = initialState.accessToken;
   state.present = false;

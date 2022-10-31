@@ -8,8 +8,7 @@ import {
 } from "@heroicons/react/24/outline";
 import classNames from "classnames";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { useLogOutMutation } from "../../../app/enhancedApi";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useAppSelector } from "../../../app/redux/hooks";
 import ChannelSearch from "../../channels/ChannelSearch";
 import NavbarButton from "./NavbarButton";
@@ -20,12 +19,13 @@ import VerificationWarning from "./VerificationWarning";
 
 export default function Navbar() {
   const navigate = useNavigate();
+  const location = useLocation();
+
   const {
     present,
     user: { role, schoolUuid, verified },
   } = useAppSelector((state) => state.auth);
   const [open, setOpen] = useState(false);
-  const [logOut] = useLogOutMutation();
 
   return (
     <>
@@ -36,7 +36,7 @@ export default function Navbar() {
           "border-b border-slate-200 dark:border-slate-700",
           { "shadow dark:shadow-gray-800": !open },
           "flex flex-row justify-between items-center gap-2",
-          { hidden: !present }
+          { hidden: !present || location.pathname === "/logout" }
         )}
       >
         <div className="flex flex-row justify-between items-center gap-2">
@@ -102,7 +102,7 @@ export default function Navbar() {
               <span>Create Channel</span>
             </NavbarItem>
           )}
-          <NavbarItem closeMenu={() => setOpen(false)} type="button" onClick={() => logOut()} danger>
+          <NavbarItem closeMenu={() => setOpen(false)} type="button" onClick={() => navigate("/logout")} danger>
             <LockClosedIcon className="h-5 w-5" />
             <span>Log Out</span>
           </NavbarItem>

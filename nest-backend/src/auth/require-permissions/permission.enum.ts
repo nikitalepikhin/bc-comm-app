@@ -33,6 +33,7 @@ export enum Permission {
   FEED_READ,
   USER_READ,
   USER_UPDATE,
+  TEACHER_READ,
 }
 
 export const PERMISSIONS_KEY = "permissions";

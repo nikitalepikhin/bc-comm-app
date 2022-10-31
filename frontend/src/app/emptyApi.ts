@@ -1,8 +1,8 @@
 import { BaseQueryFn, createApi, FetchArgs, fetchBaseQuery, FetchBaseQueryError } from "@reduxjs/toolkit/query/react";
-import { RootState, store } from "./redux/store";
+import { RootState } from "./redux/store";
 import { Mutex } from "async-mutex";
 import { logOut, refreshToken } from "./redux/slice/authSlice";
-import { RefreshTokenApiResponse, UserDataResponseDto } from "./api";
+import { UserDataResponseDto } from "./api";
 
 const mutex = new Mutex();
 
@@ -29,22 +29,22 @@ const baseQueryWithReauth: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQue
   extraOptions
 ) => {
   await mutex.waitForUnlock();
-  console.log(`sending a request to ${api.endpoint}`);
+  // console.log(`sending a request to ${api.endpoint}`);
   let result = await baseQuery(args, api, extraOptions);
   if (result.error && result.error.status === 401 && !endpointsExcludedFromTokenRefresh.includes(api.endpoint)) {
-    console.log(`failed to send a request to ${api.endpoint}`);
+    // console.log(`failed to send a request to ${api.endpoint}`);
     if (!mutex.isLocked()) {
       const release = await mutex.acquire();
       try {
-        console.log("will try to refresh the access token");
+        // console.log("will try to refresh the access token");
         const refreshResult = await baseQuery({ url: "/auth/refresh", method: "POST" }, api, extraOptions);
         if (refreshResult.data) {
-          console.log("successful token refresh");
+          // console.log("successful token refresh");
           api.dispatch(refreshToken(refreshResult.data as UserDataResponseDto));
-          console.log(`retrying the initial request to ${api.endpoint}`);
+          // console.log(`retrying the initial request to ${api.endpoint}`);
           result = await baseQuery(args, api, extraOptions);
         } else {
-          console.log("could not refresh the access token, logging out");
+          // console.log("could not refresh the access token, logging out");
           api.dispatch(logOut());
         }
       } finally {

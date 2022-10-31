@@ -1,14 +1,8 @@
+import { LockClosedIcon, SquaresPlusIcon, UserCircleIcon, UserIcon } from "@heroicons/react/24/outline";
 import classNames from "classnames";
-import {
-  BuildingLibraryIcon,
-  LockClosedIcon,
-  SquaresPlusIcon,
-  UserCircleIcon,
-  UserIcon,
-} from "@heroicons/react/24/outline";
-import Dropdown from "../../uilib/dropdown/Dropdown";
-import { useLogOutMutation } from "../../../app/enhancedApi";
+import { useNavigate } from "react-router-dom";
 import { useAppSelector } from "../../../app/redux/hooks";
+import Dropdown from "../../uilib/dropdown/Dropdown";
 
 interface Props {
   closeMenu: () => void;
@@ -16,8 +10,8 @@ interface Props {
 
 export default function ProfileMenu(props: Props) {
   const { closeMenu } = props;
-  const [logOut] = useLogOutMutation();
   const { role } = useAppSelector((state) => state.auth.user);
+  const navigate = useNavigate();
 
   return (
     <Dropdown
@@ -50,7 +44,7 @@ export default function ProfileMenu(props: Props) {
         },
         {
           type: "button",
-          onClick: () => logOut(),
+          onClick: () => navigate("/logout"),
           name: "Log Out",
           icon: <LockClosedIcon className="h-5 w-5" />,
           show: true,
