@@ -10,6 +10,7 @@ import Container from "../uilib/Container";
 import BaseDialog from "../uilib/dialog/BaseDialog";
 import Textarea from "../uilib/Textarea";
 import * as yup from "yup";
+import { useAppSelector } from "../../app/redux/hooks";
 
 interface FormValues {
   approve: boolean;
@@ -49,6 +50,7 @@ export default function Request(props: Props) {
   const { request, type } = props;
   const [showDialog, setShowDialog] = useState(false);
   const [showAlert, setShowAlert] = useState(false);
+  const { verified, role } = useAppSelector((state) => state.auth.user);
 
   const [verifyUser, { isLoading, isError, isSuccess }] = useVerifyUserMutation();
 
@@ -80,7 +82,6 @@ export default function Request(props: Props) {
     >
       {({ handleSubmit, values, setFieldValue }) => (
         <>
-          {console.log(values)}
           <Form>
             <Container
               title={type === "TEACHER" ? "Teacher Request" : "Representative Request"}
@@ -89,6 +90,7 @@ export default function Request(props: Props) {
                   key="decline"
                   type="button"
                   variant="danger"
+                  disabled={role === "REPRESENTATIVE" && !verified}
                   onClick={() => {
                     setShowDialog(true);
                     setFieldValue("approve", false);
@@ -100,6 +102,7 @@ export default function Request(props: Props) {
                   key="approve"
                   type="button"
                   variant="accent"
+                  disabled={role === "REPRESENTATIVE" && !verified}
                   onClick={() => handleSubmit()}
                   loading={isLoading && values.reason.length === 0}
                 >
@@ -180,7 +183,7 @@ export default function Request(props: Props) {
                   variant="danger"
                   loading={isLoading}
                   onClick={() => handleSubmit()}
-                  disabled={values.reason.length === 0}
+                  disabled={values.reason.length === 0 || (role === "REPRESENTATIVE" && !verified)}
                   className="ml-auto"
                 >
                   Decline
