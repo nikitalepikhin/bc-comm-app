@@ -11,10 +11,10 @@ export default function PostHeader() {
   const { author, created, modified, edited, showExpanded, isAuthor, authorIsTeacher } = useContext(PostContext);
 
   return (
-    <div className="flex flex-row justify-between items-center gap-2 flex-wrap w-full">
+    <div className="flex flex-row justify-between items-center gap-2 w-full">
       <div
         className={classNames(
-          "flex flex-row justify-start items-center gap-1 flex-wrap",
+          "flex flex-row justify-start items-center gap-1",
           "text-sm text-secondary dark:text-slate-400"
         )}
       >
