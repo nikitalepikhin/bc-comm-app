@@ -37,7 +37,7 @@ export default function EditChannelPage() {
           updateChannelRequestDto: {
             name: values.name,
             textId: values.textId,
-            description: values.description ?? null,
+            description: values.description,
             uuid: data?.uuid!,
             oldTextId: initialValues.textId,
           },

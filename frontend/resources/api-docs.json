@@ -414,7 +414,13 @@
         "operationId": "checkChannelIdAvailability",
         "summary": "Check channel text id availability.",
         "parameters": [
-          { "name": "value", "required": true, "in": "path", "description": "Text ID value to check.", "schema": {} }
+          {
+            "name": "value",
+            "required": true,
+            "in": "path",
+            "description": "Text ID value to check.",
+            "schema": { "type": "string" }
+          }
         ],
         "responses": {
           "200": {
@@ -496,7 +502,7 @@
         "summary": "Get posts for a specified channel.",
         "parameters": [
           { "name": "channelTextId", "required": true, "in": "path", "schema": { "type": "string" } },
-          { "name": "page", "required": true, "in": "query", "schema": { "type": "number" } },
+          { "name": "page", "required": false, "in": "query", "schema": { "type": "number" } },
           { "name": "order", "required": true, "in": "query", "schema": { "enum": ["new", "top"], "type": "string" } },
           { "name": "after", "required": true, "in": "query", "schema": { "format": "date-time", "type": "string" } }
         ],
@@ -914,9 +920,9 @@
           "name": { "type": "string" },
           "textId": { "type": "string" },
           "oldTextId": { "type": "string" },
-          "description": { "type": "string", "nullable": true }
+          "description": { "type": "string" }
         },
-        "required": ["uuid", "name", "textId", "oldTextId", "description"]
+        "required": ["uuid", "name", "textId", "oldTextId"]
       },
       "UpdateChannelResponseDto": {
         "type": "object",

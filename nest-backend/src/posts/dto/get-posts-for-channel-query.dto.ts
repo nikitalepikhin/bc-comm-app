@@ -1,9 +1,11 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { PostsOrder } from "./posts-order.enum";
 import { IsEnum, IsISO8601, IsNumber, IsOptional, Min } from "class-validator";
+import { Type } from "class-transformer";
 
 export default class GetPostsForChannelQueryDto {
   @IsOptional()
+  @Type(() => Number)
   @IsNumber()
   @Min(1)
   @ApiProperty({ required: false })

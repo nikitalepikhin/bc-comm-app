@@ -1,9 +1,11 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { CommentsOrder } from "./comments-order.enum";
 import { IsDateString, IsEnum, IsISO8601, IsNotEmpty, IsNumber, Min } from "class-validator";
+import { Type } from "class-transformer";
 
 export default class GetCommentsUnderPostQueryDto {
   @IsNotEmpty()
+  @Type(() => Number)
   @IsNumber()
   @Min(1)
   @ApiProperty()
