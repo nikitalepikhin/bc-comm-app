@@ -297,7 +297,7 @@ export type CheckChannelIdAvailabilityApiResponse =
   /** status 200 Channel text ID if exists. */ CheckChannelIdAvailabilityResponseDto;
 export type CheckChannelIdAvailabilityApiArg = {
   /** Text ID value to check. */
-  value: any;
+  value: string;
 };
 export type ToggleMembershipApiResponse = unknown;
 export type ToggleMembershipApiArg = {
@@ -323,7 +323,7 @@ export type GetPostsForChannelApiResponse =
   /** status 200 Posts for a specified channel. */ GetPostsForChannelResponseDto;
 export type GetPostsForChannelApiArg = {
   channelTextId: string;
-  page: number;
+  page?: number;
   order: "new" | "top";
   after: string;
 };
@@ -546,7 +546,7 @@ export type UpdateChannelRequestDto = {
   name: string;
   textId: string;
   oldTextId: string;
-  description: string | null;
+  description?: string;
 };
 export type ChannelOwnerDto = {
   username: string;
