@@ -1,0 +1,1241 @@
+{
+  "openapi": "3.0.0",
+  "paths": {
+    "/auth/login": {
+      "post": {
+        "operationId": "logIn",
+        "summary": "Log the user in.",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": { "application/json": { "schema": { "$ref": "#/components/schemas/LogInUserRequestDto" } } }
+        },
+        "responses": {
+          "201": {
+            "description": "Authenticated user data",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/UserDataResponseDto" } } }
+          }
+        },
+        "tags": ["auth"]
+      }
+    },
+    "/auth/signup/base": {
+      "post": {
+        "operationId": "signUpBase",
+        "summary": "Sign up a base user.",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": { "application/json": { "schema": { "$ref": "#/components/schemas/CreateBaseUserDto" } } }
+        },
+        "responses": { "201": { "description": "" } },
+        "tags": ["auth"]
+      }
+    },
+    "/auth/signup/representative": {
+      "post": {
+        "operationId": "signUpRepresentative",
+        "summary": "Sign up a representative.",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": { "schema": { "$ref": "#/components/schemas/CreateRepresentativeUserDto" } }
+          }
+        },
+        "responses": { "201": { "description": "" } },
+        "tags": ["auth"]
+      }
+    },
+    "/auth/signup/teacher": {
+      "post": {
+        "operationId": "signUpTeacher",
+        "summary": "Sign up a teacher.",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": { "application/json": { "schema": { "$ref": "#/components/schemas/CreateTeacherUserDto" } } }
+        },
+        "responses": { "201": { "description": "" } },
+        "tags": ["auth"]
+      }
+    },
+    "/auth/refresh": {
+      "post": {
+        "operationId": "refreshToken",
+        "summary": "Refresh the issued token pair.",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": "Authenticated user data",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/UserDataResponseDto" } } }
+          }
+        },
+        "tags": ["auth"]
+      }
+    },
+    "/auth/logout": {
+      "post": {
+        "operationId": "logOut",
+        "summary": "Log the user out.",
+        "parameters": [],
+        "responses": { "201": { "description": "" } },
+        "tags": ["auth"]
+      }
+    },
+    "/auth/update/email": {
+      "put": {
+        "operationId": "updateEmail",
+        "summary": "Update user's email.",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": { "application/json": { "schema": { "$ref": "#/components/schemas/UpdateUserEmailRequestDto" } } }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/UpdateUserEmailResponseDto" } }
+            }
+          }
+        },
+        "tags": ["auth"]
+      }
+    },
+    "/auth/update/password": {
+      "put": {
+        "operationId": "updatePassword",
+        "summary": "Update user's password.",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": { "schema": { "$ref": "#/components/schemas/UpdateUserPasswordRequestDto" } }
+          }
+        },
+        "responses": { "200": { "description": "" } },
+        "tags": ["auth"]
+      }
+    },
+    "/auth": {
+      "delete": {
+        "operationId": "deleteAccount",
+        "summary": "Delete user's account.",
+        "parameters": [],
+        "responses": { "200": { "description": "" } },
+        "tags": ["auth"]
+      }
+    },
+    "/users/refresh": {
+      "put": {
+        "operationId": "refreshUsername",
+        "summary": "Refresh username for a specified user.",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/RefreshUsernameResponseDto" } }
+            }
+          }
+        }
+      }
+    },
+    "/users/verify": {
+      "post": {
+        "operationId": "verifyUser",
+        "summary": "Verify a user.",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": { "application/json": { "schema": { "$ref": "#/components/schemas/VerifyUserRequestDto" } } }
+        },
+        "responses": { "201": { "description": "" } }
+      }
+    },
+    "/users/request": {
+      "get": {
+        "operationId": "requestVerification",
+        "summary": "Request verification for teachers and representatives.",
+        "parameters": [],
+        "responses": { "200": { "description": "" } }
+      }
+    },
+    "/users": {
+      "get": {
+        "operationId": "getUserProfile",
+        "summary": "Get user name and bio.",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/GetUserProfileResponseDto" } }
+            }
+          }
+        }
+      },
+      "put": {
+        "operationId": "updateUserProfile",
+        "summary": "Update user profile.",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": { "schema": { "$ref": "#/components/schemas/UpdateUserProfileRequestDto" } }
+          }
+        },
+        "responses": { "200": { "description": "" } }
+      }
+    },
+    "/schools": {
+      "post": {
+        "operationId": "createSchool",
+        "summary": "Create a school.",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": { "application/json": { "schema": { "$ref": "#/components/schemas/CreateSchoolDto" } } }
+        },
+        "responses": { "201": { "description": "" } }
+      },
+      "get": {
+        "operationId": "getAllSchools",
+        "summary": "Get a specified number of schools on a specified page.",
+        "parameters": [
+          { "name": "page", "required": false, "in": "query", "schema": { "type": "number" } },
+          { "name": "count", "required": false, "in": "query", "schema": { "type": "number" } }
+        ],
+        "responses": {
+          "200": {
+            "description": "Specified number of schools on a specified page.",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/GetSchoolsResponseDto" } } }
+          }
+        }
+      },
+      "put": {
+        "operationId": "updateSchool",
+        "summary": "Update a school based on the provided UUID.",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": { "application/json": { "schema": { "$ref": "#/components/schemas/UpdateSchoolRequestDto" } } }
+        },
+        "responses": { "200": { "description": "" } }
+      },
+      "delete": {
+        "operationId": "deleteSchool",
+        "summary": "Delete a school based on the provided UUID.",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": { "application/json": { "schema": { "$ref": "#/components/schemas/DeleteSchoolDto" } } }
+        },
+        "responses": { "200": { "description": "" } }
+      }
+    },
+    "/schools/{uuid}": {
+      "get": {
+        "operationId": "getSchoolByUuid",
+        "summary": "Get a school by UUID.",
+        "parameters": [{ "name": "uuid", "required": true, "in": "path", "schema": { "type": "string" } }],
+        "responses": {
+          "200": {
+            "description": "School by UUID.",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/SchoolResponseDto" } } }
+          }
+        }
+      }
+    },
+    "/schools/ac": {
+      "post": {
+        "operationId": "getSchoolAutocomplete",
+        "summary": "Get school autocomplete value.",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": { "schema": { "$ref": "#/components/schemas/GetSchoolAutocompleteRequestDto" } }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "School autocomplete values.",
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/GetSchoolAutocompleteResponseDto" } }
+            }
+          }
+        }
+      }
+    },
+    "/faculties": {
+      "post": {
+        "operationId": "createFaculty",
+        "summary": "Create a faculty for the specified school.",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": { "application/json": { "schema": { "$ref": "#/components/schemas/CreateFacultyDto" } } }
+        },
+        "responses": { "201": { "description": "" } }
+      },
+      "put": {
+        "operationId": "updateFaculty",
+        "summary": "Update a faculty based on the provided UUID.",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": { "application/json": { "schema": { "$ref": "#/components/schemas/UpdateFacultyRequestDto" } } }
+        },
+        "responses": { "200": { "description": "" } }
+      },
+      "delete": {
+        "operationId": "deleteFaculty",
+        "summary": "Delete a faculty based on the provided UUID.",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": { "application/json": { "schema": { "$ref": "#/components/schemas/DeleteFacultyDto" } } }
+        },
+        "responses": { "200": { "description": "" } }
+      }
+    },
+    "/faculties/{schoolUuid}": {
+      "get": {
+        "operationId": "getAllFaculties",
+        "summary": "Get a specified number of faculties on a specified page.",
+        "parameters": [
+          { "name": "page", "required": false, "in": "query", "schema": { "type": "number" } },
+          { "name": "count", "required": false, "in": "query", "schema": { "type": "number" } },
+          { "name": "schoolUuid", "required": true, "in": "path", "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": {
+            "description": "Specified number of faculties on a specified page.",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/GetFacultiesResponseDto" } } }
+          }
+        }
+      }
+    },
+    "/faculties/faculty/{uuid}": {
+      "get": {
+        "operationId": "getFacultyByUuid",
+        "summary": "Get a faculty by UUID.",
+        "parameters": [{ "name": "uuid", "required": true, "in": "path", "schema": { "type": "string" } }],
+        "responses": {
+          "200": {
+            "description": "Faculty by UUID.",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/FacultyResponseDto" } } }
+          }
+        }
+      }
+    },
+    "/faculties/ac": {
+      "post": {
+        "operationId": "getFacultyAutocomplete",
+        "summary": "Get faculty autocomplete value.",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": { "schema": { "$ref": "#/components/schemas/GetFacultyAutocompleteRequestDto" } }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Faculty autocomplete values.",
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/GetFacultyAutocompleteResponseDto" } }
+            }
+          }
+        }
+      }
+    },
+    "/channels/search": {
+      "get": {
+        "operationId": "searchChannels",
+        "summary": "Search for channels based on their name or text ID.",
+        "parameters": [{ "name": "value", "required": true, "in": "query", "schema": { "type": "string" } }],
+        "responses": {
+          "200": {
+            "description": "Suggested channels based on the provided value.",
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/SearchChannelsResponseDto" } }
+            }
+          }
+        }
+      }
+    },
+    "/channels": {
+      "post": {
+        "operationId": "createChannel",
+        "summary": "Create a new channel.",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": { "application/json": { "schema": { "$ref": "#/components/schemas/CreateChannelRequestDto" } } }
+        },
+        "responses": { "201": { "description": "" } }
+      },
+      "put": {
+        "operationId": "updateChannel",
+        "summary": "Update an existing channel.",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": { "application/json": { "schema": { "$ref": "#/components/schemas/UpdateChannelRequestDto" } } }
+        },
+        "responses": {
+          "200": {
+            "description": "Updated values for an existing channel.",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/UpdateChannelResponseDto" } } }
+          }
+        }
+      }
+    },
+    "/channels/{textId}": {
+      "get": {
+        "operationId": "getChannelByTextId",
+        "summary": "Get channel content based on the channel's text id.",
+        "parameters": [{ "name": "textId", "required": true, "in": "path", "schema": { "type": "string" } }],
+        "responses": {
+          "200": {
+            "description": "Channel data",
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/GetChannelByTextIdResponseDto" } }
+            }
+          }
+        }
+      }
+    },
+    "/channels/new/check/{value}": {
+      "get": {
+        "operationId": "checkChannelIdAvailability",
+        "summary": "Check channel text id availability.",
+        "parameters": [
+          { "name": "value", "required": true, "in": "path", "description": "Text ID value to check.", "schema": {} }
+        ],
+        "responses": {
+          "200": {
+            "description": "Channel text ID if exists.",
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/CheckChannelIdAvailabilityResponseDto" } }
+            }
+          }
+        }
+      }
+    },
+    "/channels/member": {
+      "post": {
+        "operationId": "toggleMembership",
+        "summary": "Toggle channel membership.",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": { "schema": { "$ref": "#/components/schemas/ToggleChannelMembershipRequestDto" } }
+          }
+        },
+        "responses": { "201": { "description": "" } }
+      }
+    },
+    "/posts": {
+      "post": {
+        "operationId": "createPost",
+        "summary": "Create a post in a specified channel.",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": { "application/json": { "schema": { "$ref": "#/components/schemas/CreatePostRequestDto" } } }
+        },
+        "responses": {
+          "200": {
+            "description": "Uuid of the newly created post.",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/CreatePostResponseDto" } } }
+          }
+        }
+      },
+      "put": {
+        "operationId": "updatePost",
+        "summary": "Update a post with specified uuid.",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": { "application/json": { "schema": { "$ref": "#/components/schemas/UpdatePostRequestDto" } } }
+        },
+        "responses": { "200": { "description": "" } }
+      },
+      "delete": {
+        "operationId": "deletePost",
+        "summary": "Delete a post with specified uuid.",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": { "application/json": { "schema": { "$ref": "#/components/schemas/DeletePostRequestDto" } } }
+        },
+        "responses": { "200": { "description": "" } }
+      }
+    },
+    "/posts/{postUuid}": {
+      "get": {
+        "operationId": "getPostByUuid",
+        "summary": "Get post by uuid.",
+        "parameters": [{ "name": "postUuid", "required": true, "in": "path", "schema": { "type": "string" } }],
+        "responses": {
+          "200": {
+            "description": "Post retrieved by uuid.",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/GetPostByUuidResponseDto" } } }
+          }
+        }
+      }
+    },
+    "/posts/channel/{channelTextId}": {
+      "get": {
+        "operationId": "getPostsForChannel",
+        "summary": "Get posts for a specified channel.",
+        "parameters": [
+          { "name": "channelTextId", "required": true, "in": "path", "schema": { "type": "string" } },
+          { "name": "page", "required": true, "in": "query", "schema": { "type": "number" } },
+          { "name": "order", "required": true, "in": "query", "schema": { "enum": ["new", "top"], "type": "string" } },
+          { "name": "after", "required": true, "in": "query", "schema": { "format": "date-time", "type": "string" } }
+        ],
+        "responses": {
+          "200": {
+            "description": "Posts for a specified channel.",
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/GetPostsForChannelResponseDto" } }
+            }
+          }
+        }
+      }
+    },
+    "/posts/vote": {
+      "post": {
+        "operationId": "voteOnPost",
+        "summary": "Vote on a post",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": { "application/json": { "schema": { "$ref": "#/components/schemas/VoteOnPostRequestDto" } } }
+        },
+        "responses": { "201": { "description": "" } }
+      }
+    },
+    "/comments": {
+      "post": {
+        "operationId": "createComment",
+        "summary": "Create a comment under a post.",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": { "application/json": { "schema": { "$ref": "#/components/schemas/CreateCommentRequestDto" } } }
+        },
+        "responses": {
+          "200": {
+            "description": "UUID of the newly created comment.",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/CreateCommentResponseDto" } } }
+          }
+        }
+      },
+      "put": {
+        "operationId": "updateComment",
+        "summary": "Update a comment.",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": { "application/json": { "schema": { "$ref": "#/components/schemas/UpdateCommentRequestDto" } } }
+        },
+        "responses": { "200": { "description": "" } }
+      },
+      "delete": {
+        "operationId": "deleteComment",
+        "summary": "Delete a comment.",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": { "application/json": { "schema": { "$ref": "#/components/schemas/DeleteCommentRequestDto" } } }
+        },
+        "responses": { "200": { "description": "" } }
+      }
+    },
+    "/comments/post/{postUuid}": {
+      "get": {
+        "operationId": "getPostComments",
+        "summary": "Get post comments.",
+        "parameters": [
+          { "name": "postUuid", "required": true, "in": "path", "schema": { "type": "string" } },
+          { "name": "page", "required": true, "in": "query", "schema": { "type": "number" } },
+          { "name": "order", "required": true, "in": "query", "schema": { "enum": ["top", "new"], "type": "string" } },
+          { "name": "after", "required": true, "in": "query", "schema": { "format": "date-time", "type": "string" } }
+        ],
+        "responses": {
+          "200": {
+            "description": "Post comments.",
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/GetCommentsUnderPostResponseDto" } }
+            }
+          }
+        }
+      }
+    },
+    "/comments/comment/{commentUuid}": {
+      "get": {
+        "operationId": "getCommentComments",
+        "summary": "Get comment comments.",
+        "parameters": [{ "name": "commentUuid", "required": true, "in": "path", "schema": { "type": "string" } }],
+        "responses": {
+          "200": {
+            "description": "Comment comments.",
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/GetCommentCommentsResponseDto" } }
+            }
+          }
+        }
+      }
+    },
+    "/comments/vote": {
+      "post": {
+        "operationId": "voteOnComment",
+        "summary": "Vote on a comment",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": { "application/json": { "schema": { "$ref": "#/components/schemas/VoteOnCommentRequestDto" } } }
+        },
+        "responses": { "201": { "description": "" } }
+      }
+    },
+    "/representatives/verify": {
+      "get": {
+        "operationId": "getRepresentativeVerificationRequests",
+        "summary": "Get representative verification requests.",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Representative verification requests.",
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/GetRepresentativeRequestsDto" } }
+            }
+          }
+        }
+      }
+    },
+    "/teachers/verify": {
+      "get": {
+        "operationId": "getTeacherVerificationRequests",
+        "summary": "Get teacher verification requests.",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Teacher verification requests.",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/GetTeacherRequestsDto" } } }
+          }
+        }
+      }
+    },
+    "/teachers/{username}": {
+      "get": {
+        "operationId": "getTeacherByUsername",
+        "summary": "Get teacher by username.",
+        "parameters": [{ "name": "username", "required": true, "in": "path", "schema": { "type": "string" } }],
+        "responses": {
+          "200": {
+            "description": "Teacher profile data.",
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/GetTeacherByUsernameResponseDto" } }
+            }
+          }
+        }
+      }
+    },
+    "/feed": {
+      "get": {
+        "operationId": "getUserFeed",
+        "summary": "Get posts from channels that user is subscribed to.",
+        "parameters": [
+          { "name": "page", "required": true, "in": "query", "schema": { "type": "number" } },
+          { "name": "after", "required": true, "in": "query", "schema": { "format": "date-time", "type": "string" } }
+        ],
+        "responses": {
+          "200": {
+            "description": "Posts from channel that user is subscribed to.",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/GetUserFeedResponseDto" } } }
+          }
+        }
+      }
+    }
+  },
+  "info": { "title": "Communication App Backend API", "description": "", "version": "1.0", "contact": {} },
+  "tags": [],
+  "servers": [],
+  "components": {
+    "schemas": {
+      "LogInUserRequestDto": {
+        "type": "object",
+        "properties": { "email": { "type": "string" }, "password": { "type": "string" } },
+        "required": ["email", "password"]
+      },
+      "UserDataResponseDto": {
+        "type": "object",
+        "properties": {
+          "email": { "type": "string" },
+          "username": { "type": "string" },
+          "role": { "type": "string" },
+          "accessToken": { "type": "string" },
+          "uuid": { "type": "string" },
+          "schoolUuid": { "type": "string" },
+          "verified": { "type": "boolean" },
+          "requestsVerification": { "type": "boolean" },
+          "verificationMessage": { "type": "string" }
+        },
+        "required": ["email", "username", "role", "accessToken", "uuid", "verified", "requestsVerification"]
+      },
+      "CreateBaseUserDto": {
+        "type": "object",
+        "properties": { "email": { "type": "string" }, "password": { "type": "string" }, "role": { "type": "string" } },
+        "required": ["email", "password", "role"]
+      },
+      "CreateRepresentativeUserDto": {
+        "type": "object",
+        "properties": {
+          "email": { "type": "string" },
+          "password": { "type": "string" },
+          "role": { "type": "string" },
+          "name": { "type": "string" },
+          "schoolUuid": { "type": "string" }
+        },
+        "required": ["email", "password", "role", "name", "schoolUuid"]
+      },
+      "CreateTeacherUserDto": {
+        "type": "object",
+        "properties": {
+          "email": { "type": "string" },
+          "password": { "type": "string" },
+          "role": { "type": "string" },
+          "name": { "type": "string" },
+          "schoolUuid": { "type": "string" },
+          "facultyUuid": { "type": "string" }
+        },
+        "required": ["email", "password", "role", "name", "schoolUuid", "facultyUuid"]
+      },
+      "UpdateUserEmailRequestDto": {
+        "type": "object",
+        "properties": { "email": { "type": "string" } },
+        "required": ["email"]
+      },
+      "UpdateUserEmailResponseDto": {
+        "type": "object",
+        "properties": { "email": { "type": "string" }, "accessToken": { "type": "string" } },
+        "required": ["email", "accessToken"]
+      },
+      "UpdateUserPasswordRequestDto": {
+        "type": "object",
+        "properties": { "password": { "type": "string" } },
+        "required": ["password"]
+      },
+      "RefreshUsernameResponseDto": {
+        "type": "object",
+        "properties": { "username": { "type": "string" } },
+        "required": ["username"]
+      },
+      "VerifyUserRequestDto": {
+        "type": "object",
+        "properties": {
+          "approve": { "type": "boolean" },
+          "reason": { "type": "string", "nullable": true },
+          "verifiedUserUuid": { "type": "string" },
+          "type": { "type": "string", "enum": ["TEACHER", "REPRESENTATIVE"] }
+        },
+        "required": ["approve", "reason", "verifiedUserUuid", "type"]
+      },
+      "GetUserProfileResponseDto": {
+        "type": "object",
+        "properties": { "name": { "type": "string" }, "bio": { "type": "string" } }
+      },
+      "UpdateUserProfileRequestDto": {
+        "type": "object",
+        "properties": { "name": { "type": "string" }, "bio": { "type": "string" } }
+      },
+      "CreateSchoolDto": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string" },
+          "countryCode": { "type": "string" },
+          "city": { "type": "string" },
+          "addressLineOne": { "type": "string" },
+          "addressLineTwo": { "type": "string" },
+          "postalCode": { "type": "string" }
+        },
+        "required": ["name", "countryCode", "city", "addressLineOne", "addressLineTwo", "postalCode"]
+      },
+      "SchoolResponseDto": {
+        "type": "object",
+        "properties": {
+          "uuid": { "type": "string" },
+          "name": { "type": "string" },
+          "countryCode": { "type": "string" },
+          "city": { "type": "string" },
+          "addressLineOne": { "type": "string" },
+          "addressLineTwo": { "type": "string" },
+          "postalCode": { "type": "string" }
+        },
+        "required": ["uuid", "name", "countryCode", "city", "addressLineOne", "addressLineTwo", "postalCode"]
+      },
+      "GetSchoolsResponseDto": {
+        "type": "object",
+        "properties": {
+          "schools": { "type": "array", "items": { "$ref": "#/components/schemas/SchoolResponseDto" } },
+          "pages": { "type": "number" }
+        },
+        "required": ["schools", "pages"]
+      },
+      "GetSchoolAutocompleteRequestDto": {
+        "type": "object",
+        "properties": { "value": { "type": "string" } },
+        "required": ["value"]
+      },
+      "SchoolAutocompleteDto": {
+        "type": "object",
+        "properties": { "value": { "type": "string" }, "text": { "type": "string" } },
+        "required": ["value", "text"]
+      },
+      "GetSchoolAutocompleteResponseDto": {
+        "type": "object",
+        "properties": {
+          "schools": { "type": "array", "items": { "$ref": "#/components/schemas/SchoolAutocompleteDto" } }
+        },
+        "required": ["schools"]
+      },
+      "UpdateSchoolRequestDto": {
+        "type": "object",
+        "properties": {
+          "uuid": { "type": "string" },
+          "name": { "type": "string" },
+          "countryCode": { "type": "string" },
+          "city": { "type": "string" },
+          "addressLineOne": { "type": "string" },
+          "addressLineTwo": { "type": "string" },
+          "postalCode": { "type": "string" }
+        },
+        "required": ["uuid", "name", "countryCode", "city", "addressLineOne", "addressLineTwo", "postalCode"]
+      },
+      "DeleteSchoolDto": { "type": "object", "properties": { "uuid": { "type": "string" } }, "required": ["uuid"] },
+      "CreateFacultyDto": {
+        "type": "object",
+        "properties": {
+          "schoolUuid": { "type": "string" },
+          "name": { "type": "string" },
+          "countryCode": { "type": "string" },
+          "city": { "type": "string" },
+          "addressLineOne": { "type": "string" },
+          "addressLineTwo": { "type": "string" },
+          "postalCode": { "type": "string" }
+        },
+        "required": ["schoolUuid", "name", "countryCode", "city", "addressLineOne", "addressLineTwo", "postalCode"]
+      },
+      "FacultyResponseDto": {
+        "type": "object",
+        "properties": {
+          "uuid": { "type": "string" },
+          "name": { "type": "string" },
+          "countryCode": { "type": "string" },
+          "city": { "type": "string" },
+          "addressLineOne": { "type": "string" },
+          "addressLineTwo": { "type": "string" },
+          "postalCode": { "type": "string" }
+        },
+        "required": ["uuid", "name", "countryCode", "city", "addressLineOne", "addressLineTwo", "postalCode"]
+      },
+      "GetFacultiesResponseDto": {
+        "type": "object",
+        "properties": {
+          "faculties": { "type": "array", "items": { "$ref": "#/components/schemas/FacultyResponseDto" } },
+          "pages": { "type": "number" }
+        },
+        "required": ["faculties", "pages"]
+      },
+      "GetFacultyAutocompleteRequestDto": {
+        "type": "object",
+        "properties": { "value": { "type": "string" }, "schoolUuid": { "type": "string" } },
+        "required": ["value", "schoolUuid"]
+      },
+      "FacultyAutocompleteDto": {
+        "type": "object",
+        "properties": { "value": { "type": "string" }, "text": { "type": "string" } },
+        "required": ["value", "text"]
+      },
+      "GetFacultyAutocompleteResponseDto": {
+        "type": "object",
+        "properties": {
+          "faculties": { "type": "array", "items": { "$ref": "#/components/schemas/FacultyAutocompleteDto" } }
+        },
+        "required": ["faculties"]
+      },
+      "UpdateFacultyRequestDto": {
+        "type": "object",
+        "properties": {
+          "uuid": { "type": "string" },
+          "name": { "type": "string" },
+          "countryCode": { "type": "string" },
+          "city": { "type": "string" },
+          "addressLineOne": { "type": "string" },
+          "addressLineTwo": { "type": "string" },
+          "postalCode": { "type": "string" }
+        },
+        "required": ["uuid", "name", "countryCode", "city", "addressLineOne", "addressLineTwo", "postalCode"]
+      },
+      "DeleteFacultyDto": { "type": "object", "properties": { "uuid": { "type": "string" } }, "required": ["uuid"] },
+      "ChannelsSearchSuggestionDto": {
+        "type": "object",
+        "properties": { "text": { "type": "string" }, "value": { "type": "string" } },
+        "required": ["text", "value"]
+      },
+      "SearchChannelsResponseDto": {
+        "type": "object",
+        "properties": {
+          "channels": { "type": "array", "items": { "$ref": "#/components/schemas/ChannelsSearchSuggestionDto" } }
+        },
+        "required": ["channels"]
+      },
+      "CreateChannelRequestDto": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string" },
+          "description": { "type": "string", "nullable": true },
+          "textId": { "type": "string" }
+        },
+        "required": ["name", "description", "textId"]
+      },
+      "UpdateChannelRequestDto": {
+        "type": "object",
+        "properties": {
+          "uuid": { "type": "string" },
+          "name": { "type": "string" },
+          "textId": { "type": "string" },
+          "oldTextId": { "type": "string" },
+          "description": { "type": "string", "nullable": true }
+        },
+        "required": ["uuid", "name", "textId", "oldTextId", "description"]
+      },
+      "UpdateChannelResponseDto": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string" },
+          "textId": { "type": "string" },
+          "description": { "type": "string", "nullable": true }
+        },
+        "required": ["name", "textId", "description"]
+      },
+      "ChannelOwnerDto": {
+        "type": "object",
+        "properties": { "username": { "type": "string" }, "name": { "type": "string" }, "role": { "type": "string" } },
+        "required": ["username", "name", "role"]
+      },
+      "GetChannelByTextIdResponseDto": {
+        "type": "object",
+        "properties": {
+          "uuid": { "type": "string" },
+          "textId": { "type": "string" },
+          "name": { "type": "string" },
+          "description": { "type": "string" },
+          "isOwner": { "type": "boolean" },
+          "isMember": { "type": "boolean" },
+          "memberCount": { "type": "number" },
+          "created": { "format": "date-time", "type": "string" },
+          "owner": { "$ref": "#/components/schemas/ChannelOwnerDto" }
+        },
+        "required": ["uuid", "textId", "name", "description", "isOwner", "isMember", "memberCount", "created", "owner"]
+      },
+      "CheckChannelIdAvailabilityResponseDto": {
+        "type": "object",
+        "properties": { "exists": { "type": "boolean" } },
+        "required": ["exists"]
+      },
+      "ToggleChannelMembershipRequestDto": {
+        "type": "object",
+        "properties": { "channelUuid": { "type": "string" }, "joining": { "type": "boolean" } },
+        "required": ["channelUuid", "joining"]
+      },
+      "CreatePostRequestDto": {
+        "type": "object",
+        "properties": {
+          "title": { "type": "string" },
+          "body": { "type": "string" },
+          "channelUuid": { "type": "string" }
+        },
+        "required": ["title", "body", "channelUuid"]
+      },
+      "CreatePostResponseDto": {
+        "type": "object",
+        "properties": { "uuid": { "type": "string" } },
+        "required": ["uuid"]
+      },
+      "ChannelPostDto": {
+        "type": "object",
+        "properties": {
+          "uuid": { "type": "string" },
+          "title": { "type": "string" },
+          "body": { "type": "string" },
+          "created": { "format": "date-time", "type": "string" },
+          "modified": { "format": "date-time", "type": "string" },
+          "author": { "type": "string" },
+          "isAuthor": { "type": "boolean" },
+          "authorIsTeacher": { "type": "boolean" },
+          "edited": { "type": "boolean" },
+          "up": { "type": "number" },
+          "down": { "type": "number" },
+          "dir": { "type": "number" },
+          "commentsCount": { "type": "number" }
+        },
+        "required": [
+          "uuid",
+          "title",
+          "body",
+          "created",
+          "modified",
+          "author",
+          "isAuthor",
+          "authorIsTeacher",
+          "edited",
+          "up",
+          "down",
+          "dir",
+          "commentsCount"
+        ]
+      },
+      "GetPostByUuidResponseDto": {
+        "type": "object",
+        "properties": { "post": { "$ref": "#/components/schemas/ChannelPostDto" } },
+        "required": ["post"]
+      },
+      "GetPostsForChannelResponseDto": {
+        "type": "object",
+        "properties": {
+          "hasMore": { "type": "boolean" },
+          "posts": { "type": "array", "items": { "$ref": "#/components/schemas/ChannelPostDto" } }
+        },
+        "required": ["hasMore", "posts"]
+      },
+      "UpdatePostRequestDto": {
+        "type": "object",
+        "properties": { "postUuid": { "type": "string" }, "body": { "type": "string" } },
+        "required": ["postUuid", "body"]
+      },
+      "VoteOnPostRequestDto": {
+        "type": "object",
+        "properties": { "uuid": { "type": "string" }, "dir": { "type": "number" } },
+        "required": ["uuid", "dir"]
+      },
+      "DeletePostRequestDto": {
+        "type": "object",
+        "properties": { "postUuid": { "type": "string" } },
+        "required": ["postUuid"]
+      },
+      "CreateCommentRequestDto": {
+        "type": "object",
+        "properties": {
+          "postUuid": { "type": "string" },
+          "body": { "type": "string" },
+          "parentUuid": { "type": "string" }
+        },
+        "required": ["postUuid", "body"]
+      },
+      "CreateCommentResponseDto": {
+        "type": "object",
+        "properties": { "uuid": { "type": "string" } },
+        "required": ["uuid"]
+      },
+      "PostCommentDto": {
+        "type": "object",
+        "properties": {
+          "uuid": { "type": "string" },
+          "body": { "type": "string" },
+          "author": { "type": "string" },
+          "isAuthor": { "type": "boolean" },
+          "created": { "format": "date-time", "type": "string" },
+          "modified": { "format": "date-time", "type": "string" },
+          "edited": { "type": "boolean" },
+          "up": { "type": "number" },
+          "down": { "type": "number" },
+          "dir": { "type": "number" },
+          "comments": { "type": "array", "items": { "$ref": "#/components/schemas/PostCommentDto" } },
+          "hasMore": { "type": "boolean" },
+          "level": { "type": "number" },
+          "parentUuid": { "type": "string", "nullable": true },
+          "rootUuid": { "type": "string", "nullable": true },
+          "postUuid": { "type": "string" }
+        },
+        "required": [
+          "uuid",
+          "body",
+          "author",
+          "isAuthor",
+          "created",
+          "modified",
+          "edited",
+          "up",
+          "down",
+          "dir",
+          "comments",
+          "hasMore",
+          "level",
+          "parentUuid",
+          "rootUuid",
+          "postUuid"
+        ]
+      },
+      "GetCommentsUnderPostResponseDto": {
+        "type": "object",
+        "properties": {
+          "hasMore": { "type": "boolean" },
+          "comments": { "type": "array", "items": { "$ref": "#/components/schemas/PostCommentDto" } }
+        },
+        "required": ["hasMore", "comments"]
+      },
+      "GetCommentCommentsResponseDto": {
+        "type": "object",
+        "properties": { "comments": { "type": "array", "items": { "$ref": "#/components/schemas/PostCommentDto" } } },
+        "required": ["comments"]
+      },
+      "UpdateCommentRequestDto": {
+        "type": "object",
+        "properties": { "uuid": { "type": "string" }, "body": { "type": "string" }, "postUuid": { "type": "string" } },
+        "required": ["uuid", "body", "postUuid"]
+      },
+      "DeleteCommentRequestDto": {
+        "type": "object",
+        "properties": { "uuid": { "type": "string" }, "postUuid": { "type": "string" } },
+        "required": ["uuid", "postUuid"]
+      },
+      "VoteOnCommentRequestDto": {
+        "type": "object",
+        "properties": { "uuid": { "type": "string" }, "dir": { "type": "number" } },
+        "required": ["uuid", "dir"]
+      },
+      "RepresentativeRequestSchoolFieldDto": {
+        "type": "object",
+        "properties": { "name": { "type": "string" }, "uuid": { "type": "string" } },
+        "required": ["name", "uuid"]
+      },
+      "RepresentativeRequestUserFieldDto": {
+        "type": "object",
+        "properties": {
+          "email": { "type": "string" },
+          "username": { "type": "string" },
+          "created": { "format": "date-time", "type": "string" },
+          "uuid": { "type": "string" },
+          "name": { "type": "string" }
+        },
+        "required": ["email", "username", "created", "uuid", "name"]
+      },
+      "RepresentativeRequestDto": {
+        "type": "object",
+        "properties": {
+          "school": { "$ref": "#/components/schemas/RepresentativeRequestSchoolFieldDto" },
+          "user": { "$ref": "#/components/schemas/RepresentativeRequestUserFieldDto" }
+        },
+        "required": ["school", "user"]
+      },
+      "GetRepresentativeRequestsDto": {
+        "type": "object",
+        "properties": {
+          "requests": { "type": "array", "items": { "$ref": "#/components/schemas/RepresentativeRequestDto" } }
+        },
+        "required": ["requests"]
+      },
+      "TeacherRequestSchoolFieldDto": {
+        "type": "object",
+        "properties": { "name": { "type": "string" }, "uuid": { "type": "string" } },
+        "required": ["name", "uuid"]
+      },
+      "TeacherRequestFacultyFieldDto": {
+        "type": "object",
+        "properties": { "name": { "type": "string" }, "uuid": { "type": "string" } },
+        "required": ["name", "uuid"]
+      },
+      "TeacherRequestUserFieldDto": {
+        "type": "object",
+        "properties": {
+          "email": { "type": "string" },
+          "username": { "type": "string" },
+          "created": { "format": "date-time", "type": "string" },
+          "uuid": { "type": "string" },
+          "name": { "type": "string" }
+        },
+        "required": ["email", "username", "created", "uuid", "name"]
+      },
+      "TeacherRequestDto": {
+        "type": "object",
+        "properties": {
+          "school": { "$ref": "#/components/schemas/TeacherRequestSchoolFieldDto" },
+          "faculty": { "$ref": "#/components/schemas/TeacherRequestFacultyFieldDto" },
+          "user": { "$ref": "#/components/schemas/TeacherRequestUserFieldDto" }
+        },
+        "required": ["school", "faculty", "user"]
+      },
+      "GetTeacherRequestsDto": {
+        "type": "object",
+        "properties": {
+          "requests": { "type": "array", "items": { "$ref": "#/components/schemas/TeacherRequestDto" } }
+        },
+        "required": ["requests"]
+      },
+      "GetTeacherByUsernameResponseDto": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string" },
+          "username": { "type": "string" },
+          "bio": { "type": "string" },
+          "school": { "type": "string" },
+          "faculty": { "type": "string" }
+        },
+        "required": ["name", "username", "bio", "school", "faculty"]
+      },
+      "FeedPostDto": {
+        "type": "object",
+        "properties": {
+          "uuid": { "type": "string" },
+          "channelTextId": { "type": "string" },
+          "title": { "type": "string" },
+          "body": { "type": "string" },
+          "created": { "format": "date-time", "type": "string" },
+          "modified": { "format": "date-time", "type": "string" },
+          "author": { "type": "string" },
+          "isAuthor": { "type": "boolean" },
+          "authorIsTeacher": { "type": "boolean" },
+          "edited": { "type": "boolean" },
+          "up": { "type": "number" },
+          "down": { "type": "number" },
+          "dir": { "type": "number" },
+          "commentsCount": { "type": "number" }
+        },
+        "required": [
+          "uuid",
+          "channelTextId",
+          "title",
+          "body",
+          "created",
+          "modified",
+          "author",
+          "isAuthor",
+          "authorIsTeacher",
+          "edited",
+          "up",
+          "down",
+          "dir",
+          "commentsCount"
+        ]
+      },
+      "GetUserFeedResponseDto": {
+        "type": "object",
+        "properties": {
+          "hasMore": { "type": "boolean" },
+          "hasNew": { "type": "boolean" },
+          "posts": { "type": "array", "items": { "$ref": "#/components/schemas/FeedPostDto" } }
+        },
+        "required": ["hasMore", "hasNew", "posts"]
+      }
+    }
+  }
+}

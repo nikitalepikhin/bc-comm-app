@@ -24,7 +24,6 @@ yarn-debug.log*
 yarn-error.log*
 
 .idea/**
-resources/api-docs.json
 **/.DS_Store
 
 .cert/**
