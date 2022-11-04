@@ -2,7 +2,7 @@ import { NestFactory } from "@nestjs/core";
 import { AppModule } from "./app.module";
 import { DocumentBuilder, SwaggerDocumentOptions, SwaggerModule } from "@nestjs/swagger";
 import * as fs from "fs";
-import { INestApplication } from "@nestjs/common";
+import { INestApplication, ValidationPipe } from "@nestjs/common";
 import * as cookieParser from "cookie-parser";
 
 function initSwagger(app: INestApplication) {
@@ -24,6 +24,7 @@ async function bootstrap() {
   });
 
   app.use(cookieParser());
+  app.useGlobalPipes(new ValidationPipe());
 
   app.enableCors({
     origin: ["https://commapp.com"],

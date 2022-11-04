@@ -6,16 +6,17 @@ import { RequirePermissionsGuard } from "../auth/require-permissions/require-per
 import { Permission, RequirePermissions } from "../auth/require-permissions/permission.enum";
 import { PostsService } from "./posts.service";
 import UserDto from "../auth/dto/user.dto";
-import GetPostsForChannelParamsDto from "./dto/get-posts-for-channel-params.dto";
+import GetPostsForChannelParamDto from "./dto/get-posts-for-channel-param.dto";
 import GetPostsForChannelResponseDto from "./dto/get-posts-for-channel-response.dto";
 import UpdatePostRequestDto from "./dto/update-post-request.dto";
 import VoteOnPostRequestDto from "./dto/vote-on-post-request.dto";
 import DeletePostRequestDto from "./dto/delete-post-request.dto";
 import CreatePostResponseDto from "./dto/create-post-response.dto";
-import GetPostByUuidParamsDto from "./dto/get-post-by-uuid-params.dto";
+import GetPostByUuidParamDto from "./dto/get-post-by-uuid-param.dto";
 import GetPostByUuidResponseDto from "./dto/get-post-by-uuid-response.dto";
 import GetPostsForChannelQueryDto from "./dto/get-posts-for-channel-query.dto";
 import { IsVerifiedGuard } from "src/auth/verification/is-verified.guard";
+import { PostsOrder } from "./dto/posts-order.enum";
 
 @Controller("posts")
 export class PostsController {
@@ -35,7 +36,7 @@ export class PostsController {
   @RequirePermissions(Permission.POST_READ)
   @UseGuards(JwtAuthGuard, RequirePermissionsGuard)
   @Get("/:postUuid")
-  async getPostByUuid(@Req() request, @Param() params: GetPostByUuidParamsDto): Promise<GetPostByUuidResponseDto> {
+  async getPostByUuid(@Req() request, @Param() params: GetPostByUuidParamDto): Promise<GetPostByUuidResponseDto> {
     return await this.postsService.getPostByUuid(request.user as UserDto, params.postUuid);
   }
 
@@ -46,15 +47,15 @@ export class PostsController {
   @Get("/channel/:channelTextId")
   async getPostsForChannel(
     @Req() request,
-    @Param() params: GetPostsForChannelParamsDto,
+    @Param() params: GetPostsForChannelParamDto,
     @Query() query: GetPostsForChannelQueryDto,
   ): Promise<GetPostsForChannelResponseDto> {
     return await this.postsService.getPostsForChannel(
       request.user as UserDto,
       params.channelTextId,
-      query.page,
-      query.order,
-      query.after,
+      query.page ?? 1,
+      query.order ?? PostsOrder.new,
+      query.after ?? new Date(),
     );
   }
 

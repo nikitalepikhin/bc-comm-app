@@ -1,9 +1,9 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { IsNotEmpty, IsString } from "class-validator";
 
-export default class GetSchoolAutocompleteRequestDto {
+export default class GetChannelByTextIdParamDto {
   @IsNotEmpty()
   @IsString()
   @ApiProperty()
-  value: string;
+  textId: string;
 }

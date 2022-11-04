@@ -6,12 +6,12 @@ import { JwtAuthGuard } from "../auth/jwt/jwt-auth.guard";
 import { RequirePermissionsGuard } from "../auth/require-permissions/require-permissions.guard";
 import { Permission, RequirePermissions } from "../auth/require-permissions/permission.enum";
 import UserDto from "../auth/dto/user.dto";
-import CheckChannelIdAvailabilityPathParamDto from "./dto/check-channel-id-availability-path-param.dto";
+import CheckChannelIdAvailabilityParamDto from "./dto/check-channel-id-availability-param.dto";
 import CheckChannelIdAvailabilityResponseDto from "./dto/check-channel-id-availability-response.dto";
 import SearchChannelsResponseDto from "./dto/search-channels-response.dto";
 import SearchChannelsQueryDto from "./dto/search-channels-query.dto";
 import GetChannelByTextIdResponseDto from "./dto/get-channel-by-text-id-response.dto";
-import GetChannelByTextIdParamsDto from "./dto/get-channel-by-text-id-params.dto";
+import GetChannelByTextIdParamDto from "./dto/get-channel-by-text-id-param.dto";
 import ToggleChannelMembershipRequestDto from "./dto/toggle-channel-membership-request.dto";
 import UpdateChannelRequestDto from "./dto/update-channel-request.dto";
 import UpdateChannelResponseDto from "./dto/update-channel-response.dto";
@@ -64,7 +64,7 @@ export class ChannelsController {
   @Get("/:textId")
   async getChannelByTextId(
     @Req() request,
-    @Param() params: GetChannelByTextIdParamsDto,
+    @Param() params: GetChannelByTextIdParamDto,
   ): Promise<GetChannelByTextIdResponseDto> {
     return await this.channelsService.getChannelByTextId(params.textId, request.user.uuid);
   }
@@ -80,7 +80,7 @@ export class ChannelsController {
   @UseGuards(JwtAuthGuard, RequirePermissionsGuard)
   @Get("/new/check/:value")
   async checkChannelIdAvailability(
-    @Param() params: CheckChannelIdAvailabilityPathParamDto,
+    @Param() params: CheckChannelIdAvailabilityParamDto,
   ): Promise<CheckChannelIdAvailabilityResponseDto> {
     return await this.channelsService.checkChannelIdAvailability(params.value);
   }

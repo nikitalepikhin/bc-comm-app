@@ -18,6 +18,6 @@ export class FeedController {
   @UseGuards(JwtAuthGuard, RequirePermissionsGuard)
   @Get("/")
   async getUserFeed(@Req() request, @Query() query: GetUserFeedQueryDto): Promise<GetUserFeedResponseDto> {
-    return await this.feedService.getUserFeed(request.user as UserDto, query.page, query.after);
+    return await this.feedService.getUserFeed(request.user as UserDto, query.page ?? 1, query.after ?? new Date());
   }
 }

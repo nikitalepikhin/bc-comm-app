@@ -1,9 +1,9 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { IsNotEmpty, IsUUID } from "class-validator";
 
-export default class GetSchoolByUuidRequestDto {
+export default class GetCommentCommentsParamDto {
   @IsNotEmpty()
   @IsUUID("4")
   @ApiProperty()
-  uuid: string;
+  commentUuid: string;
 }

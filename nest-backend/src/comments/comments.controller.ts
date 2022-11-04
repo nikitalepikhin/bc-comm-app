@@ -6,12 +6,12 @@ import { JwtAuthGuard } from "../auth/jwt/jwt-auth.guard";
 import { RequirePermissionsGuard } from "../auth/require-permissions/require-permissions.guard";
 import UserDto from "../auth/dto/user.dto";
 import GetPostCommentsResponseDto from "./dto/get-comments-under-post-response.dto";
-import GetPostCommentsParamsDto from "./dto/get-comments-under-post-params.dto";
+import GetPostCommentsParamsDto from "./dto/get-comments-under-post-param.dto";
 import GetPostCommentsQueryDto from "./dto/get-comments-under-post-query.dto";
 import CreateCommentRequestDto from "./dto/create-comment-request.dto";
 import CreateCommentResponseDto from "./dto/create-comment-response.dto";
 import GetCommentCommentsResponseDto from "./dto/get-comment-comments-response.dto";
-import GetCommentCommentsParamsDto from "./dto/get-comment-comments-params.dto";
+import GetCommentCommentsParamDto from "./dto/get-comment-comments-param.dto";
 import UpdateCommentRequestDto from "./dto/update-comment-request.dto";
 import DeleteCommentRequestDto from "./dto/delete-comment-request.dto";
 import VoteOnCommentRequestDto from "./dto/vote-on-comment-request.dto";
@@ -54,7 +54,7 @@ export class CommentsController {
   @RequirePermissions(Permission.COMMENT_READ)
   @UseGuards(JwtAuthGuard, RequirePermissionsGuard)
   @Get("/comment/:commentUuid")
-  async getCommentComments(@Req() request, @Param() params: GetCommentCommentsParamsDto) {
+  async getCommentComments(@Req() request, @Param() params: GetCommentCommentsParamDto) {
     return await this.commentsService.getCommentComments(request.user as UserDto, params.commentUuid);
   }
 

@@ -6,7 +6,7 @@ import { RequirePermissionsGuard } from "../auth/require-permissions/require-per
 import { FacultiesService } from "./faculties.service";
 import CreateFacultyDto from "./dto/create-faculty.dto";
 import GetFacultiesResponseDto from "./dto/get-faculties-response.dto";
-import GetFacultiesQueryParamsDto from "./dto/get-faculties-query-params.dto";
+import GetFacultiesQueryDto from "./dto/get-faculties-query.dto";
 import DeleteFacultyDto from "./dto/delete-faculty.dto";
 import UpdateFacultyRequestDto from "./dto/update-faculty-request.dto";
 import FacultyResponseDto from "./dto/faculty-response.dto";
@@ -40,7 +40,7 @@ export class FacultiesController {
   @UseGuards(JwtAuthGuard, RequirePermissionsGuard)
   @Get("/:schoolUuid")
   async getAllFaculties(
-    @Query() query: GetFacultiesQueryParamsDto,
+    @Query() query: GetFacultiesQueryDto,
     @Param() { schoolUuid },
   ): Promise<GetFacultiesResponseDto> {
     return await this.facultiesService.getFaculties(parseInt(query.page) ?? 1, parseInt(query.count) ?? 10, schoolUuid);

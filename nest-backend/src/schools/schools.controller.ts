@@ -17,7 +17,7 @@ import { JwtAuthGuard } from "../auth/jwt/jwt-auth.guard";
 import CreateSchoolDto from "./dto/create-school.dto";
 import { Permission, RequirePermissions } from "../auth/require-permissions/permission.enum";
 import { RequirePermissionsGuard } from "../auth/require-permissions/require-permissions.guard";
-import GetSchoolsQueryParamsDto from "./dto/get-schools-query-params.dto";
+import GetSchoolsQueryDto from "./dto/get-schools-query.dto";
 import SchoolResponseDto from "./dto/school-response.dto";
 import GetSchoolsResponseDto from "./dto/get-schools-response.dto";
 import GetSchoolByUuidRequestDto from "./dto/get-school-by-uuid-request.dto";
@@ -50,7 +50,7 @@ export class SchoolsController {
   @RequirePermissions(Permission.SCHOOL_READ)
   @UseGuards(JwtAuthGuard, RequirePermissionsGuard)
   @Get("/")
-  async getAllSchools(@Query() query: GetSchoolsQueryParamsDto): Promise<GetSchoolsResponseDto> {
+  async getAllSchools(@Query() query: GetSchoolsQueryDto): Promise<GetSchoolsResponseDto> {
     return await this.schoolService.getSchools(parseInt(query.page) ?? 1, parseInt(query.count) ?? 10);
   }
 
