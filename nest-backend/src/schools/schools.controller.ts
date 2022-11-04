@@ -51,7 +51,7 @@ export class SchoolsController {
   @UseGuards(JwtAuthGuard, RequirePermissionsGuard)
   @Get("/")
   async getAllSchools(@Query() query: GetSchoolsQueryDto): Promise<GetSchoolsResponseDto> {
-    return await this.schoolService.getSchools(parseInt(query.page) ?? 1, parseInt(query.count) ?? 10);
+    return await this.schoolService.getSchools(query.page ?? 1, query.count ?? 10);
   }
 
   @ApiOperation({
