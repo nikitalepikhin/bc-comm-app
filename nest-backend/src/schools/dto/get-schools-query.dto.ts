@@ -6,11 +6,11 @@ export default class GetSchoolsQueryDto {
   @IsNumber()
   @Min(1)
   @ApiProperty({ required: false, type: "number" })
-  page?: string;
+  page?: number;
 
   @IsOptional()
   @IsNumber()
   @Min(1)
   @ApiProperty({ required: false, type: "number" })
-  count?: string;
+  count?: number;
 }
