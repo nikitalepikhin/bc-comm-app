@@ -17,7 +17,7 @@ export function IsValidReason(property: string, validationOptions?: ValidationOp
           if (requestDto.approve && requestDto.reason) {
             return false;
           }
-          if (!requestDto.approve && isNil(requestDto.reason)) {
+          if (!requestDto.approve && (isNil(requestDto.reason) || requestDto.reason.length > 300)) {
             return false;
           }
           return true;

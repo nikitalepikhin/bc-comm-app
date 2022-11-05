@@ -13,9 +13,9 @@ export default class VerifyUserRequestDto {
   @ApiProperty()
   approve: boolean;
 
-  @MaxLength(300)
   @IsValidReason("reason", {
-    message: "declined verification must have a reason, approved verification must have no reason",
+    message:
+      "declined verification must have a reason, approved verification must have no reason, reason must have a maximum length of 300 characters",
   })
   @ApiProperty({ nullable: true })
   reason?: string;
