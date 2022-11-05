@@ -89,6 +89,9 @@ async function seedAuthorities() {
         name: Permission[Permission.TEACHER_READ],
         roles: [Role.ADMIN, Role.REPRESENTATIVE, Role.TEACHER, Role.STUDENT],
       },
+
+      { name: Permission[Permission.NOTIFICATION_READ], roles: [Role.TEACHER, Role.STUDENT] },
+      { name: Permission[Permission.NOTIFICATION_DISMISS], roles: [Role.TEACHER, Role.STUDENT] },
     ],
   });
 }
