@@ -12,7 +12,7 @@ import { PopoverContext } from "../../uilib/Popover";
 interface Props extends NotificationDto {}
 
 export default function Notification(props: Props) {
-  const { notificationUuid, commentUuid, comment, type, created, author, postUuid, channelTextId } = props;
+  const { notificationUuid, commentUuid, comment, type, created, author, postUuid, channelTextId, highlight } = props;
   const [dismiss, { isError, isLoading, reset }] = useDismissUserNotificationMutation();
   const { close } = useContext(PopoverContext);
 
@@ -37,7 +37,7 @@ export default function Notification(props: Props) {
       </div>
       <div className="flex flex-row justify-between items-center gap-20 w-full">
         <Link
-          to={`/channels/${channelTextId}/post/${postUuid}/comment/${commentUuid}`}
+          to={`/channels/${channelTextId}/post/${postUuid}/comment/${commentUuid}/${highlight}`}
           className={classNames(
             "text-blue-600 hover:text-blue-800 dark:text-blue-500 dark:hover:text-blue-400",
             "hover:underline",

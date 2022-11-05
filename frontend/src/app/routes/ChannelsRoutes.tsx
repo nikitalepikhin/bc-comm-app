@@ -35,6 +35,7 @@ export default function ChannelsRoutes() {
         <Route path="post/:postUuid" element={<PostPage />}>
           <Route index element={<PostCommentsPage />} />
           <Route path="comment/:commentUuid" element={<CommentThreadPage />} />
+          <Route path="comment/:commentUuid/:highlight" element={<CommentThreadPage />} />
         </Route>
         <Route path="post/:postUuid/edit" element={<EditPostPage />} />
         <Route

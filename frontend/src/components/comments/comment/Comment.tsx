@@ -34,7 +34,7 @@ interface Props {
 
 export default function Comment(props: Props) {
   const { uuid, body, author, isAuthor, created, modified, edited, up, down, dir, children, hasMore, level } = props;
-  const { postUuid, textId } = useParams() as { textId: string; postUuid: string };
+  const { postUuid, textId, highlight } = useParams() as { textId: string; postUuid: string; highlight?: string };
   const [isReplying, setIsReplying] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
@@ -61,9 +61,14 @@ export default function Comment(props: Props) {
           />
         ))}
         <Box
-          className={classNames("flex flex-col gap-2 justify-start items-start grow shrink", "my-2", {
-            "ml-3 md:ml-6": level > 1,
-          })}
+          className={classNames(
+            "flex flex-col gap-2 justify-start items-start grow shrink",
+            "my-2",
+            {
+              "ml-3 md:ml-6": level > 1,
+            },
+            { "bg-orange-100 dark:bg-orange-900/50": highlight && uuid === highlight }
+          )}
         >
           <CommentHeader
             author={author}

@@ -9,6 +9,9 @@ export default class NotificationDto {
   commentUuid: string;
 
   @ApiProperty()
+  highlight: string;
+
+  @ApiProperty()
   channelTextId: string;
 
   @ApiProperty()
