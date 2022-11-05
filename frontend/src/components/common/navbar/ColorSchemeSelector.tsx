@@ -7,7 +7,7 @@ interface Props {
   closeMenu: () => void;
 }
 
-export default function ThemeSelector(props: Props) {
+export default function ColorSchemeSelector(props: Props) {
   const { closeMenu } = props;
   const { setScheme, scheme } = useColorScheme();
 
@@ -52,17 +52,17 @@ export default function ThemeSelector(props: Props) {
       {scheme === "light" ? (
         <>
           <SunIcon className="h-6 w-6" />
-          <span className="hidden md:inline">Display</span>
+          <span className="hidden lg:inline">Display</span>
         </>
       ) : scheme === "dark" ? (
         <>
           <MoonIcon className="h-6 w-6" />
-          <span className="hidden md:inline">Display</span>
+          <span className="hidden lg:inline">Display</span>
         </>
       ) : (
         <>
           <ComputerDesktopIcon className="h-6 w-6" />
-          <span className="hidden md:inline">Display</span>
+          <span className="hidden lg:inline">Display</span>
         </>
       )}
     </Dropdown>
