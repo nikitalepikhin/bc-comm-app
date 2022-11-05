@@ -7,7 +7,7 @@ import { useEffect, useState } from "react";
 import CommentForm from "../CommentForm";
 import Dialog from "../../uilib/dialog/Dialog";
 import { useDeleteCommentMutation } from "../../../app/enhancedApi";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import Votes from "../../common/Votes";
 import Box from "../../uilib/Box";
 import Button from "../../uilib/Button";
@@ -40,10 +40,12 @@ export default function Comment(props: Props) {
   const [isDeleting, setIsDeleting] = useState(false);
   const [deleteComment, { isLoading, isSuccess }] = useDeleteCommentMutation();
   const levels = Array.from(Array(level + 1).keys()).slice(2);
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (isSuccess) {
       setIsDeleting(false);
+      navigate(`/channels/${textId}/post/${postUuid}`);
     }
   }, [isSuccess]);
 
