@@ -45,6 +45,7 @@ export default function CommentThreadPage() {
             body={comment.body}
             author={comment.author}
             isAuthor={comment.isAuthor}
+            authorIsTeacher={comment.authorIsTeacher}
             created={comment.created}
             modified={comment.modified}
             edited={comment.edited}

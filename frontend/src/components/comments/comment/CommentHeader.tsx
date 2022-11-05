@@ -3,9 +3,11 @@ import timeAgo from "../../../util/time";
 import Badge from "../../uilib/Badge";
 import CommentContextMenu from "./CommentContextMenu";
 import { ClockIcon, UserIcon } from "@heroicons/react/20/solid";
+import StyledLink from "../../uilib/StyledLink";
 
 interface Props {
   author: string;
+  authorIsTeacher: boolean;
   created: string;
   modified: string;
   edited: boolean;
@@ -16,7 +18,8 @@ interface Props {
 }
 
 export default function CommentHeader(props: Props) {
-  const { author, created, modified, edited, isAuthor, onEditClick, onDeleteClick, onShareClick } = props;
+  const { author, authorIsTeacher, created, modified, edited, isAuthor, onEditClick, onDeleteClick, onShareClick } =
+    props;
 
   return (
     <div className="flex flex-row justify-between items-center gap-2 w-full flex-wrap">
@@ -28,7 +31,8 @@ export default function CommentHeader(props: Props) {
       >
         <div className="flex flex-row justify-center items-center gap-1">
           <UserIcon className="h-3 w-3" />
-          <span>{author}</span>
+          {!authorIsTeacher && <span>{author}</span>}
+          {authorIsTeacher && <StyledLink to={`/profile/teacher/${author}`}>{author}</StyledLink>}
         </div>
         <div>·</div>
         <div className="flex flex-row justify-center items-center gap-1">

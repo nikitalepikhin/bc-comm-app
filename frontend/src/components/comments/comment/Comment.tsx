@@ -21,6 +21,7 @@ interface Props {
   body: string;
   author: string;
   isAuthor: boolean;
+  authorIsTeacher: boolean;
   created: string;
   modified: string;
   edited: boolean;
@@ -33,7 +34,22 @@ interface Props {
 }
 
 export default function Comment(props: Props) {
-  const { uuid, body, author, isAuthor, created, modified, edited, up, down, dir, children, hasMore, level } = props;
+  const {
+    uuid,
+    body,
+    author,
+    isAuthor,
+    created,
+    modified,
+    edited,
+    up,
+    down,
+    dir,
+    children,
+    hasMore,
+    level,
+    authorIsTeacher,
+  } = props;
   const { postUuid, textId, highlight } = useParams() as { textId: string; postUuid: string; highlight?: string };
   const [isReplying, setIsReplying] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
@@ -74,6 +90,7 @@ export default function Comment(props: Props) {
         >
           <CommentHeader
             author={author}
+            authorIsTeacher={authorIsTeacher}
             created={created}
             modified={modified}
             edited={edited}
@@ -130,6 +147,7 @@ export default function Comment(props: Props) {
           body={comment.body}
           author={comment.author}
           isAuthor={comment.isAuthor}
+          authorIsTeacher={comment.authorIsTeacher}
           created={comment.created}
           modified={comment.modified}
           edited={comment.edited}

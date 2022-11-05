@@ -2,6 +2,7 @@ export interface PostComment {
   uuid: string;
   postUuid: string;
   authorUuid: string;
+  role: string;
   body: string;
   parentUuid: string | null;
   authorUsername: string;

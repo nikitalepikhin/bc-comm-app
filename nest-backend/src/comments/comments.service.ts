@@ -250,6 +250,7 @@ export class CommentsService {
       body: comment.body,
       author: comment.authorUsername,
       isAuthor: comment.authorUuid === userUuid,
+      authorIsTeacher: comment.role === "TEACHER",
       created: comment.created,
       modified: comment.modified,
       edited: comment.created.getTime() !== comment.modified.getTime(),
