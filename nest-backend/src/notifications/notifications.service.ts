@@ -13,14 +13,25 @@ export class NotificationsService {
       where: { user: { uuid: user.uuid } },
       include: {
         user: true,
-        comment: true,
+        comment: {
+          include: {
+            post: {
+              include: {
+                channel: true,
+              },
+            },
+            parent: true,
+          },
+        },
       },
     });
 
     return {
       notifications: notifications.map((notification) => ({
         notificationUuid: notification.uuid,
-        commentUuid: notification.commentUuid,
+        commentUuid: notification.comment.parentUuid ? notification.comment.parentUuid : notification.commentUuid,
+        postUuid: notification.comment.post.uuid,
+        channelTextId: notification.comment.post.channel.textId,
         comment: notification.comment.body.slice(0, 100),
         author: notification.comment.authorUsername,
         type: notification.comment.parentUuid ? NotificationType.COMMENT : NotificationType.POST,
@@ -44,5 +55,16 @@ export class NotificationsService {
         }
       }
     });
+  }
+
+  async createNotification(commentUuid: string, userUuid: string): Promise<string> {
+    return (
+      await this.prisma.notification.create({
+        data: {
+          commentUuid,
+          userUuid,
+        },
+      })
+    ).uuid;
   }
 }

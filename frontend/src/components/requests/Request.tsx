@@ -152,7 +152,7 @@ export default function Request(props: Props) {
                   </div>
                 </div>
                 <Alert show={showAlert} fullWidth onClose={() => setShowAlert(false)}>
-                  An error occurred while verifying this request. Please try again.
+                  Error verifying this request. Please try again.
                 </Alert>
               </div>
             </Container>

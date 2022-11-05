@@ -5,6 +5,7 @@ interface Props {
   onClick: MouseEventHandler<HTMLButtonElement>;
   children: ReactNode;
   className?: string;
+  hello?: string;
 }
 
 function NavbarButton(props: Props, ref: ForwardedRef<HTMLButtonElement>) {

@@ -154,6 +154,12 @@ const injectedRtkApi = api.injectEndpoints({
     voteOnComment: build.mutation<VoteOnCommentApiResponse, VoteOnCommentApiArg>({
       query: (queryArg) => ({ url: `/comments/vote`, method: "POST", body: queryArg.voteOnCommentRequestDto }),
     }),
+    getUserNotifications: build.query<GetUserNotificationsApiResponse, GetUserNotificationsApiArg>({
+      query: () => ({ url: `/notifications` }),
+    }),
+    dismissUserNotification: build.mutation<DismissUserNotificationApiResponse, DismissUserNotificationApiArg>({
+      query: (queryArg) => ({ url: `/notifications`, method: "POST", body: queryArg.dismissNotificationRequestDto }),
+    }),
     getRepresentativeVerificationRequests: build.query<
       GetRepresentativeVerificationRequestsApiResponse,
       GetRepresentativeVerificationRequestsApiArg
@@ -357,6 +363,12 @@ export type GetCommentCommentsApiArg = {
 export type VoteOnCommentApiResponse = unknown;
 export type VoteOnCommentApiArg = {
   voteOnCommentRequestDto: VoteOnCommentRequestDto;
+};
+export type GetUserNotificationsApiResponse = /** status 200  */ GetUserNotificationsResponseDto;
+export type GetUserNotificationsApiArg = void;
+export type DismissUserNotificationApiResponse = unknown;
+export type DismissUserNotificationApiArg = {
+  dismissNotificationRequestDto: DismissNotificationRequestDto;
 };
 export type GetRepresentativeVerificationRequestsApiResponse =
   /** status 200 Representative verification requests. */ GetRepresentativeRequestsDto;
@@ -658,6 +670,22 @@ export type VoteOnCommentRequestDto = {
   uuid: string;
   dir: number;
 };
+export type NotificationDto = {
+  notificationUuid: string;
+  commentUuid: string;
+  channelTextId: string;
+  postUuid: string;
+  type: "POST" | "COMMENT";
+  comment: string;
+  author: string;
+  created: string;
+};
+export type GetUserNotificationsResponseDto = {
+  notifications: NotificationDto[];
+};
+export type DismissNotificationRequestDto = {
+  notificationUuid: string;
+};
 export type RepresentativeRequestSchoolFieldDto = {
   name: string;
   uuid: string;
@@ -772,6 +800,8 @@ export const {
   useGetPostCommentsQuery,
   useGetCommentCommentsQuery,
   useVoteOnCommentMutation,
+  useGetUserNotificationsQuery,
+  useDismissUserNotificationMutation,
   useGetRepresentativeVerificationRequestsQuery,
   useGetTeacherVerificationRequestsQuery,
   useGetTeacherByUsernameQuery,
