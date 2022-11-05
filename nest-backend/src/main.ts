@@ -24,7 +24,7 @@ async function bootstrap() {
   });
 
   app.use(cookieParser());
-  app.useGlobalPipes(new ValidationPipe({ transform: true }));
+  app.useGlobalPipes(new ValidationPipe({ transform: true, forbidNonWhitelisted: true, whitelist: true }));
 
   app.enableCors({
     origin: ["https://commapp.com"],
