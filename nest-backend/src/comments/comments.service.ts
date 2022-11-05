@@ -33,6 +33,7 @@ export class CommentsService {
         authorUsername: username,
         author: { connect: { uuid: user.uuid } },
         parent: requestDto.parentUuid !== undefined ? { connect: { uuid: requestDto.parentUuid } } : undefined,
+        resVote: 0,
       },
       select: {
         uuid: true,
