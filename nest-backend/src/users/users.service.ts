@@ -168,7 +168,7 @@ export class UsersService {
         select: { verified: true },
       });
       if (verified) {
-        throw new BadRequestException("Teacher is already verified.");
+        throw new BadRequestException("this teacher is already verified");
       } else {
         await this.prisma.teacher.update({
           where: { userUuid: requestDto.verifiedUserUuid },
@@ -187,7 +187,7 @@ export class UsersService {
         select: { verified: true },
       });
       if (verified) {
-        throw new BadRequestException("Representative is already verified.");
+        throw new BadRequestException("this representative is already verified");
       } else {
         await this.prisma.representative.update({
           where: { userUuid: requestDto.verifiedUserUuid },

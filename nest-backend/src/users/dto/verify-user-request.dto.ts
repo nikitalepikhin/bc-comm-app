@@ -1,5 +1,6 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsBoolean, IsEnum, IsNotEmpty, IsString, IsUUID, MaxLength, ValidateIf } from "class-validator";
+import { IsBoolean, IsEnum, IsNotEmpty, IsOptional, IsString, IsUUID, MaxLength, ValidateIf } from "class-validator";
+import { IsValidReason } from "./decorators/is-valid-reason.decorator";
 
 enum VerifiedUserType {
   TEACHER = "TEACHER",
@@ -12,10 +13,10 @@ export default class VerifyUserRequestDto {
   @ApiProperty()
   approve: boolean;
 
-  @IsString()
   @MaxLength(300)
-  @ValidateIf((object: VerifyUserRequestDto) => object.approve)
-  @IsNotEmpty()
+  @IsValidReason("reason", {
+    message: "declined verification must have a reason, approved verification must have no reason",
+  })
   @ApiProperty({ nullable: true })
   reason?: string;
 
