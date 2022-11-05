@@ -673,6 +673,7 @@ export type VoteOnCommentRequestDto = {
 export type NotificationDto = {
   notificationUuid: string;
   commentUuid: string;
+  highlight: string;
   channelTextId: string;
   postUuid: string;
   type: "POST" | "COMMENT";

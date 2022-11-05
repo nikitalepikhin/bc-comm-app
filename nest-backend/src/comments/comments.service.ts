@@ -46,7 +46,8 @@ export class CommentsService {
         },
       },
     });
-    if (requestDto.parentUuid === undefined) {
+    // prevent generating notifications for comments under own posts and comments
+    if (requestDto.parentUuid === undefined && user.uuid !== comment.post.authorUuid) {
       // if this is a comment under a post, then select the post author as the user to notify
       await this.notificationsService.createNotification(comment.uuid, comment.post.author.uuid);
     } else {
@@ -55,7 +56,9 @@ export class CommentsService {
         where: { uuid: comment.parentUuid },
         select: { authorUuid: true },
       });
-      await this.notificationsService.createNotification(comment.uuid, parentAuthorUuid);
+      if (user.uuid !== parentAuthorUuid) {
+        await this.notificationsService.createNotification(comment.uuid, parentAuthorUuid);
+      }
     }
     return { uuid: comment.uuid };
   }

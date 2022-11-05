@@ -24,6 +24,11 @@ export class NotificationsService {
           },
         },
       },
+      orderBy: {
+        comment: {
+          created: "desc",
+        },
+      },
     });
 
     return {
@@ -36,6 +41,7 @@ export class NotificationsService {
         author: notification.comment.authorUsername,
         type: notification.comment.parentUuid ? NotificationType.COMMENT : NotificationType.POST,
         created: notification.comment.created,
+        highlight: notification.commentUuid,
       })),
     };
   }
