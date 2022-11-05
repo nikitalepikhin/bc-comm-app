@@ -39,6 +39,7 @@ export class PostsService {
                 uuid: user.uuid,
               },
             },
+            resVote: 0,
           },
         })
       ).uuid,
