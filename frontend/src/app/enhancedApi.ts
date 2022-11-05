@@ -455,6 +455,9 @@ export const enhancedApi = api.enhanceEndpoints({
         }
       },
     },
+    getTeacherByUsername: {
+      providesTags: (result, error, arg) => [{ type: TagTypes.USER, id: arg.username }],
+    },
     getUserNotifications: {
       providesTags: (result, error, arg) => {
         if (result) {
