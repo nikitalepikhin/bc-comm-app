@@ -10,15 +10,15 @@ const title: { [key: string]: string } = {
   "401": "401 Unauthorized 🔒",
   "404": "404 Not Found 🤷‍♂️",
   "500": "500 Internal Server Error 💩",
-  "10000": "An error has occurred 😞",
+  "10000": "An error has occurred 🤖",
 };
 
 const body: { [key: string]: string } = {
-  400: "You've sent a bad request.",
+  400: "Invalid request parameters.",
   401: "You shall not pass!",
   404: "This page could not be found.",
   500: "Oops, something went wrong on our side.",
-  10000: "Something went wrong.",
+  10000: "Oops, something went wrong.",
 };
 
 interface Props {
