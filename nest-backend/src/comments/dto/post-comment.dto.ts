@@ -11,6 +11,9 @@ export default class PostCommentDto {
   author: string;
 
   @ApiProperty()
+  authorIsTeacher: boolean;
+
+  @ApiProperty()
   isAuthor: boolean;
 
   @ApiProperty()

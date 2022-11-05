@@ -645,6 +645,7 @@ export type PostCommentDto = {
   uuid: string;
   body: string;
   author: string;
+  authorIsTeacher: boolean;
   isAuthor: boolean;
   created: string;
   modified: string;

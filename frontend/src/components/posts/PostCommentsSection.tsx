@@ -42,6 +42,7 @@ export default function PostCommentsSection(props: Props) {
           body={comment.body}
           edited={comment.edited}
           isAuthor={comment.isAuthor}
+          authorIsTeacher={comment.authorIsTeacher}
           author={comment.author}
           created={comment.created}
           modified={comment.modified}
