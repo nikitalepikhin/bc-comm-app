@@ -8,6 +8,12 @@ export default class NotificationDto {
   @ApiProperty()
   commentUuid: string;
 
+  @ApiProperty()
+  channelTextId: string;
+
+  @ApiProperty()
+  postUuid: string;
+
   @ApiProperty({ enum: NotificationType })
   type: NotificationType;
 

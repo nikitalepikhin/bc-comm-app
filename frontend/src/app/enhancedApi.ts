@@ -455,6 +455,23 @@ export const enhancedApi = api.enhanceEndpoints({
         }
       },
     },
+    getUserNotifications: {
+      providesTags: (result, error, arg) => {
+        if (result) {
+          return [
+            ...result.notifications.map((nf) => ({ type: TagTypes.NOTIFICATION, id: nf.notificationUuid })),
+            { type: TagTypes.NOTIFICATION, id: IdTypes.ALL },
+          ];
+        } else {
+          return [{ type: TagTypes.NOTIFICATION, id: IdTypes.ALL }];
+        }
+      },
+    },
+    dismissUserNotification: {
+      invalidatesTags: (result, error, arg) => [
+        { type: TagTypes.NOTIFICATION, id: arg.dismissNotificationRequestDto.notificationUuid },
+      ],
+    },
   },
 });
 
@@ -506,4 +523,6 @@ export const {
   useUpdatePasswordMutation,
   useDeleteAccountMutation,
   useGetTeacherByUsernameQuery,
+  useGetUserNotificationsQuery,
+  useDismissUserNotificationMutation,
 } = enhancedApi;

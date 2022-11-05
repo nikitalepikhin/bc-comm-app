@@ -14,8 +14,9 @@ import ChannelSearch from "../../channels/ChannelSearch";
 import NavbarButton from "./NavbarButton";
 import NavbarItem from "./NavbarItem";
 import ProfileMenu from "./ProfileMenu";
-import ThemeSelector from "./ThemeSelector";
+import ColorSchemeSelector from "./ColorSchemeSelector";
 import VerificationWarning from "./VerificationWarning";
+import NotificationsPanel from "./NotificationsPanel";
 
 export default function Navbar() {
   const navigate = useNavigate();
@@ -42,18 +43,18 @@ export default function Navbar() {
         <div className="flex flex-row justify-between items-center gap-2">
           <NavbarButton onClick={() => navigate("/")}>
             <HomeIcon className="h-6 w-6" />
-            <span className="hidden md:inline">Home</span>
+            <span className="hidden lg:inline">Home</span>
           </NavbarButton>
           {role === "ADMIN" && (
-            <NavbarButton onClick={() => navigate("/schools")} className="hidden md:flex">
+            <NavbarButton onClick={() => navigate("/schools")} className="hidden lg:flex">
               <BuildingLibraryIcon className="h-6 w-6" />
-              <span className="hidden md:inline">Schools</span>
+              <span className="hidden lg:inline">Schools</span>
             </NavbarButton>
           )}
           {role === "REPRESENTATIVE" && (
-            <NavbarButton onClick={() => navigate(`/faculties/school/${schoolUuid}`)} className="hidden md:flex">
+            <NavbarButton onClick={() => navigate(`/faculties/school/${schoolUuid}`)} className="hidden lg:flex">
               <BuildingLibraryIcon className="h-6 w-6" />
-              <span className="hidden md:inline">Faculties</span>
+              <span className="hidden lg:inline">Faculties</span>
             </NavbarButton>
           )}
         </div>
@@ -61,18 +62,19 @@ export default function Navbar() {
           <ChannelSearch onSelected={() => setOpen(false)} />
         </div>
         <div className="flex flex-row justify-between items-center gap-2">
-          <ThemeSelector closeMenu={() => setOpen(false)} />
-          <NavbarButton onClick={() => setOpen(!open)} className="md:hidden">
+          <ColorSchemeSelector closeMenu={() => setOpen(false)} />
+          {(role === "TEACHER" || role === "STUDENT") && <NotificationsPanel closeMenu={() => setOpen(false)} />}
+          <NavbarButton onClick={() => setOpen(!open)} className="lg:hidden">
             <Bars3Icon className="h-6 w-6" />
           </NavbarButton>
           <ProfileMenu closeMenu={() => setOpen(false)} />
         </div>
       </nav>
-      {(role === "REPRESENTATIVE" || role === "TEACHER") && !!!verified && <VerificationWarning />}
+      {(role === "REPRESENTATIVE" || role === "TEACHER") && !verified && <VerificationWarning />}
       {open && (
         <div
           className={classNames(
-            "md:hidden",
+            "lg:hidden",
             "sticky top-[3.44rem] left-0",
             "shadow dark:shadow-gray-800",
             "flex flex-col justify-center items-center",

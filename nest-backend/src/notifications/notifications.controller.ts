@@ -18,8 +18,7 @@ export class NotificationsController {
   @UseGuards(JwtAuthGuard, RequirePermissionsGuard)
   @Get("/")
   async getUserNotifications(@Req() request): Promise<GetUserNotificationsResponseDto> {
-    await this.notificationsService.getUserNotifications(request.user as UserDto);
-    return { notifications: [] };
+    return await this.notificationsService.getUserNotifications(request.user as UserDto);
   }
 
   @ApiOperation({ summary: "Dismiss user notification." })

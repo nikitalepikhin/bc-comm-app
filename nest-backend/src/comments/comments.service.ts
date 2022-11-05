@@ -14,6 +14,7 @@ import GetCommentCommentsResponseDto from "./dto/get-comment-comments-response.d
 import UpdateCommentRequestDto from "./dto/update-comment-request.dto";
 import DeleteCommentRequestDto from "./dto/delete-comment-request.dto";
 import VoteOnCommentRequestDto from "./dto/vote-on-comment-request.dto";
+import { NotificationsService } from "../notifications/notifications.service";
 
 @Injectable()
 export class CommentsService {
@@ -22,11 +23,13 @@ export class CommentsService {
 
     @Inject(forwardRef(() => UsersService))
     private usersService: UsersService,
+
+    private notificationsService: NotificationsService,
   ) {}
 
   async createComment(user: UserDto, requestDto: CreateCommentRequestDto): Promise<CreateCommentResponseDto> {
     const { username } = await this.usersService.findByUuid(user.uuid);
-    return await this.prisma.comment.create({
+    const comment = await this.prisma.comment.create({
       data: {
         post: { connect: { uuid: requestDto.postUuid } },
         body: requestDto.body,
@@ -35,10 +38,26 @@ export class CommentsService {
         parent: requestDto.parentUuid !== undefined ? { connect: { uuid: requestDto.parentUuid } } : undefined,
         resVote: 0,
       },
-      select: {
-        uuid: true,
+      include: {
+        post: {
+          include: {
+            author: true,
+          },
+        },
       },
     });
+    if (requestDto.parentUuid === undefined) {
+      // if this is a comment under a post, then select the post author as the user to notify
+      await this.notificationsService.createNotification(comment.uuid, comment.post.author.uuid);
+    } else {
+      // if this is a reply to another comment, then select the original comment author as the user to notify
+      const { authorUuid: parentAuthorUuid } = await this.prisma.comment.findUnique({
+        where: { uuid: comment.parentUuid },
+        select: { authorUuid: true },
+      });
+      await this.notificationsService.createNotification(comment.uuid, parentAuthorUuid);
+    }
+    return { uuid: comment.uuid };
   }
 
   async getPostComments(

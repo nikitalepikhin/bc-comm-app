@@ -1,4 +1,4 @@
 export enum NotificationType {
-  POST,
-  COMMENT,
+  POST = "POST",
+  COMMENT = "COMMENT",
 }

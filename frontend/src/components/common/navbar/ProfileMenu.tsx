@@ -18,7 +18,7 @@ export default function ProfileMenu(props: Props) {
       onClick={closeMenu}
       gap="top-12"
       open="left"
-      menuClassName={classNames("flex flex-col justify-center items-center ml-auto", "hidden md:block")}
+      menuClassName={classNames("flex flex-col justify-center items-center ml-auto", "hidden lg:block")}
       buttonClassName={classNames(
         "w-fit p-2 rounded-md",
         "text-primary dark:text-white hover:text-slate-700 hover:dark:text-slate-200",
@@ -53,7 +53,7 @@ export default function ProfileMenu(props: Props) {
       ]}
     >
       <UserCircleIcon className="h-6 w-6" />
-      <span className="hidden md:inline">Profile</span>
+      <span className="hidden lg:inline">Profile</span>
     </Dropdown>
   );
 }
