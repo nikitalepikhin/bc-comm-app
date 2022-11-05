@@ -27,3 +27,4 @@ yarn-error.log*
 **/.DS_Store
 
 .cert/**
+/resources/api-docs.json
