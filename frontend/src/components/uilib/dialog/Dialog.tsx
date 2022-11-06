@@ -16,6 +16,7 @@ interface Props {
   danger?: boolean;
   onClose?: () => void;
   error?: string;
+  onErrorClose?: () => void;
 }
 
 export default function Dialog(props: Props) {
@@ -31,10 +32,11 @@ export default function Dialog(props: Props) {
     danger = false,
     loading = false,
     error,
+    onErrorClose,
   } = props;
 
   return (
-    <BaseDialog show={show} onClose={onClose}>
+    <BaseDialog show={show} onClose={onClose} center>
       <div className={classNames("relative", "flex flex-col justify-start items-stretch")}>
         <div className="flex flex-row justify-start items-start gap-4 p-3">
           <div>
@@ -53,7 +55,7 @@ export default function Dialog(props: Props) {
             <div className={classNames("text-lg font-bold")}>{title}</div>
             <div className={classNames("text-base text-secondary dark:text-slate-400")}>{body}</div>
             {error !== undefined && (
-              <Alert show fullWidth>
+              <Alert show fullWidth onClose={onErrorClose}>
                 {error}
               </Alert>
             )}

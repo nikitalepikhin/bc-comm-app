@@ -86,7 +86,7 @@ export class ChannelsService {
       });
       return { exists: true };
     } catch (e) {
-      if (e.name.toString().toLowerCase().includes("notfounderror")) {
+      if (e.name.toString().toLowerCase().includes("notfounderror") || e.code === "P2023") {
         return { exists: false };
       } else {
         throw new BadRequestException();
@@ -155,7 +155,7 @@ export class ChannelsService {
         },
       };
     } catch (e) {
-      if (e.name.toString().toLowerCase().includes("notfounderror")) {
+      if (e.name.toString().toLowerCase().includes("notfounderror") || e.code === "P2023") {
         throw new NotFoundException();
       } else {
         throw e;
@@ -176,5 +176,23 @@ export class ChannelsService {
         data: { userUuid: user.uuid, channelUuid: requestDto.channelUuid },
       });
     }
+  }
+
+  async deleteChannel(user: UserDto, channelUuid: string) {
+    await this.prisma.$transaction(async (tx) => {
+      try {
+        const channel = await tx.channel.findFirstOrThrow({ where: { uuid: channelUuid } });
+        if (channel.createdByUuid !== user.uuid) {
+          throw new UnauthorizedException();
+        }
+        await this.prisma.channel.delete({ where: { uuid: channelUuid } });
+      } catch (e) {
+        if (e.name.toString().toLowerCase().includes("notfounderror") || e.code === "P2023") {
+          throw new NotFoundException();
+        } else {
+          throw e;
+        }
+      }
+    });
   }
 }

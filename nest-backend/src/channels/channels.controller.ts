@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, Put, Query, Req, UseGuards } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Param, Post, Put, Query, Req, UseGuards } from "@nestjs/common";
 import { ApiOkResponse, ApiOperation, ApiParam } from "@nestjs/swagger";
 import { ChannelsService } from "./channels.service";
 import CreateChannelRequestDto from "./dto/create-channel-request.dto";
@@ -16,6 +16,7 @@ import ToggleChannelMembershipRequestDto from "./dto/toggle-channel-membership-r
 import UpdateChannelRequestDto from "./dto/update-channel-request.dto";
 import UpdateChannelResponseDto from "./dto/update-channel-response.dto";
 import { IsVerifiedGuard } from "src/auth/verification/is-verified.guard";
+import DeleteChannelParamDto from "./dto/delete-channel-param.dto";
 
 @Controller("channels")
 export class ChannelsController {
@@ -91,5 +92,13 @@ export class ChannelsController {
   @Post("/member")
   async toggleMembership(@Req() request, @Body() requestDto: ToggleChannelMembershipRequestDto) {
     return await this.channelsService.toggleMembership(request.user as UserDto, requestDto);
+  }
+
+  @ApiOperation({ summary: "Delete a channel." })
+  @RequirePermissions(Permission.CHANNEL_DELETE)
+  @UseGuards(JwtAuthGuard, RequirePermissionsGuard)
+  @Delete("/:uuid")
+  async deleteChannel(@Req() request, @Param() params: DeleteChannelParamDto) {
+    return await this.channelsService.deleteChannel(request.user as UserDto, params.uuid);
   }
 }
