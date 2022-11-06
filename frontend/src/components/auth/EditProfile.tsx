@@ -61,7 +61,6 @@ export default function EditProfile() {
           enableReinitialize
           initialValues={initialValues}
           onSubmit={(values) => {
-            console.log();
             updateProfile({
               updateUserProfileRequestDto: {
                 name: values.name,

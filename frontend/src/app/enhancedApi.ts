@@ -320,7 +320,6 @@ export const enhancedApi = api.enhanceEndpoints({
               })
             );
             patches.push(patch);
-            console.log("found the comment to update");
           }
         }
 
