@@ -23,7 +23,7 @@ async function bootstrap() {
     httpsOptions:
       process.env.ENV === "DEV"
         ? {
-            key: fs.readFileSync(process.env.KEY, "utf-8"),
+            key: fs.readFileSync(process.env.KEY_PATH, "utf-8"),
             cert: fs.readFileSync(process.env.CERT_PATH, "utf-8"),
           }
         : undefined,
@@ -44,7 +44,7 @@ async function bootstrap() {
     initSwagger(app);
   }
 
-  await app.listen(process.env.PORT ?? 8443, process.env.HOSTNAME, () => {
+  await app.listen(process.env.PORT ?? 8443, () => {
     logger.log(`Running on port ${process.env.PORT ?? 8443}`);
   });
 }
