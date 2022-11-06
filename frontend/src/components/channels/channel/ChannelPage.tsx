@@ -10,8 +10,8 @@ export default function ChannelPage() {
   const { textId } = useParams() as { textId: string };
   const { data, isLoading, isError, error } = useGetChannelByTextIdQuery({ textId });
 
-  if (isError && error !== undefined && "status" in error) {
-    return <ErrorPage code={String(error.status)} message="This channel does not exist." />;
+  if (isError) {
+    return <ErrorPage error={error} />;
   }
 
   return (

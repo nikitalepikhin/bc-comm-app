@@ -12,8 +12,8 @@ export default function TeacherProfilePage() {
   const { username } = useParams() as { username: string };
   const { data, isLoading, isError, error } = useGetTeacherByUsernameQuery({ username });
 
-  if (isError && error !== undefined && "status" in error && error.status === 404) {
-    return <ErrorPage message="This teacher does not exist." />;
+  if (isError) {
+    return <ErrorPage error={error} />;
   }
 
   return (
