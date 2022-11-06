@@ -15,6 +15,7 @@ import GetFacultyAutocompleteRequestDto from "./dto/get-faculty-autocomplete-req
 import GetFacultyAutocompleteResponseDto from "./dto/get-faculty-autocomplete-response.dto";
 import { IsVerifiedGuard } from "src/auth/verification/is-verified.guard";
 import GetFacultiesParamDto from "./dto/get-faculties-param.dto";
+import UserDto from "../auth/dto/user.dto";
 
 @Controller("faculties")
 export class FacultiesController {
@@ -40,10 +41,16 @@ export class FacultiesController {
   @UseGuards(JwtAuthGuard, RequirePermissionsGuard)
   @Get("/:uuid")
   async getAllFaculties(
+    @Req() request,
     @Query() query: GetFacultiesQueryDto,
     @Param() params: GetFacultiesParamDto,
   ): Promise<GetFacultiesResponseDto> {
-    return await this.facultiesService.getFaculties(query.page ?? 1, query.count ?? 10, params.uuid);
+    return await this.facultiesService.getFaculties(
+      request.user as UserDto,
+      query.page ?? 1,
+      query.count ?? 10,
+      params.uuid,
+    );
   }
 
   @ApiOperation({

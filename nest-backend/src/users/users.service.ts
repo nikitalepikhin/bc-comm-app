@@ -35,6 +35,8 @@ export class UsersService {
   constructor(
     private prisma: PrismaService,
     private schoolsService: SchoolsService,
+
+    @Inject(forwardRef(() => FacultiesService))
     private facultiesService: FacultiesService,
 
     @Inject(forwardRef(() => ChannelsService))
@@ -162,6 +164,10 @@ export class UsersService {
 
   async findTeacherByUuid(uuid: string): Promise<Teacher> {
     return await this.prisma.teacher.findUnique({ where: { userUuid: uuid } });
+  }
+
+  async findRepresentativeByUuid(uuid: string): Promise<Representative> {
+    return await this.prisma.representative.findUnique({ where: { userUuid: uuid } });
   }
 
   async verifyUser(user: UserDto, requestDto: VerifyUserRequestDto) {

@@ -54,8 +54,8 @@ export default function FacultiesPage() {
     }
   }, [isFetching, isSuccess]);
 
-  if (isError && error && "status" in error && error.status === 404) {
-    return <ErrorPage message="This school does not exist." />;
+  if (isError) {
+    return <ErrorPage error={error} />;
   }
 
   return (

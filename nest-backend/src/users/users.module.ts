@@ -15,7 +15,7 @@ import { CommentsModule } from "../comments/comments.module";
   imports: [
     PrismaModule,
     SchoolsModule,
-    FacultiesModule,
+    forwardRef(() => FacultiesModule),
     AuthoritiesModule,
     forwardRef(() => ChannelsModule),
     forwardRef(() => PostsModule),
