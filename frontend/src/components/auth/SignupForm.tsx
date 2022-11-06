@@ -150,7 +150,7 @@ export default function SignupForm() {
         {({ values, setFieldValue, handleSubmit, isValid, dirty, resetForm }) => (
           <Form className="flex flex-col justify-start items-center gap-2">
             <Alert show={signUpError} fullWidth>
-              Unfortunately we could not sign you up. Please try again.
+              Error signing up. Please try again.
             </Alert>
             <Field name="type">
               {({ field }: FieldProps) => (

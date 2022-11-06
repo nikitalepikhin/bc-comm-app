@@ -20,7 +20,7 @@ export default function TeacherProfilePage() {
     <PageWrapper>
       {isLoading && <LoadingSpinner />}
       <Alert show={isError} fullWidth>
-        Error loading the teacher profile. Please try again.
+        Error loading the profile. Please try again.
       </Alert>
       {data && (
         <Box className="flex flex-col justify-start items-center w-full max-w-screen-md mx-auto">
