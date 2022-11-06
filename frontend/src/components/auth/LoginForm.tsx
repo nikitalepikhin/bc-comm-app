@@ -33,7 +33,7 @@ export default function LoginForm() {
         {({ isValid, dirty }) => (
           <Form className="flex flex-col justify-start items-center gap-2">
             <Alert show={isError} fullWidth onClose={() => reset()}>
-              Unfortunately we could not log you in. Please try again.
+              Error logging in. Please try again.
             </Alert>
             <Field name="email">
               {({ field }: FieldProps) => (

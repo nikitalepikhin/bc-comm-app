@@ -51,7 +51,7 @@ export default function EditProfile() {
         </div>
       )}
       <Alert show={profileError} fullWidth onClose={() => refetch()}>
-        Error loading current profile data. Close this alert to refetch.
+        Error loading current profile data. Close this alert to reload.
       </Alert>
       {profileSuccess && (
         <Formik
