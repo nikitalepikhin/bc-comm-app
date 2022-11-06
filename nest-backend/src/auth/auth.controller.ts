@@ -1,6 +1,6 @@
-import { Body, Controller, Delete, Param, Post, Put, Req, Res, UseGuards } from "@nestjs/common";
+import { Body, Controller, Delete, Post, Put, Req, Res, UseGuards } from "@nestjs/common";
 import { AuthService } from "./auth.service";
-import CreateBaseUserRequestDto from "./dto/create-base-user-request.dto";
+import CreateBaseUserRequestDto, { BaseRole } from "./dto/create-base-user-request.dto";
 import { ApiOkResponse, ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
 import { LocalAuthGuard } from "./local/local-auth.guard";
 import { Response } from "express";
@@ -17,6 +17,7 @@ import UserDto from "./dto/user.dto";
 import UserRefreshDto from "./dto/user-refresh.dto";
 import UpdateUserEmailRequestDto from "./dto/update-user-email-request.dto";
 import UpdateUserPasswordRequestDto from "./dto/update-user-password-request.dto";
+import { BasicAuthGuard } from "./basic/basic-auth.guard";
 
 @ApiTags("auth")
 @Controller("auth")
@@ -43,10 +44,17 @@ export class AuthController {
     } as UserDataResponseDto;
   }
 
-  @ApiOperation({ summary: "Sign up an admin or a student." })
+  @ApiOperation({ summary: "Sign up an admin." })
+  @UseGuards(BasicAuthGuard)
+  @Post("signup/admin")
+  async signUpAdmin(@Body() requestDto: CreateBaseUserRequestDto) {
+    return await this.authService.signUpBaseUser(requestDto, BaseRole.ADMIN);
+  }
+
+  @ApiOperation({ summary: "Sign up a student." })
   @Post("signup/student")
   async signUpBase(@Body() requestDto: CreateBaseUserRequestDto) {
-    return await this.authService.signUpStudentUser(requestDto);
+    return await this.authService.signUpBaseUser(requestDto, BaseRole.STUDENT);
   }
 
   @ApiOperation({ summary: "Sign up a representative." })

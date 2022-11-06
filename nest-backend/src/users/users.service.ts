@@ -26,7 +26,7 @@ import { PostsService } from "../posts/posts.service";
 import { CommentsService } from "../comments/comments.service";
 
 const usernameParams = {
-  length: 8,
+  length: 12,
   charset: "alphabetic",
 };
 
@@ -56,7 +56,7 @@ export class UsersService {
     return randomstring.generate(usernameParams).toLowerCase();
   }
 
-  async createStudentUser(userDto: CreateBaseUserRequestDto): Promise<User> {
+  async createBaseUser(userDto: CreateBaseUserRequestDto, role: BaseRole): Promise<User> {
     const { email, password } = userDto;
     const existingUser = await this.prisma.user.findUnique({ where: { email } });
     if (existingUser) {
@@ -69,7 +69,7 @@ export class UsersService {
         email,
         password: hashedPassword,
         status: Status.ACTIVE,
-        role: "STUDENT",
+        role,
         username,
       },
     });

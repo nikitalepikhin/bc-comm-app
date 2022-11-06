@@ -15,7 +15,8 @@ import { JwtAuthGuard } from "./jwt/jwt-auth.guard";
 import { JwtRefreshAuthGuard } from "./jwt-refresh/jwt-refresh-auth.guard";
 import { RequirePermissionsGuard } from "./require-permissions/require-permissions.guard";
 import { IsVerifiedGuard } from "./verification/is-verified.guard";
-import { PrismaModule } from "src/prisma/prisma.module";
+import { BasicStrat } from "./basic/basic.strategy";
+import { BasicAuthGuard } from "./basic/basic-auth.guard";
 
 @Module({
   imports: [
@@ -31,9 +32,11 @@ import { PrismaModule } from "src/prisma/prisma.module";
     LocalStrategy,
     JwtStrategy,
     JwtRefreshStrategy,
+    BasicStrat,
     LocalAuthGuard,
     JwtAuthGuard,
     JwtRefreshAuthGuard,
+    BasicAuthGuard,
     IsVerifiedGuard,
     RequirePermissionsGuard,
   ],
