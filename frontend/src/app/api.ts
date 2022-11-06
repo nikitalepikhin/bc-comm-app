@@ -5,17 +5,21 @@ const injectedRtkApi = api.injectEndpoints({
       query: (queryArg) => ({ url: `/auth/login`, method: "POST", body: queryArg.logInUserRequestDto }),
     }),
     signUpBase: build.mutation<SignUpBaseApiResponse, SignUpBaseApiArg>({
-      query: (queryArg) => ({ url: `/auth/signup/base`, method: "POST", body: queryArg.createBaseUserDto }),
+      query: (queryArg) => ({ url: `/auth/signup/student`, method: "POST", body: queryArg.createBaseUserRequestDto }),
     }),
     signUpRepresentative: build.mutation<SignUpRepresentativeApiResponse, SignUpRepresentativeApiArg>({
       query: (queryArg) => ({
         url: `/auth/signup/representative`,
         method: "POST",
-        body: queryArg.createRepresentativeUserDto,
+        body: queryArg.createRepresentativeUserRequestDto,
       }),
     }),
     signUpTeacher: build.mutation<SignUpTeacherApiResponse, SignUpTeacherApiArg>({
-      query: (queryArg) => ({ url: `/auth/signup/teacher`, method: "POST", body: queryArg.createTeacherUserDto }),
+      query: (queryArg) => ({
+        url: `/auth/signup/teacher`,
+        method: "POST",
+        body: queryArg.createTeacherUserRequestDto,
+      }),
     }),
     refreshToken: build.mutation<RefreshTokenApiResponse, RefreshTokenApiArg>({
       query: () => ({ url: `/auth/refresh`, method: "POST" }),
@@ -188,15 +192,15 @@ export type LogInApiArg = {
 };
 export type SignUpBaseApiResponse = unknown;
 export type SignUpBaseApiArg = {
-  createBaseUserDto: CreateBaseUserDto;
+  createBaseUserRequestDto: CreateBaseUserRequestDto;
 };
 export type SignUpRepresentativeApiResponse = unknown;
 export type SignUpRepresentativeApiArg = {
-  createRepresentativeUserDto: CreateRepresentativeUserDto;
+  createRepresentativeUserRequestDto: CreateRepresentativeUserRequestDto;
 };
 export type SignUpTeacherApiResponse = unknown;
 export type SignUpTeacherApiArg = {
-  createTeacherUserDto: CreateTeacherUserDto;
+  createTeacherUserRequestDto: CreateTeacherUserRequestDto;
 };
 export type RefreshTokenApiResponse = /** status 201 Authenticated user data */ UserDataResponseDto;
 export type RefreshTokenApiArg = void;
@@ -401,22 +405,19 @@ export type LogInUserRequestDto = {
   email: string;
   password: string;
 };
-export type CreateBaseUserDto = {
+export type CreateBaseUserRequestDto = {
   email: string;
   password: string;
-  role: string;
 };
-export type CreateRepresentativeUserDto = {
+export type CreateRepresentativeUserRequestDto = {
   email: string;
   password: string;
-  role: string;
   name: string;
   schoolUuid: string;
 };
-export type CreateTeacherUserDto = {
+export type CreateTeacherUserRequestDto = {
   email: string;
   password: string;
-  role: string;
   name: string;
   schoolUuid: string;
   facultyUuid: string;

@@ -8,12 +8,12 @@ import {
 } from "@nestjs/common";
 import { PrismaService } from "../prisma/prisma.service";
 import { Representative, Status, Teacher, User } from "@prisma/client";
-import CreateBaseUserDto from "./dto/create-base-user.dto";
+import CreateBaseUserRequestDto, { BaseRole } from "../auth/dto/create-base-user-request.dto";
 import * as bcrypt from "bcrypt";
 import * as randomstring from "randomstring";
-import CreateRepresentativeUserDto from "./dto/create-representative-user.dto";
+import CreateRepresentativeUserRequestDto from "../auth/dto/create-representative-user-request.dto";
 import { SchoolsService } from "../schools/schools.service";
-import { CreateTeacherUserDto } from "./dto/create-teacher-user.dto";
+import { CreateTeacherUserRequestDto } from "../auth/dto/create-teacher-user-request.dto";
 import { FacultiesService } from "../faculties/faculties.service";
 import RefreshUsernameResponseDto from "./dto/refresh-username-response.dto";
 import UserDto from "../auth/dto/user.dto";
@@ -56,8 +56,8 @@ export class UsersService {
     return randomstring.generate(usernameParams).toLowerCase();
   }
 
-  async createBaseUser(userDto: CreateBaseUserDto): Promise<User> {
-    const { email, password, role } = userDto;
+  async createStudentUser(userDto: CreateBaseUserRequestDto): Promise<User> {
+    const { email, password } = userDto;
     const existingUser = await this.prisma.user.findUnique({ where: { email } });
     if (existingUser) {
       throw new BadRequestException();
@@ -65,7 +65,13 @@ export class UsersService {
     const hashedPassword = await UsersService.hashPassword(password);
     const username = UsersService.generateRandomUsername();
     return await this.prisma.user.create({
-      data: { email, password: hashedPassword, status: Status.ACTIVE, role, username },
+      data: {
+        email,
+        password: hashedPassword,
+        status: Status.ACTIVE,
+        role: "STUDENT",
+        username,
+      },
     });
   }
 
@@ -77,8 +83,8 @@ export class UsersService {
     return await this.prisma.user.findUnique({ where: { uuid } });
   }
 
-  async createRepresentativeUser(createRepresentativeUserDto: CreateRepresentativeUserDto) {
-    const { email, password, role, name, schoolUuid } = createRepresentativeUserDto;
+  async createRepresentativeUser(createRepresentativeUserDto: CreateRepresentativeUserRequestDto) {
+    const { email, password, name, schoolUuid } = createRepresentativeUserDto;
     const existingUser = await this.prisma.user.findUnique({ where: { email } });
     if (existingUser) {
       throw new BadRequestException();
@@ -96,7 +102,7 @@ export class UsersService {
             email,
             password: hashedPassword,
             status: Status.ACTIVE,
-            role,
+            role: "REPRESENTATIVE",
             username,
           },
         },
@@ -108,8 +114,8 @@ export class UsersService {
     });
   }
 
-  async createTeacherUser(createTeacherUserDto: CreateTeacherUserDto) {
-    const { email, password, role, name, schoolUuid, facultyUuid } = createTeacherUserDto;
+  async createTeacherUser(createTeacherUserDto: CreateTeacherUserRequestDto) {
+    const { email, password, name, schoolUuid, facultyUuid } = createTeacherUserDto;
     const existingUser = await this.prisma.user.findUnique({ where: { email } });
     if (existingUser) {
       throw new BadRequestException();
@@ -131,7 +137,7 @@ export class UsersService {
             email,
             password: hashedPassword,
             status: Status.ACTIVE,
-            role,
+            role: "TEACHER",
             username,
           },
         },

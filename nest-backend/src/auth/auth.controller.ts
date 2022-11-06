@@ -1,6 +1,6 @@
-import { Body, Controller, Delete, Post, Put, Req, Res, UseGuards } from "@nestjs/common";
+import { Body, Controller, Delete, Param, Post, Put, Req, Res, UseGuards } from "@nestjs/common";
 import { AuthService } from "./auth.service";
-import CreateBaseUserDto from "../users/dto/create-base-user.dto";
+import CreateBaseUserRequestDto from "./dto/create-base-user-request.dto";
 import { ApiOkResponse, ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
 import { LocalAuthGuard } from "./local/local-auth.guard";
 import { Response } from "express";
@@ -10,8 +10,8 @@ import { JwtAuthGuard } from "./jwt/jwt-auth.guard";
 import { ApiImplicitBody } from "@nestjs/swagger/dist/decorators/api-implicit-body.decorator";
 import LogInUserRequestDto from "../users/dto/log-in-user-request.dto";
 import UserDataResponseDto from "../users/dto/user-data-response.dto";
-import CreateRepresentativeUserDto from "../users/dto/create-representative-user.dto";
-import { CreateTeacherUserDto } from "../users/dto/create-teacher-user.dto";
+import CreateRepresentativeUserRequestDto from "./dto/create-representative-user-request.dto";
+import { CreateTeacherUserRequestDto } from "./dto/create-teacher-user-request.dto";
 import UpdateUserEmailResponseDto from "./dto/update-user-email-response.dto";
 import UserDto from "./dto/user.dto";
 import UserRefreshDto from "./dto/user-refresh.dto";
@@ -43,22 +43,22 @@ export class AuthController {
     } as UserDataResponseDto;
   }
 
-  @ApiOperation({ summary: "Sign up a base user." })
-  @Post("signup/base")
-  async signUpBase(@Body() createBaseUserDto: CreateBaseUserDto) {
-    return await this.authService.signUpBaseUser(createBaseUserDto);
+  @ApiOperation({ summary: "Sign up an admin or a student." })
+  @Post("signup/student")
+  async signUpBase(@Body() requestDto: CreateBaseUserRequestDto) {
+    return await this.authService.signUpStudentUser(requestDto);
   }
 
   @ApiOperation({ summary: "Sign up a representative." })
   @Post("signup/representative")
-  async signUpRepresentative(@Body() createRepresentativeUserDto: CreateRepresentativeUserDto) {
-    return await this.authService.signUpRepresentativeUser(createRepresentativeUserDto);
+  async signUpRepresentative(@Body() requestDto: CreateRepresentativeUserRequestDto) {
+    return await this.authService.signUpRepresentativeUser(requestDto);
   }
 
   @ApiOperation({ summary: "Sign up a teacher." })
   @Post("signup/teacher")
-  async signUpTeacher(@Body() createTeacherUserDto: CreateTeacherUserDto) {
-    return await this.authService.signUpTeacherUser(createTeacherUserDto);
+  async signUpTeacher(@Body() requestDto: CreateTeacherUserRequestDto) {
+    return await this.authService.signUpTeacherUser(requestDto);
   }
 
   @ApiOperation({ summary: "Refresh the issued token pair." })

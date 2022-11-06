@@ -1,13 +1,13 @@
 import { Injectable } from "@nestjs/common";
 import { UsersService } from "../users/users.service";
-import CreateBaseUserDto from "../users/dto/create-base-user.dto";
+import CreateBaseUserRequestDto, { BaseRole } from "./dto/create-base-user-request.dto";
 import * as bcrypt from "bcrypt";
 import { JwtService } from "@nestjs/jwt";
 import { v4 as uuidv4 } from "uuid";
 import { RefreshTokensService } from "../refresh-tokens/refresh-tokens.service";
 import UserRefreshDto from "./dto/user-refresh.dto";
-import CreateRepresentativeUserDto from "../users/dto/create-representative-user.dto";
-import { CreateTeacherUserDto } from "../users/dto/create-teacher-user.dto";
+import CreateRepresentativeUserRequestDto from "./dto/create-representative-user-request.dto";
+import { CreateTeacherUserRequestDto } from "./dto/create-teacher-user-request.dto";
 import UserDto from "./dto/user.dto";
 import UpdateUserEmailRequestDto from "./dto/update-user-email-request.dto";
 import UpdateUserPasswordRequestDto from "./dto/update-user-password-request.dto";
@@ -30,12 +30,16 @@ export class AuthService {
     return null;
   }
 
-  async signUpBaseUser(createBaseUserDto: CreateBaseUserDto): Promise<void> {
-    await this.usersService.createBaseUser(createBaseUserDto);
+  async signUpStudentUser(requestDto: CreateBaseUserRequestDto): Promise<void> {
+    await this.usersService.createStudentUser(requestDto);
   }
 
-  async signUpRepresentativeUser(createRepresentativeUserDto: CreateRepresentativeUserDto) {
-    await this.usersService.createRepresentativeUser(createRepresentativeUserDto);
+  async signUpRepresentativeUser(requestDto: CreateRepresentativeUserRequestDto) {
+    await this.usersService.createRepresentativeUser(requestDto);
+  }
+
+  async signUpTeacherUser(requestDto: CreateTeacherUserRequestDto) {
+    return await this.usersService.createTeacherUser(requestDto);
   }
 
   async logInUser(user: UserDto) {
@@ -73,10 +77,6 @@ export class AuthService {
 
   async logOutUser(tokenFamily: string) {
     await this.refreshTokensService.invalidateRefreshTokenFamilyByFamily(tokenFamily);
-  }
-
-  async signUpTeacherUser(createTeacherUserDto: CreateTeacherUserDto) {
-    return await this.usersService.createTeacherUser(createTeacherUserDto);
   }
 
   async updateUserEmail(
