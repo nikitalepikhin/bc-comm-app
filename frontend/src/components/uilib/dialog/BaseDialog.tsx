@@ -1,5 +1,4 @@
 import { ReactNode, useLayoutEffect } from "react";
-import { createPortal } from "react-dom";
 import classNames from "classnames";
 import IconButton from "../IconButton";
 import { XMarkIcon } from "@heroicons/react/24/outline";
@@ -30,16 +29,14 @@ export default function BaseDialog(props: Props) {
     };
   }, [show]);
 
-  const portal = document.getElementById("portal");
-
   return show ? (
     <Portal>
       <dialog
         className={classNames(
-          "w-screen h-screen z-10",
+          "w-screen h-screen z-10 overflow-auto",
           "fixed top-0 left-0",
           "bg-gray-900/60",
-          "flex justify-center items-center"
+          "flex flex-col justify-start lg:justify-center items-center"
         )}
       >
         <div
