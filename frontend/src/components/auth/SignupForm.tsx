@@ -79,7 +79,7 @@ export default function SignupForm() {
   const [getFacultyAutocomplete, { data: facultySuggestions, isLoading: facultyAutocompleteIsLoading }] =
     useGetFacultyAutocompleteMutation();
   const [
-    signUpBase,
+    signUpStudent,
     { isLoading: signUpBaseLoading, isSuccess: signUpBaseSuccess, isError: signUpBaseError, reset: signUpBaseReset },
   ] = useSignUpBaseMutation();
   const [
@@ -116,32 +116,30 @@ export default function SignupForm() {
         onSubmit={(values) => {
           switch (values.type) {
             case "student": {
-              signUpBase({
-                createBaseUserDto: { email: values.email, password: values.password, role: "STUDENT" },
+              signUpStudent({
+                createBaseUserRequestDto: { email: values.email, password: values.password },
               });
               break;
             }
             case "teacher": {
               signUpTeacher({
-                createTeacherUserDto: {
+                createTeacherUserRequestDto: {
                   email: values.email,
                   password: values.password,
                   name: values.name,
                   schoolUuid: values.school!.value,
                   facultyUuid: values.faculty!.value,
-                  role: "TEACHER",
                 },
               });
               break;
             }
             case "representative": {
               signUpRepr({
-                createRepresentativeUserDto: {
+                createRepresentativeUserRequestDto: {
                   email: values.email,
                   password: values.password,
                   name: values.name,
                   schoolUuid: values.school!.value,
-                  role: "REPRESENTATIVE",
                 },
               });
               break;
