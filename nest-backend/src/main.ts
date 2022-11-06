@@ -2,41 +2,51 @@ import { NestFactory } from "@nestjs/core";
 import { AppModule } from "./app.module";
 import { DocumentBuilder, SwaggerDocumentOptions, SwaggerModule } from "@nestjs/swagger";
 import * as fs from "fs";
-import { INestApplication, ValidationPipe } from "@nestjs/common";
+import { INestApplication, Logger, ValidationPipe } from "@nestjs/common";
 import * as cookieParser from "cookie-parser";
 
+const logger = new Logger("main.ts");
+
 function initSwagger(app: INestApplication) {
-  const config = new DocumentBuilder().setTitle("Communication App Backend API").setVersion("1.0").build();
+  const config = new DocumentBuilder().setTitle("Communication App API").setVersion("1.0").build();
   const options: SwaggerDocumentOptions = {
     operationIdFactory: (controllerKey: string, methodKey: string) => methodKey,
   };
   const document = SwaggerModule.createDocument(app, config, options);
   SwaggerModule.setup("api", app, document);
   fs.writeFileSync("./openapi.json", JSON.stringify(document));
+  logger.log("Swagger has been initialized.");
 }
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
-    httpsOptions: {
-      key: fs.readFileSync(".cert/cert.key", "utf-8"),
-      cert: fs.readFileSync(".cert/cert.pem", "utf-8"),
-    },
+    httpsOptions:
+      process.env.ENV === "DEV"
+        ? {
+            key: fs.readFileSync(process.env.KEY, "utf-8"),
+            cert: fs.readFileSync(process.env.CERT_PATH, "utf-8"),
+          }
+        : undefined,
   });
 
   app.use(cookieParser());
   app.useGlobalPipes(new ValidationPipe({ transform: true, forbidNonWhitelisted: true, whitelist: true }));
 
   app.enableCors({
-    origin: ["https://commapp.com"],
+    origin: [process.env.CORS_ORIGIN],
     allowedHeaders: ["Authorization", "Cache-Control", "Content-Type", "Cookie"],
     exposedHeaders: ["Set-Cookie"],
     methods: "GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS",
     credentials: true,
   });
 
-  initSwagger(app);
-  await app.listen(8443, "commapp.com", () => {
-    console.log("Server is running on port 8443");
+  if (process.env.ENV === "DEV") {
+    initSwagger(app);
+  }
+
+  await app.listen(process.env.PORT ?? 8443, process.env.HOSTNAME, () => {
+    logger.log(`Running on port ${process.env.PORT ?? 8443}`);
   });
 }
+
 bootstrap();
