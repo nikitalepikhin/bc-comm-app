@@ -12,6 +12,7 @@ import UserDto from "./dto/user.dto";
 import UpdateUserEmailRequestDto from "./dto/update-user-email-request.dto";
 import UpdateUserPasswordRequestDto from "./dto/update-user-password-request.dto";
 import { PrismaService } from "src/prisma/prisma.service";
+import { Role } from "@prisma/client";
 
 @Injectable()
 export class AuthService {
@@ -30,8 +31,8 @@ export class AuthService {
     return null;
   }
 
-  async signUpStudentUser(requestDto: CreateBaseUserRequestDto): Promise<void> {
-    await this.usersService.createStudentUser(requestDto);
+  async signUpBaseUser(requestDto: CreateBaseUserRequestDto, role: BaseRole): Promise<void> {
+    await this.usersService.createBaseUser(requestDto, role);
   }
 
   async signUpRepresentativeUser(requestDto: CreateRepresentativeUserRequestDto) {
