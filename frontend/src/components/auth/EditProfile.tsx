@@ -44,7 +44,7 @@ export default function EditProfile() {
   };
 
   return (
-    <Container title="Edit Profile" className="w-full">
+    <Container title="Edit Profile" className="w-full max-w-screen-lg">
       {profileLoading && (
         <div className="pt-2">
           <LoadingSpinner />

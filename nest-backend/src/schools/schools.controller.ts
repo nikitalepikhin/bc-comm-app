@@ -8,9 +8,9 @@ import { RequirePermissionsGuard } from "../auth/require-permissions/require-per
 import GetSchoolsQueryDto from "./dto/get-schools-query.dto";
 import SchoolResponseDto from "./dto/school-response.dto";
 import GetSchoolsResponseDto from "./dto/get-schools-response.dto";
-import GetSchoolByUuidRequestDto from "./dto/get-school-by-uuid-request.dto";
+import GetSchoolByUuidParamDto from "./dto/get-school-by-uuid-param.dto";
 import UpdateSchoolRequestDto from "./dto/update-school-request.dto";
-import DeleteSchoolDto from "./dto/delete-school.dto";
+import DeleteSchoolRequestDto from "./dto/delete-school-request.dto";
 import GetSchoolAutocompleteRequestDto from "./dto/get-school-autocomplete-request.dto";
 import GetSchoolAutocompleteResponseDto from "./dto/get-school-autocomplete-response.dto";
 import { IsVerifiedGuard } from "src/auth/verification/is-verified.guard";
@@ -53,8 +53,8 @@ export class SchoolsController {
   @RequirePermissions(Permission.SCHOOL_READ)
   @UseGuards(JwtAuthGuard, RequirePermissionsGuard)
   @Get("/:uuid")
-  async getSchoolByUuid(@Param() param: GetSchoolByUuidRequestDto): Promise<SchoolResponseDto> {
-    return await this.schoolService.getSchoolByUuid(param.uuid);
+  async getSchoolByUuid(@Param() params: GetSchoolByUuidParamDto): Promise<SchoolResponseDto> {
+    return await this.schoolService.getSchoolByUuid(params.uuid);
   }
 
   @ApiOperation({
@@ -67,10 +67,10 @@ export class SchoolsController {
   })
   @Post("/ac")
   async getSchoolAutocomplete(
-    @Body() getSchoolAutocomplete: GetSchoolAutocompleteRequestDto,
+    @Body() requestDto: GetSchoolAutocompleteRequestDto,
   ): Promise<GetSchoolAutocompleteResponseDto> {
-    if (getSchoolAutocomplete.value.length > 0) {
-      return await this.schoolService.getSchoolAutocomplete(getSchoolAutocomplete);
+    if (requestDto.value.length > 0) {
+      return await this.schoolService.getSchoolAutocomplete(requestDto);
     } else {
       return { schools: [] };
     }
@@ -82,8 +82,8 @@ export class SchoolsController {
   @RequirePermissions(Permission.SCHOOL_UPDATE)
   @UseGuards(JwtAuthGuard, RequirePermissionsGuard, IsVerifiedGuard)
   @Put("/")
-  async updateSchool(@Body() updateSchoolRequestDto: UpdateSchoolRequestDto) {
-    return await this.schoolService.updateSchool(updateSchoolRequestDto);
+  async updateSchool(@Body() requestDto: UpdateSchoolRequestDto) {
+    return await this.schoolService.updateSchool(requestDto);
   }
 
   @ApiOperation({
@@ -92,7 +92,7 @@ export class SchoolsController {
   @RequirePermissions(Permission.SCHOOL_DELETE)
   @UseGuards(JwtAuthGuard, RequirePermissionsGuard, IsVerifiedGuard)
   @Delete("/")
-  async deleteSchool(@Body() deleteSchoolDto: DeleteSchoolDto) {
-    return await this.schoolService.deleteSchool(deleteSchoolDto);
+  async deleteSchool(@Body() requestDto: DeleteSchoolRequestDto) {
+    return await this.schoolService.deleteSchool(requestDto);
   }
 }

@@ -11,8 +11,8 @@ export default function RequestsPage() {
     <PageWrapper className="flex flex-col justify-start items-center gap-2 w-full max-w-screen-md mx-auto">
       <Tabs
         tabItems={[
-          { name: "Teacher Requests", element: <TeacherRequests /> },
-          { name: "Representative Requests", element: <RepresentativeRequests />, render: role === "ADMIN" },
+          { name: "Teacher", element: <TeacherRequests /> },
+          { name: "Representative", element: <RepresentativeRequests />, render: role === "ADMIN" },
         ]}
       />
     </PageWrapper>

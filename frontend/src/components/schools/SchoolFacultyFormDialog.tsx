@@ -165,11 +165,11 @@ export default function SchoolFacultyFormDialog(props: Props) {
           if (uuid && type === "school") {
             updateSchool({ updateSchoolRequestDto: { ...values, uuid } });
           } else if (type === "school") {
-            createSchool({ createSchoolDto: { ...values } });
+            createSchool({ createSchoolRequestDto: { ...values } });
           } else if (uuid && type === "faculty") {
             updateFaculty({ updateFacultyRequestDto: { ...values, uuid } });
           } else if (type === "faculty" && schoolUuid) {
-            createFaculty({ createFacultyDto: { ...values, schoolUuid } });
+            createFaculty({ createFacultyRequestDto: { ...values, schoolUuid } });
           }
         }}
       >

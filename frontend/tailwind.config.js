@@ -6,6 +6,8 @@ module.exports = {
     extend: {
       screens: {
         xs: "480px",
+        "3xl": "1792px",
+        "4xl": "2048px",
       },
       fontFamily: {
         inter: ["Inter"],

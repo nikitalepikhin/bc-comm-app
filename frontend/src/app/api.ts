@@ -4,6 +4,9 @@ const injectedRtkApi = api.injectEndpoints({
     logIn: build.mutation<LogInApiResponse, LogInApiArg>({
       query: (queryArg) => ({ url: `/auth/login`, method: "POST", body: queryArg.logInUserRequestDto }),
     }),
+    signUpAdmin: build.mutation<SignUpAdminApiResponse, SignUpAdminApiArg>({
+      query: (queryArg) => ({ url: `/auth/signup/admin`, method: "POST", body: queryArg.createBaseUserRequestDto }),
+    }),
     signUpBase: build.mutation<SignUpBaseApiResponse, SignUpBaseApiArg>({
       query: (queryArg) => ({ url: `/auth/signup/student`, method: "POST", body: queryArg.createBaseUserRequestDto }),
     }),
@@ -56,7 +59,7 @@ const injectedRtkApi = api.injectEndpoints({
       query: (queryArg) => ({ url: `/users`, method: "PUT", body: queryArg.updateUserProfileRequestDto }),
     }),
     createSchool: build.mutation<CreateSchoolApiResponse, CreateSchoolApiArg>({
-      query: (queryArg) => ({ url: `/schools`, method: "POST", body: queryArg.createSchoolDto }),
+      query: (queryArg) => ({ url: `/schools`, method: "POST", body: queryArg.createSchoolRequestDto }),
     }),
     getAllSchools: build.query<GetAllSchoolsApiResponse, GetAllSchoolsApiArg>({
       query: (queryArg) => ({ url: `/schools`, params: { page: queryArg.page, count: queryArg.count } }),
@@ -65,7 +68,7 @@ const injectedRtkApi = api.injectEndpoints({
       query: (queryArg) => ({ url: `/schools`, method: "PUT", body: queryArg.updateSchoolRequestDto }),
     }),
     deleteSchool: build.mutation<DeleteSchoolApiResponse, DeleteSchoolApiArg>({
-      query: (queryArg) => ({ url: `/schools`, method: "DELETE", body: queryArg.deleteSchoolDto }),
+      query: (queryArg) => ({ url: `/schools`, method: "DELETE", body: queryArg.deleteSchoolRequestDto }),
     }),
     getSchoolByUuid: build.query<GetSchoolByUuidApiResponse, GetSchoolByUuidApiArg>({
       query: (queryArg) => ({ url: `/schools/${queryArg.uuid}` }),
@@ -74,17 +77,17 @@ const injectedRtkApi = api.injectEndpoints({
       query: (queryArg) => ({ url: `/schools/ac`, method: "POST", body: queryArg.getSchoolAutocompleteRequestDto }),
     }),
     createFaculty: build.mutation<CreateFacultyApiResponse, CreateFacultyApiArg>({
-      query: (queryArg) => ({ url: `/faculties`, method: "POST", body: queryArg.createFacultyDto }),
+      query: (queryArg) => ({ url: `/faculties`, method: "POST", body: queryArg.createFacultyRequestDto }),
     }),
     updateFaculty: build.mutation<UpdateFacultyApiResponse, UpdateFacultyApiArg>({
       query: (queryArg) => ({ url: `/faculties`, method: "PUT", body: queryArg.updateFacultyRequestDto }),
     }),
     deleteFaculty: build.mutation<DeleteFacultyApiResponse, DeleteFacultyApiArg>({
-      query: (queryArg) => ({ url: `/faculties`, method: "DELETE", body: queryArg.deleteFacultyDto }),
+      query: (queryArg) => ({ url: `/faculties`, method: "DELETE", body: queryArg.deleteFacultyRequestDto }),
     }),
     getAllFaculties: build.query<GetAllFacultiesApiResponse, GetAllFacultiesApiArg>({
       query: (queryArg) => ({
-        url: `/faculties/${queryArg.schoolUuid}`,
+        url: `/faculties/${queryArg.uuid}`,
         params: { page: queryArg.page, count: queryArg.count },
       }),
     }),
@@ -190,6 +193,10 @@ export type LogInApiResponse = /** status 201 Authenticated user data */ UserDat
 export type LogInApiArg = {
   logInUserRequestDto: LogInUserRequestDto;
 };
+export type SignUpAdminApiResponse = unknown;
+export type SignUpAdminApiArg = {
+  createBaseUserRequestDto: CreateBaseUserRequestDto;
+};
 export type SignUpBaseApiResponse = unknown;
 export type SignUpBaseApiArg = {
   createBaseUserRequestDto: CreateBaseUserRequestDto;
@@ -232,7 +239,7 @@ export type UpdateUserProfileApiArg = {
 };
 export type CreateSchoolApiResponse = unknown;
 export type CreateSchoolApiArg = {
-  createSchoolDto: CreateSchoolDto;
+  createSchoolRequestDto: CreateSchoolRequestDto;
 };
 export type GetAllSchoolsApiResponse =
   /** status 200 Specified number of schools on a specified page. */ GetSchoolsResponseDto;
@@ -246,7 +253,7 @@ export type UpdateSchoolApiArg = {
 };
 export type DeleteSchoolApiResponse = unknown;
 export type DeleteSchoolApiArg = {
-  deleteSchoolDto: DeleteSchoolDto;
+  deleteSchoolRequestDto: DeleteSchoolRequestDto;
 };
 export type GetSchoolByUuidApiResponse = /** status 200 School by UUID. */ SchoolResponseDto;
 export type GetSchoolByUuidApiArg = {
@@ -259,7 +266,7 @@ export type GetSchoolAutocompleteApiArg = {
 };
 export type CreateFacultyApiResponse = unknown;
 export type CreateFacultyApiArg = {
-  createFacultyDto: CreateFacultyDto;
+  createFacultyRequestDto: CreateFacultyRequestDto;
 };
 export type UpdateFacultyApiResponse = unknown;
 export type UpdateFacultyApiArg = {
@@ -267,14 +274,14 @@ export type UpdateFacultyApiArg = {
 };
 export type DeleteFacultyApiResponse = unknown;
 export type DeleteFacultyApiArg = {
-  deleteFacultyDto: DeleteFacultyDto;
+  deleteFacultyRequestDto: DeleteFacultyRequestDto;
 };
 export type GetAllFacultiesApiResponse =
   /** status 200 Specified number of faculties on a specified page. */ GetFacultiesResponseDto;
 export type GetAllFacultiesApiArg = {
   page?: number;
   count?: number;
-  schoolUuid: string;
+  uuid: string;
 };
 export type GetFacultyByUuidApiResponse = /** status 200 Faculty by UUID. */ FacultyResponseDto;
 export type GetFacultyByUuidApiArg = {
@@ -449,7 +456,7 @@ export type UpdateUserProfileRequestDto = {
   name?: string;
   bio?: string;
 };
-export type CreateSchoolDto = {
+export type CreateSchoolRequestDto = {
   name: string;
   countryCode: string;
   city: string;
@@ -479,7 +486,7 @@ export type UpdateSchoolRequestDto = {
   addressLineTwo: string;
   postalCode: string;
 };
-export type DeleteSchoolDto = {
+export type DeleteSchoolRequestDto = {
   uuid: string;
 };
 export type SchoolAutocompleteDto = {
@@ -492,7 +499,7 @@ export type GetSchoolAutocompleteResponseDto = {
 export type GetSchoolAutocompleteRequestDto = {
   value: string;
 };
-export type CreateFacultyDto = {
+export type CreateFacultyRequestDto = {
   schoolUuid: string;
   name: string;
   countryCode: string;
@@ -510,7 +517,7 @@ export type UpdateFacultyRequestDto = {
   addressLineTwo: string;
   postalCode: string;
 };
-export type DeleteFacultyDto = {
+export type DeleteFacultyRequestDto = {
   uuid: string;
 };
 export type FacultyResponseDto = {
@@ -760,6 +767,7 @@ export type GetUserFeedResponseDto = {
 };
 export const {
   useLogInMutation,
+  useSignUpAdminMutation,
   useSignUpBaseMutation,
   useSignUpRepresentativeMutation,
   useSignUpTeacherMutation,

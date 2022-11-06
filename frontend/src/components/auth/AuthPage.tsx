@@ -7,7 +7,7 @@ import SignupForm from "./SignupForm";
 export default function AuthPage() {
   return (
     <PageWrapper className="flex flex-row justify-center items-center">
-      <Box className="w-full max-w-screen-sm mt-[6vh] flex flex-col justify-start items-stretch gap-2">
+      <Box className="w-full max-w-screen-sm mt-[4vh] lg:mt-[12vh] flex flex-col justify-start items-stretch gap-2">
         <h1 className="text-xl font-bold text-center uppercase">Communication App</h1>
         <Tabs
           tabItems={[

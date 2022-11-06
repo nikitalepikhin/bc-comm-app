@@ -7,13 +7,14 @@ import { FacultiesService } from "./faculties.service";
 import CreateFacultyRequestDto from "./dto/create-faculty-request.dto";
 import GetFacultiesResponseDto from "./dto/get-faculties-response.dto";
 import GetFacultiesQueryDto from "./dto/get-faculties-query.dto";
-import DeleteFacultyDto from "./dto/delete-faculty.dto";
+import DeleteFacultyRequestDto from "./dto/delete-faculty-request.dto";
 import UpdateFacultyRequestDto from "./dto/update-faculty-request.dto";
 import FacultyResponseDto from "./dto/faculty-response.dto";
-import GetFacultyByUuidRequestDto from "./dto/get-faculty-by-uuid-request.dto";
+import GetFacultyByUuidParamDto from "./dto/get-faculty-by-uuid-param.dto";
 import GetFacultyAutocompleteRequestDto from "./dto/get-faculty-autocomplete-request.dto";
 import GetFacultyAutocompleteResponseDto from "./dto/get-faculty-autocomplete-response.dto";
 import { IsVerifiedGuard } from "src/auth/verification/is-verified.guard";
+import GetFacultiesParamDto from "./dto/get-faculties-param.dto";
 
 @Controller("faculties")
 export class FacultiesController {
@@ -23,14 +24,13 @@ export class FacultiesController {
   @RequirePermissions(Permission.FACULTY_CREATE)
   @UseGuards(JwtAuthGuard, RequirePermissionsGuard, IsVerifiedGuard)
   @Post("/")
-  async createFaculty(@Req() request, @Body() createFacultyDto: CreateFacultyRequestDto) {
-    await this.facultiesService.createFaculty(createFacultyDto, request.user);
+  async createFaculty(@Req() request, @Body() requestDto: CreateFacultyRequestDto) {
+    await this.facultiesService.createFaculty(requestDto, request.user);
   }
 
   @ApiOperation({
     summary: "Get a specified number of faculties on a specified page.",
   })
-  @ApiParam({ name: "schoolUuid", type: String, required: true })
   @ApiOkResponse({
     description: "Specified number of faculties on a specified page.",
     type: GetFacultiesResponseDto,
@@ -38,12 +38,12 @@ export class FacultiesController {
   })
   @RequirePermissions(Permission.FACULTY_READ)
   @UseGuards(JwtAuthGuard, RequirePermissionsGuard)
-  @Get("/:schoolUuid")
+  @Get("/:uuid")
   async getAllFaculties(
     @Query() query: GetFacultiesQueryDto,
-    @Param() { schoolUuid },
+    @Param() params: GetFacultiesParamDto,
   ): Promise<GetFacultiesResponseDto> {
-    return await this.facultiesService.getFaculties(query.page ?? 1, query.count ?? 10, schoolUuid);
+    return await this.facultiesService.getFaculties(query.page ?? 1, query.count ?? 10, params.uuid);
   }
 
   @ApiOperation({
@@ -57,8 +57,8 @@ export class FacultiesController {
   @RequirePermissions(Permission.FACULTY_READ)
   @UseGuards(JwtAuthGuard, RequirePermissionsGuard)
   @Get("/faculty/:uuid")
-  async getFacultyByUuid(@Param() param: GetFacultyByUuidRequestDto): Promise<FacultyResponseDto> {
-    return await this.facultiesService.getFacultyByUuid(param.uuid);
+  async getFacultyByUuid(@Param() params: GetFacultyByUuidParamDto): Promise<FacultyResponseDto> {
+    return await this.facultiesService.getFacultyByUuid(params.uuid);
   }
 
   @ApiOperation({
@@ -71,10 +71,10 @@ export class FacultiesController {
   })
   @Post("/ac")
   async getFacultyAutocomplete(
-    @Body() getFacultyAutocomplete: GetFacultyAutocompleteRequestDto,
+    @Body() requestDto: GetFacultyAutocompleteRequestDto,
   ): Promise<GetFacultyAutocompleteResponseDto> {
-    if (getFacultyAutocomplete.value.length > 0) {
-      return await this.facultiesService.getFacultyAutocomplete(getFacultyAutocomplete);
+    if (requestDto.value.length > 0) {
+      return await this.facultiesService.getFacultyAutocomplete(requestDto);
     } else {
       return { faculties: [] };
     }
@@ -86,8 +86,8 @@ export class FacultiesController {
   @RequirePermissions(Permission.FACULTY_UPDATE)
   @UseGuards(JwtAuthGuard, RequirePermissionsGuard, IsVerifiedGuard)
   @Put("/")
-  async updateFaculty(@Body() updateFacultyRequestDto: UpdateFacultyRequestDto) {
-    return await this.facultiesService.updateFaculty(updateFacultyRequestDto);
+  async updateFaculty(@Body() requestDto: UpdateFacultyRequestDto) {
+    return await this.facultiesService.updateFaculty(requestDto);
   }
 
   @ApiOperation({
@@ -96,7 +96,7 @@ export class FacultiesController {
   @RequirePermissions(Permission.FACULTY_DELETE)
   @UseGuards(JwtAuthGuard, RequirePermissionsGuard, IsVerifiedGuard)
   @Delete("/")
-  async deleteFaculty(@Body() deleteFacultyDto: DeleteFacultyDto) {
-    return await this.facultiesService.deleteFaculty(deleteFacultyDto);
+  async deleteFaculty(@Body() requestDto: DeleteFacultyRequestDto) {
+    return await this.facultiesService.deleteFaculty(requestDto);
   }
 }
