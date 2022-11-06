@@ -42,14 +42,14 @@ async function seedAuthorities() {
       { name: Permission[Permission.TEACHER_REQ_UPDATE], roles: [Role.ADMIN, Role.REPRESENTATIVE] },
       { name: Permission[Permission.TEACHER_REQ_VERIFY], roles: [Role.ADMIN, Role.REPRESENTATIVE] },
 
-      { name: Permission[Permission.CHANNEL_CREATE], roles: [Role.REPRESENTATIVE, Role.TEACHER, Role.STUDENT] },
+      { name: Permission[Permission.CHANNEL_CREATE], roles: [Role.TEACHER, Role.STUDENT] },
       {
         name: Permission[Permission.CHANNEL_READ],
         roles: [Role.ADMIN, Role.REPRESENTATIVE, Role.TEACHER, Role.STUDENT],
       },
       {
         name: Permission[Permission.CHANNEL_UPDATE],
-        roles: [Role.ADMIN, Role.REPRESENTATIVE, Role.TEACHER, Role.STUDENT],
+        roles: [Role.TEACHER, Role.STUDENT],
       },
       {
         name: Permission[Permission.CHANNEL_DELETE],
@@ -319,7 +319,6 @@ async function seedChannels() {
 }
 
 async function main() {
-  await seedAuthorities();
   await seedAdminUser();
   await seedSchools();
   await seedFaculties();
