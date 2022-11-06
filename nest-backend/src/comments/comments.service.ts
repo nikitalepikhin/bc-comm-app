@@ -50,7 +50,7 @@ export class CommentsService {
     if (requestDto.parentUuid === undefined && user.uuid !== comment.post.authorUuid) {
       // if this is a comment under a post, then select the post author as the user to notify
       await this.notificationsService.createNotification(comment.uuid, comment.post.author.uuid);
-    } else {
+    } else if (requestDto.parentUuid !== undefined) {
       // if this is a reply to another comment, then select the original comment author as the user to notify
       const { authorUuid: parentAuthorUuid } = await this.prisma.comment.findUnique({
         where: { uuid: comment.parentUuid },
