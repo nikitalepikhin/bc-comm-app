@@ -505,6 +505,7 @@ export const {
   useGetChannelByTextIdQuery,
   useToggleMembershipMutation,
   useUpdateChannelMutation,
+  useDeleteChannelMutation,
   useCreatePostMutation,
   useGetPostsForChannelQuery,
   useGetPostByUuidQuery,

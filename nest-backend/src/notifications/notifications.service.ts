@@ -56,7 +56,7 @@ export class NotificationsService {
         // 2. delete the notification to mark it as dismissed
         await tx.notification.delete({ where: { uuid: notificationUuid } });
       } catch (e) {
-        if (e.name.toString().toLowerCase().includes("notfounderror")) {
+        if (e.name.toString().toLowerCase().includes("notfounderror") || e.code === "P2023") {
           throw new NotFoundException();
         }
       }

@@ -119,6 +119,9 @@ const injectedRtkApi = api.injectEndpoints({
         body: queryArg.toggleChannelMembershipRequestDto,
       }),
     }),
+    deleteChannel: build.mutation<DeleteChannelApiResponse, DeleteChannelApiArg>({
+      query: (queryArg) => ({ url: `/channels/${queryArg.uuid}`, method: "DELETE" }),
+    }),
     createPost: build.mutation<CreatePostApiResponse, CreatePostApiArg>({
       query: (queryArg) => ({ url: `/posts`, method: "POST", body: queryArg.createPostRequestDto }),
     }),
@@ -319,6 +322,10 @@ export type CheckChannelIdAvailabilityApiArg = {
 export type ToggleMembershipApiResponse = unknown;
 export type ToggleMembershipApiArg = {
   toggleChannelMembershipRequestDto: ToggleChannelMembershipRequestDto;
+};
+export type DeleteChannelApiResponse = unknown;
+export type DeleteChannelApiArg = {
+  uuid: string;
 };
 export type CreatePostApiResponse = /** status 200 Uuid of the newly created post. */ CreatePostResponseDto;
 export type CreatePostApiArg = {
@@ -799,6 +806,7 @@ export const {
   useGetChannelByTextIdQuery,
   useCheckChannelIdAvailabilityQuery,
   useToggleMembershipMutation,
+  useDeleteChannelMutation,
   useCreatePostMutation,
   useUpdatePostMutation,
   useDeletePostMutation,

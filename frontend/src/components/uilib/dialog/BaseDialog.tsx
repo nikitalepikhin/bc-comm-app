@@ -10,10 +10,11 @@ interface Props {
   title?: string;
   onClose?: () => void;
   size?: "xs" | "sm" | "md" | "lg";
+  center?: boolean;
 }
 
 export default function BaseDialog(props: Props) {
-  const { show, children, onClose, title, size = "md" } = props;
+  const { show, children, onClose, title, size = "md", center } = props;
 
   useLayoutEffect(() => {
     const domBody = document.querySelector("body");
@@ -36,7 +37,9 @@ export default function BaseDialog(props: Props) {
           "w-screen h-screen z-10 overflow-auto",
           "fixed top-0 left-0",
           "bg-gray-900/60",
-          "flex flex-col justify-start lg:justify-center items-center"
+          "flex flex-col items-center",
+          { "justify-start lg:justify-center": center === undefined || !center },
+          { "justify-center": center }
         )}
       >
         <div

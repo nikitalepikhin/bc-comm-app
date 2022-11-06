@@ -100,7 +100,8 @@ export class CommentsService {
     } catch (e) {
       if (
         (e.code === "P2010" && e.meta.code === "22P02") ||
-        e.name.toString().toLowerCase().includes("notfounderror")
+        e.name.toString().toLowerCase().includes("notfounderror") ||
+        e.code === "P2023"
       ) {
         throw new NotFoundException();
       } else {
