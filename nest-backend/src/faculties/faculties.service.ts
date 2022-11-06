@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from "@nestjs/common";
 import { PrismaService } from "../prisma/prisma.service";
-import CreateFacultyDto from "./dto/create-faculty.dto";
+import CreateFacultyRequestDto from "./dto/create-faculty-request.dto";
 import UserDto from "../auth/dto/user.dto";
 import GetFacultiesResponseDto from "./dto/get-faculties-response.dto";
 import DeleteFacultyDto from "./dto/delete-faculty.dto";
@@ -12,7 +12,7 @@ import GetFacultyAutocompleteResponseDto from "./dto/get-faculty-autocomplete-re
 export class FacultiesService {
   constructor(private prisma: PrismaService) {}
 
-  async createFaculty(createFacultyDto: CreateFacultyDto, user: UserDto) {
+  async createFaculty(createFacultyDto: CreateFacultyRequestDto, user: UserDto) {
     return await this.prisma.faculty.create({
       data: {
         schoolUuid: createFacultyDto.schoolUuid,

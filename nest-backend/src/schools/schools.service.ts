@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { PrismaService } from "../prisma/prisma.service";
-import CreateSchoolDto from "./dto/create-school.dto";
+import CreateSchoolRequestDto from "./dto/create-school-request.dto";
 import GetSchoolsResponseDto from "./dto/get-schools-response.dto";
 import UpdateSchoolRequestDto from "./dto/update-school-request.dto";
 import DeleteSchoolDto from "./dto/delete-school.dto";
@@ -12,7 +12,7 @@ import UserDto from "../auth/dto/user.dto";
 export class SchoolsService {
   constructor(private prisma: PrismaService) {}
 
-  async createSchool(schoolDto: CreateSchoolDto, userDto: UserDto) {
+  async createSchool(schoolDto: CreateSchoolRequestDto, userDto: UserDto) {
     return await this.prisma.school.create({
       data: { ...schoolDto, createdByUuid: userDto.uuid, modifiedByUuid: userDto.uuid },
     });

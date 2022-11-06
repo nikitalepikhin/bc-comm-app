@@ -1,20 +1,8 @@
-import {
-  BadRequestException,
-  Body,
-  Controller,
-  Delete,
-  Get,
-  Param,
-  Post,
-  Put,
-  Query,
-  Req,
-  UseGuards,
-} from "@nestjs/common";
+import { Body, Controller, Delete, Get, Param, Post, Put, Query, Req, UseGuards } from "@nestjs/common";
 import { SchoolsService } from "./schools.service";
 import { ApiOkResponse, ApiOperation } from "@nestjs/swagger";
 import { JwtAuthGuard } from "../auth/jwt/jwt-auth.guard";
-import CreateSchoolDto from "./dto/create-school.dto";
+import CreateSchoolRequestDto from "./dto/create-school-request.dto";
 import { Permission, RequirePermissions } from "../auth/require-permissions/permission.enum";
 import { RequirePermissionsGuard } from "../auth/require-permissions/require-permissions.guard";
 import GetSchoolsQueryDto from "./dto/get-schools-query.dto";
@@ -35,8 +23,8 @@ export class SchoolsController {
   @RequirePermissions(Permission.SCHOOL_CREATE)
   @UseGuards(JwtAuthGuard, RequirePermissionsGuard, IsVerifiedGuard)
   @Post("/")
-  async createSchool(@Req() request, @Body() createSchoolDto: CreateSchoolDto) {
-    await this.schoolService.createSchool(createSchoolDto, request.user);
+  async createSchool(@Req() request, @Body() requestDto: CreateSchoolRequestDto) {
+    await this.schoolService.createSchool(requestDto, request.user);
   }
 
   @ApiOperation({
