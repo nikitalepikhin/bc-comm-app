@@ -4,7 +4,7 @@ import { Permission, RequirePermissions } from "../auth/require-permissions/perm
 import { JwtAuthGuard } from "../auth/jwt/jwt-auth.guard";
 import { RequirePermissionsGuard } from "../auth/require-permissions/require-permissions.guard";
 import { FacultiesService } from "./faculties.service";
-import CreateFacultyDto from "./dto/create-faculty.dto";
+import CreateFacultyRequestDto from "./dto/create-faculty-request.dto";
 import GetFacultiesResponseDto from "./dto/get-faculties-response.dto";
 import GetFacultiesQueryDto from "./dto/get-faculties-query.dto";
 import DeleteFacultyDto from "./dto/delete-faculty.dto";
@@ -23,7 +23,7 @@ export class FacultiesController {
   @RequirePermissions(Permission.FACULTY_CREATE)
   @UseGuards(JwtAuthGuard, RequirePermissionsGuard, IsVerifiedGuard)
   @Post("/")
-  async createFaculty(@Req() request, @Body() createFacultyDto: CreateFacultyDto) {
+  async createFaculty(@Req() request, @Body() createFacultyDto: CreateFacultyRequestDto) {
     await this.facultiesService.createFaculty(createFacultyDto, request.user);
   }
 
