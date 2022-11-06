@@ -13,9 +13,16 @@ export default function Table(props: Props) {
     <div className={classNames("rounded-md overflow-auto", "shadow", "text-base")}>
       <table className={classNames("border border-slate-200 dark:border-slate-700", "w-full")}>
         <thead>
-          <tr className={classNames("bg-blue-100 dark:bg-blue-900")}>
+          <tr className={classNames("bg-slate-300 dark:bg-slate-900")}>
             {columns.map((column, index) => (
-              <th key={`col-${index}`} className={classNames("px-3 py-2")}>
+              <th
+                key={`col-${index}`}
+                className={classNames(
+                  "px-3 py-2",
+                  "border-r border-b last:border-r-0 border-slate-200 dark:border-slate-700",
+                  "whitespace-nowrap"
+                )}
+              >
                 {column}
               </th>
             ))}
@@ -27,12 +34,19 @@ export default function Table(props: Props) {
               <tr
                 key={`row-${index}`}
                 className={classNames(
-                  "odd:bg-slate-100 odd:dark:bg-slate-800 even:bg-white even:dark:bg-slate-900",
+                  "odd:bg-slate-100 odd:dark:bg-slate-800/50 even:bg-white even:dark:bg-slate-800",
                   "border-b border-slate-200 dark:border-slate-700 last:border-b-0"
                 )}
               >
                 {row.map((cell, idx) => (
-                  <td key={`cell-${index}-${idx}`} className={classNames("p-2")}>
+                  <td
+                    key={`cell-${index}-${idx}`}
+                    className={classNames(
+                      "p-2",
+                      "border-r last:border-r-0 border-slate-200 dark:border-slate-700",
+                      "whitespace-nowrap"
+                    )}
+                  >
                     {cell}
                   </td>
                 ))}

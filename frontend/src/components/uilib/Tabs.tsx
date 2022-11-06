@@ -36,8 +36,6 @@ export default function Tabs(props: Props) {
                   className={classNames(
                     "w-full px-3 py-2 mx-auto",
                     "text-center truncate",
-                    { "text-xs md:text-sm lg:text-base": tabItems.length <= 3 },
-                    { "text-sm md:text-base": tabItems.length > 3 },
                     "border border-slate-200 dark:border-slate-700",
                     {
                       "border-y-0 border-x first:border-l-0 border-r-0 last:border-r-0": tabItems.length <= 3,

@@ -34,7 +34,7 @@ export const enhancedApi = api.enhanceEndpoints({
       ],
     },
     deleteSchool: {
-      invalidatesTags: (result, error, arg) => [{ type: TagTypes.SCHOOL, id: arg.deleteSchoolDto.uuid }],
+      invalidatesTags: (result, error, arg) => [{ type: TagTypes.SCHOOL, id: arg.deleteSchoolRequestDto.uuid }],
     },
     getAllSchools: {
       providesTags: (result, error, arg) => {

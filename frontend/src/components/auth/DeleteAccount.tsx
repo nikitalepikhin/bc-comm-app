@@ -10,7 +10,11 @@ export default function DeleteAccount() {
   const [deleteAccount, { isLoading, isError }] = useDeleteAccountMutation();
 
   return (
-    <Container title="Delete Account" danger className={classNames("w-full", "flex flex-col justify-start gap-2")}>
+    <Container
+      title="Delete Account"
+      danger
+      className={classNames("w-full max-w-screen-lg", "flex flex-col justify-start gap-2")}
+    >
       <div className="flex flex-col justify-start items-end gap-2 w-full">
         <div className="w-full leading-loose">
           <span className="text-red-600 dark:text-red-500 font-bold">Deleting the account is irreversible.</span>

@@ -33,7 +33,7 @@ export default function FacultiesPage() {
   const [count, setCount] = useState(countOptions[0].value);
 
   useEffect(() => {
-    getFaculties({ page, count: typeof count === "string" ? parseInt(count) : count, schoolUuid });
+    getFaculties({ page, count: typeof count === "string" ? parseInt(count) : count, uuid: schoolUuid });
   }, [page, count]);
 
   const [deleteFaculty, { isLoading: deleteLoading, isError: deleteError, isSuccess: deleteSuccess }] =
@@ -104,7 +104,7 @@ export default function FacultiesPage() {
               )}
             </div>
           )}
-          <div className="flex flex-row justify-between items-center gap-2 flex-wrap">
+          <div className="flex flex-row justify-end items-center gap-2 flex-wrap w-full">
             {school && <div className="font-bold">{school.name}</div>}
             <div className="flex flex-row justify-between items-center gap-2">
               {role === "REPRESENTATIVE" && (
@@ -148,7 +148,7 @@ export default function FacultiesPage() {
                     faculty.addressLineOne,
                     faculty.addressLineTwo,
                     faculty.postalCode,
-                    <div className="flex flex-col md:flex-row justify-between items-center gap-2">
+                    <div className="flex flex-col md:flex-row justify-center items-center gap-2">
                       <Button
                         type="button"
                         onClick={() => {
@@ -228,7 +228,7 @@ export default function FacultiesPage() {
         show={showDeleteDialog}
         loading={deleteLoading}
         onConfirm={() => {
-          deleteFaculty({ deleteFacultyDto: { uuid: uuid! } });
+          deleteFaculty({ deleteFacultyRequestDto: { uuid: uuid! } });
           setUuid(undefined);
         }}
         onCancel={() => {

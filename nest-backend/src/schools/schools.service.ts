@@ -3,7 +3,7 @@ import { PrismaService } from "../prisma/prisma.service";
 import CreateSchoolRequestDto from "./dto/create-school-request.dto";
 import GetSchoolsResponseDto from "./dto/get-schools-response.dto";
 import UpdateSchoolRequestDto from "./dto/update-school-request.dto";
-import DeleteSchoolDto from "./dto/delete-school.dto";
+import DeleteSchoolRequestDto from "./dto/delete-school-request.dto";
 import GetSchoolAutocompleteRequestDto from "./dto/get-school-autocomplete-request.dto";
 import GetSchoolAutocompleteResponseDto from "./dto/get-school-autocomplete-response.dto";
 import UserDto from "../auth/dto/user.dto";
@@ -39,7 +39,7 @@ export class SchoolsService {
     };
   }
 
-  async deleteSchool(deleteSchoolDto: DeleteSchoolDto) {
+  async deleteSchool(deleteSchoolDto: DeleteSchoolRequestDto) {
     return await this.prisma.school.delete({ where: { uuid: deleteSchoolDto.uuid } });
   }
 

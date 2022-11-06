@@ -123,7 +123,7 @@ export default function SchoolsPage() {
                     school.addressLineOne,
                     school.addressLineTwo,
                     school.postalCode,
-                    <div className="flex flex-col md:flex-row justify-between items-center gap-2">
+                    <div className="flex flex-col md:flex-row justify-center items-center gap-2">
                       <Button type="button" onClick={() => navigate(`/faculties/school/${school.uuid}`)}>
                         Faculties
                       </Button>
@@ -197,7 +197,7 @@ export default function SchoolsPage() {
         show={showDeleteDialog}
         loading={deleteSchoolLoading}
         onConfirm={() => {
-          deleteSchool({ deleteSchoolDto: { uuid: uuid! } });
+          deleteSchool({ deleteSchoolRequestDto: { uuid: uuid! } });
           setUuid(undefined);
         }}
         onCancel={() => {

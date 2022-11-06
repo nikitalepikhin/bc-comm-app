@@ -13,7 +13,7 @@ export default function App() {
       {isLoading || isUninitialized ? (
         <LoadingPage />
       ) : (
-        <div className="2xl:max-w-screen-2xl mx-3 2xl:mx-auto">
+        <div className="3xl:max-w-screen-3xl mx-3 3xl:mx-auto">
           <Outlet />
         </div>
       )}

@@ -3,7 +3,7 @@ import { PrismaService } from "../prisma/prisma.service";
 import CreateFacultyRequestDto from "./dto/create-faculty-request.dto";
 import UserDto from "../auth/dto/user.dto";
 import GetFacultiesResponseDto from "./dto/get-faculties-response.dto";
-import DeleteFacultyDto from "./dto/delete-faculty.dto";
+import DeleteFacultyRequestDto from "./dto/delete-faculty-request.dto";
 import UpdateFacultyRequestDto from "./dto/update-faculty-request.dto";
 import GetFacultyAutocompleteRequestDto from "./dto/get-faculty-autocomplete-request.dto";
 import GetFacultyAutocompleteResponseDto from "./dto/get-faculty-autocomplete-response.dto";
@@ -58,7 +58,7 @@ export class FacultiesService {
     }
   }
 
-  async deleteFaculty(deleteFacultyDto: DeleteFacultyDto) {
+  async deleteFaculty(deleteFacultyDto: DeleteFacultyRequestDto) {
     return await this.prisma.faculty.delete({ where: { uuid: deleteFacultyDto.uuid } });
   }
 
