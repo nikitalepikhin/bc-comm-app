@@ -105,7 +105,7 @@ export default function FacultiesPage() {
               )}
             </div>
           )}
-          <div className="flex flex-row justify-end items-center gap-2 flex-wrap w-full">
+          <div className="flex flex-row justify-end items-center gap-2 flex-wrap">
             {school && <div className="font-bold">{school.name}</div>}
             <div className="flex flex-row justify-between items-center gap-2">
               {role === "REPRESENTATIVE" && (
