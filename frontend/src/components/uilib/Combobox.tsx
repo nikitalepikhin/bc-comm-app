@@ -136,11 +136,11 @@ export default function Combobox(props: Props) {
             className={classNames(
               "bg-white dark:bg-slate-900",
               "border border-slate-200 dark:border-slate-700",
-              "max-h-72 overflow-auto w-full",
+              "overflow-y-auto max-h-64 w-full",
               "rounded-md drop-shadow",
               "absolute z-10",
               { [`${gap}`]: gap },
-              { "top-10": !gap },
+              { "top-12": !gap },
               {
                 hidden:
                   !(options.length > 0 && !loading) &&
