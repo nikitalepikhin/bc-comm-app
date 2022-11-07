@@ -1001,3 +1001,7 @@ export const countries: Country[] = [
     text: "Zimbabwe",
   },
 ];
+
+export function findCountryByCode(code: string): Country | undefined {
+  return countries.find((country) => country.value === code);
+}
