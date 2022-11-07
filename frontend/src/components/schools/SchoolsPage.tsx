@@ -11,6 +11,7 @@ import classNames from "classnames";
 import IconButton from "../uilib/IconButton";
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/solid";
 import { useNavigate } from "react-router-dom";
+import { findCountryByCode } from "../../util/countries";
 
 const countOptions: SelectOption[] = [
   { value: 10, text: "10" },
@@ -106,7 +107,7 @@ export default function SchoolsPage() {
             columns={[
               "School UUID",
               "Name",
-              "Country Code",
+              "Country",
               "City",
               "Address Line 1",
               "Address Line 2",
@@ -118,7 +119,7 @@ export default function SchoolsPage() {
                 ? data.schools.map((school) => [
                     school.uuid,
                     school.name,
-                    school.countryCode,
+                    findCountryByCode(school.countryCode)?.text,
                     school.city,
                     school.addressLineOne,
                     school.addressLineTwo,

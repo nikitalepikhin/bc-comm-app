@@ -13,6 +13,7 @@ import Dialog from "../uilib/dialog/Dialog";
 import SchoolFacultyFormDialog from "../schools/SchoolFacultyFormDialog";
 import { useAppSelector } from "../../app/redux/hooks";
 import ErrorPage from "../common/ErrorPage";
+import { findCountryByCode } from "../../util/countries";
 
 const countOptions: SelectOption[] = [
   { value: 10, text: "10" },
@@ -131,7 +132,7 @@ export default function FacultiesPage() {
             columns={[
               "Faculty UUID",
               "Name",
-              "Country Code",
+              "Country",
               "City",
               "Address Line 1",
               "Address Line 2",
@@ -143,7 +144,7 @@ export default function FacultiesPage() {
                 ? data.faculties.map((faculty) => [
                     faculty.uuid,
                     faculty.name,
-                    faculty.countryCode,
+                    findCountryByCode(faculty.countryCode)?.text,
                     faculty.city,
                     faculty.addressLineOne,
                     faculty.addressLineTwo,
