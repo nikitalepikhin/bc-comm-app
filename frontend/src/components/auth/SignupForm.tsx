@@ -221,6 +221,7 @@ export default function SignupForm() {
                     options={schoolSuggestions ? schoolSuggestions.schools : []}
                     error={meta.error && meta.touched ? meta.error : undefined}
                     disabled={signUpSuccess}
+                    position="relative"
                   />
                 )}
               </Field>
@@ -244,6 +245,7 @@ export default function SignupForm() {
                     options={facultySuggestions ? facultySuggestions.faculties : []}
                     dependencies={[values.school]}
                     error={meta.error && meta.touched ? meta.error : undefined}
+                    position="relative"
                   />
                 )}
               </Field>
