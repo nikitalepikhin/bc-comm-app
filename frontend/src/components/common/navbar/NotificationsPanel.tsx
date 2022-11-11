@@ -42,7 +42,11 @@ export default function NotificationsPanel(props: Props) {
       }
       buttonAs={NavbarButton}
       onClick={closeMenu}
-      className={classNames("-right-[4.1rem] w-[98vw] md:max-w-screen-sm", "flex flex-col justify-start gap-2")}
+      position="fixed"
+      className={classNames(
+        "right-0 left-0 top-[3.4rem]",
+        "flex flex-col justify-start gap-2 w-[98%] max-w-screen-sm mx-auto md:ml-auto md:mr-14"
+      )}
     />
   );
 }
