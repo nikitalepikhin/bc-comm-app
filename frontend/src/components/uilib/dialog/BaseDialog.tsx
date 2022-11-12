@@ -20,12 +20,14 @@ export default function BaseDialog(props: Props) {
     const domBody = document.querySelector("body");
     if (show) {
       if (domBody) {
-        domBody.style.overflowY = "hidden";
+        domBody.style.overflow = "hidden";
+        domBody.style.height = "100vh";
       }
     }
     return () => {
       if (domBody) {
-        domBody.style.overflowY = "";
+        domBody.style.overflow = "";
+        domBody.style.height = "";
       }
     };
   }, [show]);
