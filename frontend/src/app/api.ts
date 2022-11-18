@@ -46,8 +46,15 @@ const injectedRtkApi = api.injectEndpoints({
     refreshUsername: build.mutation<RefreshUsernameApiResponse, RefreshUsernameApiArg>({
       query: () => ({ url: `/users/refresh`, method: "PUT" }),
     }),
-    verifyUser: build.mutation<VerifyUserApiResponse, VerifyUserApiArg>({
-      query: (queryArg) => ({ url: `/users/verify`, method: "POST", body: queryArg.verifyUserRequestDto }),
+    verifyTeacher: build.mutation<VerifyTeacherApiResponse, VerifyTeacherApiArg>({
+      query: (queryArg) => ({ url: `/users/verify/teacher`, method: "POST", body: queryArg.verifyUserRequestDto }),
+    }),
+    verifyRepresentative: build.mutation<VerifyRepresentativeApiResponse, VerifyRepresentativeApiArg>({
+      query: (queryArg) => ({
+        url: `/users/verify/representative`,
+        method: "POST",
+        body: queryArg.verifyUserRequestDto,
+      }),
     }),
     requestVerification: build.query<RequestVerificationApiResponse, RequestVerificationApiArg>({
       query: () => ({ url: `/users/request` }),
@@ -228,8 +235,12 @@ export type DeleteAccountApiResponse = unknown;
 export type DeleteAccountApiArg = void;
 export type RefreshUsernameApiResponse = /** status 200  */ RefreshUsernameResponseDto;
 export type RefreshUsernameApiArg = void;
-export type VerifyUserApiResponse = unknown;
-export type VerifyUserApiArg = {
+export type VerifyTeacherApiResponse = unknown;
+export type VerifyTeacherApiArg = {
+  verifyUserRequestDto: VerifyUserRequestDto;
+};
+export type VerifyRepresentativeApiResponse = unknown;
+export type VerifyRepresentativeApiArg = {
   verifyUserRequestDto: VerifyUserRequestDto;
 };
 export type RequestVerificationApiResponse = unknown;
@@ -784,7 +795,8 @@ export const {
   useUpdatePasswordMutation,
   useDeleteAccountMutation,
   useRefreshUsernameMutation,
-  useVerifyUserMutation,
+  useVerifyTeacherMutation,
+  useVerifyRepresentativeMutation,
   useRequestVerificationQuery,
   useGetUserProfileQuery,
   useUpdateUserProfileMutation,
