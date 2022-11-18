@@ -51,7 +51,6 @@ model User {
   verifiedRepresentatives Representative[]         @relation(name: "verification")
   verifiedTeachers        Teacher[]                @relation(name: "verification")
   subscriptions           ChannelSubscribedUsers[]
-  administratedChannels   ChannelAdminUsers[]
   createdPosts            Post[]
   postVotes               UserPostVotes[]
   createdComments         Comment[]
@@ -152,7 +151,6 @@ model Channel {
   modifiedBy     User                     @relation(name: "channelModifiedBy", fields: [modifiedByUuid], references: [uuid], onDelete: Cascade)
   modifiedByUuid String                   @db.Uuid
   subscribers    ChannelSubscribedUsers[]
-  admins         ChannelAdminUsers[]
   posts          Post[]
 }
 
@@ -161,16 +159,6 @@ model ChannelSubscribedUsers {
   user         User     @relation(fields: [userUuid], references: [uuid], onDelete: Cascade)
   channelUuid  String   @db.Uuid
   channel      Channel  @relation(fields: [channelUuid], references: [uuid], onDelete: Cascade)
-  subscribedAt DateTime @default(now()) @db.Timestamp(6)
-
-  @@id([userUuid, channelUuid])
-}
-
-model ChannelAdminUsers {
-  userUuid     String   @db.Uuid
-  user         User     @relation(fields: [userUuid], references: [uuid], onDelete: Cascade)
-  channelUuid  String   @db.Uuid
-  channel      Channel  @relation(fields: [channelUuid], references: [uuid])
   subscribedAt DateTime @default(now()) @db.Timestamp(6)
 
   @@id([userUuid, channelUuid])

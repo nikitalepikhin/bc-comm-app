@@ -3,7 +3,7 @@ import { format, parseISO } from "date-fns";
 import { Field, FieldProps, Form, Formik } from "formik";
 import { useEffect, useState } from "react";
 import { RepresentativeRequestDto, TeacherRequestDto } from "../../app/api";
-import { useVerifyUserMutation } from "../../app/enhancedApi";
+import { useVerifyRepresentativeMutation, useVerifyTeacherMutation } from "../../app/enhancedApi";
 import Alert from "../uilib/Alert";
 import Button from "../uilib/Button";
 import Container from "../uilib/Container";
@@ -52,7 +52,8 @@ export default function Request(props: Props) {
   const [showAlert, setShowAlert] = useState(false);
   const { verified, role } = useAppSelector((state) => state.auth.user);
 
-  const [verifyUser, { isLoading, isError, isSuccess }] = useVerifyUserMutation();
+  const [verifyUser, { isLoading, isError, isSuccess }] =
+    type === "REPRESENTATIVE" ? useVerifyRepresentativeMutation() : useVerifyTeacherMutation();
 
   useEffect(() => {
     if (isError || isSuccess) {

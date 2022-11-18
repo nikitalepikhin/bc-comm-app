@@ -25,11 +25,19 @@ export class UsersController {
     return await this.usersService.refreshUsername(request.user as UserDto);
   }
 
-  @ApiOperation({ summary: "Verify a user." })
+  @ApiOperation({ summary: "Verify a teacher." })
   @UseGuards(JwtAuthGuard, RequirePermissionsGuard, IsVerifiedGuard)
-  @RequirePermissions(Permission.TEACHER_REQ_VERIFY, Permission.REP_REQ_VERIFY)
-  @Post("/verify")
-  async verifyUser(@Req() request, @Body() requestDto: VerifyUserRequestDto) {
+  @RequirePermissions(Permission.TEACHER_REQ_VERIFY)
+  @Post("/verify/teacher")
+  async verifyTeacher(@Req() request, @Body() requestDto: VerifyUserRequestDto) {
+    await this.usersService.verifyUser(request.user as UserDto, requestDto);
+  }
+
+  @ApiOperation({ summary: "Verify a representative." })
+  @UseGuards(JwtAuthGuard, RequirePermissionsGuard, IsVerifiedGuard)
+  @RequirePermissions(Permission.REP_REQ_VERIFY)
+  @Post("/verify/representative")
+  async verifyRepresentative(@Req() request, @Body() requestDto: VerifyUserRequestDto) {
     await this.usersService.verifyUser(request.user as UserDto, requestDto);
   }
 

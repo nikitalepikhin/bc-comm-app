@@ -28,7 +28,12 @@ export const enhancedApi = api.enhanceEndpoints({
             ]
           : [{ type: TagTypes.REQUEST, id: IdTypes.ALL }],
     },
-    verifyUser: {
+    verifyTeacher: {
+      invalidatesTags: (result, error, arg) => [
+        { type: TagTypes.REQUEST, id: arg.verifyUserRequestDto.verifiedUserUuid },
+      ],
+    },
+    verifyRepresentative: {
       invalidatesTags: (result, error, arg) => [
         { type: TagTypes.REQUEST, id: arg.verifyUserRequestDto.verifiedUserUuid },
       ],
@@ -486,7 +491,8 @@ export const {
   useRefreshTokenMutation,
   useGetRepresentativeVerificationRequestsQuery,
   useGetTeacherVerificationRequestsQuery,
-  useVerifyUserMutation,
+  useVerifyRepresentativeMutation,
+  useVerifyTeacherMutation,
   useLazyRequestVerificationQuery,
   useLazyGetAllSchoolsQuery,
   useGetSchoolByUuidQuery,
