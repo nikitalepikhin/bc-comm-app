@@ -23,7 +23,7 @@ const countOptions: SelectOption[] = [
 
 export default function FacultiesPage() {
   const { schoolUuid } = useParams() as { schoolUuid: string };
-  const { role } = useAppSelector((state) => state.auth.user);
+  const { role, verified } = useAppSelector((state) => state.auth.user);
   const [showDialog, setShowDialog] = useState(false);
   const [showSchoolDialog, setShowSchoolDialog] = useState(false);
   const [getFaculties, { data, isLoading, isFetching, isSuccess, isError, error }] = useLazyGetAllFacultiesQuery();
@@ -110,6 +110,7 @@ export default function FacultiesPage() {
             <div className="flex flex-row justify-between items-center gap-2">
               {role === "REPRESENTATIVE" && (
                 <Button
+                  disabled={!verified}
                   type="button"
                   onClick={() => {
                     setUuid(schoolUuid);
@@ -119,7 +120,7 @@ export default function FacultiesPage() {
                   Edit School
                 </Button>
               )}
-              <Button type="button" onClick={() => setShowDialog(true)}>
+              <Button type="button" disabled={!verified} onClick={() => setShowDialog(true)}>
                 Add Faculty
               </Button>
             </div>
@@ -151,6 +152,7 @@ export default function FacultiesPage() {
                     faculty.postalCode,
                     <div className="flex flex-col md:flex-row justify-center items-center gap-2">
                       <Button
+                        disabled={role === "REPRESENTATIVE" && !verified}
                         type="button"
                         onClick={() => {
                           setUuid(faculty.uuid);
@@ -160,6 +162,7 @@ export default function FacultiesPage() {
                         Edit
                       </Button>
                       <Button
+                        disabled={role === "REPRESENTATIVE" && !verified}
                         type="button"
                         variant="default-danger"
                         onClick={() => {
