@@ -102,7 +102,7 @@ function Button(props: Props, ref: ForwardedRef<HTMLButtonElement>) {
             { "text-sm": textSize === "small" },
             { "text-base": textSize === "base" },
             "flex justify-center items-center gap-1.5",
-            "disabled:text-slate-400 disabled:hover:bg-white disabled:dark:text-slate-500 disabled:hover:dark:bg-slate-900",
+            "disabled:text-slate-400n disabled:bg-red-400 disabled:hover:bg-red-400 disabled:dark:text-slate-500 disabled:dark:bg-red-900 disabled:hover:dark:bg-red-900",
             { [`${className}`]: className !== undefined }
           )}
         >
