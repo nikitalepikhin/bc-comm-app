@@ -27,7 +27,7 @@ export class ChannelsService {
     private usersService: UsersService,
   ) {}
 
-  async createChannel(user: UserDto, createNewChannelRequest: CreateChannelRequestDto) {
+  async createChannel(user: UserDto, createNewChannelRequest: CreateChannelRequestDto): Promise<void> {
     try {
       await this.prisma.channel.create({
         data: {
@@ -163,7 +163,7 @@ export class ChannelsService {
     }
   }
 
-  async toggleMembership(user: UserDto, requestDto: ToggleChannelMembershipRequestDto) {
+  async toggleMembership(user: UserDto, requestDto: ToggleChannelMembershipRequestDto): Promise<void> {
     const membership = await this.prisma.channelSubscribedUsers.findUnique({
       where: { userUuid_channelUuid: { userUuid: user.uuid, channelUuid: requestDto.channelUuid } },
     });

@@ -45,7 +45,7 @@ export class ChannelsController {
   @RequirePermissions(Permission.CHANNEL_CREATE)
   @UseGuards(JwtAuthGuard, RequirePermissionsGuard, IsVerifiedGuard)
   @Post("/")
-  async createChannel(@Req() request, @Body() createNewChannelRequest: CreateChannelRequestDto) {
+  async createChannel(@Req() request, @Body() createNewChannelRequest: CreateChannelRequestDto): Promise<void> {
     return await this.channelsService.createChannel(request.user as UserDto, createNewChannelRequest);
   }
 
@@ -54,7 +54,7 @@ export class ChannelsController {
   @RequirePermissions(Permission.CHANNEL_UPDATE)
   @UseGuards(JwtAuthGuard, RequirePermissionsGuard, IsVerifiedGuard)
   @Put("/")
-  async updateChannel(@Req() request, @Body() requestDto: UpdateChannelRequestDto) {
+  async updateChannel(@Req() request, @Body() requestDto: UpdateChannelRequestDto): Promise<UpdateChannelResponseDto> {
     return await this.channelsService.updateChannel(request.user as UserDto, requestDto);
   }
 
@@ -90,7 +90,7 @@ export class ChannelsController {
   @RequirePermissions(Permission.CHANNEL_MEMBER)
   @UseGuards(JwtAuthGuard, RequirePermissionsGuard, IsVerifiedGuard)
   @Post("/member")
-  async toggleMembership(@Req() request, @Body() requestDto: ToggleChannelMembershipRequestDto) {
+  async toggleMembership(@Req() request, @Body() requestDto: ToggleChannelMembershipRequestDto): Promise<void> {
     return await this.channelsService.toggleMembership(request.user as UserDto, requestDto);
   }
 
