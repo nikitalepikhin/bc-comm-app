@@ -15,7 +15,7 @@ import CreatePostResponseDto from "./dto/create-post-response.dto";
 import GetPostByUuidParamDto from "./dto/get-post-by-uuid-param.dto";
 import GetPostByUuidResponseDto from "./dto/get-post-by-uuid-response.dto";
 import GetPostsForChannelQueryDto from "./dto/get-posts-for-channel-query.dto";
-import { IsVerifiedGuard } from "src/auth/verification/is-verified.guard";
+import { IsVerifiedGuard } from "../auth/verification/is-verified.guard";
 import { PostsOrder } from "./dto/posts-order.enum";
 
 @Controller("posts")

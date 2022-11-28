@@ -1,7 +1,7 @@
 import { Body, Controller, Get, Post, Put, Req, UseGuards } from "@nestjs/common";
 import { ApiOkResponse, ApiOperation } from "@nestjs/swagger";
-import { IsNotVerifiedGuard } from "src/auth/verification/is-not-verified.guard";
-import { IsVerifiedGuard } from "src/auth/verification/is-verified.guard";
+import { IsNotVerifiedGuard } from "../auth/verification/is-not-verified.guard";
+import { IsVerifiedGuard } from "../auth/verification/is-verified.guard";
 import UserDto from "../auth/dto/user.dto";
 import { JwtAuthGuard } from "../auth/jwt/jwt-auth.guard";
 import { Permission, RequirePermissions } from "../auth/require-permissions/permission.enum";
