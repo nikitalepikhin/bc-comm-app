@@ -47,8 +47,8 @@ export class AuthController {
   @ApiOperation({ summary: "Sign up an admin." })
   @UseGuards(BasicAuthGuard)
   @Post("signup/admin")
-  async signUpAdmin(@Body() requestDto: CreateBaseUserRequestDto) {
-    return await this.authService.signUpBaseUser(requestDto, BaseRole.ADMIN);
+  async signUpAdmin(@Body() requestDto: CreateBaseUserRequestDto): Promise<void> {
+    await this.authService.signUpBaseUser(requestDto, BaseRole.ADMIN);
   }
 
   @ApiOperation({ summary: "Sign up a student." })

@@ -1,5 +1,5 @@
 import { Body, Controller, Delete, Get, Param, Post, Put, Query, Req, UseGuards } from "@nestjs/common";
-import { ApiOkResponse, ApiOperation, ApiParam } from "@nestjs/swagger";
+import { ApiOkResponse, ApiOperation } from "@nestjs/swagger";
 import { Permission, RequirePermissions } from "../auth/require-permissions/permission.enum";
 import { JwtAuthGuard } from "../auth/jwt/jwt-auth.guard";
 import { RequirePermissionsGuard } from "../auth/require-permissions/require-permissions.guard";
@@ -13,7 +13,7 @@ import FacultyResponseDto from "./dto/faculty-response.dto";
 import GetFacultyByUuidParamDto from "./dto/get-faculty-by-uuid-param.dto";
 import GetFacultyAutocompleteRequestDto from "./dto/get-faculty-autocomplete-request.dto";
 import GetFacultyAutocompleteResponseDto from "./dto/get-faculty-autocomplete-response.dto";
-import { IsVerifiedGuard } from "src/auth/verification/is-verified.guard";
+import { IsVerifiedGuard } from "../auth/verification/is-verified.guard";
 import GetFacultiesParamDto from "./dto/get-faculties-param.dto";
 import UserDto from "../auth/dto/user.dto";
 

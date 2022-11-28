@@ -1,25 +1,24 @@
-import { PrismaClient, Role } from "@prisma/client";
-import { Permission } from "../src/auth/require-permissions/permission.enum";
+import { PrismaClient } from "@prisma/client";
 import { v4 as uuidv4 } from "uuid";
 
 const prisma = new PrismaClient();
 
-const cvutUuid = uuidv4();
-const cvutFelUuid = uuidv4();
-const cvutFitUuid = uuidv4();
-const cvutFaUuid = uuidv4();
-const cvutFdUuid = uuidv4();
-const cvutFsUuid = uuidv4();
-const cvutFsvUuid = uuidv4();
+export const cvutUuid = "3684a6a2-bcbb-40b6-a23c-169f5c8b75b3";
+export const cvutFelUuid = "2aaf92c4-1ed1-4ea0-abe6-58637ff082f5";
+export const cvutFitUuid = "5a391a6e-d94b-45e3-a7cb-fd30592a7bd0";
+export const cvutFaUuid = "b52db2a9-ffed-419b-a76c-e790c9fc68a8";
+export const cvutFdUuid = "321d3ebf-42dd-4950-bf7e-8b3db3c75f48";
+export const cvutFsUuid = "f618ef6b-eafc-4256-900d-ce0d43773079";
+export const cvutFsvUuid = "3e1821be-30c1-417b-ad6a-b9cfd03b73ab";
 
-const vseUuid = uuidv4();
-const ukUuid = uuidv4();
-const vutUuid = uuidv4();
+export const vseUuid = "8b8271f6-437d-4c03-bab4-ed147367a4d0";
+export const ukUuid = "794e947c-f1ca-4174-93dc-66e749041d6e";
+export const vutUuid = "ef1cb9a1-d4b4-42d6-b0bb-5c266051743f";
 
-const adminUuid = uuidv4();
-const studentUuid = uuidv4();
-const teacherUuid = uuidv4();
-const represUuid = uuidv4();
+export const adminUuid = "a867ccf0-b9ab-4aff-8e5e-abb9468fe747";
+export const studentUuid = "844deb35-571e-48ff-8f70-54ea37775620";
+export const teacherUuid = "f154c092-68cc-4cb5-a79e-6c3288135228";
+export const represUuid = "97fa43af-7a63-4bdd-8382-5cc05f6c103d";
 
 async function seedAdminUser() {
   await prisma.user.create({

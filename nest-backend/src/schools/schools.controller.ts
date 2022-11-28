@@ -13,7 +13,7 @@ import UpdateSchoolRequestDto from "./dto/update-school-request.dto";
 import DeleteSchoolRequestDto from "./dto/delete-school-request.dto";
 import GetSchoolAutocompleteRequestDto from "./dto/get-school-autocomplete-request.dto";
 import GetSchoolAutocompleteResponseDto from "./dto/get-school-autocomplete-response.dto";
-import { IsVerifiedGuard } from "src/auth/verification/is-verified.guard";
+import { IsVerifiedGuard } from "../auth/verification/is-verified.guard";
 
 @Controller("schools")
 export class SchoolsController {

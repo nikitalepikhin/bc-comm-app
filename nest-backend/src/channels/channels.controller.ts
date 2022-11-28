@@ -15,7 +15,7 @@ import GetChannelByTextIdParamDto from "./dto/get-channel-by-text-id-param.dto";
 import ToggleChannelMembershipRequestDto from "./dto/toggle-channel-membership-request.dto";
 import UpdateChannelRequestDto from "./dto/update-channel-request.dto";
 import UpdateChannelResponseDto from "./dto/update-channel-response.dto";
-import { IsVerifiedGuard } from "src/auth/verification/is-verified.guard";
+import { IsVerifiedGuard } from "../auth/verification/is-verified.guard";
 import DeleteChannelParamDto from "./dto/delete-channel-param.dto";
 
 @Controller("channels")

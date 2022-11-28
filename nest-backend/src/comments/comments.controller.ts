@@ -15,7 +15,7 @@ import GetCommentCommentsParamDto from "./dto/get-comment-comments-param.dto";
 import UpdateCommentRequestDto from "./dto/update-comment-request.dto";
 import DeleteCommentRequestDto from "./dto/delete-comment-request.dto";
 import VoteOnCommentRequestDto from "./dto/vote-on-comment-request.dto";
-import { IsVerifiedGuard } from "src/auth/verification/is-verified.guard";
+import { IsVerifiedGuard } from "../auth/verification/is-verified.guard";
 
 @Controller("comments")
 export class CommentsController {
