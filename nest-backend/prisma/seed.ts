@@ -224,7 +224,7 @@ async function seedOtherUsers() {
 async function seedChannels() {
   await prisma.channel.create({
     data: {
-      uuid: uuidv4(),
+      uuid: "ff5958fb-d1be-426b-ab5b-a3302ec803f0",
       name: "Demo Seeded Channel",
       description: "This is a demo channel that has been seeded by Prisma client.",
       textId: "demo",
