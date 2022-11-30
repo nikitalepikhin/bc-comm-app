@@ -3,7 +3,7 @@ import { CommentsOrder } from "./comments-order.enum";
 import { IsDateString, IsEnum, IsISO8601, IsNotEmpty, IsNumber, Min } from "class-validator";
 import { Type } from "class-transformer";
 
-export default class GetCommentsUnderPostQueryDto {
+export default class GetPostCommentsQueryDto {
   @IsNotEmpty()
   @Type(() => Number)
   @IsNumber()

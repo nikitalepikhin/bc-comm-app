@@ -7,7 +7,7 @@ import { RequirePermissionsGuard } from "../auth/require-permissions/require-per
 import UserDto from "../auth/dto/user.dto";
 import GetPostCommentsResponseDto from "./dto/get-comments-under-post-response.dto";
 import GetPostCommentsParamsDto from "./dto/get-comments-under-post-param.dto";
-import GetPostCommentsQueryDto from "./dto/get-comments-under-post-query.dto";
+import GetPostCommentsQueryDto from "./dto/get-post-comments-query.dto";
 import CreateCommentRequestDto from "./dto/create-comment-request.dto";
 import CreateCommentResponseDto from "./dto/create-comment-response.dto";
 import GetCommentCommentsResponseDto from "./dto/get-comment-comments-response.dto";
