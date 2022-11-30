@@ -197,6 +197,9 @@ async function seedOtherUsers() {
   await prisma.teacher.create({
     data: {
       name: "Seed Teacher",
+      verified: true,
+      requestsVerification: false,
+      verificationMessage: null,
       user: {
         create: {
           uuid: teacherUuid,
@@ -225,7 +228,7 @@ async function seedChannels() {
   await prisma.channel.create({
     data: {
       uuid: "ff5958fb-d1be-426b-ab5b-a3302ec803f0",
-      name: "Demo Seeded Channel",
+      name: "Demo Channel",
       description: "This is a demo channel that has been seeded by Prisma client.",
       textId: "demo",
       createdBy: {
