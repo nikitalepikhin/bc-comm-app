@@ -84,15 +84,15 @@ export default function EditProfile() {
               )}
               <DisplayField data={role} labelValue="Role" />
               {editing ? (
-                <Field name="name">
-                  {({ field, meta }: FieldProps) => <Input {...field} labelValue="Name" fullWidth />}
-                </Field>
+                <Field name="name">{({ field }: FieldProps) => <Input {...field} labelValue="Name" fullWidth />}</Field>
               ) : (
                 <DisplayField data={data?.name} labelValue="Name" />
               )}
               {editing && role === "TEACHER" ? (
                 <Field name="bio">
-                  {({ field, meta }: FieldProps) => <Textarea {...field} labelValue="Bio" fullWidth size="sm" resize />}
+                  {({ field }: FieldProps) => (
+                    <Textarea {...field} labelValue="Bio" fullWidth size="sm" maxLength={1024} resize showCharCount />
+                  )}
                 </Field>
               ) : (
                 <DisplayField data={data?.bio} labelValue="Bio" />

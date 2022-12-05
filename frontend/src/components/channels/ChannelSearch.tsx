@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from "react";
 import Combobox, { ComboBoxState } from "../uilib/Combobox";
 import { useNavigate } from "react-router-dom";
-import { enhancedApi, useLazySearchChannelsQuery } from "../../app/enhancedApi";
+import { useSearchChannelsMutation } from "../../app/enhancedApi";
 import { Field, FieldProps, Form, Formik } from "formik";
-import { TagTypes } from "../../app/emptyApi";
 import { ChannelsSearchSuggestionDto } from "../../app/api";
 
 interface Props {
@@ -14,14 +13,12 @@ interface ChannelSearchFormValues {
   channel: ComboBoxState | null;
 }
 
-const invalidateTags = () => enhancedApi.util.invalidateTags([{ type: TagTypes.CHANNEL_AC }]);
-
 const initialValues: ChannelSearchFormValues = { channel: null };
 
 export default function ChannelSearch(props: Props) {
   const { onSelected } = props;
   const navigate = useNavigate();
-  const [searchChannels, { data, isFetching, isUninitialized }] = useLazySearchChannelsQuery();
+  const [searchChannels, { data, isLoading, isUninitialized, reset }] = useSearchChannelsMutation();
 
   const [options, setOptions] = useState<ChannelsSearchSuggestionDto[]>([]);
 
@@ -48,20 +45,23 @@ export default function ChannelSearch(props: Props) {
             <Combobox
               name="channel"
               placeholder="Search channels..."
-              loading={isFetching}
+              loading={isLoading}
               isUninitialized={isUninitialized}
+              onFocus={() => {
+                setOptions([]);
+              }}
               onChange={(value) => {
                 setFieldValue(field.name, value);
-                invalidateTags();
-                setOptions([]);
                 handleSubmit();
               }}
               onInputChange={(value) => {
                 onSelected();
-                setOptions([]);
                 if (value.length > 0) {
-                  searchChannels({ value });
+                  searchChannels({ searchChannelsRequestDto: { value } });
                 }
+              }}
+              onBlur={() => {
+                reset();
               }}
               options={options}
               wait={1000}

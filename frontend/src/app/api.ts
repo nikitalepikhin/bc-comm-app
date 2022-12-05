@@ -104,8 +104,8 @@ const injectedRtkApi = api.injectEndpoints({
     getFacultyAutocomplete: build.mutation<GetFacultyAutocompleteApiResponse, GetFacultyAutocompleteApiArg>({
       query: (queryArg) => ({ url: `/faculties/ac`, method: "POST", body: queryArg.getFacultyAutocompleteRequestDto }),
     }),
-    searchChannels: build.query<SearchChannelsApiResponse, SearchChannelsApiArg>({
-      query: (queryArg) => ({ url: `/channels/search`, params: { value: queryArg.value } }),
+    searchChannels: build.mutation<SearchChannelsApiResponse, SearchChannelsApiArg>({
+      query: (queryArg) => ({ url: `/channels/search`, method: "POST", body: queryArg.searchChannelsRequestDto }),
     }),
     createChannel: build.mutation<CreateChannelApiResponse, CreateChannelApiArg>({
       query: (queryArg) => ({ url: `/channels`, method: "POST", body: queryArg.createChannelRequestDto }),
@@ -309,7 +309,7 @@ export type GetFacultyAutocompleteApiArg = {
 export type SearchChannelsApiResponse =
   /** status 200 Suggested channels based on the provided value. */ SearchChannelsResponseDto;
 export type SearchChannelsApiArg = {
-  value: string;
+  searchChannelsRequestDto: SearchChannelsRequestDto;
 };
 export type CreateChannelApiResponse = unknown;
 export type CreateChannelApiArg = {
@@ -569,6 +569,9 @@ export type ChannelsSearchSuggestionDto = {
 export type SearchChannelsResponseDto = {
   channels: ChannelsSearchSuggestionDto[];
 };
+export type SearchChannelsRequestDto = {
+  value: string;
+};
 export type CreateChannelRequestDto = {
   name: string;
   description: string | null;
@@ -812,7 +815,7 @@ export const {
   useGetAllFacultiesQuery,
   useGetFacultyByUuidQuery,
   useGetFacultyAutocompleteMutation,
-  useSearchChannelsQuery,
+  useSearchChannelsMutation,
   useCreateChannelMutation,
   useUpdateChannelMutation,
   useGetChannelByTextIdQuery,

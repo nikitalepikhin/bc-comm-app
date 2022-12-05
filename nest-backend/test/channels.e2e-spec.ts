@@ -6,7 +6,7 @@ import CreateChannelRequestDto from "../src/channels/dto/create-channel-request.
 import CheckChannelIdAvailabilityResponseDto from "../src/channels/dto/check-channel-id-availability-response.dto";
 import GetChannelByTextIdResponseDto from "../src/channels/dto/get-channel-by-text-id-response.dto";
 import UpdateChannelRequestDto from "../src/channels/dto/update-channel-request.dto";
-import SearchChannelsQueryDto from "../src/channels/dto/search-channels-query.dto";
+import SearchChannelsRequestDto from "../src/channels/dto/search-channels-request.dto";
 import SearchChannelsResponseDto from "../src/channels/dto/search-channels-response.dto";
 import ToggleChannelMembershipRequestDto from "../src/channels/dto/toggle-channel-membership-request.dto";
 
@@ -91,7 +91,7 @@ describe("Channels Module Tests", () => {
   });
 
   it("should search for existing channels", () => {
-    const payload: SearchChannelsQueryDto = { value: "demo" };
+    const payload: SearchChannelsRequestDto = { value: "demo" };
     const expected: SearchChannelsResponseDto = { channels: [{ text: "Demo Seeded Channel (demo)", value: "demo" }] };
     return request(app.getHttpServer())
       .get("/channels/search")
@@ -130,7 +130,7 @@ describe("Channels Module Tests", () => {
   });
 
   it("should search and not find a deleted channel", () => {
-    const payload: SearchChannelsQueryDto = { value: "test123" };
+    const payload: SearchChannelsRequestDto = { value: "test123" };
     const expected: SearchChannelsResponseDto = { channels: [] };
     return request(app.getHttpServer())
       .get("/channels/search")

@@ -9,7 +9,7 @@ import UserDto from "../auth/dto/user.dto";
 import CheckChannelIdAvailabilityParamDto from "./dto/check-channel-id-availability-param.dto";
 import CheckChannelIdAvailabilityResponseDto from "./dto/check-channel-id-availability-response.dto";
 import SearchChannelsResponseDto from "./dto/search-channels-response.dto";
-import SearchChannelsQueryDto from "./dto/search-channels-query.dto";
+import SearchChannelsRequestDto from "./dto/search-channels-request.dto";
 import GetChannelByTextIdResponseDto from "./dto/get-channel-by-text-id-response.dto";
 import GetChannelByTextIdParamDto from "./dto/get-channel-by-text-id-param.dto";
 import ToggleChannelMembershipRequestDto from "./dto/toggle-channel-membership-request.dto";
@@ -32,10 +32,10 @@ export class ChannelsController {
   })
   @RequirePermissions(Permission.CHANNEL_READ)
   @UseGuards(JwtAuthGuard, RequirePermissionsGuard)
-  @Get("/search")
-  async searchChannels(@Query() query: SearchChannelsQueryDto): Promise<SearchChannelsResponseDto> {
-    if (query.value.length > 0) {
-      return await this.channelsService.searchChannels(query.value);
+  @Post("/search")
+  async searchChannels(@Body() requestDto: SearchChannelsRequestDto): Promise<SearchChannelsResponseDto> {
+    if (requestDto.value.length > 0) {
+      return await this.channelsService.searchChannels(requestDto.value);
     } else {
       return { channels: [] };
     }

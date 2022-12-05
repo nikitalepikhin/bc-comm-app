@@ -438,9 +438,6 @@ export const enhancedApi = api.enhanceEndpoints({
         }
       },
     },
-    searchChannels: {
-      providesTags: [{ type: TagTypes.CHANNEL_AC }],
-    },
     getUserProfile: {
       providesTags: [{ type: TagTypes.USER }],
     },
@@ -524,7 +521,7 @@ export const {
   useGetPostCommentsQuery,
   useGetCommentCommentsQuery,
   useGetUserFeedQuery,
-  useLazySearchChannelsQuery,
+  useSearchChannelsMutation,
   useGetUserProfileQuery,
   useUpdateUserProfileMutation,
   useUpdateEmailMutation,
