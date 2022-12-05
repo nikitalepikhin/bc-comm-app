@@ -19,6 +19,8 @@ interface Props {
   isUninitialized?: boolean;
   onChange: (value: ComboBoxState | null) => void;
   onInputChange: (value: string) => void;
+  onBlur?: () => void;
+  onFocus?: () => void;
   options: ComboBoxState[];
   error?: string;
   wait?: number;
@@ -40,6 +42,8 @@ export default function Combobox(props: Props) {
     isUninitialized,
     onChange,
     onInputChange,
+    onBlur,
+    onFocus,
     options,
     error,
     wait = 0,
@@ -90,6 +94,8 @@ export default function Combobox(props: Props) {
             name={name}
             placeholder={placeholder}
             onChange={(event) => debouncedOnInputChange(event)}
+            onBlur={onBlur}
+            onFocus={onFocus}
             displayValue={(state: ComboBoxState) => state?.text}
             className={classNames(
               "w-full border",

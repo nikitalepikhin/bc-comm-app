@@ -35,7 +35,9 @@ interface Props {
 const validationSchema = yup.object({
   textId: yup
     .string()
-    .test("format", "Must only contain numbers and letters.", (value) => (value ? /^[a-z0-9]{2,}$/.test(value) : true))
+    .test("format", "Must only contain numbers and small letters.", (value) =>
+      value ? /^[a-z0-9]+$/.test(value) : true
+    )
     .test("length", "Must be between 2 and 20 characters", (value) => {
       if (value) {
         return value.length <= 20 && value.length >= 2;
