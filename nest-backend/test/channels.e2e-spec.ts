@@ -90,15 +90,15 @@ describe("Channels Module Tests", () => {
       .expect(200);
   });
 
-  it("should search for existing channels", () => {
+  it("should search for existing channels", async () => {
     const payload: SearchChannelsRequestDto = { value: "demo" };
-    const expected: SearchChannelsResponseDto = { channels: [{ text: "Demo Seeded Channel (demo)", value: "demo" }] };
-    return request(app.getHttpServer())
-      .get("/channels/search")
+    const expected: SearchChannelsResponseDto = { channels: [{ text: "Demo Channel (demo)", value: "demo" }] };
+    const response = await request(app.getHttpServer())
+      .post("/channels/search")
       .set("Authorization", TestUtils.bearer(accessToken))
-      .query(payload)
-      .expect(200)
-      .expect(expected);
+      .send(payload)
+      .expect(201);
+    expect(response.body).toEqual(expected);
   });
 
   it("should make the user join the channel", () => {
@@ -129,14 +129,14 @@ describe("Channels Module Tests", () => {
       .expect(expected);
   });
 
-  it("should search and not find a deleted channel", () => {
+  it("should search and not find a deleted channel", async () => {
     const payload: SearchChannelsRequestDto = { value: "test123" };
     const expected: SearchChannelsResponseDto = { channels: [] };
-    return request(app.getHttpServer())
-      .get("/channels/search")
+    const response = await request(app.getHttpServer())
+      .post("/channels/search")
       .set("Authorization", TestUtils.bearer(accessToken))
-      .query(payload)
-      .expect(200)
-      .expect(expected);
+      .send(payload)
+      .expect(201);
+    expect(response.body).toEqual(expected);
   });
 });
