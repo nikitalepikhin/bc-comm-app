@@ -1,0 +1,9 @@
+# Make sure to have the correct port specified in the URL. 
+# By default the back end runs on port 8443.
+REACT_APP_BACKEND_BASE_URL=http://127.0.0.1:8443
+REACT_APP_MODE=dev
+
+# By default the back end expects that the front end runs on port 8080.
+# If you change this, you will also have to update the CORS_ORIGIN property in the backend env file accordingly.
+HTTPS=false
+PORT=8080

@@ -20,13 +20,12 @@ function initSwagger(app: INestApplication) {
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
-    httpsOptions:
-      process.env.ENV === "DEV"
-        ? {
-            key: fs.readFileSync(process.env.KEY_PATH, "utf-8"),
-            cert: fs.readFileSync(process.env.CERT_PATH, "utf-8"),
-          }
-        : undefined,
+    httpsOptions: Boolean(process.env.HTTPS_ENABLED)
+      ? {
+          key: fs.readFileSync(process.env.KEY_PATH, "utf-8"),
+          cert: fs.readFileSync(process.env.CERT_PATH, "utf-8"),
+        }
+      : undefined,
   });
 
   app.use(cookieParser());

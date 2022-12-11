@@ -1,0 +1,31 @@
+# environment: DEV for development (do not change)
+ENV=DEV
+
+# database URL - required for launch!
+DATABASE_URL={insert the database URL here without the curly brackets}
+
+# secret to encrypt JWT tokens
+JWT_SECRET=chooseanysecret
+
+# setup for cookies
+HTTPS_ENABLED=true
+COOKIE_DOMAIN=.commapp.com
+
+# tokens lifespan in seconds
+RT_MAX_AGE_SEC=604800
+AT_MAX_AGE_SEC=300
+
+# port and CORS setup
+PORT=8443
+CORS_ORIGIN=https://commapp.com
+
+# local self-signed certificate setup
+KEY_PATH=".cert/cert.key"
+CERT_PATH=".cert/cert.pem"
+
+# admin creation credentials
+BASIC_USERNAME=theadmin
+BASIC_PASSWORD=theadminpassword
+
+# generated username parameters
+USERNAME_LENGTH=10

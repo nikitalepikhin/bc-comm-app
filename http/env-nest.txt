@@ -1,0 +1,27 @@
+# environment: DEV for development (do not change)
+ENV=DEV
+
+# database URL - required for launch!
+DATABASE_URL={insert the database URL here without the curly brackets}
+
+# secret to encrypt JWT tokens
+JWT_SECRET=chooseanysecret
+
+# setup for cookies
+HTTPS_ENABLED=false
+COOKIE_DOMAIN=127.0.0.1
+
+# tokens lifespan in seconds
+RT_MAX_AGE_SEC=604800
+AT_MAX_AGE_SEC=300
+
+# port and CORS setup
+PORT=8443
+CORS_ORIGIN=http://127.0.0.1:8080
+
+# admin creation credentials
+BASIC_USERNAME=theadmin
+BASIC_PASSWORD=theadminpassword
+
+# generated username parameters
+USERNAME_LENGTH=10

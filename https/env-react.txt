@@ -1,0 +1,12 @@
+# Make sure to have the correct port specified in the URL. 
+# By default the back end runs on port 8443.
+REACT_APP_BACKEND_BASE_URL=https://commapp.com:8443
+REACT_APP_MODE=dev
+
+# By default the back end expects that the front end runs on port 443 (the default port for HTTPS).
+# If you change this, you will also have to update the CORS_ORIGIN property in the backend env file accordingly.
+HTTPS=true
+PORT=443
+HOST="commapp.com"
+SSL_CRT_FILE=.cert/cert.pem
+SSL_KEY_FILE=.cert/key.pem
