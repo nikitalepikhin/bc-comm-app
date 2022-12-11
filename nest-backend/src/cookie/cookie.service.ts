@@ -7,10 +7,10 @@ export class CookieService {
     return {
       httpOnly: true,
       secure: process.env.HTTPS_ENABLED === "true",
-      domain: process.env.HTTPS_ENABLED === "true" ? process.env.COOKIE_DOMAIN : undefined,
+      domain: process.env.COOKIE_DOMAIN,
       path: "/",
       maxAge: parseInt(process.env.RT_MAX_AGE_SEC) * 1000,
-      sameSite: process.env.ENV === "PROD" ? "strict" : "none",
+      sameSite: "strict",
     };
   }
 
@@ -18,10 +18,10 @@ export class CookieService {
     return {
       httpOnly: true,
       secure: process.env.HTTPS_ENABLED === "true",
-      domain: process.env.HTTPS_ENABLED === "true" ? process.env.COOKIE_DOMAIN : undefined,
+      domain: process.env.COOKIE_DOMAIN,
       path: "/",
       maxAge: 0,
-      sameSite: process.env.ENV === "PROD" ? "strict" : "none",
+      sameSite: "strict",
     };
   }
 }
