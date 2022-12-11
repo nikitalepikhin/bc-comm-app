@@ -26,7 +26,7 @@ import { PostsService } from "../posts/posts.service";
 import { CommentsService } from "../comments/comments.service";
 
 const usernameParams = {
-  length: process.env.USERNAME_LENGTH ?? 8,
+  length: parseInt(process.env.USERNAME_LENGTH ?? "8"),
   charset: "alphabetic",
 };
 

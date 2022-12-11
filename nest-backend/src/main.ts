@@ -19,7 +19,6 @@ function initSwagger(app: INestApplication) {
 }
 
 async function bootstrap() {
-  console.log(process.env.HTTPS_ENABLED);
   const app = await NestFactory.create(AppModule, {
     httpsOptions:
       process.env.HTTPS_ENABLED === "true" && process.env.ENV === "DEV"
