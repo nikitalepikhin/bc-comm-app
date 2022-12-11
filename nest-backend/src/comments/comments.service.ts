@@ -212,7 +212,6 @@ export class CommentsService {
   }
 
   private constructCommentsTree(comments: PostComment[]): OutPostCommentDto[] {
-    console.log(comments);
     // 1. create a map
     const commentsMap = new Map<string, OutPostCommentDto>();
     comments.forEach((c) => {

@@ -1,4 +1,4 @@
-# Web Application for Anonymous Communication Between Students and Teachers
+# System for Communication Between Teachers and Students - Front End
 
 ## Front End Application
 

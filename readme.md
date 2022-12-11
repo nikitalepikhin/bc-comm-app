@@ -2,6 +2,8 @@
 
 ## Bachelor's Thesis by Nikita Lepikhin (2022/2023)
 
+**Production version is available [here](https://comm-app-2gvj8.ondigitalocean.app).**
+
 ### Launching the Application in a Local Environment over HTTP (Base = Required)
 
 1. Make sure you have [node (version 18.12.1 LTS or higher)](https://nodejs.org/en/) and yarn (version 1.22.19 or higher) `npm i -g yarn` installed. Versions lower than specified may also work, however I have used these versions during development.
@@ -18,9 +20,11 @@
 
 7. Apply database migrations and seed the database with `npx prisma migrate dev` from the `/nest-backend` directory.
 
-8. Launch the front end with `yarn run start` from `/frontend`. Launch the back end with `yarn run start:dev` from `/nest-backend`.
+8. Seed the database with some pre-existing [data](#seeding-the-database) with `npx prisma db seed` from the `/nest-backend` directory.
 
-9. You can access the app at [http://127.0.0.1:8080](http://127.0.0.1:8080) by default. **Do not use the `localhost:8080` URL in order for cookies to work!**
+9. Launch the front end with `yarn run start` from `/frontend`. Launch the back end with `yarn run start:dev` from `/nest-backend`.
+
+10. You can access the app at [http://127.0.0.1:8080](http://127.0.0.1:8080) by default. **Do not use the `localhost:8080` URL in order for cookies to work!**
 
 ### Launching the Application in a Local Environment over HTTPS (Optional)
 
@@ -33,3 +37,27 @@
 4. Run the back end with `yarn run start:dev`. Run the front end with `sudo yarn run start`. Adding elevated privileges (`sudo`) may be required to run the front end on port 443.
 
 5. You can now access the app at [https://commapp.com](https://commapp.com) or the domain that you have specified in env files.
+
+### Seeding the Database
+
+The database can be seeded with some pre-existing data using `npx prisma db seed`. The seeding script is located in `/nest-backend/prisma/seed.ts`.
+
+Seeding the database allows you to log in using already existing accounts:
+
+- **ADMIN** email: `admin@email.com` password: `pass123`
+- **REPRESENTATIVE** email: `represen@email.com` password: `pass123`
+- **TEACHER** email: `teacher@email.com` password: `pass123`
+- **STUDENT** email: `student@email.com` password: `pass123`
+
+The script also creates a channel called `demo`.
+
+The script populates the database with a few schools and faculties. However, only faculties for `České vysoké učení technické v Praze` are available. You can create more schools and faculties as an admin.
+
+You can register another admin account by sending a request to `<backend base URL>/auth/signup/admin` and providing basic auth credentials in the header. Request body should have the following form:
+
+```
+{
+    "email":"theadmin@email.com",
+    "password":"pass123"
+}
+```

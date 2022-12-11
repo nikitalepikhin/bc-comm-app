@@ -94,7 +94,9 @@ export class FacultiesService {
     try {
       return await this.prisma.faculty.findUniqueOrThrow({ where: { uuid } });
     } catch (e) {
-      console.log(">>>", e);
+      if (e.name.toString().toLowerCase().includes("notfounderror") || e.code === "P2023") {
+        throw new NotFoundException();
+      }
     }
   }
 
