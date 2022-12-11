@@ -19,9 +19,10 @@ function initSwagger(app: INestApplication) {
 }
 
 async function bootstrap() {
+  console.log(process.env.HTTPS_ENABLED);
   const app = await NestFactory.create(AppModule, {
     httpsOptions:
-      Boolean(process.env.HTTPS_ENABLED) && process.env.ENV === "DEV"
+      process.env.HTTPS_ENABLED === "true" && process.env.ENV === "DEV"
         ? {
             key: fs.readFileSync(process.env.KEY_PATH, "utf-8"),
             cert: fs.readFileSync(process.env.CERT_PATH, "utf-8"),
