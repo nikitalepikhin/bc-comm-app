@@ -5,14 +5,20 @@ import { useLogOutMutation } from "../../app/enhancedApi";
 import { useAppDispatch } from "../../app/redux/hooks";
 import { logOut } from "../../app/redux/slice/authSlice";
 import LoadingSpinner from "../uilib/LoadingSpinner";
+import useUserData from "../../hooks/useUserData";
 
 export default function LogoutPage() {
   const [initlogOut, { isSuccess, isError }] = useLogOutMutation();
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
+  const { present } = useUserData();
 
   useEffect(() => {
-    initlogOut();
+    if (present) {
+      initlogOut();
+    } else {
+      navigate("/");
+    }
   }, []);
 
   useEffect(() => {
